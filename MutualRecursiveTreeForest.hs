@@ -66,15 +66,3 @@ mapf f (Grows ts fs) = Grows (mapt f ts) (mapf f fs)
         c = Null
         h = curry (uncurry Grows . cross (id, id))
         cross (f, g) (x, y) = (f x, g y)
-
--- sample tree and forest
-t1 = Fork 1 Null
-f1 = Grows t1 Null
-t2 = Fork 2 f1
-f2 = Grows t2 f1
-t3 = Fork 3 f2
-f3 = Grows t3 f2
-t4 = Fork 4 f3
-f4 = Grows t4 f3
-t5 = Fork 5 f4
-f5 = Grows t5 f4
