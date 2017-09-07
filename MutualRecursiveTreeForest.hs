@@ -52,6 +52,28 @@ idf = foldf (Fork, Null, Grows)
     c = 0
     h l r = l + r
 
+-- type functor
+
+mapt f (Fork a fs) = Fork (f a) (mapf f fs)
+mapf f Null = Null
+mapf f (Grows ts fs) = Grows (mapt f ts) (mapf f fs)
+
+
+mapt' f = foldt (g, c, h)
+  where
+    g = curry (uncurry Fork . cross (f, id))
+    c = Null
+    h = curry (uncurry Grows . cross (id, id))
+    cross (f, g) (x, y) = (f x, g y)
+
+mapf' f = foldf (g, c, h)
+  where
+    g = curry (uncurry Fork . cross (f, id))
+    c = Null
+    h = curry (uncurry Grows . cross (id, id))
+    cross (f, g) (x, y) = (f x, g y)
+
+
 -- sample tree and forest
 t1 = Fork 1 Null
 f1 = Grows t1 Null
