@@ -10,15 +10,17 @@ foldt (g, c, h) (Fork x fs) = g x (foldf (g, c, h) fs)
 foldf (g, c, h) Null = c
 foldf (g, c, h) (Grows ts fs) = h (foldt (g, c, h) ts) (foldf (g, c, h) fs)
 
-idt = foldt (Fork, Null, Grows)
-idf = foldf (Fork, Null, Grows)
-
 unfoldt b@(phi, psi) t = case phi t of
   (a, f') -> Fork a (unfoldf b f')
 
 unfoldf b@(phi, psi) f = case psi f of
   Nothing -> Null
   Just (t', f') -> Grows (unfoldt b t') (unfoldf b f')
+
+-- trivials
+
+idt = foldt (Fork, Null, Grows)
+idf = foldf (Fork, Null, Grows)
 
 (idt', idf') = (unfoldt (phi, psi), unfoldf (phi, psi))
   where
@@ -30,6 +32,25 @@ unfoldf b@(phi, psi) f = case psi f of
   where
     phi n = (n, n-1)
     psi n = if n <= 0 then Nothing else Just (n, n-1)
+
+-- utility
+(lenT, lenF) = (foldt (g, c, h), foldf (g, c, h))
+  where
+    g _ f = 1 + f
+    c = 0
+    h l r = l + r
+
+(depthT, depthF) = (foldt (g, c, h), foldf (g, c, h))
+  where
+    g _ f = 1 + f
+    c = 0
+    h l r = max l r
+
+(sumT, sumF) = (foldt (g, c, h), foldf (g, c, h))
+  where
+    g a f = a + f
+    c = 0
+    h l r = l + r
 
 -- sample tree and forest
 t1 = Fork 1 Null
