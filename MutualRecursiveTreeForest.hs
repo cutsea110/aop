@@ -62,7 +62,6 @@ mapf f (Grows ts fs) = Grows (mapt f ts) (mapf f fs)
   where
     genMap cata f = cata (g, c, h)
       where
-        g = curry (uncurry Fork . cross (f, id))
+        g = Fork <$> f <$> id
         c = Null
-        h = curry (uncurry Grows . cross (id, id))
-        cross (f, g) (x, y) = (f x, g y)
+        h = Grows <$> id <$> id
