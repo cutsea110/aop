@@ -19,6 +19,4 @@ gen = unfoldr phi
 listr f Nil = Nil
 listr f (Cons x xs) = Cons (f x) (listr f xs)
 
-listr' f = foldr (Nil, curry (uncurry Cons . cross (f, id)))
-  where
-    cross (f, g) (x, y) = (f x, g y)
+listr' f = foldr (Nil, Cons <$> f <$> id)
