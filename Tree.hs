@@ -22,3 +22,5 @@ tips = foldt (wrap, cat)
   where
     cat x y = x ++ y
     wrap x = [x]
+
+tips' t = foldt ((:), (.)) t []
