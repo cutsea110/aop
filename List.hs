@@ -20,3 +20,16 @@ listr f Nil = Nil
 listr f (Cons x xs) = Cons (f x) (listr f xs)
 
 listr' f = foldr (Nil, Cons <$> f <$> id)
+
+cat Nil ys         = ys
+cat (Cons x xs) ys = Cons x (cat xs ys)
+
+ccat Nil = id
+ccat (Cons a x) = (Cons a . ccat x)
+
+-- ccat' = foldr (id, (.) <$> Cons <$> id)
+ccat' = foldr (id, compose (Cons, id))
+  where
+    compose (f, g) x y = f x . g y
+
+len = foldr (0, \_ y -> (1+y))
