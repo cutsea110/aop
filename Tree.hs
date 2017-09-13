@@ -17,3 +17,8 @@ mapt f (Tip a) = Tip (f a)
 mapt f (Bin l r) = Bin (mapt f l) (mapt f r)
 
 mapt' f = foldt (Tip . f, Bin <$> id <$> id)
+
+tips = foldt (wrap, cat)
+  where
+    cat x y = x ++ y
+    wrap x = [x]
