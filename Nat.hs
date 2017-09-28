@@ -27,6 +27,8 @@ corefZero = foldn (Zero, positive)
 -- const Zero
 constZero = foldn (Zero, id)
 
--- what?
--- the converse of corefZero
-corefZero' = undefined
+-- the converse of corefZero equals corefZero,
+-- because corefZero can be represented by [(Zero, Zero)] on REL.
+corefZero' = corefZero
+
+x = constZero . corefZero'
