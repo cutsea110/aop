@@ -76,3 +76,6 @@ length' :: NonEmptyList a -> Int
 length' = foldr' (0, const (1+), const (1+))
 sum' :: Num a => NonEmptyList a -> a
 sum' = foldr' (0, (+), (+))
+
+length'' (Pair x xs) = 1 + length xs
+sum'' (Pair x xs) = x + sum xs
