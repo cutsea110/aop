@@ -45,6 +45,12 @@ unfoldr' :: (b -> Maybe (a, b), t -> (a, b)) -> t -> NonEmptyList a
 unfoldr' (phi, psi) xs = case psi xs of
   (x, xs') -> Pair x (unfoldr phi xs')
 
+listr' :: (a -> b) -> NonEmptyList a -> NonEmptyList b
+-- listr' f = foldr' (Nil, Cons <$> f <$> id, Pair <$> f <$> id)
+listr' f = foldr' (Nil, curry (uncurry Cons . cross (f, id)), curry (uncurry Pair . cross (f, id)))
+  where
+    cross (f, g) (x, y) = (f x, g y)
+
 -- Identity
 cataId' = foldr' (Nil, Cons, Pair)
 anaId' = unfoldr' (phi, psi)
