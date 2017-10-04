@@ -1,6 +1,6 @@
 module NonEmptyList where
 
-import Prelude hiding (foldr, unfoldr, sum, length)
+import Prelude hiding (foldr, unfoldr, sum, length, map)
 
 -- L = 1 + A x L
 data List a = Nil | Cons a (List a) deriving Show
@@ -14,6 +14,12 @@ unfoldr phi xs = case phi xs of
   Nothing -> Nil
   Just (x, xs') -> Cons x (unfoldr phi xs')
 
+-- Type functor
+listr :: (a -> b) -> List a -> List b
+-- listr f = foldr (Nil, Cons <$> f <$> id)
+listr f = foldr (Nil, curry (uncurry Cons . cross (f, id)))
+  where
+    cross (f, g) (x, y) = (f x, g y)
 
 -- Identity
 cataId = foldr (Nil, Cons)
