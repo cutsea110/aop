@@ -11,7 +11,7 @@ foldt (f, g) (Tip a) = f a
 foldt (f, g) (Bin tl tr) = g (foldt (f, g) tl, foldt (f, g) tr)
 
 unfoldt phi x = case phi x of
-  Left a -> Tip a
+  Left a -> tip a
   Right (tl, tr) -> bin (unfoldt phi tl, unfoldt phi tr)
 
 gen = unfoldt phi
