@@ -1,6 +1,7 @@
 module Tree where
 
 cross (f, g) (x, y) = (f x, g y)
+compose (h, k) = h . k
 
 data Tree a = Tip a | Bin (Tree a) (Tree a) deriving (Show, Eq)
 tip = Tip
@@ -30,7 +31,4 @@ tips = foldt (wrap, cat)
 
 tipcat = curry cat . tips
 
-
 tips' t = foldt (curry cons, compose) t []
-
-compose (h, k) = h . k
