@@ -76,7 +76,7 @@ length :: List a -> Int
 length = foldr (0, plus1)
 
 sum :: Num a => List a -> a
-sum = foldr (0, uncurry (+))
+sum = foldr (0, plus)
 
 length' :: NonEmptyList a -> Int
 length' = foldr' (0, plus1, plus1)
