@@ -2,6 +2,11 @@ module NonEmptyList where
 
 import Prelude hiding (foldr, unfoldr, sum, length, map)
 
+-- Utility functions as uncurried version
+cross (f, g) (x, y) = (f x, g y)
+plus1 (_, m) = 1 + m
+plus (n, m) = n + m
+
 -- L = 1 + A x L
 data List a = Nil | Cons a (List a) deriving Show
 
@@ -21,8 +26,6 @@ unfoldr phi xs = case phi xs of
 listr :: (a -> b) -> List a -> List b
 -- listr f = foldr (Nil, Cons <$> f <$> id)
 listr f = foldr (nil, (cons . cross (f, id)))
-  where
-    cross (f, g) (x, y) = (f x, g y)
 
 -- Identity
 cataId = foldr (nil, cons)
@@ -52,8 +55,6 @@ unfoldr' (phi, psi) xs = case psi xs of
 listr' :: (a -> b) -> NonEmptyList a -> NonEmptyList b
 -- listr' f = foldr' (nil, Cons <$> f <$> id, Pair <$> f <$> id)
 listr' f = foldr' (nil, (cons . cross (f, id)), (pair . cross (f, id)))
-  where
-    cross (f, g) (x, y) = (f x, g y)
 
 -- Identity
 cataId' = foldr' (nil, cons, Pair)
@@ -72,14 +73,16 @@ gen' n = unfoldr' (phi, psi) n
 ------------------
 
 length :: List a -> Int
-length = foldr (0, uncurry (const (1+)))
+length = foldr (0, plus1)
+
 sum :: Num a => List a -> a
 sum = foldr (0, uncurry (+))
 
 length' :: NonEmptyList a -> Int
-length' = foldr' (0, uncurry (const (1+)), uncurry (const (1+)))
+length' = foldr' (0, plus1, plus1)
+
 sum' :: Num a => NonEmptyList a -> a
-sum' = foldr' (0, uncurry (+), uncurry (+))
+sum' = foldr' (0, plus, plus)
 
 length'' (Pair x xs) = 1 + length xs
 sum'' (Pair x xs) = x + sum xs
