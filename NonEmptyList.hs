@@ -5,24 +5,27 @@ import Prelude hiding (foldr, unfoldr, sum, length, map)
 -- L = 1 + A x L
 data List a = Nil | Cons a (List a) deriving Show
 
-foldr :: (b, a -> b -> b) -> List a -> b
+nil = Nil
+cons = uncurry Cons
+
+foldr :: (b, (a, b) -> b) -> List a -> b
 foldr (c, f) Nil = c
-foldr (c, f) (Cons x xs) = f x (foldr (c, f) xs)
+foldr (c, f) (Cons x xs) = f (x, (foldr (c, f) xs))
 
 unfoldr :: (b -> Maybe (a, b)) -> b -> List a
 unfoldr phi xs = case phi xs of
-  Nothing -> Nil
-  Just (x, xs') -> Cons x (unfoldr phi xs')
+  Nothing -> nil
+  Just (x, xs') -> cons (x, (unfoldr phi xs'))
 
 -- Type functor
 listr :: (a -> b) -> List a -> List b
 -- listr f = foldr (Nil, Cons <$> f <$> id)
-listr f = foldr (Nil, curry (uncurry Cons . cross (f, id)))
+listr f = foldr (nil, (cons . cross (f, id)))
   where
     cross (f, g) (x, y) = (f x, g y)
 
 -- Identity
-cataId = foldr (Nil, Cons)
+cataId = foldr (nil, cons)
 anaId = unfoldr phi
   where
     phi Nil = Nothing
@@ -34,25 +37,26 @@ gen n = unfoldr phi n
     phi n = if n <= 0 then Nothing else Just (n, n-1)
 
 ----
-
 -- L^{+} = 1 + A x L
 data NonEmptyList a = Pair a (List a) deriving Show
 
-foldr' :: (t, a -> t -> t, a -> t -> t') -> NonEmptyList a -> t'
-foldr' (c, f, g) (Pair x xs) = g x (foldr (c, f) xs)
+pair = uncurry Pair
+
+foldr' :: (t, (a, t) -> t, (a, t) -> t') -> NonEmptyList a -> t'
+foldr' (c, f, g) (Pair x xs) = g (x, (foldr (c, f) xs))
 
 unfoldr' :: (b -> Maybe (a, b), t -> (a, b)) -> t -> NonEmptyList a
 unfoldr' (phi, psi) xs = case psi xs of
   (x, xs') -> Pair x (unfoldr phi xs')
 
 listr' :: (a -> b) -> NonEmptyList a -> NonEmptyList b
--- listr' f = foldr' (Nil, Cons <$> f <$> id, Pair <$> f <$> id)
-listr' f = foldr' (Nil, curry (uncurry Cons . cross (f, id)), curry (uncurry Pair . cross (f, id)))
+-- listr' f = foldr' (nil, Cons <$> f <$> id, Pair <$> f <$> id)
+listr' f = foldr' (nil, (cons . cross (f, id)), (pair . cross (f, id)))
   where
     cross (f, g) (x, y) = (f x, g y)
 
 -- Identity
-cataId' = foldr' (Nil, Cons, Pair)
+cataId' = foldr' (nil, cons, Pair)
 anaId' = unfoldr' (phi, psi)
   where
     phi Nil = Nothing
@@ -68,14 +72,14 @@ gen' n = unfoldr' (phi, psi) n
 ------------------
 
 length :: List a -> Int
-length = foldr (0, const (1+))
+length = foldr (0, uncurry (const (1+)))
 sum :: Num a => List a -> a
-sum = foldr (0, (+))
+sum = foldr (0, uncurry (+))
 
 length' :: NonEmptyList a -> Int
-length' = foldr' (0, const (1+), const (1+))
+length' = foldr' (0, uncurry (const (1+)), uncurry (const (1+)))
 sum' :: Num a => NonEmptyList a -> a
-sum' = foldr' (0, (+), (+))
+sum' = foldr' (0, uncurry (+), uncurry (+))
 
 length'' (Pair x xs) = 1 + length xs
 sum'' (Pair x xs) = x + sum xs
