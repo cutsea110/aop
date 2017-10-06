@@ -87,6 +87,9 @@ sum' = foldr' (0, plus, plus)
 length'' (Pair x xs) = 1 + length xs
 sum'' (Pair x xs) = x + sum xs
 
+wrap :: a -> NonEmptyList a
+wrap x = Pair x Nil
+
 cons' :: (a, NonEmptyList a) -> NonEmptyList a
 cons' (x, Pair y ys) = pair (x, cons (y, ys))
 
