@@ -4,6 +4,7 @@ import Prelude hiding (foldr, unfoldr, sum, length, map, concat)
 
 -- Utility functions as uncurried version
 cross (f, g) (x, y) = (f x, g y)
+compose (h, k) = h . k
 plus1 (_, m) = 1 + m
 plus (n, m) = n + m
 
@@ -105,9 +106,9 @@ toList (Pair x xs) = cons (x, xs)
 fromList :: List a -> NonEmptyList a
 fromList (Cons x xs) = pair (x, xs)
 
-concat :: List a -> List a -> List a
-concat Nil ys = ys
-concat (Cons x xs) ys = cons (x, concat xs ys)
+cat :: List a -> List a -> List a
+cat Nil ys = ys
+cat (Cons x xs) ys = cons (x, cat xs ys)
 
 concat' :: NonEmptyList a -> NonEmptyList a -> NonEmptyList a
 concat' = undefined
