@@ -110,5 +110,5 @@ cat :: List a -> List a -> List a
 cat Nil ys = ys
 cat (Cons x xs) ys = cons (x, cat xs ys)
 
-concat' :: NonEmptyList a -> NonEmptyList a -> NonEmptyList a
-concat' = undefined
+cat' :: NonEmptyList a -> NonEmptyList a -> NonEmptyList a
+cat' = undefined
