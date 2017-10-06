@@ -1,14 +1,22 @@
 module MutualRecursiveTreeForest where
 
+import Prelude hiding (null)
+
+cross (f, g) (x, y) = (f x, g y)
+
 data Tree a = Fork a (Forest a) deriving (Show, Eq)
 data Forest a = Null
               | Grows (Tree a) (Forest a)
               deriving (Show, Eq)
 
-foldt (g, c, h) (Fork x fs) = g x (foldf (g, c, h) fs)
+fork = uncurry Fork
+null = Null
+grows = uncurry Grows
+
+foldt (g, c, h) (Fork x fs) = g (x, foldf (g, c, h) fs)
 
 foldf (g, c, h) Null = c
-foldf (g, c, h) (Grows ts fs) = h (foldt (g, c, h) ts) (foldf (g, c, h) fs)
+foldf (g, c, h) (Grows ts fs) = h (foldt (g, c, h) ts, foldf (g, c, h) fs)
 
 unfoldt b@(phi, psi) t = case phi t of
   (a, f') -> Fork a (unfoldf b f')
@@ -19,8 +27,8 @@ unfoldf b@(phi, psi) f = case psi f of
 
 -- trivials
 
-idt = foldt (Fork, Null, Grows)
-idf = foldf (Fork, Null, Grows)
+idt = foldt (fork, null, grows)
+idf = foldf (fork, null, grows)
 
 (idt', idf') = (unfoldt (phi, psi), unfoldf (phi, psi))
   where
@@ -36,21 +44,21 @@ idf = foldf (Fork, Null, Grows)
 -- utility
 (lenT, lenF) = (foldt (g, c, h), foldf (g, c, h))
   where
-    g _ f = 1 + f
+    g (_, f) = 1 + f
     c = 0
-    h l r = l + r
+    h (l, r) = l + r
 
 (depthT, depthF) = (foldt (g, c, h), foldf (g, c, h))
   where
-    g _ f = 1 + f
+    g (_, f) = 1 + f
     c = 0
-    h l r = max l r
+    h (l, r) = max l r
 
 (sumT, sumF) = (foldt (g, c, h), foldf (g, c, h))
   where
-    g a f = a + f
+    g (a, f) = a + f
     c = 0
-    h l r = l + r
+    h (l, r) = l + r
 
 -- type functor
 
@@ -62,6 +70,6 @@ mapf f (Grows ts fs) = Grows (mapt f ts) (mapf f fs)
   where
     genMap cata f = cata (g, c, h)
       where
-        g = Fork <$> f <$> id
-        c = Null
-        h = Grows <$> id <$> id
+        g = fork . cross (f, id)
+        c = null
+        h = grows . cross (id, id)
