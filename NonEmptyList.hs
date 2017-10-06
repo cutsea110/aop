@@ -89,3 +89,9 @@ sum'' (Pair x xs) = x + sum xs
 
 cons' :: (a, NonEmptyList a) -> NonEmptyList a
 cons' (x, Pair y ys) = pair (x, cons (y, ys))
+
+head' :: NonEmptyList a -> a
+head' (Pair x _) = x
+
+tail' :: NonEmptyList a -> List a
+tail' (Pair _ xs) = xs
