@@ -113,10 +113,12 @@ cat :: List a -> List a -> List a
 -- cat Nil = id
 -- cat (Cons x xs) = Cons x . cat xs
 
-cat = foldr (id, compose . cross (Cons , id))
+cat = foldr (id, compose . cross (Cons, id))
 
 cat' :: NonEmptyList a -> NonEmptyList a -> NonEmptyList a
 -- cat' (Pair x Nil) ys = cons' (x, ys)
 -- cat' (Pair x xs) ys = cons' (x, (cat' (fromList xs) ys))
-cat' (Pair x Nil) = curry cons' x
-cat' (Pair x xs) = curry cons' x . cat' (fromList xs)
+--
+-- cat' (Pair x Nil) = curry cons' x
+-- cat' (Pair x xs) = curry cons' x . cat' (fromList xs)
+cat' = foldr' (id, compose . cross (Cons, id), undefined) -- How?
