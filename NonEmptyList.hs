@@ -95,3 +95,9 @@ head' (Pair x _) = x
 
 tail' :: NonEmptyList a -> List a
 tail' (Pair _ xs) = xs
+
+toList :: NonEmptyList a -> List a
+toList (Pair x xs) = cons (x, xs)
+
+fromList :: List a -> NonEmptyList a
+fromList (Cons x xs) = pair (x, xs)
