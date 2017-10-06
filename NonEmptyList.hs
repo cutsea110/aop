@@ -109,8 +109,11 @@ fromList (Cons x xs) = pair (x, xs)
 cat :: List a -> List a -> List a
 -- cat Nil ys = ys
 -- cat (Cons x xs) ys = Cons x (cat xs ys)
-cat Nil = id
-cat (Cons x xs) = Cons x . cat xs
+-- 
+-- cat Nil = id
+-- cat (Cons x xs) = Cons x . cat xs
+
+cat = foldr (id, compose . cross (Cons , id))
 
 cat' :: NonEmptyList a -> NonEmptyList a -> NonEmptyList a
 cat' = undefined
