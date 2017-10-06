@@ -1,6 +1,6 @@
 module NonEmptyList where
 
-import Prelude hiding (foldr, unfoldr, sum, length, map)
+import Prelude hiding (foldr, unfoldr, sum, length, map, concat)
 
 -- Utility functions as uncurried version
 cross (f, g) (x, y) = (f x, g y)
@@ -104,3 +104,10 @@ toList (Pair x xs) = cons (x, xs)
 
 fromList :: List a -> NonEmptyList a
 fromList (Cons x xs) = pair (x, xs)
+
+concat :: List a -> List a -> List a
+concat Nil ys = ys
+concat (Cons x xs) ys = Cons x (concat xs ys)
+
+concat' :: NonEmptyList a -> NonEmptyList a -> NonEmptyList a
+concat' = undefined
