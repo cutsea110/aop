@@ -107,8 +107,10 @@ fromList :: List a -> NonEmptyList a
 fromList (Cons x xs) = pair (x, xs)
 
 cat :: List a -> List a -> List a
-cat Nil ys = ys
-cat (Cons x xs) ys = cons (x, cat xs ys)
+-- cat Nil ys = ys
+-- cat (Cons x xs) ys = Cons x (cat xs ys)
+cat Nil = id
+cat (Cons x xs) = Cons x . cat xs
 
 cat' :: NonEmptyList a -> NonEmptyList a -> NonEmptyList a
 cat' = undefined
