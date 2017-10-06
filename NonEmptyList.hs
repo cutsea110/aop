@@ -107,7 +107,7 @@ fromList (Cons x xs) = pair (x, xs)
 
 concat :: List a -> List a -> List a
 concat Nil ys = ys
-concat (Cons x xs) ys = Cons x (concat xs ys)
+concat (Cons x xs) ys = cons (x, concat xs ys)
 
 concat' :: NonEmptyList a -> NonEmptyList a -> NonEmptyList a
 concat' = undefined
