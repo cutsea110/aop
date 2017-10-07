@@ -37,4 +37,6 @@ ccat (Cons a x) = (Cons a . ccat x)
 -- ccat' = foldr (id, (.) <$> Cons <$> id)
 ccat' = foldr (id, compose . cross (Cons, id))
 
-len = foldr (0, \(_, y) -> (1+y))
+len = foldr (0, plus1)
+  where
+    plus1 (_, x) = 1+x
