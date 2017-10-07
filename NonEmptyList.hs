@@ -121,4 +121,8 @@ cat' :: NonEmptyList a -> NonEmptyList a -> NonEmptyList a
 --
 -- cat' (Pair x Nil) = curry cons' x
 -- cat' (Pair x xs) = curry cons' x . cat' (fromList xs)
-cat' = foldr' (id, compose . cross (Cons, id), undefined) -- How?
+cat' = foldr' (id, compose . cross (Cons, id), uncurry g) -- How?
+  where
+    g :: a -> (List a -> List a) -> NonEmptyList a -> NonEmptyList a
+    g x f = Pair x . f . toList
+  
