@@ -7,7 +7,7 @@ data Cons a = Nil
             deriving (Show, Eq)
 
 cross (f, g) (x, y) = (f x, g y)
-compose (f, g) = f . g
+compose (f, g) = f . g -- (.) f g => uncurry (.) (f, g)
 
 nil = Nil
 cons = uncurry Cons
@@ -41,8 +41,10 @@ ccat Nil = id
 ccat (Cons a x) = (Cons a . ccat x)
 
 ccat' :: Cons a -> Cons a -> Cons a
-ccat' Nil = id
-ccat' (Cons x xs) = compose (cross (Cons , ccat') (x, xs))
+-- ccat' Nil = id
+-- ccat' (Cons x xs) = uncurry (.) (cross (Cons, id) (x, ccat' xs))
+-- ccat' (Cons x xs) = compose (cross (Cons, id) (x, ccat' xs))
+ccat' = foldr (id, compose . cross (Cons, id))
 
 len = foldr (0, plus1)
   where
