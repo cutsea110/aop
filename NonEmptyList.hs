@@ -3,7 +3,9 @@ module NonEmptyList where
 import Prelude hiding (foldr, unfoldr, sum, length, map, concat)
 
 -- Utility functions as uncurried version
+cross :: (a -> c, b -> d) -> (a, b) -> (c, d)
 cross (f, g) (x, y) = (f x, g y)
+compose :: (b -> c, a -> b) -> a -> c
 compose (h, k) = h . k
 plus1 (_, m) = 1 + m
 plus (n, m) = n + m
