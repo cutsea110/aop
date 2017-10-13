@@ -13,7 +13,8 @@ plus (n, m) = n + m
 -- L = 1 + A x L
 data List a = Nil | Cons a (List a) deriving Show
 
-nil = Nil
+nil :: () -> List a
+nil () = Nil
 cons = uncurry Cons
 
 foldr :: (b, (a, b) -> b) -> List a -> b
@@ -22,16 +23,16 @@ foldr (c, f) (Cons x xs) = f (x, (foldr (c, f) xs))
 
 unfoldr :: (b -> Maybe (a, b)) -> b -> List a
 unfoldr phi xs = case phi xs of
-  Nothing -> nil
+  Nothing -> nil ()
   Just (x, xs') -> cons (x, (unfoldr phi xs'))
 
 -- Type functor
 listr :: (a -> b) -> List a -> List b
 -- listr f = foldr (Nil, Cons <$> f <$> id)
-listr f = foldr (nil, (cons . cross (f, id)))
+listr f = foldr (nil (), (cons . cross (f, id)))
 
 -- Identity
-cataId = foldr (nil, cons)
+cataId = foldr (nil (), cons)
 anaId = unfoldr phi
   where
     phi Nil = Nothing
@@ -57,10 +58,10 @@ unfoldr' (phi, psi) xs = case psi xs of
 
 listr' :: (a -> b) -> NonEmptyList a -> NonEmptyList b
 -- listr' f = foldr' (nil, Cons <$> f <$> id, Pair <$> f <$> id)
-listr' f = foldr' (nil, (cons . cross (f, id)), (pair . cross (f, id)))
+listr' f = foldr' (nil (), (cons . cross (f, id)), (pair . cross (f, id)))
 
 -- Identity
-cataId' = foldr' (nil, cons, Pair)
+cataId' = foldr' (nil (), cons, Pair)
 anaId' = unfoldr' (phi, psi)
   where
     phi Nil = Nothing
