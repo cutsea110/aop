@@ -14,12 +14,14 @@ unfoldn phi x = case phi x of
   Just x' -> Succ (unfoldn phi x')
 
 para (c, g) Zero = c
-para (c, g) n'@(Succ n) = g n' (para (c, g) n)
+para (c, g) (Succ n) = g n (para (c, g) n)
 
 plus x = foldn (x, Succ)
 mult x = foldn (Zero, plus x)
 expr x = foldn (Succ Zero, mult x)
-fact = para (Succ Zero, mult)
+fact = para (Succ Zero, mult')
+  where
+    mult' n m = mult (Succ n) m
 
 toNat = unfoldn (\n -> if n <= 0 then Nothing else Just (n-1))
 fromNat = foldn (0, (1+))
