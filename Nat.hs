@@ -13,7 +13,16 @@ unfoldn phi x = case phi x of
   Nothing -> Zero
   Just x' -> Succ (unfoldn phi x')
 
+para (c, g) Zero = c
+para (c, g) n'@(Succ n) = g n' (para (c, g) n)
+
+plus x = foldn (x, Succ)
+mult x = foldn (Zero, plus x)
+expr x = foldn (Succ Zero, mult x)
+
+
 toNat = unfoldn (\n -> if n <= 0 then Nothing else Just (n-1))
+fromNat = foldn (0, (1+))
 
 succ = Succ
 succ' (Succ n) = n
