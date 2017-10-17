@@ -19,7 +19,7 @@ para (c, g) n'@(Succ n) = g n' (para (c, g) n)
 plus x = foldn (x, Succ)
 mult x = foldn (Zero, plus x)
 expr x = foldn (Succ Zero, mult x)
-
+fact = para (Succ Zero, mult)
 
 toNat = unfoldn (\n -> if n <= 0 then Nothing else Just (n-1))
 fromNat = foldn (0, (1+))
