@@ -13,15 +13,28 @@ unfoldn phi x = case phi x of
   Nothing -> Zero
   Just x' -> Succ (unfoldn phi x')
 
+hylo (c, f, g, p) a = case p a of
+  True  -> c
+  False -> f (b, hylo (c, f, g, p) a')
+    where
+      (b, a') = g a
+
+fact' = hylo (Succ Zero, f, g, p)
+  where
+    p n = n == Zero
+    g (Succ n) = (Succ n, n)
+    f = uncurry mult
+    
+
 para (c, g) Zero = c
-para (c, g) (Succ n) = g n (para (c, g) n)
+para (c, g) (Succ n) = g (para (c, g) n, n)
 
 plus x = foldn (x, Succ)
 mult x = foldn (Zero, plus x)
 expr x = foldn (Succ Zero, mult x)
-fact = para (Succ Zero, mult')
+fact = para (Succ Zero, f)
   where
-    mult' n m = mult (Succ n) m
+    f (m, n) = mult m (Succ n)
 
 toNat = unfoldn (\n -> if n <= 0 then Nothing else Just (n-1))
 fromNat = foldn (0, (1+))
