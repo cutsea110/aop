@@ -49,3 +49,7 @@ ccat' = foldr (id, compose . cross (Cons, id))
 len = foldr (0, plus1)
   where
     plus1 (_, x) = 1+x
+
+para :: (b, (a, (Cons a, b)) -> b) -> Cons a -> b
+para (c, g) Nil = c
+para (c, g) (Cons x xs) = g (x, (xs, para (c, g) xs))
