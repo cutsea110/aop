@@ -73,3 +73,7 @@ mapf f (Grows ts fs) = Grows (mapt f ts) (mapf f fs)
         g = fork . cross (f, id)
         c = null
         h = grows . cross (id, id)
+
+parat (g, c, h) (Fork a fs) = g a (fs, (paraf (g, c, h) fs))
+paraf (g, c, h) Null = c
+paraf (g, c, h) (Grows ts fs) = h (ts, parat (g, c, h) ts) (fs, paraf (g, c, h) fs)
