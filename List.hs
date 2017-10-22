@@ -55,3 +55,10 @@ reverse bs = foldr (id, (\(b, g) x -> g (Cons b x))) bs Nil
 para :: (b, (a, (Cons a, b)) -> b) -> Cons a -> b
 para (c, g) Nil = c
 para (c, g) (Cons x xs) = g (x, (xs, para (c, g) xs))
+
+-- insert 2 $  insert 1 $ insert 4 $ insert 3 Nil
+insert :: Ord a => a -> Cons a -> Cons a
+insert v = para (c, g)
+  where
+    c = Cons v Nil
+    g (x, (xs, ys)) = if v <= x then (Cons v (Cons x xs)) else Cons x ys
