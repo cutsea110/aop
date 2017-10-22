@@ -32,3 +32,6 @@ tips = foldt (wrap, cat)
 tipcat = curry cat . tips
 
 tips' t = foldt (curry cons, compose) t []
+
+para (d, g) (Tip x) = d x
+para (d, g) (Bin l r) = g (l, para (d, g) l) (r, para (d, g) r)
