@@ -129,3 +129,9 @@ cat' = foldr' (id, compose . cross (Cons, id), uncurry g) -- How?
     g :: a -> (List a -> List a) -> NonEmptyList a -> NonEmptyList a
     g x f = Pair x . f . toList
   
+
+paralist (d, g) Nil = d
+paralist (d, g) (Cons x xs) = g x (xs, paralist (d, g) xs)
+
+paralist' (c, f, g) (Pair x xs) = g x (xs, paralist (c, f) xs)
+
