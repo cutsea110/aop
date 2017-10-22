@@ -1,6 +1,6 @@
 module List where
 
-import Prelude hiding (foldr)
+import Prelude hiding (foldr, reverse)
 
 data Cons a = Nil
             | Cons a (Cons a)
@@ -49,6 +49,8 @@ ccat' = foldr (id, compose . cross (Cons, id))
 len = foldr (0, plus1)
   where
     plus1 (_, x) = 1+x
+
+reverse bs = foldr (id, (\(b, g) x -> g (Cons b x))) bs Nil
 
 para :: (b, (a, (Cons a, b)) -> b) -> Cons a -> b
 para (c, g) Nil = c
