@@ -43,7 +43,9 @@ unFut :: Functor f => Fut a -> Either a (f (Fut a))
 unFut = undefined
 futu :: Functor f => (t -> f (Fut t)) -> t -> Fix f
 futu psi = ana (either (psi, id) . unFut) . last
-
+-- chronomorphism
+chrono :: Functor f => (f (His b) -> b) -> (a -> f (Fut a)) -> a -> b
+chrono phi psi = histo phi . futu psi
 
 -- | Natural Number
 data NatF x = Zero | Succ x deriving (Show, Functor)
