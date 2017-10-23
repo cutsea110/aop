@@ -47,20 +47,29 @@ fromInt = ana psi
   where
     psi n = if n <= 0 then Zero else Succ (n - 1)
 
+plus :: Nat -> Nat -> Nat
 plus x = cata phi
   where
     phi Zero = x
     phi (Succ y) = succ y
 
+mult :: Nat -> Nat -> Nat
 mult x = cata phi
   where
     phi Zero = zero
     phi (Succ y) = plus x y
 
+expr :: Nat -> Nat -> Nat
 expr x = cata phi
   where
     phi Zero = succ zero
     phi (Succ y) = mult x y
+
+{--
+fact = para phi
+  where
+    phi = undefined
+--}
 
 -- | List a
 
