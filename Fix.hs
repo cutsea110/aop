@@ -11,18 +11,19 @@ either (f, g) (Right x) = g x
 
 newtype Fix f = In { out :: f (Fix f) }
 
+-- catamorphism
 cata :: Functor f => (f a -> a) -> Fix f -> a
 cata phi = phi . fmap (cata phi) . out
-
+-- anamorphism
 ana :: Functor f => (a -> f a) -> a -> Fix f
 ana psi = In . fmap (ana psi) . psi
-
+-- hylomorphism
 hylo :: Functor f => (f b -> b) -> (a -> f a) -> a -> b
 hylo phi psi = phi . fmap (hylo phi psi) . psi
-
+-- paramorphism
 para :: Functor f => (f (Fix f, t) -> t) -> Fix f -> t
 para phi = phi . fmap (pair (id, para phi)) . out
-
+-- apomorphism
 apo :: Functor f => (t -> f (Either (Fix f) t)) -> t -> Fix f
 apo psi = In . fmap (either (id, apo psi)) . psi
 
