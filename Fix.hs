@@ -99,3 +99,10 @@ genList :: Integer -> List Integer
 genList = ana psi
   where
     psi n = if n <= 0 then Nil else Cons n (n - 1)
+
+-- insert 4 $ insert 2 $ insert 1 $ insert 3 nil
+insert :: Ord a => a -> List a -> List a
+insert v = para phi
+  where
+    phi Nil = cons v nil
+    phi (Cons x (xs, ys)) = if v <= x then cons v (cons x xs) else cons x ys
