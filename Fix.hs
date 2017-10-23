@@ -1,10 +1,12 @@
 {-# LANGUAGE DeriveFunctor, TypeSynonymInstances, FlexibleInstances #-}
 module Fix where
 
-import Prelude hiding (sum ,length, succ)
+import Prelude hiding (sum ,length, succ, either)
 
 pair (f, g) x = (f x, g x)
 cross (f, g) (x, y) = (f x, g y)
+either (f, g) (Left x) = f x
+either (f, g) (Right x) = g x
 
 
 newtype Fix f = In { out :: f (Fix f) }
@@ -20,6 +22,9 @@ hylo phi psi = phi . fmap (hylo phi psi) . psi
 
 para :: Functor f => (f (Fix f, t) -> t) -> Fix f -> t
 para phi = phi . fmap (pair (id, para phi)) . out
+
+apo :: Functor f => (t -> f (Either (Fix f) t)) -> t -> Fix f
+apo psi = In . fmap (either (id, apo psi)) . psi
 
 -- | Natural Number
 data NatF x = Zero | Succ x deriving (Show, Functor)
