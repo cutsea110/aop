@@ -5,8 +5,11 @@ import Prelude hiding (sum ,length, succ)
 
 newtype Fix f = In { out :: f (Fix f) }
 
-cata :: Functor f => (f b -> b) -> Fix f -> b
+cata :: Functor f => (f a -> a) -> Fix f -> a
 cata phi = phi . fmap (cata phi) . out
+
+ana :: Functor f => (a -> f a) -> a -> Fix f
+ana psi = In . fmap (ana psi) . psi
 
 -- | Natural Number
 data NatF x = Zero | Succ x deriving (Show, Functor)
