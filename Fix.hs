@@ -3,6 +3,9 @@ module Fix where
 
 import Prelude hiding (sum ,length, succ)
 
+pair (f, g) x = (f x, g x)
+cross (f, g) (x, y) = (f x, g y)
+
 newtype Fix f = In { out :: f (Fix f) }
 
 cata :: Functor f => (f a -> a) -> Fix f -> a
@@ -10,6 +13,9 @@ cata phi = phi . fmap (cata phi) . out
 
 ana :: Functor f => (a -> f a) -> a -> Fix f
 ana psi = In . fmap (ana psi) . psi
+
+para :: Functor f => (f (Fix f, t) -> t) -> Fix f -> t
+para phi = phi . fmap (pair (id, para phi)) . out
 
 -- | Natural Number
 data NatF x = Zero | Succ x deriving (Show, Functor)
@@ -40,6 +46,21 @@ fromInt :: Int -> Nat
 fromInt = ana psi
   where
     psi n = if n <= 0 then Zero else Succ (n - 1)
+
+plus x = cata phi
+  where
+    phi Zero = x
+    phi (Succ y) = succ y
+
+mult x = cata phi
+  where
+    phi Zero = zero
+    phi (Succ y) = plus x y
+
+expr x = cata phi
+  where
+    phi Zero = succ zero
+    phi (Succ y) = mult x y
 
 -- | List a
 
