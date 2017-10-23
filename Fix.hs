@@ -65,11 +65,11 @@ expr x = cata phi
     phi Zero = succ zero
     phi (Succ y) = mult x y
 
-{--
+fact :: Nat -> Nat
 fact = para phi
   where
-    phi = undefined
---}
+    phi Zero = succ zero
+    phi (Succ (n, m)) = mult (succ n) m
 
 -- | List a
 
