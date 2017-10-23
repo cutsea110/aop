@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveFunctor, TypeSynonymInstances, FlexibleInstances, ExistentialQuantification #-}
 module Fix where
 
-import Prelude hiding (sum ,length, succ, either, head)
+import Prelude hiding (sum ,length, succ, either, head, last)
 
 pair (f, g) x = (f x, g x)
 cross (f, g) (x, y) = (f x, g y)
@@ -35,6 +35,15 @@ head :: His t -> t
 head (His (x, _)) = x
 histo :: Functor f => (f (His t) -> t) -> Fix f -> t
 histo phi = head . cata (His . pair (phi, id))
+-- futumorphism
+data Fut a = forall f. Functor f => Fut (Either a (f (Fut a)))
+last :: a -> Fut a
+last x = undefined -- Fut (Left x)
+unFut :: Functor f => Fut a -> Either a (f (Fut a))
+unFut = undefined
+futu :: Functor f => (t -> f (Fut t)) -> t -> Fix f
+futu psi = ana (either (psi, id) . unFut) . last
+
 
 -- | Natural Number
 data NatF x = Zero | Succ x deriving (Show, Functor)
