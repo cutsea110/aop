@@ -49,6 +49,9 @@ chrono phi psi = histo phi . futu psi
 -- zygomorphism
 zygo :: Functor f => (f a -> a) -> (f (a, b) -> b) -> Fix f -> b
 zygo f phi = snd . cata (pair (f . fmap fst, phi))
+-- cozygomorphism
+cozygo :: Functor f => (a -> f a) -> (b -> f (Either a b)) -> b -> Fix f
+cozygo f psi = ana (either (fmap Left . f, psi)) . Right
 
 -- | Natural Number
 data NatF x = Zero | Succ x deriving (Show, Functor)
