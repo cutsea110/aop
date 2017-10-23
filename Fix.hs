@@ -46,6 +46,9 @@ futu psi = ana (either (psi, id) . unFut) . last
 -- chronomorphism
 chrono :: Functor f => (f (His b) -> b) -> (a -> f (Fut a)) -> a -> b
 chrono phi psi = histo phi . futu psi
+-- zygomorphism
+zygo :: Functor f => (f a -> a) -> (f (a, b) -> b) -> Fix f -> b
+zygo f phi = snd . cata (pair (f . fmap fst, phi))
 
 -- | Natural Number
 data NatF x = Zero | Succ x deriving (Show, Functor)
