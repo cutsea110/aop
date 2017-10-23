@@ -1,7 +1,7 @@
-{-# LANGUAGE DeriveFunctor, TypeSynonymInstances, FlexibleInstances #-}
+{-# LANGUAGE DeriveFunctor, TypeSynonymInstances, FlexibleInstances, ExistentialQuantification #-}
 module Fix where
 
-import Prelude hiding (sum ,length, succ, either)
+import Prelude hiding (sum ,length, succ, either, head)
 
 pair (f, g) x = (f x, g x)
 cross (f, g) (x, y) = (f x, g y)
@@ -29,6 +29,12 @@ para phi = phi . fmap (pair (id, para phi)) . out
 -- apomorphism
 apo :: Functor f => (t -> f (Either (Fix f) t)) -> t -> Fix f
 apo psi = In . fmap (either (id, apo psi)) . psi
+-- histomorphism
+data His a = forall f. Functor f => His (a, f (His a))
+head :: His t -> t
+head (His (x, _)) = x
+histo :: Functor f => (f (His t) -> t) -> Fix f -> t
+histo phi = head . cata (His . pair (phi, id))
 
 -- | Natural Number
 data NatF x = Zero | Succ x deriving (Show, Functor)
