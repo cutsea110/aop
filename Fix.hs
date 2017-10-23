@@ -6,6 +6,7 @@ import Prelude hiding (sum ,length, succ)
 pair (f, g) x = (f x, g x)
 cross (f, g) (x, y) = (f x, g y)
 
+
 newtype Fix f = In { out :: f (Fix f) }
 
 cata :: Functor f => (f a -> a) -> Fix f -> a
@@ -13,6 +14,9 @@ cata phi = phi . fmap (cata phi) . out
 
 ana :: Functor f => (a -> f a) -> a -> Fix f
 ana psi = In . fmap (ana psi) . psi
+
+hylo :: Functor f => (f b -> b) -> (a -> f a) -> a -> b
+hylo phi psi = phi . fmap (hylo phi psi) . psi
 
 para :: Functor f => (f (Fix f, t) -> t) -> Fix f -> t
 para phi = phi . fmap (pair (id, para phi)) . out
