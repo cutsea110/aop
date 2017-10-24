@@ -55,6 +55,10 @@ cozygo f psi = ana (either (fmap Left . f, psi)) . Right
 -- dynamorphism
 dyna :: Functor f => (f (His b) -> b) -> (a -> f a) -> a -> b
 dyna f g = chrono f (fmap last . g)
+-- codynamorphism
+codyna :: Functor f => (f b -> b) -> (a -> f (Fut a)) -> a -> b
+codyna f g = chrono (f . fmap head) g
+
 
 -- | Natural Number
 data NatF x = Zero | Succ x deriving (Show, Functor)
