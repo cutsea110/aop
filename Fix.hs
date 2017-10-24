@@ -17,6 +17,14 @@ either (f, g) (Right x) = g x
 
 newtype Fix f = In { out :: f (Fix f) }
 
+newtype HisF f a = His { unHis :: (a, f (HisF f a)) }
+head :: HisF f t -> t
+head = fst . unHis
+
+newtype FutF f a = Fut { unFut :: Either a (f (FutF f a)) }
+last :: a -> FutF f a
+last = Fut . Left
+
 -- catamorphism
 cata :: Functor f => (f a -> a) -> Fix f -> a
 cata phi = phi . fmap (cata phi) . out
@@ -36,17 +44,9 @@ para phi = phi . fmap (pair (id, para phi)) . out
 apo :: Functor f => (t -> f (Either (Fix f) t)) -> t -> Fix f
 apo psi = In . fmap (either (id, apo psi)) . psi
 -- histomorphism
-newtype HisF f a = His { unHis :: (a, f (HisF f a)) }
-type His a = forall f. HisF f a
-head :: HisF f t -> t
-head = fst . unHis
 histo :: Functor f => (f (HisF f t) -> t) -> Fix f -> t
 histo phi = head . cata (His . pair (phi, id))
 -- futumorphism
-newtype FutF f a = Fut { unFut :: Either a (f (FutF f a)) }
-type Fut a =  forall f. FutF f a
-last :: a -> FutF f a
-last = Fut . Left
 futu :: Functor f => (t -> f (FutF f t)) -> t -> Fix f
 futu psi = ana (either (psi, id) . unFut) . last
 -- chronomorphism
