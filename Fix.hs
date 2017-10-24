@@ -1,4 +1,4 @@
-{-# LANGUAGE DeriveFunctor, TypeSynonymInstances, FlexibleInstances, ExistentialQuantification #-}
+{-# LANGUAGE DeriveFunctor, TypeSynonymInstances, FlexibleInstances, ExistentialQuantification, Rank2Types, AllowAmbiguousTypes #-}
 module Fix where
 
 import Prelude hiding (sum ,length, succ, either, head, last)
@@ -52,6 +52,9 @@ zygo f phi = snd . cata (pair (f . fmap fst, phi))
 -- cozygomorphism
 cozygo :: Functor f => (a -> f a) -> (b -> f (Either a b)) -> b -> Fix f
 cozygo f psi = ana (either (fmap Left . f, psi)) . Right
+-- dynamorphism
+dyna :: Functor f => (f (His b) -> b) -> (a -> f a) -> a -> b
+dyna f g = chrono f (fmap last . g)
 
 -- | Natural Number
 data NatF x = Zero | Succ x deriving (Show, Functor)
