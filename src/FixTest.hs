@@ -1,4 +1,7 @@
-{-# LANGUAGE DeriveFunctor, TypeSynonymInstances, FlexibleInstances #-}
+{-# LANGUAGE DeriveFunctor,
+             TypeSynonymInstances,
+             FlexibleInstances
+#-}
 module FixTest where
 
 import Prelude hiding (sum, length, succ)
