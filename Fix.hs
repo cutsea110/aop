@@ -1,4 +1,10 @@
-{-# LANGUAGE DeriveFunctor, TypeSynonymInstances, FlexibleInstances, ExistentialQuantification, Rank2Types, AllowAmbiguousTypes #-}
+{-# LANGUAGE DeriveFunctor,
+             TypeSynonymInstances,
+             FlexibleInstances,
+             ExistentialQuantification,
+             Rank2Types,
+             AllowAmbiguousTypes
+#-}
 module Fix where
 
 import Prelude hiding (sum ,length, succ, either, head, last)
