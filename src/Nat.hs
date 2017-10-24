@@ -1,3 +1,5 @@
+module Nat where
+
 import Prelude hiding (succ)
 
 data Nat = Zero
