@@ -58,7 +58,9 @@ dyna f g = chrono f (fmap last . g)
 -- codynamorphism
 codyna :: Functor f => (f b -> b) -> (a -> f (Fut a)) -> a -> b
 codyna f g = chrono (f . fmap head) g
-
+-- mutumorphism
+mutu :: Functor f => (a -> b) -> (f a -> a) -> Fix f -> b
+mutu proj phi = proj . cata phi
 
 -- | Natural Number
 data NatF x = Zero | Succ x deriving (Show, Functor)
