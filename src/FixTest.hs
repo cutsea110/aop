@@ -99,4 +99,15 @@ insert v = para phi
     phi Nil = cons v nil
     phi (Cons x (xs, ys)) = if v <= x then cons v (cons x xs) else cons x ys
 
+-- | Tree a
+data TreeF a x = Tip a | Bin x x deriving (Show, Functor)
 
+type Tree a = Fix (TreeF a)
+tip :: a -> Tree a
+tip = In . Tip
+bin :: Tree a -> Tree a -> Tree a
+bin l r = In (Bin l r)
+
+instance Show a => Show (Tree a) where
+  show (In (Tip x)) = "Tip " ++ show x
+  show (In (Bin l r)) = "Bin (" ++ show l ++ ") (" ++ show r ++ ")"
