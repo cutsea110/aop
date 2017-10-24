@@ -17,7 +17,7 @@ extra-source-files:  ChangeLog.md, README.md
 cabal-version:       >=1.10
 
 library
-  exposed-modules:     Nat, NonEmptyList, MutualRecursiveTreeForest, Fix, Tree, List
+  exposed-modules:     Nat, NonEmptyList, MutualRecursiveTreeForest, Fix, Tree, List, FixTest
   -- other-modules:       
   other-extensions:    DeriveFunctor, TypeSynonymInstances, FlexibleInstances, ExistentialQuantification, Rank2Types, AllowAmbiguousTypes
   build-depends:       base >=4.9 && <4.10
