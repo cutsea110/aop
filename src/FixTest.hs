@@ -111,3 +111,10 @@ bin l r = In (Bin l r)
 instance Show a => Show (Tree a) where
   show (In (Tip x)) = "Tip " ++ show x
   show (In (Bin l r)) = "Bin (" ++ show l ++ ") (" ++ show r ++ ")"
+
+-- (genTree . genList) 4
+genTree :: List Integer -> Tree Integer
+genTree = cata phi
+  where
+    phi Nil = tip 0
+    phi (Cons a x) = bin (tip a) x
