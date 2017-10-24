@@ -15,7 +15,9 @@ succ :: Nat -> Nat
 succ n = In (Succ n)
 
 instance Show Nat where
-  show n = "(" ++ show (out n) ++ ")"
+  show (In Zero) = "Zero"
+  show (In (Succ (In Zero))) = "Succ Zero"
+  show (In (Succ n)) = "Succ (" ++ show n ++ ")"
 
 toInt :: Nat -> Int
 toInt = cata phi
