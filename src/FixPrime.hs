@@ -27,17 +27,17 @@ map f = cata phi
     phi = In . bimap (f, id)
 
 -- | Natural Number
-data NatF a x = Zero a | Succ a x deriving (Show)
+data NatF a x = Zero | Succ a x deriving (Show)
 type Nat = Fix (NatF ())
 
 zero :: Nat
-zero = In (Zero ())
+zero = In Zero
 succ :: Nat -> Nat
 succ n = In (Succ () n)
 
 instance Show Nat where
-  show (In (Zero ())) = "Zero"
-  show (In (Succ () (In (Zero ())))) = "Succ Zero"
+  show (In Zero) = "Zero"
+  show (In (Succ () (In Zero))) = "Succ Zero"
   show (In (Succ () n)) = "Succ (" ++ show n ++ ")"
 
 instance Bifunctor NatF where
