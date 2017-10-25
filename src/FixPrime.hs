@@ -41,10 +41,12 @@ instance Show Nat where
   show (In (Succ () n)) = "Succ (" ++ show n ++ ")"
 
 instance Bifunctor NatF where
-  bimap = undefined
+  bimap (f, g) Zero = Zero
+  bimap (f, g) (Succ x y) = Succ (f x) (g y)
 
 instance Functor (NatF ()) where
-  fmap = undefined
+  fmap f Zero = Zero
+  fmap f (Succ () y) = Succ () (f y)
 
 
 -- | List a
