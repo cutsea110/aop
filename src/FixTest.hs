@@ -9,7 +9,6 @@ import Fix
 
 -- | Natural Number
 data NatF x = Zero | Succ x deriving (Show, Functor)
-
 type Nat = Fix NatF
 
 zero :: Nat
@@ -66,7 +65,6 @@ fact = para phi
 -- | List a
 
 data ListF a x = Nil | Cons a x deriving (Show, Functor)
-
 type List a = Fix (ListF a)
 
 nil :: List a
@@ -100,9 +98,10 @@ insert v = para phi
     phi (Cons x (xs, ys)) = if v <= x then cons v (cons x xs) else cons x ys
 
 -- | Tree a
-data TreeF a x = Tip a | Bin x x deriving (Show, Functor)
 
+data TreeF a x = Tip a | Bin x x deriving (Show, Functor)
 type Tree a = Fix (TreeF a)
+
 tip :: a -> Tree a
 tip = In . Tip
 bin :: Tree a -> Tree a -> Tree a
