@@ -85,7 +85,10 @@ instance Show a => Show (Tree a) where
   show (In (Bin l r)) = "Bin (" ++ show l ++ ") (" ++ show r ++ ")"
 
 instance Bifunctor TreeF where
-  bimap = undefined
+  bimap (f, g) (Tip x) = Tip (f x)
+  bimap (f, g) (Bin l r) = Bin (g l) (g r)
 
 instance Functor (TreeF a) where
-  fmap = undefined
+  fmap f (Tip x) = Tip x
+  fmap f (Bin l r) = Bin (f l) (f r)
+  
