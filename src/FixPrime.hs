@@ -1,9 +1,11 @@
 module FixPrime where
 
-import Prelude hiding (Functor(..), map, succ)
+import Prelude hiding (Functor(..), map, succ, either)
 
 pair (f, g) x = (f x, g x)
 cross (f, g) (x, y) = (f x, g y)
+either (f, g) (Left x) = f x
+either (f, g) (Right x) = g x
 
 
 class Bifunctor (f :: * -> * -> *) where
@@ -20,6 +22,18 @@ cata phi = phi . fmap (cata phi) . out
 -- anamorphism
 ana :: Functor f => (a -> f a) -> a -> Fix f
 ana psi = In . fmap (ana psi) . psi
+-- hylomorphism
+hylo :: Functor f => (f b -> b) -> (a -> f a) -> a -> b
+hylo phi psi = phi . fmap (hylo phi psi) . psi
+-- metamorphism
+meta :: Functor f => (f a -> a) -> (a -> f a) -> Fix f -> Fix f
+meta phi psi = ana psi . cata phi
+-- paramorphism
+para :: Functor f => (f (Fix f, t) -> t) -> Fix f -> t
+para phi = phi . fmap (pair (id, para phi)) . out
+-- apomorphism
+apo :: Functor f => (t -> f (Either (Fix f) t)) -> t -> Fix f
+apo psi = In . fmap (either (id, apo psi)) . psi
 -- type functor
 map :: (Bifunctor f, Functor (f a)) => (a -> c) -> Fix (f a) -> Fix (f c)
 map f = cata phi
