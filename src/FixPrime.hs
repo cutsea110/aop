@@ -68,9 +68,7 @@ mutu :: Functor f => (a -> b) -> (f a -> a) -> Fix f -> b
 mutu proj phi = proj . cata phi
 -- type functor
 map :: (Bifunctor f, Functor (f a)) => (a -> c) -> Fix (f a) -> Fix (f c)
-map f = cata phi
-  where
-    phi = In . bimap (f, id)
+map f = cata (In . bimap (f, id))
 
 -- | Natural Number
 data NatF a x = Zero | Succ a x deriving (Show)
@@ -96,7 +94,6 @@ instance Functor (NatF ()) where
 
 
 -- | List a
-
 data ListF a x = Nil | Cons a x deriving (Show)
 type List a = Fix (ListF a)
 
@@ -117,7 +114,6 @@ instance Functor (ListF a) where
   fmap f (Cons a x) = Cons a (f x)
 
 -- | Tree a
-
 data TreeF a x = Tip a | Bin x x deriving (Show)
 type Tree a = Fix (TreeF a)
 
