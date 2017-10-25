@@ -63,10 +63,12 @@ instance Show a => Show (List a) where
   show x = "(" ++ show (out x) ++ ")"
 
 instance Bifunctor ListF where
-  bimap = undefined
+  bimap (f, g) Nil = Nil
+  bimap (f, g) (Cons a x) = Cons (f a) (g x)
 
 instance Functor (ListF a) where
-  fmap = undefined
+  fmap f Nil = Nil
+  fmap f (Cons a x) = Cons a (f x)
 
 -- | Tree a
 
