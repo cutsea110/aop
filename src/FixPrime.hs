@@ -1,3 +1,7 @@
+{-# LANGUAGE KindSignatures,
+             TypeSynonymInstances,
+             FlexibleInstances
+#-}
 module FixPrime where
 
 import Prelude hiding (Functor(..), map, succ, either, head, last)

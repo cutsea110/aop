@@ -21,6 +21,7 @@ library
                      , NonEmptyList
                      , MutualRecursiveTreeForest
                      , Fix
+                     , FixPrime
                      , Tree
                      , List
                      , FixTest
