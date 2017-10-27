@@ -10,6 +10,7 @@ instance Functor FibT where
   fmap _ FOne  = FOne
   fmap f (FNode x y) = FNode (f x) (f y)
 
+fib :: Integer -> Integer
 fib = hylo phi psi
   where
     psi 0 = FZero
