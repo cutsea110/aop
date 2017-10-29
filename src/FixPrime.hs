@@ -21,15 +21,19 @@ newtype Fix f = In { out :: f (Fix f) }
 
 data Hx f a x = Hx a (f x)
 instance Functor f => Functor (Hx f a) where
-  fmap f (Hx a xs) = Hx a (fmap f xs)
-type Cofree f a = Fix (Hx f a)
+  fmap f (Hx a x) = Hx a (fmap f x)
+
+newtype Cofree f a = Cf { unCf :: Fix (Hx f a) }
+instance Functor f => Functor (Cofree f) where
+  fmap f = Cf . ana (phi . out) . unCf
+    where
+      phi (Hx a x) = Hx (f a) x
 
 extract :: Functor f => Cofree f a -> a
-extract (In (Hx a _)) = a
+extract (Cf (In (Hx a _))) = a
 
 sub :: Functor f => Cofree f a -> f (Cofree f a)
-sub cf = case out cf of
-  Hx _ xs -> xs
+sub (Cf (In (Hx _ x))) = fmap Cf x
 
 newtype HisF f a = His { unHis :: (a, f (HisF f a)) }
 head :: HisF f t -> t
@@ -60,6 +64,14 @@ apo psi = In . fmap (either (id, apo psi)) . psi
 -- histomorphism
 histo :: Functor f => (f (HisF f t) -> t) -> Fix f -> t
 histo phi = head . cata (His . pair (phi, id))
+histo' :: Functor f => (f (Cofree f t) -> t) -> Fix f -> t
+histo' phi = extract . cata ap
+  where
+    ap a = Cf (In (Hx (phi a) (fmap unCf a)))
+histo'' :: Functor f => (f (Cofree f t) -> t) -> Fix f -> t
+histo'' phi = phi . (fmap (Cf . ana proj)) . out
+  where
+    proj a = Hx (histo'' phi a) (out a)
 -- futumorphism
 futu :: Functor f => (t -> f (FutF f t)) -> t -> Fix f
 futu psi = ana (either (psi, id) . unFut) . last
