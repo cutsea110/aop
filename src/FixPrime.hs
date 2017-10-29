@@ -35,6 +35,18 @@ extract (Cf (In (Hisx a _))) = a
 sub :: Functor f => Cofree f a -> f (Cofree f a)
 sub (Cf (In (Hisx _ x))) = fmap Cf x
 
+data Futx f a x = Futx (Either a (f x))
+instance Functor f => Functor (Futx f a) where
+  fmap f (Futx (Left a)) = Futx (Left a)
+  fmap f (Futx (Right x)) = Futx (Right (fmap f x))
+
+newtype Free f a = Fr { unFr :: Fix (Futx f a) }
+instance Functor f => Functor (Free f) where
+  fmap f = Fr . cata (In . phi) . unFr
+    where
+      phi (Futx (Left a)) = Futx (Left (f a))
+      phi (Futx (Right x)) = Futx (Right x)
+
 newtype FutF f a = Fut { unFut :: Either a (f (FutF f a)) }
 last :: a -> FutF f a
 last = Fut . Left
