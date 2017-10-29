@@ -19,6 +19,10 @@ class Functor (f :: * -> *) where
 
 newtype Fix f = In { out :: f (Fix f) }
 
+data Hx f a x = Hx a (f x)
+instance Functor f => Functor (Hx f a) where
+  fmap f (Hx a xs) = Hx a (fmap f xs)
+
 
 newtype HisF f a = His { unHis :: (a, f (HisF f a)) }
 head :: HisF f t -> t
