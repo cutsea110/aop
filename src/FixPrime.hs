@@ -22,7 +22,14 @@ newtype Fix f = In { out :: f (Fix f) }
 data Hx f a x = Hx a (f x)
 instance Functor f => Functor (Hx f a) where
   fmap f (Hx a xs) = Hx a (fmap f xs)
+type Cofree f a = Fix (Hx f a)
 
+extract :: Functor f => Cofree f a -> a
+extract (In (Hx a _)) = a
+
+sub :: Functor f => Cofree f a -> f (Cofree f a)
+sub cf = case out cf of
+  Hx _ xs -> xs
 
 newtype HisF f a = His { unHis :: (a, f (HisF f a)) }
 head :: HisF f t -> t
