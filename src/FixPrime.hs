@@ -35,10 +35,6 @@ extract (Cf (In (Hx a _))) = a
 sub :: Functor f => Cofree f a -> f (Cofree f a)
 sub (Cf (In (Hx _ x))) = fmap Cf x
 
-newtype HisF f a = His { unHis :: (a, f (HisF f a)) }
-head :: HisF f t -> t
-head = fst . unHis
-
 newtype FutF f a = Fut { unFut :: Either a (f (FutF f a)) }
 last :: a -> FutF f a
 last = Fut . Left
@@ -62,21 +58,19 @@ para phi = phi . fmap (pair (id, para phi)) . out
 apo :: Functor f => (t -> f (Either (Fix f) t)) -> t -> Fix f
 apo psi = In . fmap (either (id, apo psi)) . psi
 -- histomorphism
-histo :: Functor f => (f (HisF f t) -> t) -> Fix f -> t
-histo phi = head . cata (His . pair (phi, id))
-histo' :: Functor f => (f (Cofree f t) -> t) -> Fix f -> t
-histo' phi = extract . cata ap
+histo :: Functor f => (f (Cofree f t) -> t) -> Fix f -> t
+histo phi = extract . cata ap
   where
     ap a = Cf (In (Hx (phi a) (fmap unCf a)))
-histo'' :: Functor f => (f (Cofree f t) -> t) -> Fix f -> t
-histo'' phi = phi . (fmap (Cf . ana proj)) . out
+histo' :: Functor f => (f (Cofree f t) -> t) -> Fix f -> t
+histo' phi = phi . (fmap (Cf . ana proj)) . out
   where
-    proj a = Hx (histo'' phi a) (out a)
+    proj a = Hx (histo' phi a) (out a)
 -- futumorphism
 futu :: Functor f => (t -> f (FutF f t)) -> t -> Fix f
 futu psi = ana (either (psi, id) . unFut) . last
 -- chronomorphism
-chrono :: Functor f => (f (HisF f b) -> b) -> (a -> f (FutF f a)) -> a -> b
+chrono :: Functor f => (f (Cofree f b) -> b) -> (a -> f (FutF f a)) -> a -> b
 chrono phi psi = histo phi . futu psi
 -- zygomorphism
 zygo :: Functor f => (f a -> a) -> (f (a, b) -> b) -> Fix f -> b
@@ -85,11 +79,11 @@ zygo f phi = snd . cata (pair (f . fmap fst, phi))
 cozygo :: Functor f => (a -> f a) -> (b -> f (Either a b)) -> b -> Fix f
 cozygo f psi = ana (either (fmap Left . f, psi)) . Right
 -- dynamorphism
-dyna :: Functor f => (f (HisF f b) -> b) -> (a -> f a) -> a -> b
+dyna :: Functor f => (f (Cofree f b) -> b) -> (a -> f a) -> a -> b
 dyna f g = chrono f (fmap last . g)
 -- codynamorphism
 codyna :: Functor f => (f b -> b) -> (a -> f (FutF f a)) -> a -> b
-codyna f g = chrono (f . fmap head) g
+codyna f g = chrono (f . fmap extract) g
 -- mutumorphism
 mutu :: Functor f => (a -> b) -> (f a -> a) -> Fix f -> b
 mutu proj phi = proj . cata phi
