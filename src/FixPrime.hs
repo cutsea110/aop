@@ -47,6 +47,12 @@ instance Functor f => Functor (Free f) where
       phi (Futx (Left a)) = Futx (Left (f a))
       phi (Futx (Right x)) = Futx (Right x)
 
+inject :: Functor f => a -> Free f a
+inject a = Fr (In (Futx (Left a)))
+
+sup :: Functor f => f (Free f a) -> Free f a
+sup fr = undefined
+
 newtype FutF f a = Fut { unFut :: Either a (f (FutF f a)) }
 last :: a -> FutF f a
 last = Fut . Left
