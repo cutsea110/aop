@@ -50,7 +50,7 @@ instance Functor f => Functor (Free f) where
       phi (Futx (Right x)) = Futx (Right x)
 
 inject :: Functor f => a -> Free f a
-inject a = Fr (In (Futx (Left a)))
+inject = Fr . In . Futx . Left
 
 sup :: Functor f => f (Free f a) -> Free f a
 sup fr = undefined
