@@ -30,10 +30,12 @@ instance Functor f => Functor (Cofree f) where
       phi (Hisx a x) = Hisx (f a) x
 
 extract :: Functor f => Cofree f a -> a
-extract (Cf (In (Hisx a _))) = a
+extract cf = case out (unCf cf) of
+  Hisx a _ -> a
 
 sub :: Functor f => Cofree f a -> f (Cofree f a)
-sub (Cf (In (Hisx _ x))) = fmap Cf x
+sub cf = case out (unCf cf) of
+  Hisx _ x -> fmap Cf x
 
 data Futx f a x = Futx (Either a (f x))
 instance Functor f => Functor (Futx f a) where
