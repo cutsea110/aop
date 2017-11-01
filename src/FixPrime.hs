@@ -37,7 +37,7 @@ sub :: Functor f => Cofree f a -> f (Cofree f a)
 sub cf = case out (unCf cf) of
   Hisx _ x -> fmap Cf x
 
-data Futx f a x = Futx (Either a (f x))
+data Futx f a x = Futx { unFutx :: (Either a (f x)) }
 instance Functor f => Functor (Futx f a) where
   fmap f (Futx (Left a)) = Futx (Left a)
   fmap f (Futx (Right x)) = Futx (Right (fmap f x))
