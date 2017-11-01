@@ -91,7 +91,7 @@ histo' phi = phi . (fmap (Cf . ana proj)) . out
 -- futumorphism
 futu :: Functor f => (t -> f (FutF f t)) -> t -> Fix f
 futu psi = ana (either (psi, id) . unFut) . last
-futu' :: Functor f => (t -> f (FutF f t)) -> t -> Fix f
+futu' :: Functor f => (t -> f (Free f t)) -> t -> Fix f
 futu' psi = undefined
 -- chronomorphism
 chrono :: Functor f => (f (Cofree f b) -> b) -> (a -> f (FutF f a)) -> a -> b
