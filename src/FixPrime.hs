@@ -43,6 +43,7 @@ instance Functor f => Functor (Futx f a) where
   fmap f (Futx (Left a)) = Futx (Left a)
   fmap f (Futx (Right x)) = Futx (Right (fmap f x))
 
+-- | (Free f a) is Fixpoint for (Futx f a)
 newtype Free f a = Fr { unFr :: Fix (Futx f a) }
 instance Functor f => Functor (Free f) where
   fmap f = Fr . cata (In . phi) . unFr
