@@ -22,7 +22,6 @@ newtype Fix f = In { out :: f (Fix f) }
 data Hisx f a x = Hisx a (f x)
 instance Functor f => Bifunctor (Hisx f) where
   bimap (g, h) (Hisx a x) = Hisx (g a) (fmap h x)
-  
 instance Functor f => Functor (Hisx f a) where
   fmap f = bimap (id, f)
 
@@ -42,9 +41,11 @@ sub cf = case out (unCf cf) of
   Hisx _ x -> fmap Cf x
 
 data Futx f a x = Futx { unFutx :: (Either a (f x)) }
+instance Functor f => Bifunctor (Futx f) where
+  bimap (g, h) (Futx (Left a)) = Futx (Left (g a))
+  bimap (g, h) (Futx (Right x)) = Futx (Right (fmap h x))
 instance Functor f => Functor (Futx f a) where
-  fmap f (Futx (Left a)) = Futx (Left a)
-  fmap f (Futx (Right x)) = Futx (Right (fmap f x))
+  fmap f = bimap (id, f)
 
 -- | (Free f a) is Fixpoint for (Futx f a)
 newtype Free f a = Fr { unFr :: Fix (Futx f a) }
