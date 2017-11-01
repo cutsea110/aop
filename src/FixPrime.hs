@@ -20,8 +20,11 @@ class Functor (f :: * -> *) where
 newtype Fix f = In { out :: f (Fix f) }
 
 data Hisx f a x = Hisx a (f x)
+instance Functor f => Bifunctor (Hisx f) where
+  bimap (g, h) (Hisx a x) = Hisx (g a) (fmap h x)
+  
 instance Functor f => Functor (Hisx f a) where
-  fmap f (Hisx a x) = Hisx a (fmap f x)
+  fmap f = bimap (id, f)
 
 -- | (Cofree f a) is Fixpoint for (Hisx f a)
 newtype Cofree f a = Cf { unCf :: Fix (Hisx f a) }
