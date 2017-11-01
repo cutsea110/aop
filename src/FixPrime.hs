@@ -55,6 +55,8 @@ inject = Fr . In . Futx . Left
 sup :: Functor f => f (Free f a) -> Free f a
 sup fr = undefined
 
+type FutF' f a = Fix (Futx f a)
+
 newtype FutF f a = Fut { unFut :: Either a (f (FutF f a)) }
 last :: a -> FutF f a
 last = Fut . Left
