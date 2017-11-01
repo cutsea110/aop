@@ -23,6 +23,7 @@ data Hisx f a x = Hisx a (f x)
 instance Functor f => Functor (Hisx f a) where
   fmap f (Hisx a x) = Hisx a (fmap f x)
 
+-- | (Cofree f a) is Fixpoint for (Hisx f a)
 newtype Cofree f a = Cf { unCf :: Fix (Hisx f a) }
 instance Functor f => Functor (Cofree f) where
   fmap f = Cf . ana (phi . out) . unCf
