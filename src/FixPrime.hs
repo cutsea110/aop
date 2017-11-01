@@ -54,6 +54,7 @@ instance Functor f => Functor (Free f) where
 inject :: Functor f => a -> Free f a
 inject = Fr . In . Futx . Left
 
+-- | TODO: fixme
 sup :: Functor f => f (Free f a) -> Free f a
 sup fr = undefined
 
