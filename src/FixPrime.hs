@@ -19,9 +19,9 @@ class Functor (f :: * -> *) where
 
 newtype Fix f = In { out :: f (Fix f) }
 
-data Hisx f a x = Hisx a (f x)
+data Hisx f a x = Hisx (a, f x)
 instance Functor f => Bifunctor (Hisx f) where
-  bimap (g, h) (Hisx a x) = Hisx (g a) (fmap h x)
+  bimap (g, h) (Hisx (a, x)) = Hisx (g a, fmap h x)
 instance Functor f => Functor (Hisx f a) where
   fmap f = bimap (id, f)
 
@@ -30,15 +30,15 @@ newtype Cofree f a = Cf { unCf :: Fix (Hisx f a) }
 instance Functor f => Functor (Cofree f) where
   fmap f = Cf . ana (phi . out) . unCf
     where
-      phi (Hisx a x) = Hisx (f a) x
+      phi (Hisx (a, x)) = Hisx (f a, x)
 
 extract :: Functor f => Cofree f a -> a
 extract cf = case out (unCf cf) of
-  Hisx a _ -> a
+  Hisx (a, _) -> a
 
 sub :: Functor f => Cofree f a -> f (Cofree f a)
 sub cf = case out (unCf cf) of
-  Hisx _ x -> fmap Cf x
+  Hisx (_, x) -> fmap Cf x
 
 data Futx f a x = Futx { unFutx :: (Either a (f x)) }
 instance Functor f => Bifunctor (Futx f) where
@@ -90,11 +90,11 @@ apo psi = In . fmap (either (id, apo psi)) . psi
 histo :: Functor f => (f (Cofree f t) -> t) -> Fix f -> t
 histo phi = extract . cata ap
   where
-    ap a = Cf (In (Hisx (phi a) (fmap unCf a)))
+    ap a = Cf (In (Hisx (phi a, fmap unCf a)))
 histo' :: Functor f => (f (Cofree f t) -> t) -> Fix f -> t
 histo' phi = phi . fmap u . out
   where
-    u = Cf . ana (uncurry Hisx . pair (histo' phi, out))
+    u = Cf . ana (Hisx . pair (histo' phi, out))
 -- futumorphism
 futu :: Functor f => (t -> f (FutF f t)) -> t -> Fix f
 futu psi = ana (either (psi, id) . unFut) . last
