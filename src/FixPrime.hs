@@ -94,12 +94,13 @@ histo phi = extract . cata ap
 histo' :: Functor f => (f (Cofree f t) -> t) -> Fix f -> t
 histo' phi = phi . fmap u . out
   where
+    -- Cf and Hisx cast newtype
     u = Cf . ana (Hisx . pair (histo' phi, out))
 -- futumorphism
 futu :: Functor f => (t -> f (FutF f t)) -> t -> Fix f
 futu psi = ana (either (psi, id) . unFut) . last
 futu' :: Functor f => (t -> f (Free f t)) -> t -> Fix f
-futu' psi = undefined
+futu' psi = In . fmap ((cata (either (futu' psi, In) . unFutx)) . unFr) . psi
 -- chronomorphism
 chrono :: Functor f => (f (Cofree f b) -> b) -> (a -> f (FutF f a)) -> a -> b
 chrono phi psi = histo phi . futu psi
