@@ -92,9 +92,9 @@ histo phi = extract . cata ap
   where
     ap a = Cf (In (Hisx (phi a) (fmap unCf a)))
 histo' :: Functor f => (f (Cofree f t) -> t) -> Fix f -> t
-histo' phi = phi . fmap (Cf . ana proj) . out
+histo' phi = phi . fmap u . out
   where
-    proj a = Hisx (histo' phi a) (out a)
+    u = Cf . ana (uncurry Hisx . pair (histo' phi, out))
 -- futumorphism
 futu :: Functor f => (t -> f (FutF f t)) -> t -> Fix f
 futu psi = ana (either (psi, id) . unFut) . last
