@@ -100,7 +100,9 @@ histo' phi = phi . fmap u . out
 futu :: Functor f => (t -> f (FutF f t)) -> t -> Fix f
 futu psi = ana (either (psi, id) . unFut) . last
 futu' :: Functor f => (t -> f (Free f t)) -> t -> Fix f
-futu' psi = In . fmap ((cata (either (futu' psi, In) . unFutx)) . unFr) . psi
+futu' psi = In . fmap u . psi
+  where
+    u = cata (either (futu' psi, In) . unFutx) . unFr
 -- chronomorphism
 chrono :: Functor f => (f (Cofree f b) -> b) -> (a -> f (FutF f a)) -> a -> b
 chrono phi psi = histo phi . futu psi
