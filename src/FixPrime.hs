@@ -103,7 +103,11 @@ futu :: Functor f => (t -> f (FutF f t)) -> t -> Fix f
 futu psi = ana (either (psi, id) . unFut) . last
 
 futu'' :: Functor f => (t -> f (Free f t)) -> t -> Fix f
-futu'' psi = ana (either (psi, id) . unFutx . bimap (id, Fr) . out . unFr) . inject
+futu'' psi = ana ap . inject
+  where
+    ap = either (psi, id) . unFutx . cast
+    cast :: Functor f => Free f t -> Futx f t (Free f t)
+    cast = bimap (id, Fr) . out . unFr
 
 futu' :: Functor f => (t -> f (Free f t)) -> t -> Fix f
 futu' psi = In . fmap u . psi
