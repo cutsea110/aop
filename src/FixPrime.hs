@@ -62,12 +62,6 @@ inject = Fr . In . Futx . Left
 sup :: Functor f => f (Free f a) -> Free f a
 sup fr = undefined
 
-type FutF' f a = Fix (Futx f a)
-
-newtype FutF f a = Fut { unFut :: Either a (f (FutF f a)) }
-last :: a -> FutF f a
-last = Fut . Left
-
 -- catamorphism
 cata :: Functor f => (f a -> a) -> Fix f -> a
 cata phi = phi . fmap (cata phi) . out
@@ -99,11 +93,8 @@ histo' phi = phi . fmap u . out
     -- Cf and Hisx cast newtype
     u = Cf . ana (Hisx . pair (histo' phi, out))
 -- futumorphism
-futu :: Functor f => (t -> f (FutF f t)) -> t -> Fix f
-futu psi = ana (either (psi, id) . unFut) . last
-
-futu'' :: Functor f => (t -> f (Free f t)) -> t -> Fix f
-futu'' psi = ana ap . inject
+futu :: Functor f => (t -> f (Free f t)) -> t -> Fix f
+futu psi = ana ap . inject
   where
     ap = either (psi, id) . unFutx . cast
     cast :: Functor f => Free f t -> Futx f t (Free f t)
@@ -114,7 +105,7 @@ futu' psi = In . fmap u . psi
   where
     u = cata (either (futu' psi, In) . unFutx) . unFr
 -- chronomorphism
-chrono :: Functor f => (f (Cofree f b) -> b) -> (a -> f (FutF f a)) -> a -> b
+chrono :: Functor f => (f (Cofree f b) -> b) -> (a -> f (Free f a)) -> a -> b
 chrono phi psi = histo phi . futu psi
 -- zygomorphism
 zygo :: Functor f => (f a -> a) -> (f (a, b) -> b) -> Fix f -> b
@@ -124,9 +115,9 @@ cozygo :: Functor f => (a -> f a) -> (b -> f (Either a b)) -> b -> Fix f
 cozygo f psi = ana (either (fmap Left . f, psi)) . Right
 -- dynamorphism
 dyna :: Functor f => (f (Cofree f b) -> b) -> (a -> f a) -> a -> b
-dyna f g = chrono f (fmap last . g)
+dyna f g = chrono f (fmap inject . g)
 -- codynamorphism
-codyna :: Functor f => (f b -> b) -> (a -> f (FutF f a)) -> a -> b
+codyna :: Functor f => (f b -> b) -> (a -> f (Free f a)) -> a -> b
 codyna f g = chrono (f . fmap extract) g
 -- mutumorphism
 mutu :: Functor f => (a -> b) -> (f a -> a) -> Fix f -> b
