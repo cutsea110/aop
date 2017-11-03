@@ -148,7 +148,6 @@ instance Functor (NatF ()) where
   fmap f Zero = Zero
   fmap f (Succ () y) = Succ () (f y)
 
-
 -- | List a
 data ListF a x = Nil | Cons a x deriving (Show)
 type List a = Fix (ListF a)
