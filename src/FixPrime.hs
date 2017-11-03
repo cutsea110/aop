@@ -90,7 +90,7 @@ apo psi = In . fmap (either (id, apo psi)) . psi
 histo :: Functor f => (f (Cofree f t) -> t) -> Fix f -> t
 histo phi = extract . cata ap
   where
-    ap a = Cf (In (Hisx (phi a, fmap unCf a)))
+    ap = Cf . In . Hisx . pair (phi, fmap unCf)
 histo' :: Functor f => (f (Cofree f t) -> t) -> Fix f -> t
 histo' phi = phi . fmap u . out
   where
