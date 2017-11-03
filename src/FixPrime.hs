@@ -101,6 +101,10 @@ histo' phi = phi . fmap u . out
 -- futumorphism
 futu :: Functor f => (t -> f (FutF f t)) -> t -> Fix f
 futu psi = ana (either (psi, id) . unFut) . last
+
+futu'' :: Functor f => (t -> f (Free f t)) -> t -> Fix f
+futu'' psi = ana (either (psi, id) . unFutx . bimap (id, Fr) . out . unFr) . inject
+
 futu' :: Functor f => (t -> f (Free f t)) -> t -> Fix f
 futu' psi = In . fmap u . psi
   where
