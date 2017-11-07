@@ -107,6 +107,9 @@ futu' psi = In . fmap u . psi
 -- chronomorphism
 chrono :: Functor f => (f (Cofree f b) -> b) -> (a -> f (Free f a)) -> a -> b
 chrono phi psi = histo phi . futu psi
+-- cochronomorphism
+cochrono :: Functor f => (f (Cofree f t) -> t) -> (t -> f (Free f t)) -> Fix f -> Fix f
+cochrono phi psi = futu psi . histo phi
 -- zygomorphism
 zygo :: Functor f => (f a -> a) -> (f (a, b) -> b) -> Fix f -> b
 zygo f phi = snd . cata (pair (f . fmap fst, phi))
