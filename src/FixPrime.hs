@@ -10,6 +10,10 @@ pair (f, g) x = (f x, g x)
 cross (f, g) (x, y) = (f x, g y)
 either (f, g) (Left x) = f x
 either (f, g) (Right x) = g x
+left :: Either l r -> l
+left (Left x) = x
+right :: Either l r -> r
+right (Right x) = x
 
 class Bifunctor (f :: * -> * -> *) where
   bimap :: (a -> c, b -> d) -> f a b -> f c d
