@@ -111,6 +111,12 @@ futu' psi = In . fmap u . psi
 -- chronomorphism
 chrono :: Functor f => (f (Cofree f b) -> b) -> (a -> f (Free f a)) -> a -> b
 chrono phi psi = histo phi . futu psi
+
+chrono' :: Functor f => (f (Cofree f b) -> b) -> (a -> f (Free f a)) -> a -> b
+chrono' phi psi = extract . cata phi' . ana psi' . inject
+  where
+    phi' = Cf . In . bimap (id, unCf) . Hisx . pair (phi, id)
+    psi' = either (psi, id) . unFutx . bimap (id, Fr) . out . unFr
 -- cochronomorphism
 cochrono :: Functor f => (f (Cofree f t) -> t) -> (t -> f (Free f t)) -> Fix f -> Fix f
 cochrono phi psi = futu psi . histo phi
