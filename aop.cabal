@@ -25,6 +25,7 @@ library
                      , Tree
                      , List
                      , FixTest
+                     , FixPrimeTest
   -- other-modules:       
   other-extensions:    DeriveFunctor
                      , TypeSynonymInstances
