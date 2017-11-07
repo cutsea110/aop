@@ -1,3 +1,6 @@
+{-# LANGUAGE TypeSynonymInstances,
+             FlexibleInstances
+#-}
 module FixPrimeTest where
 
 import Prelude hiding (Functor(..), map, succ, either)
