@@ -1,4 +1,4 @@
-module FixPriteTest where
+module FixPrimeTest where
 
 import Prelude hiding (Functor(..), map, succ, either)
 import FixPrime
