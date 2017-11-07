@@ -143,3 +143,6 @@ comutu proj psi = ana psi . proj
 -- type functor
 map :: (Bifunctor f, Functor (f a)) => (a -> c) -> Fix (f a) -> Fix (f c)
 map f = cata (In . bimap (f, id))
+
+map' :: (Functor (f c), Bifunctor f) => (a -> c) -> Fix (f a) -> Fix (f c)
+map' f = ana (bimap (f, id) . out)
