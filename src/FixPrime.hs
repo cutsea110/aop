@@ -113,7 +113,7 @@ chrono :: Functor f => (f (Cofree f b) -> b) -> (a -> f (Free f a)) -> a -> b
 chrono phi psi = histo phi . futu psi
 
 chrono' :: Functor f => (f (Cofree f b) -> b) -> (a -> f (Free f a)) -> a -> b
-chrono' phi psi = extract . cata phi' . ana psi' . inject
+chrono' phi psi = extract . hylo phi' psi' . inject
   where
     phi' = Cf . In . bimap (id, unCf) . Hisx . pair (phi, id)
     psi' = either (psi, id) . unFutx . bimap (id, Fr) . out . unFr
