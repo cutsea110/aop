@@ -69,4 +69,11 @@ instance Functor (TreeF a) where
   fmap f (Tip x) = Tip x
   fmap f (Bin l r) = Bin (f l) (f r)
   
+-- | NonEmptyList a
+data NonEmptyListF a x = Wrap a | Add a x deriving Show
+type NonEmptyList a = Fix (NonEmptyListF a)
 
+wrap :: a -> NonEmptyList a
+wrap = In . Wrap
+add :: a -> NonEmptyList a -> NonEmptyList a
+add a x = In (Add a x)
