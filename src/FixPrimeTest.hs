@@ -25,8 +25,7 @@ instance Bifunctor NatF where
   bimap (f, g) (Succ x y) = Succ (f x) (g y)
 
 instance Functor (NatF ()) where
-  fmap f Zero = Zero
-  fmap f (Succ () y) = Succ () (f y)
+  fmap f = bimap (id, f)
 
 -- | List a
 data ListF a x = Nil | Cons a x deriving (Show)
@@ -45,8 +44,7 @@ instance Bifunctor ListF where
   bimap (f, g) (Cons a x) = Cons (f a) (g x)
 
 instance Functor (ListF a) where
-  fmap f Nil = Nil
-  fmap f (Cons a x) = Cons a (f x)
+  fmap f = bimap (id, f)
 
 -- | Tree a
 data TreeF a x = Tip a | Bin x x deriving (Show)
@@ -66,8 +64,7 @@ instance Bifunctor TreeF where
   bimap (f, g) (Bin l r) = Bin (g l) (g r)
 
 instance Functor (TreeF a) where
-  fmap f (Tip x) = Tip x
-  fmap f (Bin l r) = Bin (f l) (f r)
+  fmap f = bimap (id, f)
   
 -- | NonEmptyList a
 data NonEmptyListF a x = Wrap a | Add a x deriving Show
@@ -77,3 +74,14 @@ wrap :: a -> NonEmptyList a
 wrap = In . Wrap
 add :: a -> NonEmptyList a -> NonEmptyList a
 add a x = In (Add a x)
+
+instance Show a => Show (NonEmptyList a) where
+  show (In (Wrap a)) = "(Wrap " ++ show a ++ ")"
+  show (In (Add a x)) = "(Add " ++ show a ++ " " ++ show x ++ ")"
+
+instance Bifunctor NonEmptyListF where
+  bimap (f, g) (Wrap a) = Wrap (f a)
+  bimap (f, g) (Add a x) = Add (f a) (g x)
+
+instance Functor (NonEmptyListF a) where
+  fmap f = bimap (id, f)
