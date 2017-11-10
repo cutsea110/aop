@@ -6,3 +6,6 @@ Fix.hs
 Fib.hs
   ref.) http://titech-ssr.blog.jp/archives/1047835805.html
 
+Promorphism.hs
+  ref.) https://jtobin.io/promorphisms-pre-post
+

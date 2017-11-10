@@ -26,6 +26,7 @@ library
                      , List
                      , FixTest
                      , FixPrimeTest
+                     , Promorphism
   -- other-modules:       
   other-extensions:    DeriveFunctor
                      , TypeSynonymInstances
