@@ -62,3 +62,9 @@ prepro h alg = alg . fmap (prepro h alg) . fmap (cata (embed . h)) . out
 streamCoalg :: Enum a => a -> ListF a a
 streamCoalg n = Cons n (succ n)
 
+-- smallStream :: (Ord a, Num a, Enum a) => a -> List a
+-- smallStream = postpro small streamCoalg
+
+project = undefined
+
+postpro h coalg = embed . fmap (ana (h . project)) . fmap (postpro h coalg) . coalg
