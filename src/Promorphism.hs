@@ -58,3 +58,7 @@ prepro h alg = alg . fmap (prepro h alg) . fmap (cata (embed . h)) . out
 
 -- smallLen :: (Ord a, Num a) => List a -> Int
 -- smallLen = prepro small lenAlg
+
+streamCoalg :: Enum a => a -> ListF a a
+streamCoalg n = Cons n (succ n)
+
