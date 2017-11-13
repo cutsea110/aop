@@ -75,10 +75,14 @@ ana :: Functor f => (a -> f a) -> a -> Fix f
 ana psi = In . fmap (ana psi) . psi
 -- hylomorphism
 hylo :: Functor f => (f b -> b) -> (a -> f a) -> a -> b
-hylo phi psi = {- cata phi . ana psi -} phi . fmap (hylo phi psi) . psi
+hylo phi psi = phi . fmap (hylo phi psi) . psi
+hylo' :: Functor f => (f b -> b) -> (a -> f a) -> a -> b
+hylo' phi psi = cata phi . ana psi
 -- metamorphism
 meta :: Functor f => (f a -> a) -> (a -> f a) -> Fix f -> Fix f
-meta phi psi = {- ana psi . cata phi -} In . fmap (meta phi psi) . out
+meta phi psi = In . fmap (meta phi psi) . out
+meta' :: Functor f => (f a -> a) -> (a -> f a) -> Fix f -> Fix f
+meta' phi psi = ana psi . cata phi
 -- paramorphism
 para :: Functor f => (f (Fix f, t) -> t) -> Fix f -> t
 para phi = phi . fmap (pair (id, para phi)) . out
