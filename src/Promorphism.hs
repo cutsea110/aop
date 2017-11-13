@@ -1,4 +1,4 @@
-{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE LambdaCase, Rank2Types, TypeOperators #-}
 module Promorphism where
 
 import Data.Foldable
@@ -50,21 +50,22 @@ small term@(Cons h t)
 embed :: Bifunctor f => f t t -> t
 embed = undefined
 
--- prepro :: Bifunctor f => (f t r -> f t r) -> (f t a -> a) -> t -> a
-prepro h alg = alg . fmap (prepro h alg) . fmap (cata (embed . h)) . out
+type f :~> g = forall a. f a -> g a
 
--- smallSum :: (Ord a, Num a) => List a -> a
--- smallSum = prepro small sumAlg
+prepro :: Functor f => (f :~> f) -> (f a -> a) -> Fix f -> a
+prepro h alg = alg . fmap (prepro h alg . cata (In . h)) . out
 
--- smallLen :: (Ord a, Num a) => List a -> Int
--- smallLen = prepro small lenAlg
+smallSum :: (Ord a, Num a) => List a -> a
+smallSum = prepro small sumAlg
+
+smallLen :: (Ord a, Num a) => List a -> Int
+smallLen = prepro small lenAlg
 
 streamCoalg :: Enum a => a -> ListF a a
 streamCoalg n = Cons n (succ n)
 
--- smallStream :: (Ord a, Num a, Enum a) => a -> List a
--- smallStream = postpro small streamCoalg
+smallStream :: (Ord a, Num a, Enum a) => a -> List a
+smallStream = postpro small streamCoalg
 
-project = undefined
-
-postpro h coalg = embed . fmap (ana (h . project)) . fmap (postpro h coalg) . coalg
+postpro :: Functor f => (f :~> f) -> (a -> f a) -> a -> Fix f
+postpro h coalg = In . fmap (ana (h . out) . postpro h coalg) . coalg
