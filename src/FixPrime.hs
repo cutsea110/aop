@@ -156,7 +156,7 @@ type Trialg f g h a = (Alg f a, Dialg g h a)
 --- exo :: Functor h => Bialg m n b -> Dialg h m b -> (h a -> h (g a)) -> Trialg f g h a -> g a -> b
 exo :: Functor h =>
   (m b -> b, b -> n b) -> (h b -> m b) -> (h a -> h (g a)) -> (f a -> a, g a -> h a) -> g a -> b
-exo c f g d = cata (fst c . f) . id . ana (g . snd d)
+exo c f g d = cata (fst c . f) . ana (g . snd d)
 -- type functor
 map :: (Bifunctor f, Functor (f a)) => (a -> c) -> Fix (f a) -> Fix (f c)
 map f = cata (In . bimap (f, id))
