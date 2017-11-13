@@ -1,3 +1,4 @@
+{-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE KindSignatures,
              TypeSynonymInstances,
              FlexibleInstances
@@ -140,6 +141,13 @@ mutu proj phi = proj . cata phi
 -- comutumorphism
 comutu :: Functor f => (b -> a) -> (a -> f a) -> b -> Fix f
 comutu proj psi = ana psi . proj
+-- prepromorphism
+type f :~> g = forall a. f a -> g a
+prepro :: Functor f => (f :~> f) -> (f a -> a) -> Fix f -> a
+prepro h alg = alg . fmap (prepro h alg . cata (In . h)) . out
+-- postpromorphism
+postpro :: Functor f => (f :~> f) -> (a -> f a) -> a -> Fix f
+postpro h coalg = In . fmap (ana (h . out) . postpro h coalg) . coalg
 -- type functor
 map :: (Bifunctor f, Functor (f a)) => (a -> c) -> Fix (f a) -> Fix (f c)
 map f = cata (In . bimap (f, id))
