@@ -50,11 +50,6 @@ small term@(Cons h t)
 embed :: Bifunctor f => f t t -> t
 embed = undefined
 
-type f :~> g = forall a. f a -> g a
-
-prepro :: Functor f => (f :~> f) -> (f a -> a) -> Fix f -> a
-prepro h alg = alg . fmap (prepro h alg . cata (In . h)) . out
-
 smallSum :: (Ord a, Num a) => List a -> a
 smallSum = prepro small sumAlg
 
@@ -66,6 +61,3 @@ streamCoalg n = Cons n (succ n)
 
 smallStream :: (Ord a, Num a, Enum a) => a -> List a
 smallStream = postpro small streamCoalg
-
-postpro :: Functor f => (f :~> f) -> (a -> f a) -> a -> Fix f
-postpro h coalg = In . fmap (ana (h . out) . postpro h coalg) . coalg

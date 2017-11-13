@@ -1,7 +1,8 @@
-{-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE KindSignatures,
              TypeSynonymInstances,
-             FlexibleInstances
+             FlexibleInstances,
+             RankNTypes,
+             TypeOperators
 #-}
 module FixPrime where
 
