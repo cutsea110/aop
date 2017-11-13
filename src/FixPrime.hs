@@ -148,7 +148,14 @@ prepro h alg = alg . fmap (prepro h alg . cata (In . h)) . out
 postpro :: Functor f => (f :~> f) -> (a -> f a) -> a -> Fix f
 postpro h coalg = In . fmap (ana (h . out) . postpro h coalg) . coalg
 -- exomorphism
-exo :: Functor h => (m b -> b, b -> n b) -> (h b -> m b) -> (h a -> h (g a)) -> (f a -> a, g a -> h a) -> g a -> b
+--- type Alg f a = f a -> a
+--- type Coalg f a = a -> f a
+--- type Bialg f g a = (Alg f a, Coalg g a)
+--- type Dialg f g a = f a -> g a
+--- type Trialg f g h a = (Alg f a, Dialg g h a)
+--- exo :: Functor h => Bialg m n b -> Dialg h m b -> (h a -> h (g a)) -> Trialg f g h a -> g a -> b
+exo :: Functor h =>
+  (m b -> b, b -> n b) -> (h b -> m b) -> (h a -> h (g a)) -> (f a -> a, g a -> h a) -> g a -> b
 exo c f g d = cata (fst c . f) . id . ana (g . snd d)
 -- type functor
 map :: (Bifunctor f, Functor (f a)) => (a -> c) -> Fix (f a) -> Fix (f c)
