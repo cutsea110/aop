@@ -41,10 +41,6 @@ extract :: Functor f => Cofree f a -> a
 extract cf = case out (unCf cf) of
   Hisx (a, _) -> a
 
-sub :: Functor f => Cofree f a -> f (Cofree f a)
-sub cf = case out (unCf cf) of
-  Hisx (_, x) -> fmap Cf x
-
 data Futx f a x = Futx { unFutx :: (Either a (f x)) }
 instance Functor f => Bifunctor (Futx f) where
   bimap (g, h) (Futx (Left a)) = Futx (Left (g a))
@@ -62,10 +58,6 @@ instance Functor f => Functor (Free f) where
 
 inject :: Functor f => a -> Free f a
 inject = Fr . In . Futx . Left
-
--- | TODO: fixme
-sup :: Functor f => f (Free f a) -> Free f a
-sup fr = undefined
 
 -- catamorphism
 cata :: Functor f => (f a -> a) -> Fix f -> a
