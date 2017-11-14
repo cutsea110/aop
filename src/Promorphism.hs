@@ -60,8 +60,7 @@ small = \case
   Nil      -> Nil
 
 double :: Num a => ListF a x -> ListF a x
-double Nil = Nil
-double (Cons h t) = Cons (h*2) t
+double = bimap ((*2),id)
 
 smallSum :: (Ord a, Num a) => List a -> a
 smallSum = prepro small sumAlg
