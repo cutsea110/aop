@@ -54,9 +54,12 @@ smallLenAlg = \case
   Cons h t -> if h <= 10 then 1 + t else t
   Nil      -> 0
 
--- natural transform. Cons 9 :~> Cons 9, Cons 10 :~> Cons 10, Cons 11 :~> Cons 0 and so on.
+-- natural transform. Cons 9 :~> Cons 9, Cons 10 :~> Cons 10, Cons 11 :~> Nil and so on.
 small :: (Ord a, Num a) => ListF a :~> ListF a
-small = bimap (\x -> if x <= 10 then x else 0, id)
+small = \case
+  Cons h t | h <= 10   -> Cons h t
+           | otherwise -> Nil
+  Nil                  -> Nil
 
 -- natural transform. Cons 1 :~> Cons (1*2), Cons 2 :~> Cons (2*2) and so on.
 double :: Num a => ListF a x -> ListF a x
