@@ -54,9 +54,10 @@ smallLenAlg = \case
   Cons h t -> if h <= 10 then 1 + t else t
   Nil      -> 0
 
-small :: (Ord a, Num a) => ListF a b -> ListF a b
-small Nil = Nil
-small (Cons h t) = Cons (bool 0 h $ h <= 10) t
+small :: (Ord a, Num a) => ListF a :~> ListF a
+small = \case
+  Cons h t -> if h <= 10 then Cons h t else Cons 0 t
+  Nil      -> Nil
 
 double :: Num a => ListF a x -> ListF a x
 double Nil = Nil
