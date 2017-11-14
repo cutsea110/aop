@@ -1,13 +1,21 @@
 {-# LANGUAGE LambdaCase, Rank2Types, TypeOperators #-}
 module Promorphism where
 
-import Data.Foldable
 import Prelude hiding (sum, Functor, fmap)
 
+import Data.Bool (bool)
 import FixPrime
 
 data ListF a x = Nil | Cons a x deriving Show
 type List a = Fix (ListF a)
+
+nil :: List a
+nil = In Nil
+cons :: a -> List a -> List a
+cons x xs = In (Cons x xs)
+
+instance Show a => Show (List a) where
+  show x = "(" ++ show (out x) ++ ")"
 
 instance Bifunctor ListF where
   bimap (f, g) Nil = Nil
@@ -15,6 +23,11 @@ instance Bifunctor ListF where
 
 instance Functor (ListF a) where
   fmap f = bimap (id, f)
+
+genList :: Integer -> List Integer
+genList = ana psi
+  where
+    psi n = if n <= 0 then Nil else Cons n (n - 1)
 
 
 sumAlg :: Num a => ListF a a -> a
@@ -34,21 +47,20 @@ len = cata lenAlg
 
 smallSumAlg :: (Ord a, Num a) => ListF a a -> a
 smallSumAlg = \case
-  Cons h t -> if h <= 10 then h + t else 0
+  Cons h t -> if h <= 10 then h + t else t
   Nil      -> 0
-smallLenAlg :: (Ord a, Num a) => ListF a Int -> Int
+smallLenAlg :: (Ord a, Num a) => ListF a a -> a
 smallLenAlg = \case
-  Cons h t -> if h <= 10 then 1 + t else 0
+  Cons h t -> if h <= 10 then 1 + t else t
   Nil      -> 0
 
 small :: (Ord a, Num a) => ListF a b -> ListF a b
 small Nil = Nil
-small term@(Cons h t)
-  | h <= 10   = term
-  | otherwise = Nil
+small (Cons h t) = Cons (bool 0 h $ h <= 10) t
 
-embed :: Bifunctor f => f t t -> t
-embed = undefined
+double :: Num a => ListF a x -> ListF a x
+double Nil = Nil
+double (Cons h t) = Cons (h*2) t
 
 smallSum :: (Ord a, Num a) => List a -> a
 smallSum = prepro small sumAlg
