@@ -79,6 +79,7 @@ meta' phi psi = ana psi . cata phi
 -- paramorphism
 para :: Functor f => (f (Fix f, t) -> t) -> Fix f -> t
 para phi = phi . fmap (pair (id, para phi)) . out
+para' phi = zygo In phi
 -- apomorphism
 apo :: Functor f => (t -> f (Either (Fix f) t)) -> t -> Fix f
 apo psi = In . fmap (either (id, apo psi)) . psi
