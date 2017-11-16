@@ -84,6 +84,8 @@ para' phi = zygo In phi
 -- apomorphism
 apo :: Functor f => (t -> f (Either (Fix f) t)) -> t -> Fix f
 apo psi = In . fmap (either (id, apo psi)) . psi
+apo' :: Functor f => (t -> f (Either (Fix f) t)) -> t -> Fix f
+apo' psi = cozygo out psi
 -- histomorphism
 histo :: Functor f => (f (Cofree f t) -> t) -> Fix f -> t
 histo phi = extract . cata ap
