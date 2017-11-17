@@ -76,3 +76,5 @@ streamCoalg n = Cons n (succ n)
 
 smallStream :: (Ord a, Num a, Enum a) => a -> List a
 smallStream = postpro small streamCoalg
+
+test = smallSum $ postpro id streamCoalg 1
