@@ -83,5 +83,6 @@ streamCoalg n = Cons n (succ n)
 smallStream :: (Ord a, Num a, Enum a) => a -> List a
 smallStream = postpro small streamCoalg
 
-gen :: (Enum a, Num a, Ord a) => a -> List a
-gen n = postpro (takeTo (<(n+1))) streamCoalg 1
+
+range :: (Enum a, Ord a, Num a) => a -> a -> List a
+range from to = postpro (takeTo (<(to+1))) streamCoalg from
