@@ -61,6 +61,12 @@ small = \case
            | otherwise -> Nil
   Nil                  -> Nil
 
+takeTo :: (a -> Bool) -> ListF a :~> ListF a
+takeTo pred = \case
+  Cons h t | pred h    -> Cons h t
+           | otherwise -> Nil
+  Nil                  -> Nil
+
 -- natural transform. Cons 1 :~> Cons (1*2), Cons 2 :~> Cons (2*2) and so on.
 double :: Num a => ListF a x -> ListF a x
 double = bimap ((*2),id)
@@ -77,4 +83,5 @@ streamCoalg n = Cons n (succ n)
 smallStream :: (Ord a, Num a, Enum a) => a -> List a
 smallStream = postpro small streamCoalg
 
-test = smallSum $ postpro id streamCoalg 1
+gen :: (Enum a, Num a, Ord a) => a -> List a
+gen n = postpro (takeTo (<(n+1))) streamCoalg 1
