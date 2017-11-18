@@ -124,6 +124,8 @@ chrono' phi psi = extract . hylo phi' psi' . inject
 -- cochronomorphism
 cochrono :: Functor f => (f (Cofree f t) -> t) -> (t -> f (Free f t)) -> Fix f -> Fix f
 cochrono phi psi = futu psi . histo phi
+-- synchromorphism
+
 -- zygomorphism
 zygo :: Functor f => (f a -> a) -> (f (a, b) -> b) -> Fix f -> b
 zygo f phi = snd . cata (pair (f . fmap fst, phi))
