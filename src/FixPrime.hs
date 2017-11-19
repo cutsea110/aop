@@ -16,6 +16,8 @@ left :: Either l r -> l
 left (Left x) = x
 right :: Either l r -> r
 right (Right x) = x
+first f (x, y) = (f x, y)
+second f (x, y) = (x, f y)
 
 class Bifunctor (f :: * -> * -> *) where
   bimap :: (a -> c, b -> d) -> f a b -> f c d
@@ -125,6 +127,15 @@ chrono' phi psi = extract . hylo phi' psi' . inject
 cochrono :: Functor f => (f (Cofree f t) -> t) -> (t -> f (Free f t)) -> Fix f -> Fix f
 cochrono phi psi = futu psi . histo phi
 -- synchromorphism
+synchro :: (Functor m, Functor n, Bifunctor f, Bifunctor g, Bifunctor h, Bifunctor j, Bifunctor k) =>
+  (m c -> c, c -> n c) ->
+  (h x (Either a c) -> m c) ->
+  (f x a -> a, g x a -> h x a) ->
+  ((h x a, b) -> k x b) -> 
+  ((h x a, j x b) -> h x (Either a (g x a, b))) -> 
+  (k x b -> b, b -> j x b) -> 
+  (g x a, b) -> c 
+synchro = undefined
 
 -- zygomorphism
 zygo :: Functor f => (f a -> a) -> (f (a, b) -> b) -> Fix f -> b
