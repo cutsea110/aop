@@ -134,7 +134,18 @@ synchro :: (Functor m, Functor n, Bifunctor f, Bifunctor g, Bifunctor h, Bifunct
   ((h x a, b) -> k x b) -> 
   ((h x a, j x b) -> h x (Either a (g x a, b))) -> 
   (k x b -> b, b -> j x b) -> 
-  (g x a, b) -> c 
+  (g x a, b) -> c
+{-
+synchro ::
+  Bialg m n c ->
+  (h x (Either a c) -> m c) ->
+  Trialg (f x) (g x) (h x) a ->
+  ((h x a, b) -> k x b) ->
+  ((h x a, j x b) -> h x (Either a (g x a, b))) ->
+  Bialg (k x) (j x) b ->
+  (g x a, b) ->
+  c
+-}
 synchro = undefined
 
 -- zygomorphism
