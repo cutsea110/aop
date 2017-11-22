@@ -78,6 +78,17 @@ takeTo pred = \case
 -- cata (In . double) $ cons 2 nil => Cons 4 Nil
 -- cata (In . double) $ cons 2 (cons 3 nil) => Cons 4 (Cons 6 Nil)
 -- cata (In . double) $ cons 2 (cons 3 (cons 4 nil)) => Cons 4 (Cons 6 (Cons 8 Nil))
+--
+--            
+--                  ψx <= double
+--  X      F(X) ---------> G(X)
+--  |       |                |
+-- f|   F(f)|                |G(f)
+--  |       |                |
+--  v       v                v
+--  Y      F(Y) ---------> G(Y)
+--                  ψy <= double
+--
 double :: Num a => ListF a x -> ListF a x
 double = bimap ((*2),id)
 
