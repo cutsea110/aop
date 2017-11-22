@@ -67,7 +67,10 @@ takeTo pred = \case
            | otherwise -> Nil
   Nil                  -> Nil
 
--- natural transform. Cons 1 :~> Cons (1*2), Cons 2 :~> Cons (2*2) and so on.
+
+-- prepro double sumAlg $ cons 1 nil => 1
+-- prepro double sumAlg $ cons 1 (cons 2 nil) => 5
+-- prepro double sumAlg $ cons 1 (cons 2 (cons 3 nil)) => 17
 double :: Num a => ListF a x -> ListF a x
 double = bimap ((*2),id)
 
