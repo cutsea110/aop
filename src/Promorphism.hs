@@ -74,6 +74,10 @@ takeTo pred = \case
 --    1 + (2 * 2) + (0 * 2 * 2) => 5
 -- prepro double sumAlg $ cons 1 (cons 2 (cons 3 nil)) => 17
 --    1 + (2 * 2) + (3 * 2 * 2) + (0 * 2 * 2 * 2) => 17
+-- 
+-- cata (In . double) $ cons 2 nil => Cons 4 Nil
+-- cata (In . double) $ cons 2 (cons 3 nil) => Cons 4 (Cons 6 Nil)
+-- cata (In . double) $ cons 2 (cons 3 (cons 4 nil)) => Cons 4 (Cons 6 (Cons 8 Nil))
 double :: Num a => ListF a x -> ListF a x
 double = bimap ((*2),id)
 
