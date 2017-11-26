@@ -168,8 +168,8 @@ comutu :: Functor f => (b -> a) -> (a -> f a) -> b -> Fix f
 comutu proj psi = ana psi . proj
 -- prepromorphism
 type f :~> g = forall a. f a -> g a
-cascade :: Bifunctor f => (a -> a) -> Fix (f a) -> Fix (f a)
-cascade f = undefined
+cascade :: (Bifunctor f, Functor (f a)) => (a -> a) -> Fix (f a) -> Fix (f a)
+cascade f = In . bimap (id, id) . out
 -- prepro :: Functor f => (f (Fix f) -> f (Fix f)) -> (f a -> a) -> Fix f -> a
 prepro :: Functor f => (f :~> f) -> (f a -> a) -> Fix f -> a
 prepro h alg = alg . fmap (prepro h alg . cata (In . h)) . out
