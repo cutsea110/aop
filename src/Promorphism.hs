@@ -1,7 +1,7 @@
 {-# LANGUAGE LambdaCase, Rank2Types, TypeOperators #-}
 module Promorphism where
 
-import Prelude hiding (sum, Functor, fmap)
+import Prelude hiding (sum, Functor, fmap, map)
 
 import Data.Bool (bool)
 import FixPrime
