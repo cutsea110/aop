@@ -29,6 +29,10 @@ genList = ana psi
   where
     psi n = if n <= 0 then Nil else Cons n (n - 1)
 
+idAlg :: ListF a (List a) -> List a
+idAlg = \case
+  Cons h t -> cons h t
+  Nil      -> nil
 
 sumAlg :: Num a => ListF a a -> a
 sumAlg = \case
