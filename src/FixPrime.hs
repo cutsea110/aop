@@ -170,7 +170,10 @@ comutu proj psi = ana psi . proj
 type f :~> g = forall a. f a -> g a
 -- supermap
 cascade :: (Bifunctor f, Functor (f a)) => (a -> a) -> Fix (f a) -> Fix (f a)
-cascade f = In . bimap (id, cascade f . map f) . out
+cascade f = In . cata (bimap (id, map f . In))
+
+cascade' :: (Bifunctor f, Functor (f a)) => (a -> a) -> Fix (f a) -> Fix (f a)
+cascade' f = In . bimap (id, cascade f . map f) . out
 -- prepro :: Functor f => (f (Fix f) -> f (Fix f)) -> (f a -> a) -> Fix f -> a
 prepro :: Functor f => (f :~> f) -> (f a -> a) -> Fix f -> a
 prepro h alg = alg . fmap (prepro h alg . cata (In . h)) . out

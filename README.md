@@ -1,5 +1,8 @@
 Algebra of Programming by Haskell
 
+Great Fokkinga
+ref.) Law and Order in Algorithmics
+
 Great ekmett
 ref.) category-extras hackage.
 
