@@ -12,6 +12,9 @@ foldn (z, s) = u
       Z -> z
       S n -> s (u n)
 
+unfoldn :: (a -> Maybe a) -> a -> Nat
+unfoldn phi = v where v x = maybe Z (S . v) (phi x)
+
 plus n = foldn (n, S)
 mult n = foldn (Z, plus n)
 expr n = foldn (S Z, mult n)
@@ -25,8 +28,13 @@ paran (c, g) = zygon _In phi
 
 
 fact = paran (S Z, f)
-  where f (m, n) = mult m (S n)
+  where f (m, n) = mult n (S m)
 
+toNat :: Int -> Nat
+toNat = unfoldn phi where phi n = if n <= 0 then Nothing else Just (n-1)
+
+fromNat :: Nat -> Int
+fromNat = foldn (0, (1+))
 
 
 zygon :: (Maybe a -> a) -> (Maybe (a, b) -> b) -> Nat -> b
