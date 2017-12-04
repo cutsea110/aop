@@ -5,6 +5,10 @@ import Prelude hiding (take)
 
 pair (f, g) x = (f x, g x)
 
+safeTail :: [a] -> [a]
+safeTail []     = []
+safeTail (_:xs) = xs
+
 data Nat = Z | S Nat deriving (Show, Eq, Ord)
 
 foldn :: (a, a -> a) -> Nat -> a
@@ -45,8 +49,3 @@ take n xs = zygon f phi n
     f = maybe xs safeTail
     phi = maybe [] g
     g (xs, ys) = foldr (\z _ -> ys ++ [z]) ys xs
-
-safeTail :: [a] -> [a]
-safeTail = \case
-  [] -> []
-  (x:xs) -> xs
