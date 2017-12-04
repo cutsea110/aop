@@ -1,7 +1,7 @@
 {-# LANGUAGE LambdaCase #-}
 module Test where
 
-import Prelude hiding (take)
+import Prelude hiding (take, drop)
 
 pair (f, g) x = (f x, g x)
 
@@ -49,3 +49,10 @@ take n xs = zygon f phi n
     f = maybe xs safeTail
     phi = maybe [] g
     g (xs, ys) = foldr (\z _ -> ys ++ [z]) ys xs
+
+drop :: Nat -> [a] -> [a]
+drop n xs = zygon f phi n
+  where
+    f = maybe xs safeTail
+    phi = maybe xs g
+    g (_, ys) = safeTail ys
