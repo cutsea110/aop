@@ -36,4 +36,4 @@ zygon f phi = snd . u
   where
     u = foldn (c, g)
     c = pair (f . fmap fst, phi) Nothing
-    g = pair (f . fmap fst . Just, phi . Just)
+    g = pair (f . fmap fst, phi) . Just
