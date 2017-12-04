@@ -45,6 +45,8 @@ take n xs = zygon f phi n
     f = maybe xs safeTail
     phi = maybe [] g
     g (xs, ys) = foldr (\z _ -> ys ++ [z]) ys xs
-    safeTail = \case
-      [] -> []
-      (x:xs) -> xs
+
+safeTail :: [a] -> [a]
+safeTail = \case
+  [] -> []
+  (x:xs) -> xs
