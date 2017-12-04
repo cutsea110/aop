@@ -24,3 +24,13 @@ paran (c, g) = u
 
 fact = paran (S Z, f)
   where f (m, n) = mult m (S n)
+
+
+
+zygon :: (Maybe a -> a) -> (Maybe (a, b) -> b) -> Nat -> b
+zygon f phi = snd . u
+  where
+    u Z = (f Nothing, phi Nothing)
+    u (S n) = (f (Just (fst x)), phi (Just x))
+      where
+        x = u n
