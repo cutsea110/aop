@@ -43,7 +43,7 @@ take :: Nat -> [a] -> [a]
 take n xs = zygon f phi n
   where
     f = maybe xs tail
-    phi = maybe [] snoc
-    snoc = \case
-      ([], ys) -> ys
-      (x:xs, ys) -> ys ++ [x]
+    phi = maybe [] g
+    g (xs, ys) = case xs of
+      [] -> ys
+      (x:xs) -> ys ++ [x]
