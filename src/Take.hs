@@ -36,3 +36,9 @@ zygon f phi = snd . u
   where
     u = foldn (p Nothing, p . Just)
     p = pair (f . fmap fst, phi)
+
+take' :: Nat -> [a] -> [a]
+take' n xs = zygon f phi n
+  where
+    f = maybe xs tail
+    phi = maybe [] (\(x:xs, ys) -> ys ++ [x])
