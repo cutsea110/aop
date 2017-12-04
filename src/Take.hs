@@ -1,6 +1,8 @@
 {-# LANGUAGE LambdaCase #-}
 module Test where
 
+import Prelude hiding (take)
+
 pair (f, g) x = (f x, g x)
 
 data Nat = Z | S Nat deriving (Show, Eq, Ord)
@@ -37,8 +39,11 @@ zygon f phi = snd . u
     u = foldn (p Nothing, p . Just)
     p = pair (f . fmap fst, phi)
 
-take' :: Nat -> [a] -> [a]
-take' n xs = zygon f phi n
+take :: Nat -> [a] -> [a]
+take n xs = zygon f phi n
   where
     f = maybe xs tail
-    phi = maybe [] (\(x:xs, ys) -> ys ++ [x])
+    phi = maybe [] snoc
+    snoc = \case
+      ([], ys) -> ys
+      (x:xs, ys) -> ys ++ [x]
