@@ -34,7 +34,5 @@ paran (c, g) = zygon _In phi
 zygon :: (Maybe a -> a) -> (Maybe (a, b) -> b) -> Nat -> b
 zygon f phi = snd . u
   where
-    u = foldn (c, g)
+    u = foldn (p Nothing, p . Just)
     p = pair (f . fmap fst, phi)
-    c = p Nothing
-    g = p . Just
