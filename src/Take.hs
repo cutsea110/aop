@@ -16,6 +16,7 @@ plus n = foldn (n, S)
 mult n = foldn (Z, plus n)
 expr n = foldn (S Z, mult n)
 
+paran :: (b, (Nat, b) -> b) -> Nat -> b
 paran (c, g) = zygon _In phi
   where
     _In = maybe Z S
