@@ -42,8 +42,9 @@ zygon f phi = snd . u
 take :: Nat -> [a] -> [a]
 take n xs = zygon f phi n
   where
-    f = maybe xs tail
+    f = maybe xs safeTail
     phi = maybe [] g
-    g (xs, ys) = case xs of
-      [] -> ys
-      (x:xs) -> ys ++ [x]
+    g (xs, ys) = foldr (\z _ -> ys ++ [z]) ys xs
+    safeTail = \case
+      [] -> []
+      (x:xs) -> xs
