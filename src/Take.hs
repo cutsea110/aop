@@ -1,7 +1,7 @@
 {-# LANGUAGE LambdaCase #-}
 module Test where
 
-import FixPrime
+pair (f, g) x = (f x, g x)
 
 data Nat = Z | S Nat deriving (Show, Eq, Ord)
 
@@ -30,7 +30,5 @@ fact = paran (S Z, f)
 zygon :: (Maybe a -> a) -> (Maybe (a, b) -> b) -> Nat -> b
 zygon f phi = snd . u
   where
-    u Z = (f Nothing, phi Nothing)
-    u (S n) = (f (Just (fst x)), phi (Just x))
-      where
-        x = u n
+    u = foldn ((f Nothing, phi Nothing), g)
+    g = pair (f . Just . fst, phi . Just)
