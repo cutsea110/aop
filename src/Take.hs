@@ -19,7 +19,7 @@ expr n = foldn (S Z, mult n)
 paran :: (b, (Nat, b) -> b) -> Nat -> b
 paran (c, g) = zygon _In phi
   where
-    _In = maybe Z S
+    _In = maybe Z S -- alpha
     phi Nothing = c
     phi (Just x) = g x
 
