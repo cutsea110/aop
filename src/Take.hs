@@ -16,11 +16,12 @@ plus n = foldn (n, S)
 mult n = foldn (Z, plus n)
 expr n = foldn (S Z, mult n)
 
-paran :: (a, (Nat, a) -> a) -> Nat -> a
-paran (c, g) = u
-  where u = \case
-          Z -> c
-          S n -> g (n, u n)
+paran (c, g) = zygon _In phi
+  where
+    _In = maybe Z S
+    phi Nothing = c
+    phi (Just x) = g x
+
 
 fact = paran (S Z, f)
   where f (m, n) = mult m (S n)
