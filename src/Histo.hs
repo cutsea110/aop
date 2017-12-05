@@ -46,10 +46,10 @@ instance Bifunctor ListF where
 instance Functor (ListF Nat) where
   fmap f = bimap (id, f)
 
-fib :: Nat -> Integer
+fib :: Num t => Nat -> t
 fib = histo phi
   where
-    phi :: NatF (Cofree NatF Integer) -> Integer
+    phi :: Num t => NatF (Cofree NatF t) -> t
     phi Z = 0
     phi (S n) = f1 + f2
       where
