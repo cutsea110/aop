@@ -3,7 +3,7 @@
 #-}
 module FixPrimeTest where
 
-import Prelude hiding (Functor(..), map, succ, either)
+import Prelude hiding (Functor(..), map, succ, either, tail, init)
 import FixPrime
 
 -- | Natural Number
@@ -85,3 +85,14 @@ instance Bifunctor NonEmptyListF where
 
 instance Functor (NonEmptyListF a) where
   fmap f = bimap (id, f)
+
+--
+tail :: List a -> List a
+tail (In Nil) = nil
+tail (In (Cons x xs)) = xs
+
+gen :: Int -> List Int
+gen = ana phi
+  where
+    phi :: Int -> ListF Int Int
+    phi n = if n == 0 then Nil else Cons n (n-1)

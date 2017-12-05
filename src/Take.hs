@@ -1,5 +1,5 @@
 {-# LANGUAGE LambdaCase #-}
-module Test where
+module Take where
 
 import Prelude hiding (take, drop, splitAt)
 
