@@ -51,9 +51,11 @@ fib = histo phi
   where
     phi :: Num t => NatF (Cofree NatF t) -> t
     phi Z = 0
-    phi (S n) = f1 + f2
+    phi (S n) = f1 n + f2 n
       where
-        f1 = extract n
-        f2 = case subtract n of
+        f1 :: Functor f => Cofree f a -> a
+        f1 n = extract n
+        f2 :: Num t => Cofree NatF t -> t
+        f2 n = case subtract n of
           Z -> 1
           S y -> extract y
