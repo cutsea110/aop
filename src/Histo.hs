@@ -63,3 +63,6 @@ fib = histo phi
         f2 n = case subtract n of
           Z -> 1
           S y -> extract y
+
+fib' :: Int -> Integer
+fib' = fib . toNat
