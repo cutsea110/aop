@@ -50,8 +50,8 @@ instance Functor (ListF Nat) where
 -- 354224848179261915075
 -- >>> Prelude.map (fib . toNat) [1..100]
 -- [1,1,2,3,5,8...]
-fib :: Num t => Nat -> t
-fib = histo phi
+fib' :: Num t => Nat -> t
+fib' = histo phi
   where
     phi :: Num t => NatF (Cofree NatF t) -> t
     phi Z = 0
@@ -64,5 +64,5 @@ fib = histo phi
           Z -> 1
           S y -> extract y
 
-fib' :: Int -> Integer
-fib' = fib . toNat
+fib :: Int -> Integer
+fib = fib' . toNat
