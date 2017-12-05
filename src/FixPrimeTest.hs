@@ -100,8 +100,10 @@ head :: List a -> a
 head (In (Cons x _)) = x
 
 tail :: List a -> List a
-tail (In Nil) = nil
-tail (In (Cons x xs)) = xs
+tail = para phi
+  where
+    phi Nil = nil
+    phi (Cons x (xs, ys)) = xs
 
 gen :: Int -> List Int
 gen = ana phi
