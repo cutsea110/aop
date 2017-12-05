@@ -88,9 +88,10 @@ instance Functor (NonEmptyListF a) where
 
 --
 init :: List a -> List a
-init (In Nil) = nil
-init (In (Cons x (In Nil))) = nil
-init (In (Cons x xs)) = cons x (init xs)
+init = para phi
+  where
+    phi (Cons x (In Nil, _)) = nil
+    phi (Cons x (xs,    ys)) = cons x ys
 
 last :: List a -> a
 last = para phi
