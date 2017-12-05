@@ -1,6 +1,6 @@
 module Histo where
 
-import Prelude hiding (Functor, fmap, succ, cons, nil)
+import Prelude hiding (Functor, fmap, succ, cons, nil, subtract)
 import FixPrime
 
 data NatF x = Z | S x deriving Show
@@ -46,3 +46,13 @@ instance Bifunctor ListF where
 instance Functor (ListF Nat) where
   fmap f = bimap (id, f)
 
+fib :: Nat -> Integer
+fib = histo phi
+  where
+    phi Z = 0
+    phi (S n) = f1 + f2
+      where
+        f1 = extract n
+        f2 = case subtract n of
+          Z -> 1
+          S y -> extract y
