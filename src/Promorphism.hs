@@ -1,4 +1,4 @@
-{-# LANGUAGE LambdaCase, Rank2Types, TypeOperators #-}
+{-# LANGUAGE LambdaCase, Rank2Types, TypeOperators, TypeSynonymInstances, FlexibleInstances #-}
 module Promorphism where
 
 import Prelude hiding (sum, Functor, fmap, map)
