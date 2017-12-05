@@ -87,6 +87,11 @@ instance Functor (NonEmptyListF a) where
   fmap f = bimap (id, f)
 
 --
+init :: List a -> List a
+init (In Nil) = nil
+init (In (Cons x (In Nil))) = nil
+init (In (Cons x xs)) = cons x (init xs)
+
 tail :: List a -> List a
 tail (In Nil) = nil
 tail (In (Cons x xs)) = xs
