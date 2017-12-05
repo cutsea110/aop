@@ -43,11 +43,8 @@ zygon f phi = snd . u
     u = foldn (p Nothing, p . Just)
     p = pair (f . fmap fst, phi)
 
-take :: Nat -> [a] -> [a]
-take n = fst . splitAt n
-
-drop :: Nat -> [a] -> [a]
-drop n = snd . splitAt n
+take, drop :: Nat -> [a] -> [a]
+(take, drop) = (fmap fst . splitAt, fmap snd . splitAt)
 
 splitAt :: Nat -> [a] -> ([a], [a])
 splitAt n xs = zygon f phi n
