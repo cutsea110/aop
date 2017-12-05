@@ -3,7 +3,7 @@
 #-}
 module FixPrimeTest where
 
-import Prelude hiding (Functor(..), map, succ, either, tail, init)
+import Prelude hiding (Functor(..), map, succ, either, head, tail, init, last)
 import FixPrime
 
 -- | Natural Number
@@ -91,6 +91,13 @@ init :: List a -> List a
 init (In Nil) = nil
 init (In (Cons x (In Nil))) = nil
 init (In (Cons x xs)) = cons x (init xs)
+
+last :: List a -> a
+last (In (Cons x (In Nil))) = x
+last (In (Cons x xs)) = last xs
+
+head :: List a -> a
+head (In (Cons x _)) = x
 
 tail :: List a -> List a
 tail (In Nil) = nil
