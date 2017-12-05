@@ -6,7 +6,7 @@
 #-}
 module FixPrime where
 
-import Prelude hiding (Functor(..), map, succ, either)
+import Prelude hiding (Functor(..), map, succ, either, subtract)
 
 pair (f, g) x = (f x, g x)
 cross (f, g) (x, y) = (f x, g y)
@@ -43,6 +43,10 @@ instance Functor f => Functor (Cofree f) where
 extract :: Functor f => Cofree f a -> a
 extract cf = case out (unCf cf) of
   Hisx (a, _) -> a
+
+subtract :: Functor f => Cofree f a -> f (Cofree f a)
+subtract cf = case out (unCf cf) of
+  Hisx (_, b) -> fmap Cf b
 
 data Futx f a x = Futx { unFutx :: (Either a (f x)) }
 instance Functor f => Bifunctor (Futx f) where
