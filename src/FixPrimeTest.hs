@@ -97,7 +97,9 @@ last (In (Cons x (In Nil))) = x
 last (In (Cons x xs)) = last xs
 
 head :: List a -> a
-head (In (Cons x _)) = x
+head = para phi
+  where
+    phi (Cons x _) = x
 
 tail :: List a -> List a
 tail = para phi
