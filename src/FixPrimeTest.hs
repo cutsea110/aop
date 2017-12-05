@@ -93,8 +93,10 @@ init (In (Cons x (In Nil))) = nil
 init (In (Cons x xs)) = cons x (init xs)
 
 last :: List a -> a
-last (In (Cons x (In Nil))) = x
-last (In (Cons x xs)) = last xs
+last = para phi
+  where
+    phi (Cons x (In Nil, _)) = x
+    phi (Cons _ (xs,     _)) = last xs
 
 head :: List a -> a
 head = para phi
