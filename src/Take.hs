@@ -44,18 +44,10 @@ zygon f phi = snd . u
     p = pair (f . fmap fst, phi)
 
 take :: Nat -> [a] -> [a]
-take n xs = zygon f phi n
-  where
-    f = maybe xs safeTail
-    phi = maybe [] g
-    g (xs, ys) = foldr (\z _ -> ys ++ [z]) ys xs
+take n = fst . splitAt n
 
 drop :: Nat -> [a] -> [a]
-drop n xs = zygon f phi n
-  where
-    f = maybe xs safeTail
-    phi = maybe xs g
-    g (_, ys) = safeTail ys
+drop n = snd . splitAt n
 
 splitAt :: Nat -> [a] -> ([a], [a])
 splitAt n xs = zygon f phi n
