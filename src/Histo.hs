@@ -49,6 +49,7 @@ instance Functor (ListF Nat) where
 fib :: Nat -> Integer
 fib = histo phi
   where
+    phi :: NatF (Cofree NatF Integer) -> Integer
     phi Z = 0
     phi (S n) = f1 + f2
       where
