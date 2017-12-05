@@ -46,6 +46,8 @@ instance Bifunctor ListF where
 instance Functor (ListF Nat) where
   fmap f = bimap (id, f)
 
+-- >>> fib (toNat 100)
+-- 354224848179261915075
 fib :: Num t => Nat -> t
 fib = histo phi
   where
