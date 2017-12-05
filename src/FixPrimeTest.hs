@@ -103,7 +103,7 @@ tail :: List a -> List a
 tail = para phi
   where
     phi Nil = nil
-    phi (Cons x (xs, ys)) = xs
+    phi (Cons _ (xs, _)) = xs
 
 gen :: Int -> List Int
 gen = ana phi
