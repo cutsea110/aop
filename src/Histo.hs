@@ -48,6 +48,8 @@ instance Functor (ListF Nat) where
 
 -- >>> fib (toNat 100)
 -- 354224848179261915075
+-- >>> Prelude.map (fib . toNat) [1..100]
+-- [1,1,2,3,5,8...]
 fib :: Num t => Nat -> t
 fib = histo phi
   where
