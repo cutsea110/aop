@@ -44,8 +44,8 @@ extract :: Functor f => Cofree f a -> a
 extract cf = case out (unCf cf) of
   Hisx (a, _) -> a
 
-subtract :: Functor f => Cofree f a -> f (Cofree f a)
-subtract cf = case out (unCf cf) of
+sub :: Functor f => Cofree f a -> f (Cofree f a)
+sub cf = case out (unCf cf) of
   Hisx (_, b) -> fmap Cf b
 
 data Futx f a x = Futx { unFutx :: (Either a (f x)) }

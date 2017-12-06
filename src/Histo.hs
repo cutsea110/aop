@@ -60,7 +60,7 @@ fib' = histo phi
         f1 :: Cofree NatF t -> t
         f1 n = extract n
         f2 :: Num t => Cofree NatF t -> t
-        f2 n = case subtract n of
+        f2 n = case sub n of
           Z -> 1
           S y -> extract y
 
