@@ -57,4 +57,5 @@ constZero = foldn (Zero, id)
 -- because corefZero can be represented by [(Zero, Zero)] on REL.
 corefZero' = corefZero
 
-x = constZero . corefZero'
+zero :: Nat -> Nat
+zero = constZero . corefZero'
