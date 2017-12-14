@@ -135,6 +135,7 @@ chrono' phi psi = extract . hylo phi' psi' . inject
 cochrono :: Functor f => (f (Cofree f t) -> t) -> (t -> f (Free f t)) -> Fix f -> Fix f
 cochrono phi psi = futu psi . histo phi
 -- synchromorphism
+{--
 synchro :: (Functor m, Functor n, Bifunctor f, Bifunctor g, Bifunctor h, Bifunctor j, Bifunctor k) =>
   (m c -> c, c -> n c) ->
   (h x (Either a c) -> m c) ->
@@ -143,6 +144,7 @@ synchro :: (Functor m, Functor n, Bifunctor f, Bifunctor g, Bifunctor h, Bifunct
   ((h x a, j x b) -> h x (Either a (g x a, b))) -> 
   (k x b -> b, b -> j x b) -> 
   (g x a, b) -> c
+--}
 {-
 synchro ::
   Bialg m n c ->
@@ -154,7 +156,9 @@ synchro ::
   (g x a, b) ->
   c
 -}
-synchro = undefined
+synchro d' f d g1 g2 d'' = h
+  where
+    h = fst d' . f . appSecond (appSecond h) . g2 . pair (fst, (snd d'' . fst d'' . g1)) . first (snd d)
 
 -- zygomorphism
 zygo :: Functor f => (f a -> a) -> (f (a, b) -> b) -> Fix f -> b
