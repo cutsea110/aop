@@ -18,10 +18,6 @@ right :: Either l r -> r
 right (Right x) = x
 first f (x, y) = (f x, y)
 second f (x, y) = (x, f y)
-appFirst :: (a -> b) -> (a, c) -> (b, c)
-appFirst f (x, y) = (f x, y)
-appSecond :: (c -> d) -> (a, c) -> (a, d)
-appSecond f (x, y) = (x, f y)
 
 class Bifunctor (f :: * -> * -> *) where
   bimap :: (a -> c, b -> d) -> f a b -> f c d
@@ -158,7 +154,7 @@ synchro ::
 -}
 synchro d' f d g1 g2 d'' = h
   where
-    h = fst d' . f . appSecond (appSecond h) . g2 . pair (fst, (snd d'' . fst d'' . g1)) . first (snd d)
+    h = fst d' . f . second (second h) . g2 . pair (fst, (snd d'' . fst d'' . g1)) . first (snd d)
 
 -- zygomorphism
 zygo :: Functor f => (f a -> a) -> (f (a, b) -> b) -> Fix f -> b
