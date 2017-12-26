@@ -152,6 +152,14 @@ synchro ::
   (g x a, b) ->
   c
 -}
+synchro :: (b3 -> t5, b4)
+     -> ((t4, (t3, t5)) -> b3)
+     -> (a, t2 -> t1)
+     -> ((t1, b1) -> b2)
+     -> ((t1, t) -> (t4, (t3, (t2, b1))))
+     -> (b2 -> b, b -> t)
+     -> (t2, b1)
+     -> t5
 synchro d' f d g1 g2 d'' = h
   where
     h = fst d' . f . second (second h) . g2 . pair (fst, (snd d'' . fst d'' . g1)) . first (snd d)
