@@ -62,3 +62,7 @@ zero = constZero . corefZero'
 
 -- const n
 const n = foldn (n, id)
+
+-- coref one
+one n@(Succ Zero) = n
+one' = one
