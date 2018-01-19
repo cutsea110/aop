@@ -1,6 +1,6 @@
 module Nat where
 
-import Prelude hiding (succ)
+import Prelude hiding (succ, const)
 
 data Nat = Zero
          | Succ Nat
@@ -59,3 +59,6 @@ corefZero' = corefZero
 
 zero :: Nat -> Nat
 zero = constZero . corefZero'
+
+-- const n
+const n = foldn (n, id)
