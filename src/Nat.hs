@@ -76,9 +76,9 @@ one n@(Succ Zero) = n
 one' = one
 
 
-coref1 = succ . zero . succ'
-coref2 = succ . succ . zero . succ' . succ'
-coref3 = succ . succ . succ . zero . succ' . succ' . succ'
+coref1 = coref (Succ Zero)
+coref2 = coref (Succ (Succ Zero))
+coref3 = coref (Succ (Succ (Succ Zero)))
 
 -- generate coref only n value
 coref = foldn (zero, (succ .).(. succ'))
