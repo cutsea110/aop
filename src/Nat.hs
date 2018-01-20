@@ -1,3 +1,4 @@
+{-# LANGUAGE LambdaCase #-}
 module Nat where
 
 import Prelude hiding (succ, const)
@@ -97,8 +98,8 @@ under n m = case n of
     (Succ m') -> Succ (under n' m')
 --}
 
-under n = case n of
+under = \case
   Zero        -> zero
-  (Succ n')   -> \m -> case m of
-                         Zero      -> Zero
-                         (Succ m') -> Succ (under n' m')
+  (Succ n')   -> \case
+    Zero      -> Zero
+    (Succ m') -> Succ (under n' m')
