@@ -90,4 +90,4 @@ eq = coref
 under = foldn (zero, sub)
   where
     sub f Zero     = Zero
-    sub f (Succ m) = Succ (f m)
+    sub f (Succ m) = const (Succ (f m)) (sub f m)
