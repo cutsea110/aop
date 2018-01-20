@@ -48,9 +48,12 @@ succ' (Succ n) = n
 positive = succ . succ'
 
 -- coreflexive over (Succ (Succ n)) but Zero and Succ Zero
-over1 = succ . positive . succ'
-over2 = succ . over1 . succ'
-over3 = succ . over2 . succ'
+over1 = over Zero
+over2 = over (Succ Zero)
+over3 = over (Succ (Succ Zero))
+
+-- coreflexive over n but under n
+over = foldn (positive, (succ.).(.succ'))
 
 -- coreflexive over Zero but (Succ n)
 corefZero = foldn (Zero, positive)
