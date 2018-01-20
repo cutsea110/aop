@@ -1,7 +1,6 @@
-{-# LANGUAGE LambdaCase #-}
 module Nat where
 
-import Prelude hiding (succ, const)
+import Prelude hiding (succ)
 
 data Nat = Zero
          | Succ Nat
@@ -70,7 +69,7 @@ zero :: Nat -> Nat
 zero = constZero . corefZero'
 
 -- const n
-const n = foldn (n, id)
+constN n = foldn (n, id)
 
 -- coref one
 one n@(Succ Zero) = n
@@ -98,8 +97,11 @@ under n m = case n of
     (Succ m') -> Succ (under n' m')
 --}
 
-under = \case
-  Zero        -> zero
-  (Succ n')   -> \case
-    Zero      -> Zero
-    (Succ m') -> Succ (under n' m')
+under Zero = zero
+under (Succ n') = \x -> case x of
+  Zero     -> Zero
+  (Succ m) -> op Succ m (under n') -- Succ ((under n') m')
+
+op2 Zero     x = Zero
+op2 (Succ m) x = op Succ m x
+op g m f = g (f m)
