@@ -81,3 +81,6 @@ corefLessEqual = foldn (zero, sub)
   where
     sub f = para (Zero, g f)
     g h (x, y) = const (Succ (h y)) x
+
+-- coreflexive between lb+1 to ub
+range lb ub = corefLessEqual ub . corefGreaterThan lb
