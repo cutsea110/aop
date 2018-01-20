@@ -86,6 +86,12 @@ coref = foldn (zero, (succ .).(. succ'))
 -- binary relation operator equal
 eq = coref
 
-under Zero n = zero n
-under (Succ n) Zero = Zero
-under (Succ n) (Succ m) = Succ (under n m)
+-- under Zero n = zero n
+-- under (Succ n) Zero = Zero
+-- under (Succ n) (Succ m) = Succ (under n m)
+
+under n m = case n of
+  Zero        -> zero m
+  (Succ n')   -> case m of
+    Zero      -> Zero
+    (Succ m') -> Succ (under n' m')
