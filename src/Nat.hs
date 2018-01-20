@@ -81,4 +81,4 @@ coref2 = succ . succ . zero . succ' . succ'
 coref3 = succ . succ . succ . zero . succ' . succ' . succ'
 
 -- generate coref only n value
-coref = foldn (zero, \f -> succ . f . succ')
+coref = foldn (zero, (succ .).(. succ'))
