@@ -28,13 +28,13 @@ fact' = hylo (Succ Zero, f, g, p)
     f = uncurry mult
     
 
-para (c, g) Zero = c
-para (c, g) (Succ n) = g (para (c, g) n, n)
+paran (c, g) Zero = c
+paran (c, g) (Succ n) = g (paran (c, g) n, n)
 
 plus x = foldn (x, Succ)
 mult x = foldn (Zero, plus x)
 expr x = foldn (Succ Zero, mult x)
-fact = para (Succ Zero, f)
+fact = paran (Succ Zero, f)
   where
     f (m, n) = mult m (Succ n)
 
@@ -75,7 +75,7 @@ eq = corefOnly
 -- coreflexive less than n but over Succ n
 corefLessEqual = foldn (zero, sub)
   where
-    sub f = para (Zero, g f)
+    sub f = paran (Zero, g f)
     g h (x, y) = const (Succ (h y)) x
 
 -- coreflexive between lb+1 to ub
