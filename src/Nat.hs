@@ -66,6 +66,10 @@ zero = constZero . corefZero'
 -- const n
 constN n = foldn (n, id)
 
+-- coref one
+one n@(Succ Zero) = n
+one' = one
+
 -- generate coref only n value
 corefOnly = foldn (zero, (succ .).(. succ'))
 
