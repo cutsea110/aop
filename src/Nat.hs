@@ -74,3 +74,9 @@ const n = foldn (n, id)
 -- coref one
 one n@(Succ Zero) = n
 one' = one
+
+
+coref1 = succ . zero . succ'
+coref2 = succ . succ . zero . succ' . succ'
+coref3 = succ . succ . succ . zero . succ' . succ' . succ'
+
