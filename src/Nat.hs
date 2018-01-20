@@ -82,3 +82,6 @@ coref3 = coref (Succ (Succ (Succ Zero)))
 
 -- generate coref only n value
 coref = foldn (zero, (succ .).(. succ'))
+
+-- binary relation operator equal
+eq = coref
