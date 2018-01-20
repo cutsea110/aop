@@ -47,13 +47,8 @@ succ' (Succ n) = n
 -- coreflexive over (Succ n) but Zero
 positive = succ . succ'
 
--- coreflexive over (Succ (Succ n)) but Zero and Succ Zero
-over1 = over Zero
-over2 = over (Succ Zero)
-over3 = over (Succ (Succ Zero))
-
 -- coreflexive over n but under n
-over = foldn (positive, (succ.).(.succ'))
+corefGreaterThan = foldn (positive, (succ.).(.succ'))
 
 -- coreflexive over Zero but (Succ n)
 corefZero = foldn (Zero, positive)
@@ -75,19 +70,14 @@ constN n = foldn (n, id)
 one n@(Succ Zero) = n
 one' = one
 
-
-coref1 = coref (Succ Zero)
-coref2 = coref (Succ (Succ Zero))
-coref3 = coref (Succ (Succ (Succ Zero)))
-
 -- generate coref only n value
-coref = foldn (zero, (succ .).(. succ'))
+corefOnly = foldn (zero, (succ .).(. succ'))
 
 -- binary relation operator equal
-eq = coref
+eq = corefOnly
 
--- coreflexive under n but over n
-under = foldn (zero, sub)
+-- coreflexive less than n but over Succ n
+corefLessEqual = foldn (zero, sub)
   where
     sub f = para (Zero, g f)
-    g h (x, y) = (const (Succ (h y))) x
+    g h (x, y) = const (Succ (h y)) x
