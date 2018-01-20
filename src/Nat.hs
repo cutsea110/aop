@@ -89,7 +89,5 @@ eq = coref
 -- coreflexive under n but over n
 under = foldn (zero, sub)
   where
-    (sub f) Zero     = Zero
-    (sub f) (Succ m) = g f (sub f m, m)
-    g f (x, y) = (const (Succ (f y))) x
---    (sub f) (Succ m) = (const (Succ (f m))) (sub f m)
+    sub f = para (Zero, g f)
+    g h (x, y) = (const (Succ (h y))) x
