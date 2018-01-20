@@ -98,10 +98,9 @@ under n m = case n of
 --}
 
 under Zero = zero
-under (Succ n') = \x -> case x of
-  Zero     -> Zero
-  (Succ m) -> op Succ m (under n') -- Succ ((under n') m')
+under (Succ n') = sub (under n')
+  where
+    sub f Zero     = Zero
+    sub f (Succ m) = op Succ m f
 
-op2 Zero     x = Zero
-op2 (Succ m) x = op Succ m x
 op g m f = g (f m)
