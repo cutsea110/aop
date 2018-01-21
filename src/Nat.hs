@@ -104,3 +104,11 @@ sample245789 = ex' . rg . ex
     ex n = n
     ex' = ex
 
+sample348over = ex' . rg . ex
+  where
+    rg = corefGreaterThan (Succ (Succ Zero))
+    ex (Succ (Succ (Succ (Succ (Succ Zero))))) = Zero
+    ex (Succ (Succ (Succ (Succ (Succ (Succ Zero)))))) = Succ Zero
+    ex (Succ (Succ (Succ (Succ (Succ (Succ (Succ Zero))))))) = Succ (Succ Zero)
+    ex n = n
+    ex' = ex
