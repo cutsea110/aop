@@ -104,21 +104,11 @@ sample245789 = ex' . rg . ex
     ex n = n
     ex' = ex
 
--- coreflexive on 3,4 and over 8
 sample348over = ex' . rg . ex
   where
     rg = corefGreaterThan (Succ (Succ Zero))
     ex (Succ (Succ (Succ (Succ (Succ Zero))))) = Zero
     ex (Succ (Succ (Succ (Succ (Succ (Succ Zero)))))) = Succ Zero
     ex (Succ (Succ (Succ (Succ (Succ (Succ (Succ Zero))))))) = Succ (Succ Zero)
-    ex n = n
-    ex' = ex
-
--- coreflexive on 1,2,3,4 and over 8
-sample1238over = ex' . positive . ex
-  where
-    ex (Succ (Succ (Succ (Succ (Succ Zero))))) = Zero
-    ex (Succ (Succ (Succ (Succ (Succ (Succ Zero)))))) = Zero
-    ex (Succ (Succ (Succ (Succ (Succ (Succ (Succ Zero))))))) = Zero
     ex n = n
     ex' = ex
