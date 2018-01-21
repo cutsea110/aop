@@ -96,9 +96,11 @@ excludeOne = exchZeroOne' . positive . exchZeroOne
 
 
 -- coreflexive just only 2,4,5,7,8,9(3 and 6 are bottom)
-sample245789 = let rg = range (toNat 3) (toNat 9)
-                   ex (Succ (Succ Zero)) = (Succ (Succ (Succ (Succ (Succ (Succ Zero))))))
-                   ex (Succ (Succ (Succ (Succ (Succ (Succ Zero)))))) = (Succ (Succ Zero))
-                   ex n = n
-                   ex' = ex
-               in ex' . rg . ex
+sample245789 = ex' . rg . ex
+  where
+    rg = range (toNat 3) (toNat 9)
+    ex (Succ (Succ Zero)) = (Succ (Succ (Succ (Succ (Succ (Succ Zero))))))
+    ex (Succ (Succ (Succ (Succ (Succ (Succ Zero)))))) = (Succ (Succ Zero))
+    ex n = n
+    ex' = ex
+
