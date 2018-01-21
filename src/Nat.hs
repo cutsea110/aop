@@ -61,7 +61,7 @@ constZero = foldn (Zero, id)
 corefZero' = corefZero
 
 zero :: Nat -> Nat
-zero = constZero . corefZero'
+zero = corefZero --  constZero . corefZero'
 
 -- const n
 constN n = foldn (n, id)
