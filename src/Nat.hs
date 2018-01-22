@@ -95,6 +95,11 @@ exchZeroOne' = exchZeroOne
 
 excludeOne = exchZeroOne' . positive . exchZeroOne
 
+exchangeZero n Zero = n
+exchangeZero n m = if n == m then Zero else m
+exchangeZero' = exchangeZero
+
+exchange n m = exchangeZero' n . exchangeZero m . exchangeZero n
 
 -- coreflexive just only 2,4,5,7,8,9(3 and 6 are bottom)
 sample245789 = ex' . rg . ex
@@ -113,3 +118,4 @@ sample348over = ex' . rg . ex
     ex (Succ (Succ (Succ (Succ (Succ (Succ (Succ Zero))))))) = Succ (Succ Zero)
     ex n = n
     ex' = ex
+
