@@ -101,6 +101,8 @@ exchangeZero' = exchangeZero
 
 exchange n m = exchangeZero' n . exchangeZero m . exchangeZero n
 
+toZero n m = if n == m then Zero else m
+
 -- coreflexive just only 2,4,5,7,8,9(3 and 6 are bottom)
 sample245789 = ex' . rg . ex
   where
@@ -108,12 +110,9 @@ sample245789 = ex' . rg . ex
     ex = exchange (toNat 2) (toNat 6)
     ex' = exchange (toNat 6) (toNat 2)
 
-sample348over = ex' . rg . ex
+sample348over = down' . rg . down
   where
     rg = corefGreaterThan (Succ (Succ Zero))
-    ex (Succ (Succ (Succ (Succ (Succ Zero))))) = Zero
-    ex (Succ (Succ (Succ (Succ (Succ (Succ Zero)))))) = Succ Zero
-    ex (Succ (Succ (Succ (Succ (Succ (Succ (Succ Zero))))))) = Succ (Succ Zero)
-    ex n = n
-    ex' = ex
+    down = toZero (toNat 5) . toZero (toNat 6) . toZero (toNat 7)
+    down' = down
 
