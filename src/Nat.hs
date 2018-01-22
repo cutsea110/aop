@@ -116,3 +116,8 @@ sample348over = down' . rg . down
     down = toZero (toNat 5) . toZero (toNat 6) . toZero (toNat 7)
     down' = down
 
+corefEven Zero = Zero
+corefEven (Succ (Succ n)) = Succ (Succ (corefEven n))
+
+corefOdd (Succ Zero) = Succ Zero
+corefOdd (Succ (Succ n)) = Succ (Succ (corefOdd n))
