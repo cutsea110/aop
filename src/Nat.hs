@@ -105,10 +105,8 @@ exchange n m = exchangeZero' n . exchangeZero m . exchangeZero n
 sample245789 = ex' . rg . ex
   where
     rg = range (toNat 3) (toNat 9)
-    ex (Succ (Succ Zero)) = (Succ (Succ (Succ (Succ (Succ (Succ Zero))))))
-    ex (Succ (Succ (Succ (Succ (Succ (Succ Zero)))))) = (Succ (Succ Zero))
-    ex n = n
-    ex' = ex
+    ex = exchange (toNat 2) (toNat 6)
+    ex' = exchange (toNat 6) (toNat 2)
 
 sample348over = ex' . rg . ex
   where
