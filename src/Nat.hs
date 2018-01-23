@@ -72,7 +72,7 @@ corefZero = foldn (Zero, positive)
 corefZero' = corefZero
 
 -- const Zero
-constZero = foldn (Zero, idN)
+constZero = constN Zero
 
 -- coreflexive over n but under n
 corefGreaterThan = foldn (positive, (succ.).(.succ'))
