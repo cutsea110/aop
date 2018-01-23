@@ -117,7 +117,6 @@ sample348over = down' . rg . down
     down' = down
 
 corefEven Zero = Zero
-corefEven (Succ (Succ n)) = Succ (Succ (corefEven n))
+corefEven (Succ n) = Succ (corefOdd n)
 
-corefOdd (Succ Zero) = Succ Zero
-corefOdd (Succ (Succ n)) = Succ (Succ (corefOdd n))
+corefOdd (Succ n) = Succ (corefEven n)
