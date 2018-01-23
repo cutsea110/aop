@@ -143,4 +143,5 @@ g f = \n -> if n == Zero then Zero else Succ (f (succ' n))
 --    => (Succ (Succ Zero))
 -- ...
 
-
+-- alternative solution for corefLessEqual (obtain by approaching from fix point semantics)
+corefLessEqual' = foldn (corefZero, g)
