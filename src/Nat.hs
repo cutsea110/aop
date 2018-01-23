@@ -49,6 +49,13 @@ succ' (Succ n) = n
 -- coreflexive over (Succ n) but Zero
 positive = succ . succ'
 
+fixN f = \case
+  Zero     -> Zero
+  (Succ n) -> Succ (f n)
+
+-- identity by using fixed point definition
+idN = fixN idN
+
 -- coreflexive over n but under n
 corefGreaterThan = foldn (positive, (succ.).(.succ'))
 
@@ -56,7 +63,7 @@ corefGreaterThan = foldn (positive, (succ.).(.succ'))
 corefZero = foldn (Zero, positive)
 
 -- const Zero
-constZero = foldn (Zero, id)
+constZero = foldn (Zero, idN)
 
 -- the converse of corefZero equals corefZero,
 -- because corefZero can be represented by [(Zero, Zero)] on REL.
@@ -66,7 +73,7 @@ zero :: Nat -> Nat
 zero = corefZero --  constZero . corefZero'
 
 -- const n
-constN n = foldn (n, id)
+constN n = foldn (n, idN)
 
 -- coref one
 one n@(Succ Zero) = n
@@ -123,10 +130,4 @@ corefEven (Succ n) = Succ (corefOdd n)
 corefOdd (Succ n) = Succ (corefEven n)
 
 -- alternative solution for corefLessEqual (obtain by approaching from fix point semantics)
-corefLessEqual' = foldn (corefZero, g)
-  where
-    -- natId = g natId
-    -- natId is identity function which is colimit of g
-    g f = \case
-      Zero -> Zero
-      (Succ n) -> Succ (f n)
+corefLessEqual' = foldn (corefZero, fixN)
