@@ -43,32 +43,44 @@ fact = paran (Succ Zero, f)
 toNat = unfoldn (\n -> if n <= 0 then Nothing else Just (n-1))
 fromNat = foldn (0, (1+))
 
+-------------------------------
+-- Coreflexive morphisms
+-- These are all restricted to
+-- Nat, without type signature
+-------------------------------
+
+-- successor
 succ = Succ
+-- pred
 succ' (Succ n) = n
 
 -- coreflexive over (Succ n) but Zero
 positive = succ . succ'
 
+-- Y for Nat
 fixN f = \case
   Zero     -> Zero
   (Succ n) -> Succ (f n)
 
--- identity by using fixed point definition
+-- I for Nat
 idN = fixN idN
-
--- coreflexive over n but under n
-corefGreaterThan = foldn (positive, (succ.).(.succ'))
 
 -- coreflexive over Zero but (Succ n)
 corefZero = foldn (Zero, positive)
-
--- const Zero
-constZero = foldn (Zero, idN)
-
 -- the converse of corefZero equals corefZero,
 -- because corefZero can be represented by [(Zero, Zero)] on REL.
 corefZero' = corefZero
 
+-- const Zero
+constZero = foldn (Zero, idN)
+
+-- coreflexive over n but under n
+corefGreaterThan = foldn (positive, (succ.).(.succ'))
+
+-- coreflexive less than n but over Succ n
+corefLessEqual = foldn (corefZero, fixN)
+
+-- equal corefZero
 zero :: Nat -> Nat
 zero = corefZero --  constZero . corefZero'
 
@@ -77,6 +89,7 @@ constN n = foldn (n, idN)
 
 -- coref one
 one n@(Succ Zero) = n
+-- converse of one
 one' = one
 
 -- generate coref only n value
@@ -85,29 +98,22 @@ corefOnly = foldn (zero, (succ .).(. succ'))
 -- binary relation operator equal
 eq = corefOnly
 
--- alternative solution for corefLessEqual (obtain by approaching from fix point semantics)
-corefLessEqual' = foldn (zero, sub)
-  where
-    sub f = paran (Zero, g f)
-    g h (x, y) = const (Succ (h y)) x
-
 -- coreflexive between lb+1 to ub
 -- range x y == (x, y]
 range lb ub = corefLessEqual ub . corefGreaterThan lb
 
-exchZeroOne Zero = Succ Zero
-exchZeroOne (Succ Zero) = Zero
-exchZeroOne n = n
-
-exchZeroOne' = exchZeroOne
-
-excludeOne = exchZeroOne' . positive . exchZeroOne
-
+-- exchange Zeron and n
 exchangeZero n Zero = n
 exchangeZero n m = if n == m then Zero else m
+-- exchange n and Zero which is converse of exchangeZero
 exchangeZero' = exchangeZero
 
 exchange n m = exchangeZero' n . exchangeZero m . exchangeZero n
+
+-- sample
+exchZeroOne = exchange Zero (Succ Zero) 
+exchZeroOne' = exchZeroOne
+excludeOne = exchZeroOne' . positive . exchZeroOne
 
 toZero n m = if n == m then Zero else m
 
@@ -128,6 +134,3 @@ corefEven Zero = Zero
 corefEven (Succ n) = Succ (corefOdd n)
 
 corefOdd (Succ n) = Succ (corefEven n)
-
--- coreflexive less than n but over Succ n
-corefLessEqual = foldn (corefZero, fixN)
