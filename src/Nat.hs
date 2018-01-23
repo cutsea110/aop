@@ -1,4 +1,5 @@
 -- AOP 6.5
+{-# LANGUAGE LambdaCase #-}
 module Nat where
 
 import Prelude hiding (succ)
@@ -121,27 +122,11 @@ corefEven (Succ n) = Succ (corefOdd n)
 
 corefOdd (Succ n) = Succ (corefEven n)
 
--- natId n = if n == Zero then Zero else Succ (natId (succ' n))
-g f = \n -> if n == Zero then Zero else Succ (f (succ' n))
--- let natId = g natId
--- g undefined $ Zero
---    => Zero
--- g undefined $ Succ Zero
---    => error
--- g (g undefined) $ Zero
---    => Zero
--- g (g undefined) $ Succ Zero
---    => Succ Zero
--- g (g undefined) $ Succ (Succ Zero)
---    => error
--- ...
--- natId Zero
---    => Zero
--- natId (Succ Zero)
---    => (Succ Zero)
--- natId (Succ (Succ Zero))
---    => (Succ (Succ Zero))
--- ...
-
 -- alternative solution for corefLessEqual (obtain by approaching from fix point semantics)
 corefLessEqual' = foldn (corefZero, g)
+  where
+    -- natId = g natId
+    -- natId is identity function which is colimit of g
+    g f = \case
+      Zero -> Zero
+      (Succ n) -> Succ (f n)
