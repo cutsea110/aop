@@ -85,8 +85,8 @@ corefOnly = foldn (zero, (succ .).(. succ'))
 -- binary relation operator equal
 eq = corefOnly
 
--- coreflexive less than n but over Succ n
-corefLessEqual = foldn (zero, sub)
+-- alternative solution for corefLessEqual (obtain by approaching from fix point semantics)
+corefLessEqual' = foldn (zero, sub)
   where
     sub f = paran (Zero, g f)
     g h (x, y) = const (Succ (h y)) x
@@ -129,5 +129,5 @@ corefEven (Succ n) = Succ (corefOdd n)
 
 corefOdd (Succ n) = Succ (corefEven n)
 
--- alternative solution for corefLessEqual (obtain by approaching from fix point semantics)
-corefLessEqual' = foldn (corefZero, fixN)
+-- coreflexive less than n but over Succ n
+corefLessEqual = foldn (corefZero, fixN)
