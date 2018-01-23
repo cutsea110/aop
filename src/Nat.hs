@@ -121,4 +121,5 @@ corefEven (Succ n) = Succ (corefOdd n)
 
 corefOdd (Succ n) = Succ (corefEven n)
 
-natId n = if n == Zero then Zero else Succ (natId (succ' n))
+-- natId n = if n == Zero then Zero else Succ (natId (succ' n))
+g f = \n -> if n == Zero then Zero else Succ (f (succ' n))
