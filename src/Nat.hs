@@ -81,7 +81,6 @@ corefGreaterThan = foldn (positive, (succ.).(.succ'))
 corefLessEqual = foldn (corefZero, fixN)
 
 -- equal corefZero
-zero :: Nat -> Nat
 zero = corefZero --  constZero . corefZero'
 
 -- const n
