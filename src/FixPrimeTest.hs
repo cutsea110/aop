@@ -3,7 +3,7 @@
 #-}
 module FixPrimeTest where
 
-import Prelude hiding (Functor(..), map, succ, either, head, tail, init, last)
+import Prelude hiding (Functor(..), map, succ, either, head, tail, init, last, takeWhile, dropWhile)
 import FixPrime
 
 -- | Natural Number
@@ -115,3 +115,15 @@ gen = ana phi
   where
     phi :: Int -> ListF Int Int
     phi n = if n == 0 then Nil else Cons n (n-1)
+
+takeWhile :: (a -> Bool) -> List a -> List a
+takeWhile p = cata phi
+  where
+    phi Nil = nil
+    phi (Cons x xs) = if p x then (cons x xs) else nil
+
+dropWhile :: (a -> Bool) -> List a -> List a
+dropWhile p = para phi
+  where
+    phi Nil = nil
+    phi (Cons x (xs, _)) = if p x then xs else (cons x xs)
