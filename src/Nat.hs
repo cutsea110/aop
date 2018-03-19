@@ -133,3 +133,8 @@ corefEven Zero = Zero
 corefEven (Succ n) = Succ (corefOdd n)
 
 corefOdd (Succ n) = Succ (corefEven n)
+
+outl (x, y) = x
+outr (x, y) = y
+sqr = outl . foldn ((0, 0), h)
+  where h (s, dn) = (s + dn + 1, dn + 2)
