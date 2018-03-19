@@ -120,10 +120,14 @@ takeWhile :: (a -> Bool) -> List a -> List a
 takeWhile p = cata phi
   where
     phi Nil = nil
-    phi (Cons x xs) = if p x then (cons x xs) else nil
+    phi (Cons x xs) | p x       = cons x xs
+                    | otherwise = nil
 
 dropWhile :: (a -> Bool) -> List a -> List a
 dropWhile p = para phi
   where
     phi Nil = nil
-    phi (Cons x (xs, _)) = if p x then xs else (cons x xs)
+    phi (Cons x (xs, xs')) | p x       = xs'
+                           | otherwise = cons x xs
+
+xs = cons 4 $ cons 2 $ cons 8 $ cons 3 $ cons 1 $ cons 7 $ cons 6 $ cons 5 nil
