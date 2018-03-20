@@ -2,7 +2,7 @@
 {-# LANGUAGE LambdaCase #-}
 module Nat where
 
-import Prelude hiding (succ)
+import Prelude hiding (succ, last)
 
 data Nat = Zero
          | Succ Nat
@@ -138,3 +138,7 @@ outl (x, y) = x
 outr (x, y) = y
 sqr = outl . foldn ((0, 0), h)
   where h (s, dn) = (s + dn + 1, dn + 2)
+
+last p = outl . foldn ((0, 0), h)
+  where h (pn, n) | p (n+1)   = (n+1, n+1)
+                  | otherwise = (pn,  n+1)
