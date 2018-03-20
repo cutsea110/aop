@@ -145,3 +145,16 @@ last p = outl . foldn ((0, 0), h)
 
 fib = outl . foldn ((0, 1), h)
   where h (x, y) = (x + y, x)
+
+ack (Zero, y) = Succ y
+ack (Succ x, Zero) = ack (x, Succ Zero)
+ack (Succ x, Succ y) = ack (x, ack (Succ x, y))
+
+ack' = foldn (Succ, f)
+  where f g = foldn (g (Succ Zero), g)
+
+ack'' = foldn (Succ, swap f)
+  where f = foldn (ap1, ap2)
+        ap1 g = g (Succ Zero)
+        ap2 g h = h (g h)
+        swap f a b = f b a
