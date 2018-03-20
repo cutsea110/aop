@@ -142,3 +142,6 @@ sqr = outl . foldn ((0, 0), h)
 last p = outl . foldn ((0, 0), h)
   where h (pn, n) | p (n+1)   = (n+1, n+1)
                   | otherwise = (pn,  n+1)
+
+fib = outl . foldn ((0, 1), h)
+  where h (x, y) = (x + y, x)
