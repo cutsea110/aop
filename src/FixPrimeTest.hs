@@ -3,7 +3,19 @@
 #-}
 module FixPrimeTest where
 
-import Prelude hiding (Functor(..), map, succ, either, head, tail, init, last, takeWhile, dropWhile)
+import Prelude hiding (Functor(..),
+                       map,
+                       succ,
+                       either,
+                       head,
+                       tail,
+                       init,
+                       last,
+                       takeWhile,
+                       dropWhile,
+                       zip,
+                       unzip
+                      )
 import FixPrime
 
 -- | Natural Number
@@ -131,3 +143,8 @@ dropWhile p = para phi
                            | otherwise = cons x xs
 
 -- xs = cons 4 $ cons 2 $ cons 8 $ cons 3 $ cons 1 $ cons 7 $ cons 6 $ cons 5 nil
+
+
+unzip :: (Bifunctor f, Functor (f a), Functor (f b), Functor (f (a, b))) =>
+         Fix (f (a,b)) -> (Fix (f a), Fix (f b))
+unzip = pair (map fst, map snd)
