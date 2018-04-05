@@ -148,3 +148,7 @@ dropWhile p = para phi
 unzip :: (Bifunctor f, Functor (f a), Functor (f b), Functor (f (a, b))) =>
          Fix (f (a,b)) -> (Fix (f a), Fix (f b))
 unzip = pair (map fst, map snd)
+
+zip :: (Bifunctor f, Functor (f a), Functor (f b), Functor (f (a, b))) =>
+       (Fix (f a), Fix (f b)) -> Fix (f (a, b))
+zip (xs, ys) = undefined
