@@ -39,6 +39,10 @@ instance Bifunctor NatF where
 instance Functor (NatF ()) where
   fmap f = bimap (id, f)
 
+instance ApplicativeBifunctor NatF where
+  biap Zero Zero = Zero
+  biap (Succ f g) (Succ x y) = Succ (f x) (g y)
+
 -- | List a
 data ListF a x = Nil | Cons a x deriving (Show)
 type List a = Fix (ListF a)
