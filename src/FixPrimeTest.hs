@@ -77,7 +77,7 @@ instance Bifunctor TreeF where
 
 instance Functor (TreeF a) where
   fmap f = bimap (id, f)
-  
+
 -- | NonEmptyList a
 data NonEmptyListF a x = Wrap a | Add a x deriving Show
 type NonEmptyList a = Fix (NonEmptyListF a)
@@ -146,7 +146,7 @@ dropWhile p = para phi
 
 
 unzip :: (Bifunctor f, Functor (f a), Functor (f b), Functor (f (a, b))) =>
-         Fix (f (a,b)) -> (Fix (f a), Fix (f b))
+         Fix (f (a, b)) -> (Fix (f a), Fix (f b))
 unzip = pair (map fst, map snd)
 
 zip :: (Bifunctor f, Functor (f a), Functor (f b), Functor (f (a, b))) =>
