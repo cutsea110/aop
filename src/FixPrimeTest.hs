@@ -152,3 +152,8 @@ unzip = pair (map fst, map snd)
 zip :: (Bifunctor f, Functor (f a), Functor (f b), Functor (f (a, b))) =>
        (Fix (f a), Fix (f b)) -> Fix (f (a, b))
 zip (xs, ys) = undefined
+
+xs :: List (Int, Char)
+xs = cons (1, 'A') $ cons (2, 'B') $ cons (3, 'C') nil
+ys :: Tree (Int, Char)
+ys = bin (bin (tip (1, 'A')) (tip (2, 'B'))) (tip (3, 'C'))
