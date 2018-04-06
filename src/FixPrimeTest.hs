@@ -110,6 +110,10 @@ instance Bifunctor NonEmptyListF where
 instance Functor (NonEmptyListF a) where
   fmap f = bimap (id, f)
 
+instance ApplicativeBifunctor NonEmptyListF where
+  biap (Wrap f) (Wrap x) = Wrap (f x)
+  biap (Add f g) (Add x y) = Add (f x) (g y)
+
 --
 init :: List a -> List a
 init = para phi
