@@ -58,6 +58,10 @@ instance Bifunctor ListF where
 instance Functor (ListF a) where
   fmap f = bimap (id, f)
 
+instance ApplicativeBifunctor ListF where
+  biap Nil Nil = Nil
+  biap (Cons f g) (Cons x y) = Cons (f x) (g y)
+
 -- | Tree a
 data TreeF a x = Tip a | Bin x x deriving (Show)
 type Tree a = Fix (TreeF a)
@@ -77,6 +81,10 @@ instance Bifunctor TreeF where
 
 instance Functor (TreeF a) where
   fmap f = bimap (id, f)
+
+instance ApplicativeBifunctor TreeF where
+  biap (Tip f) (Tip x) = Tip (f x)
+  biap (Bin f g) (Bin l r) = Bin (f l) (g r)
 
 -- | NonEmptyList a
 data NonEmptyListF a x = Wrap a | Add a x deriving Show
@@ -149,11 +157,16 @@ unzip :: (Bifunctor f, Functor (f a), Functor (f b), Functor (f (a, b))) =>
          Fix (f (a, b)) -> (Fix (f a), Fix (f b))
 unzip = pair (map fst, map snd)
 
-zip :: (Bifunctor f, Functor (f a), Functor (f b), Functor (f (a, b))) =>
-       (Fix (f a), Fix (f b)) -> Fix (f (a, b))
-zip (xs, ys) = undefined
+zip :: ApplicativeBifunctor f => Fix (f a) -> Fix (f b) -> Fix (f (a, b))
+zip xs ys = In $ biap (bimap ((,), zip) (out xs)) (out ys)
 
 xs :: List (Int, Char)
 xs = cons (1, 'A') $ cons (2, 'B') $ cons (3, 'C') nil
 ys :: Tree (Int, Char)
 ys = bin (bin (tip (1, 'A')) (tip (2, 'B'))) (tip (3, 'C'))
+x1 :: List Int
+x2 :: List Char
+(x1, x2) = unzip xs
+y1 :: Tree Int
+y2 :: Tree Char
+(y1, y2) = unzip ys

@@ -22,6 +22,9 @@ second f (x, y) = (x, f y)
 class Bifunctor (f :: * -> * -> *) where
   bimap :: (a -> c, b -> d) -> f a b -> f c d
 
+class Bifunctor (f :: * -> * -> *) => ApplicativeBifunctor f where
+  biap :: f (a -> c) (b -> d) -> f a b  -> f c d
+
 class Functor (f :: * -> *) where
   fmap :: (a -> b) -> f a -> f b
 
