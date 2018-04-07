@@ -102,8 +102,8 @@ add :: a -> NonEmptyList a -> NonEmptyList a
 add a x = In (Add a x)
 
 instance Show a => Show (NonEmptyList a) where
-  show (In (Wrap a)) = "(Wrap " ++ show a ++ ")"
-  show (In (Add a x)) = "(Add " ++ show a ++ " " ++ show x ++ ")"
+  show (In (Wrap a)) = "Wrap " ++ show a
+  show (In (Add a x)) = "Add " ++ show a ++ " (" ++ show x ++ ")"
 
 instance Bifunctor NonEmptyListF where
   bimap (f, g) (Wrap a) = Wrap (f a)
