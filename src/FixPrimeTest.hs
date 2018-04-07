@@ -53,7 +53,9 @@ cons :: a -> List a -> List a
 cons x xs = In (Cons x xs)
 
 instance Show a => Show (List a) where
-  show x = "(" ++ show (out x) ++ ")"
+  show (In Nil) = "Nil"
+  show (In (Cons x (In Nil))) = "Cons " ++ show x ++ " Nil"
+  show (In (Cons x xs)) = "Cons " ++ show x ++ " (" ++ show xs ++ ")"
 
 instance Bifunctor ListF where
   bimap (f, g) Nil = Nil
