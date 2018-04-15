@@ -170,6 +170,12 @@ unzip = pair (map fst, map snd)
 zip :: ApplicativeBifunctor f => Fix (f a) -> Fix (f b) -> Fix (f (a, b))
 zip xs ys = In $ biap (bimap ((,), zip) (out xs)) (out ys)
 
+append :: List a -> List a -> List a
+append xs ys = cata phi xs
+    where
+      phi Nil = ys
+      phi (Cons a zs) = cons a zs
+
 subseqs :: List a -> List (List a)
 subseqs = cata phi
     where
