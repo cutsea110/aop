@@ -207,7 +207,7 @@ omega = nil
 concat :: List (List a) -> List a
 concat = cata phi
     where
-      phi Nil = nil
+      phi Nil          = nil
       phi (Cons xs ys) = append xs ys
 
 cpp :: (List a, List b) -> List (a, b)
@@ -228,7 +228,7 @@ inits = cata phi
 tails :: Fix (ListF a) -> List (List a)
 tails = para phi
     where
-      phi Nil = tau omega
+      phi Nil                = tau omega
       phi (Cons a (xs, xs')) = cons (cons a xs) xs'
 
 splits :: Fix (ListF a) -> Fix (ListF (List a, List a))
