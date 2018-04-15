@@ -1,5 +1,6 @@
 {-# LANGUAGE TypeSynonymInstances,
-             FlexibleInstances
+             FlexibleInstances,
+             ScopedTypeVariables
 #-}
 module FixPrimeTest where
 
@@ -170,9 +171,10 @@ unzip = pair (map fst, map snd)
 zip :: ApplicativeBifunctor f => Fix (f a) -> Fix (f b) -> Fix (f (a, b))
 zip xs ys = In $ biap (bimap ((,), zip) (out xs)) (out ys)
 
-append :: List a -> List a -> List a
+append :: forall a. Fix (ListF a) -> List a -> List a
 append xs ys = cata phi xs
     where
+      phi :: ListF a (List a) -> List a
       phi Nil = ys
       phi (Cons a zs) = cons a zs
 
