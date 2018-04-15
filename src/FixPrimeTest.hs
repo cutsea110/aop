@@ -195,7 +195,7 @@ subseqs :: forall a. Fix (ListF a) -> List (List a)
 subseqs = cata phi
     where
       phi :: ListF a (List (List a)) -> List (List a)
-      phi Nil         = tau . const nil $ undefined
+      phi Nil         = tau omega
       phi (Cons a xs) = cat . pair (map (uncurry cons) . cpr, outr) $ (a, xs)
 
 tau :: a -> List a
@@ -216,5 +216,11 @@ cpp = concat . cp
 cplist :: List (List a) -> List (List a)
 cplist = cata phi
     where
-      phi Nil         = tau . const nil $ undefined
+      phi Nil         = tau omega
       phi (Cons a xs) = map (uncurry cons) . cpp $ (a, xs)
+
+inits :: Fix (ListF a) -> List (List a)
+inits = cata phi
+    where
+      phi Nil = tau omega
+      phi (Cons a xs) = cat . pair (const (tau omega), map (uncurry cons) . cpr) $ (a, xs)
