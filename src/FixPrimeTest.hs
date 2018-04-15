@@ -56,8 +56,8 @@ cons x xs = In (Cons x xs)
 
 instance Show a => Show (List a) where
   show (In Nil) = "Nil"
-  show (In (Cons x (In Nil))) = "Cons " ++ show x ++ " Nil"
-  show (In (Cons x xs)) = "Cons " ++ show x ++ " (" ++ show xs ++ ")"
+  show (In (Cons x (In Nil))) = "(Cons " ++ show x ++ " Nil)"
+  show (In (Cons x xs)) = "(Cons " ++ show x ++ " " ++ show xs ++ ")"
 
 instance Bifunctor ListF where
   bimap (f, g) Nil = Nil
@@ -179,6 +179,9 @@ append xs ys = cata phi xs
       phi Nil = ys
       phi (Cons a zs) = cons a zs
 
+cat :: (List a, List a) -> List a
+cat = uncurry append
+
 cpr :: (Bifunctor f, Functor (f a)) => (b, Fix (f a)) -> Fix (f (b, a))
 cpr (a, ys) = map (a,) ys
 cpl :: (Bifunctor f, Functor (f a)) => (Fix (f a), b) -> Fix (f (a, b))
@@ -192,5 +195,4 @@ subseqs = cata phi
     where
       phi :: ListF a (List (List a)) -> List (List a)
       phi Nil         = cons nil nil
-      phi (Cons a xs) = undefined
-
+      phi (Cons a xs) = cat . pair (map (uncurry cons) . cpr, outr) $ (a, xs)

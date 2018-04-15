@@ -18,6 +18,8 @@ right :: Either l r -> r
 right (Right x) = x
 first f (x, y) = (f x, y)
 second f (x, y) = (x, f y)
+outl (x, y) = x
+outr (x, y) = y
 
 class Bifunctor (f :: * -> * -> *) where
   bimap :: (a -> c, b -> d) -> f a b -> f c d
