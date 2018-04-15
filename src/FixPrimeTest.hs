@@ -230,3 +230,6 @@ tails = para phi
     where
       phi Nil = tau omega
       phi (Cons a (xs, xs')) = cons (cons a xs) xs'
+
+splits :: Fix (ListF a) -> Fix (ListF (List a, List a))
+splits = uncurry zip . pair (inits, tails)
