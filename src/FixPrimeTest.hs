@@ -222,5 +222,11 @@ cplist = cata phi
 inits :: Fix (ListF a) -> List (List a)
 inits = cata phi
     where
-      phi Nil = tau omega
+      phi Nil         = tau omega
       phi (Cons a xs) = cat . pair (const (tau omega), map (uncurry cons) . cpr) $ (a, xs)
+
+tails :: Fix (ListF a) -> List (List a)
+tails = para phi
+    where
+      phi Nil = tau omega
+      phi (Cons a (xs, xs')) = cons (cons a xs) xs'
