@@ -178,10 +178,10 @@ append xs ys = cata phi xs
       phi Nil = ys
       phi (Cons a zs) = cons a zs
 
-subseqs :: List a -> List (List a)
+subseqs :: forall a. Fix (ListF a) -> List (List a)
 subseqs = cata phi
     where
-      phi :: ListF a b -> List (List c)
+      phi :: ListF a (List (List a)) -> List (List a)
       phi Nil         = cons nil nil
       phi (Cons a xs) = undefined
 
