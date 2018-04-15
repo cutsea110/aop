@@ -16,7 +16,8 @@ import Prelude hiding (Functor(..),
                        takeWhile,
                        dropWhile,
                        zip,
-                       unzip
+                       unzip,
+                       concat
                       )
 import FixPrime
 
@@ -203,8 +204,14 @@ tau x = cons x nil
 omega :: List a
 omega = nil
 
+concat :: List (List a) -> List a
+concat = cata phi
+    where
+      phi Nil = nil
+      phi (Cons xs ys) = append xs ys
+
 cpp :: (List a, List b) -> List (a, b)
-cpp = undefined
+cpp = concat . cp
 
 cplist :: List (List a) -> List (List a)
 cplist = cata phi
