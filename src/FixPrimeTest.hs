@@ -208,7 +208,7 @@ concat :: List (List a) -> List a
 concat = cata phi
     where
       phi Nil          = nil
-      phi (Cons xs ys) = append xs ys
+      phi (Cons xs ys) = cat (xs, ys)
 
 cpp :: (List a, List b) -> List (a, b)
 cpp = concat . cp
