@@ -1,6 +1,7 @@
 {-# LANGUAGE TypeSynonymInstances,
              FlexibleInstances,
-             ScopedTypeVariables
+             ScopedTypeVariables,
+             TupleSections
 #-}
 module FixPrimeTest where
 
@@ -177,6 +178,14 @@ append xs ys = cata phi xs
       phi :: ListF a (List a) -> List a
       phi Nil = ys
       phi (Cons a zs) = cons a zs
+
+cpr :: (Bifunctor f, Functor (f a)) => (b, Fix (f a)) -> Fix (f (b, a))
+cpr (a, ys) = map (a,) ys
+cpl :: (Bifunctor f, Functor (f a)) => (Fix (f a), b) -> Fix (f (a, b))
+cpl (xs, b) = map (,b) xs
+cp :: (Bifunctor f, Bifunctor g, Functor (f a), Functor (g b))
+     => (Fix (f a), Fix (g b)) -> Fix (f (Fix (g (a, b))))
+cp (xs, ys) = map (\a -> (map (a,) ys)) xs
 
 subseqs :: forall a. Fix (ListF a) -> List (List a)
 subseqs = cata phi
