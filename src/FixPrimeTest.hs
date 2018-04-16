@@ -234,6 +234,9 @@ tails = para phi
 splits :: Fix (ListF a) -> Fix (ListF (List a, List a))
 splits = uncurry zip . pair (inits, tails)
 
+new :: (a, List (List a)) -> List (List a)
+new (a, xs) = cons (tau a) xs
+
 glues :: (a, ListF (List a) (List (List a))) -> List (List a)
 glues (a, Nil) = nil
-glues (a, Cons x xs) = cons (cons a x) xs
+glues (a, Cons x xs) = cons (tau a) xs
