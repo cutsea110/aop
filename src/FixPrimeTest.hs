@@ -235,14 +235,18 @@ splits :: Fix (ListF a) -> Fix (ListF (List a, List a))
 splits = uncurry zip . pair (inits, tails)
 
 new :: (a, List (List a)) -> List (List a)
-new (a, xs) = cons (tau a) xs
+new = uncurry cons . cross (tau, id)
 
-glues :: (a, ListF (List a) (List (List a))) -> List (List a)
-glues (a, Nil) = nil
-glues (a, Cons x xs) = cons (cons a x) xs
+glue :: (a, List (List a)) -> (List (List a))
+glue = uncurry cons . cross (uncurry cons, id) . assocl . cross (id, pair (head, tail))
 
-partitions :: Fix (ListF a) -> List (List a)
+glues :: (a, List (List a)) -> List (List (List a))
+-- glues (a, Nil) = nil
+-- glues (a, Cons x xs) = tau (cons (cons a x) xs)
+glues = undefined
+
+partitions :: Fix (ListF a) -> List (List (List a))
 partitions = cata phi
     where
       phi Nil = tau omega
-      phi (Cons a xs) = undefined -- concat . map (uncurry cons . pair (new, glues)) . cpr $ (a, xs)
+      phi (Cons a xs) = concat . map (uncurry cons . pair (new, glues)) . cpr $ (a, xs)

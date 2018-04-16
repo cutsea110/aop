@@ -20,6 +20,8 @@ first f (x, y) = (f x, y)
 second f (x, y) = (x, f y)
 outl (x, y) = x
 outr (x, y) = y
+assocl (a, (b, c)) = ((a, b), c)
+assocr ((a, b), c) = (a, (b, c))
 
 class Bifunctor (f :: * -> * -> *) where
   bimap :: (a -> c, b -> d) -> f a b -> f c d
