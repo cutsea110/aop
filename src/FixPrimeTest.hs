@@ -234,6 +234,9 @@ tails = para phi
 splits :: Fix (ListF a) -> Fix (ListF (List a, List a))
 splits = uncurry zip . pair (inits, tails)
 
+new = uncurry cons . cross (wrap, id)
+
+{--
 new :: (a, List (List a)) -> List (List a)
 new = uncurry cons . cross (tau, id)
 
@@ -248,3 +251,4 @@ partitions = cata phi
     where
       phi Nil = tau omega
       phi (Cons a xs) = concat . map (uncurry cons . pair (new, glues)) . cpr $ (a, xs)
+--}
