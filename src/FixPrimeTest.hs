@@ -239,4 +239,10 @@ new (a, xs) = cons (tau a) xs
 
 glues :: (a, ListF (List a) (List (List a))) -> List (List a)
 glues (a, Nil) = nil
-glues (a, Cons x xs) = cons (tau a) xs
+glues (a, Cons x xs) = cons (cons a x) xs
+
+partitions :: Fix (ListF a) -> List (List a)
+partitions = cata phi
+    where
+      phi Nil = tau omega
+      phi (Cons a xs) = undefined -- concat . map (uncurry cons . pair (new, glues)) . cpr $ (a, xs)
