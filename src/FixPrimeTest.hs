@@ -241,9 +241,7 @@ glue :: (a, List (List a)) -> (List (List a))
 glue = uncurry cons . cross (uncurry cons, id) . assocl . cross (id, pair (head, tail))
 
 glues :: (a, List (List a)) -> List (List (List a))
--- glues (a, Nil) = nil
--- glues (a, Cons x xs) = tau (cons (cons a x) xs)
-glues = undefined
+glues = tau . glue
 
 partitions :: Fix (ListF a) -> List (List (List a))
 partitions = cata phi
