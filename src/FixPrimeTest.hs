@@ -255,6 +255,11 @@ concat' = cata phi
 new :: (a, List (NonEmptyList a)) -> List (NonEmptyList a)
 new = uncurry cons . cross (wrap, id)
 
+cons' :: List a -> (a, List a)
+cons' xs = case out xs of
+  Nil -> undefined -- this is a partial function
+  Cons a x -> (a, x)
+
 glue :: (a, List (NonEmptyList a)) -> List (NonEmptyList a)
 glue (a, x) = case out x of
 --  Nil -> nil
@@ -263,7 +268,7 @@ glue (a, x) = case out x of
 glues :: (a, List (NonEmptyList a)) -> List (List (NonEmptyList a))
 glues (a, ys) = case out ys of
   Nil -> nil
-  Cons x xs -> tau $ cons (add a x) xs
+  _   -> tau $ glue (a, ys)
 
 partitions :: Fix (ListF a) -> List (List (NonEmptyList a))
 partitions = cata phi
