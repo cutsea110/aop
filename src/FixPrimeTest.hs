@@ -252,24 +252,29 @@ concat' = cata phi
         (Wrap y) -> cons y xs
         (Add y ys) -> cons y (cat' (ys, xs))
 
-new :: (a, List (NonEmptyList a)) -> List (NonEmptyList a)
-new = uncurry cons . cross (wrap, id)
+new :: (a, List (List a)) -> List (List a)
+new = uncurry cons . cross (tau, id)
 
+glue :: (a, List (List a)) -> List (List a)
+glue (a, x) = case out x of
+  Nil -> nil
+  Cons x xs -> cons (cons a x) xs
 
-{--
-
-glue :: (a, List (NonEmptyList a)) -> List (NonEmptyList a)
-glue = uncurry cons . cross (uncurry add, id) . assocl . cross (id, cons' . out)
-
-glues :: (a, List (NonEmptyList a)) -> List (List (NonEmptyList a))
+glues :: (a, List (List a)) -> List (List (List a))
 glues = tau . glue
 
-cons' (Cons x xs) = (x, xs)
+partitions = cata phi
+    where
+      phi Nil = tau omega
+      phi (Cons a xs) = concat . map (uncurry cons . pair (new, glues)) . cpr $ (a, xs)
+
+{--
+glues :: (a, List (NonEmptyList a)) -> List (List (NonEmptyList a))
+glues = tau . glue
 
 partitions :: Fix (ListF a) -> List (List (NonEmptyList a))
 partitions = cata phi
     where
       phi Nil = tau omega
       phi (Cons a xs) = concat . map (uncurry cons . pair (new, glues)) . cpr $ (a, xs)
-
 --}
