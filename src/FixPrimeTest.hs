@@ -257,11 +257,13 @@ new = uncurry cons . cross (wrap, id)
 
 glue :: (a, List (NonEmptyList a)) -> List (NonEmptyList a)
 glue (a, x) = case out x of
-  Nil -> nil
+--  Nil -> nil
   Cons x xs -> cons (add a x) xs
 
 glues :: (a, List (NonEmptyList a)) -> List (List (NonEmptyList a))
-glues = tau . glue
+glues (a, ys) = case out ys of
+  Nil -> nil
+  Cons x xs -> tau $ cons (add a x) xs
 
 partitions :: Fix (ListF a) -> List (List (NonEmptyList a))
 partitions = cata phi
