@@ -261,9 +261,7 @@ cons' xs = case out xs of
   Cons a x -> (a, x)
 
 glue :: (a, List (NonEmptyList a)) -> List (NonEmptyList a)
-glue (a, x) = case out x of
---  Nil -> nil
-  Cons x xs -> cons (add a x) xs
+glue = uncurry cons . cross (uncurry add, id) . assocl . cross (id, cons')
 
 glues :: (a, List (NonEmptyList a)) -> List (List (NonEmptyList a))
 glues (a, ys) = case out ys of
