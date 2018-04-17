@@ -234,8 +234,30 @@ tails = para phi
 splits :: Fix (ListF a) -> Fix (ListF (List a, List a))
 splits = uncurry zip . pair (inits, tails)
 
+append' :: forall a. Fix (NonEmptyListF a) -> List a -> List a
+append' xs ys = cata phi xs
+    where
+      phi :: NonEmptyListF a (List a) -> List a
+      phi (Wrap x)   = cons x ys
+      phi (Add a zs) = cons a zs
+
+cat' :: (NonEmptyList a, List a) -> List a
+cat' = uncurry append'
+
+concat' :: List (NonEmptyList a) -> List a
+concat' = cata phi
+    where
+      phi Nil = nil
+      phi (Cons x xs) = case out x of
+        (Wrap y) -> cons y xs
+        (Add y ys) -> cons y (cat' (ys, xs))
+
 new :: (a, List (NonEmptyList a)) -> List (NonEmptyList a)
 new = uncurry cons . cross (wrap, id)
+
+
+{--
+
 glue :: (a, List (NonEmptyList a)) -> List (NonEmptyList a)
 glue = uncurry cons . cross (uncurry add, id) . assocl . cross (id, cons' . out)
 
@@ -249,3 +271,5 @@ partitions = cata phi
     where
       phi Nil = tau omega
       phi (Cons a xs) = concat . map (uncurry cons . pair (new, glues)) . cpr $ (a, xs)
+
+--}
