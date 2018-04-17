@@ -105,8 +105,8 @@ add :: a -> NonEmptyList a -> NonEmptyList a
 add a x = In (Add a x)
 
 instance Show a => Show (NonEmptyList a) where
-  show (In (Wrap a)) = "Wrap " ++ show a
-  show (In (Add a x)) = "Add " ++ show a ++ " (" ++ show x ++ ")"
+  show (In (Wrap a)) = "(Wrap " ++ show a ++ ")"
+  show (In (Add a x)) = "(Add " ++ show a ++ " " ++ show x ++ ")"
 
 instance Bifunctor NonEmptyListF where
   bimap (f, g) (Wrap a) = Wrap (f a)
@@ -234,21 +234,18 @@ tails = para phi
 splits :: Fix (ListF a) -> Fix (ListF (List a, List a))
 splits = uncurry zip . pair (inits, tails)
 
+new :: (a, List (NonEmptyList a)) -> List (NonEmptyList a)
 new = uncurry cons . cross (wrap, id)
+glue :: (a, List (NonEmptyList a)) -> List (NonEmptyList a)
+glue = uncurry cons . cross (uncurry add, id) . assocl . cross (id, cons' . out)
 
-{--
-new :: (a, List (List a)) -> List (List a)
-new = uncurry cons . cross (tau, id)
-
-glue :: (a, List (List a)) -> (List (List a))
-glue = uncurry cons . cross (uncurry cons, id) . assocl . cross (id, pair (head, tail))
-
-glues :: (a, List (List a)) -> List (List (List a))
+glues :: (a, List (NonEmptyList a)) -> List (List (NonEmptyList a))
 glues = tau . glue
 
-partitions :: Fix (ListF a) -> List (List (List a))
+cons' (Cons x xs) = (x, xs)
+
+partitions :: Fix (ListF a) -> List (List (NonEmptyList a))
 partitions = cata phi
     where
       phi Nil = tau omega
       phi (Cons a xs) = concat . map (uncurry cons . pair (new, glues)) . cpr $ (a, xs)
---}
