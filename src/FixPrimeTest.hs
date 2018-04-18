@@ -248,9 +248,10 @@ concat' :: List (NonEmptyList a) -> List a
 concat' = cata phi
   where
     phi Nil = nil
-    phi (Cons x xs) = case out x of
-      (Wrap y) -> cons y xs
-      (Add y ys) -> cons y (cat' (ys, xs))
+    phi (Cons x xs) = para psi x
+      where
+        psi (Wrap y)   = cons y xs
+        psi (Add y (ys, _)) = cons y (cat' (ys, xs))
 
 new :: (a, List (NonEmptyList a)) -> List (NonEmptyList a)
 new = uncurry cons . cross (wrap, id)
