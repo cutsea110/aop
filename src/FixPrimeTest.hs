@@ -101,8 +101,8 @@ type NonEmptyList a = Fix (NonEmptyListF a)
 
 wrap :: a -> NonEmptyList a
 wrap = In . Wrap
-add :: a -> NonEmptyList a -> NonEmptyList a
-add a x = In (Add a x)
+add :: (a, NonEmptyList a) -> NonEmptyList a
+add (a, x) = In (Add a x)
 
 instance Show a => Show (NonEmptyList a) where
   show (In (Wrap a)) = "(Wrap " ++ show a ++ ")"
@@ -260,7 +260,7 @@ cons' = para phi
     phi (Cons a (x, _)) = (a, x)
 
 glue :: (a, List (NonEmptyList a)) -> List (NonEmptyList a)
-glue = cons . cross (uncurry add, id) . assocl . cross (id, cons')
+glue = cons . cross (add, id) . assocl . cross (id, cons')
 
 glues :: (a, List (NonEmptyList a)) -> List (List (NonEmptyList a))
 glues (a, ys) = cata phi ys
