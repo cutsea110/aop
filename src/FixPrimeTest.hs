@@ -284,3 +284,9 @@ exch = assocr . cross (swap, id) . assocl
 
 adds :: (a, List a) -> List (List a)
 adds (a, x) = map (\(y, z) -> cat (y, cons (a, z))) $ splits x
+
+perms :: List a -> List (List a)
+perms = cata phi
+  where
+    phi Nil = tau nil
+    phi (Cons a x) = concat . map adds . cpr $ (a, x)
