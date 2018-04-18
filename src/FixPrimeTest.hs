@@ -52,8 +52,8 @@ type List a = Fix (ListF a)
 
 nil :: List a
 nil = In Nil
-cons :: a -> List a -> List a
-cons x xs = In (Cons x xs)
+cons :: (a, List a) -> List a
+cons (x, xs) = In (Cons x xs)
 
 instance Show a => Show (List a) where
   show (In Nil) = "Nil"
@@ -124,7 +124,7 @@ init :: List a -> List a
 init = para phi
   where
     phi (Cons x (In Nil, _)) = nil
-    phi (Cons x (xs,    ys)) = cons x ys
+    phi (Cons x (xs,    ys)) = cons (x, ys)
 
 last :: List a -> a
 last = para phi
@@ -153,7 +153,7 @@ takeWhile :: (a -> Bool) -> List a -> List a
 takeWhile p = cata phi
   where
     phi Nil = nil
-    phi (Cons x xs) | p x       = cons x xs
+    phi (Cons x xs) | p x       = cons (x, xs)
                     | otherwise = nil
 
 dropWhile :: (a -> Bool) -> List a -> List a
@@ -161,10 +161,7 @@ dropWhile p = para phi
   where
     phi Nil = nil
     phi (Cons x (xs, xs')) | p x       = xs'
-                           | otherwise = cons x xs
-
--- xs = cons 4 $ cons 2 $ cons 8 $ cons 3 $ cons 1 $ cons 7 $ cons 6 $ cons 5 nil
-
+                           | otherwise = cons (x, xs)
 
 unzip :: (Bifunctor f, Functor (f a), Functor (f b), Functor (f (a, b))) =>
          Fix (f (a, b)) -> (Fix (f a), Fix (f b))
@@ -178,7 +175,7 @@ append xs ys = cata phi xs
   where
     phi :: ListF a (List a) -> List a
     phi Nil = ys
-    phi (Cons a zs) = cons a zs
+    phi (Cons a zs) = cons (a, zs)
 
 cat :: (List a, List a) -> List a
 cat = uncurry append
@@ -196,10 +193,10 @@ subseqs = cata phi
   where
     phi :: ListF a (List (List a)) -> List (List a)
     phi Nil         = tau omega
-    phi (Cons a xs) = cat . pair (map (uncurry cons) . cpr, outr) $ (a, xs)
+    phi (Cons a xs) = cat . pair (map cons . cpr, outr) $ (a, xs)
 
 tau :: a -> List a
-tau x = cons x nil
+tau x = cons (x, nil)
 
 omega :: List a
 omega = nil
@@ -217,19 +214,19 @@ cplist :: List (List a) -> List (List a)
 cplist = cata phi
   where
     phi Nil         = tau omega
-    phi (Cons a xs) = map (uncurry cons) . cpp $ (a, xs)
+    phi (Cons a xs) = map cons . cpp $ (a, xs)
 
 inits :: Fix (ListF a) -> List (List a)
 inits = cata phi
   where
     phi Nil         = tau omega
-    phi (Cons a xs) = cat . pair (const (tau omega), map (uncurry cons) . cpr) $ (a, xs)
+    phi (Cons a xs) = cat . pair (const (tau omega), map cons . cpr) $ (a, xs)
 
 tails :: Fix (ListF a) -> List (List a)
 tails = para phi
   where
     phi Nil                = tau omega
-    phi (Cons a (xs, xs')) = cons (cons a xs) xs'
+    phi (Cons a (xs, xs')) = cons (cons (a, xs), xs')
 
 splits :: Fix (ListF a) -> Fix (ListF (List a, List a))
 splits = uncurry zip . pair (inits, tails)
@@ -238,8 +235,8 @@ append' :: forall a. Fix (NonEmptyListF a) -> List a -> List a
 append' xs ys = cata phi xs
   where
     phi :: NonEmptyListF a (List a) -> List a
-    phi (Wrap x)   = cons x ys
-    phi (Add a zs) = cons a zs
+    phi (Wrap x)   = cons (x, ys)
+    phi (Add a zs) = cons (a, zs)
 
 cat' :: (NonEmptyList a, List a) -> List a
 cat' = uncurry append'
@@ -250,11 +247,11 @@ concat' = cata phi
     phi Nil = nil
     phi (Cons x xs) = para psi x
       where
-        psi (Wrap y)   = cons y xs
-        psi (Add y (ys, _)) = cons y (cat' (ys, xs))
+        psi (Wrap y)   = cons (y, xs)
+        psi (Add y (ys, _)) = cons (y, cat' (ys, xs))
 
 new :: (a, List (NonEmptyList a)) -> List (NonEmptyList a)
-new = uncurry cons . cross (wrap, id)
+new = cons . cross (wrap, id)
 
 cons' :: List a -> (a, List a)
 cons' = para phi
@@ -263,7 +260,7 @@ cons' = para phi
     phi (Cons a (x, _)) = (a, x)
 
 glue :: (a, List (NonEmptyList a)) -> List (NonEmptyList a)
-glue = uncurry cons . cross (uncurry add, id) . assocl . cross (id, cons')
+glue = cons . cross (uncurry add, id) . assocl . cross (id, cons')
 
 glues :: (a, List (NonEmptyList a)) -> List (List (NonEmptyList a))
 glues (a, ys) = cata phi ys
@@ -275,4 +272,4 @@ partitions :: Fix (ListF a) -> List (List (NonEmptyList a))
 partitions = cata phi
   where
     phi Nil = tau nil
-    phi (Cons a xs) = concat . map (uncurry cons . pair (new, glues)) . cpr $ (a, xs)
+    phi (Cons a xs) = concat . map (cons . pair (new, glues)) . cpr $ (a, xs)
