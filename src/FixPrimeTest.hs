@@ -230,6 +230,8 @@ tails = para phi
 
 splits :: Fix (ListF a) -> Fix (ListF (List a, List a))
 splits = uncurry zip . pair (inits, tails)
+    
+{--
 
 append' :: forall a. Fix (NonEmptyListF a) -> List a -> List a
 append' xs ys = cata phi xs
@@ -249,6 +251,7 @@ concat' = cata phi
       where
         psi (Wrap y)        = cons (y, xs)
         psi (Add y (ys, _)) = cons (y, cat' (ys, xs))
+--}
 
 new :: (a, List (NonEmptyList a)) -> List (NonEmptyList a)
 new = cons . cross (wrap, id)
@@ -278,3 +281,6 @@ swap :: (a, b) -> (b, a)
 swap (x, y) = (y, x)
 exch :: (a, (b, c)) -> (b, (a, c))
 exch = assocr . cross (swap, id) . assocl
+
+adds :: (a, List a) -> List (List a)
+adds (a, x) = map (\(y, z) -> cat (y, cons (a, z))) $ splits x
