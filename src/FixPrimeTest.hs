@@ -273,3 +273,8 @@ partitions = cata phi
   where
     phi Nil = tau nil
     phi (Cons a xs) = concat . map (cons . pair (new, glues)) . cpr $ (a, xs)
+
+swap :: (a, b) -> (b, a)
+swap (x, y) = (y, x)
+exch :: (a, (b, c)) -> (b, (a, c))
+exch = assocr . cross (swap, id) . assocl
