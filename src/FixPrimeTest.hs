@@ -126,6 +126,12 @@ init = para phi
     phi (Cons x (In Nil, _)) = nil
     phi (Cons x (xs,    ys)) = cons (x, ys)
 
+init' :: NonEmptyList a -> List a
+init' = cata phi
+  where
+    phi (Wrap x) = nil
+    phi (Add a x) = cons (a, x)
+
 last :: List a -> a
 last = para phi
   where
