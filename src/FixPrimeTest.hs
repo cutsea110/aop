@@ -247,7 +247,7 @@ concat' = cata phi
     phi Nil = nil
     phi (Cons x xs) = para psi x
       where
-        psi (Wrap y)   = cons (y, xs)
+        psi (Wrap y)        = cons (y, xs)
         psi (Add y (ys, _)) = cons (y, cat' (ys, xs))
 
 new :: (a, List (NonEmptyList a)) -> List (NonEmptyList a)
