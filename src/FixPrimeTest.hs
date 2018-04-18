@@ -175,10 +175,10 @@ zip xs ys = In $ biap (bimap ((,), zip) (out xs)) (out ys)
 
 append :: forall a. Fix (ListF a) -> List a -> List a
 append xs ys = cata phi xs
-    where
-      phi :: ListF a (List a) -> List a
-      phi Nil = ys
-      phi (Cons a zs) = cons a zs
+  where
+    phi :: ListF a (List a) -> List a
+    phi Nil = ys
+    phi (Cons a zs) = cons a zs
 
 cat :: (List a, List a) -> List a
 cat = uncurry append
@@ -193,10 +193,10 @@ cp (xs, ys) = map (\a -> (map (a,) ys)) xs
 
 subseqs :: forall a. Fix (ListF a) -> List (List a)
 subseqs = cata phi
-    where
-      phi :: ListF a (List (List a)) -> List (List a)
-      phi Nil         = tau omega
-      phi (Cons a xs) = cat . pair (map (uncurry cons) . cpr, outr) $ (a, xs)
+  where
+    phi :: ListF a (List (List a)) -> List (List a)
+    phi Nil         = tau omega
+    phi (Cons a xs) = cat . pair (map (uncurry cons) . cpr, outr) $ (a, xs)
 
 tau :: a -> List a
 tau x = cons x nil
@@ -206,51 +206,51 @@ omega = nil
 
 concat :: List (List a) -> List a
 concat = cata phi
-    where
-      phi Nil          = nil
-      phi (Cons xs ys) = cat (xs, ys)
+  where
+    phi Nil          = nil
+    phi (Cons xs ys) = cat (xs, ys)
 
 cpp :: (List a, List b) -> List (a, b)
 cpp = concat . cp
 
 cplist :: List (List a) -> List (List a)
 cplist = cata phi
-    where
-      phi Nil         = tau omega
-      phi (Cons a xs) = map (uncurry cons) . cpp $ (a, xs)
+  where
+    phi Nil         = tau omega
+    phi (Cons a xs) = map (uncurry cons) . cpp $ (a, xs)
 
 inits :: Fix (ListF a) -> List (List a)
 inits = cata phi
-    where
-      phi Nil         = tau omega
-      phi (Cons a xs) = cat . pair (const (tau omega), map (uncurry cons) . cpr) $ (a, xs)
+  where
+    phi Nil         = tau omega
+    phi (Cons a xs) = cat . pair (const (tau omega), map (uncurry cons) . cpr) $ (a, xs)
 
 tails :: Fix (ListF a) -> List (List a)
 tails = para phi
-    where
-      phi Nil                = tau omega
-      phi (Cons a (xs, xs')) = cons (cons a xs) xs'
+  where
+    phi Nil                = tau omega
+    phi (Cons a (xs, xs')) = cons (cons a xs) xs'
 
 splits :: Fix (ListF a) -> Fix (ListF (List a, List a))
 splits = uncurry zip . pair (inits, tails)
 
 append' :: forall a. Fix (NonEmptyListF a) -> List a -> List a
 append' xs ys = cata phi xs
-    where
-      phi :: NonEmptyListF a (List a) -> List a
-      phi (Wrap x)   = cons x ys
-      phi (Add a zs) = cons a zs
+  where
+    phi :: NonEmptyListF a (List a) -> List a
+    phi (Wrap x)   = cons x ys
+    phi (Add a zs) = cons a zs
 
 cat' :: (NonEmptyList a, List a) -> List a
 cat' = uncurry append'
 
 concat' :: List (NonEmptyList a) -> List a
 concat' = cata phi
-    where
-      phi Nil = nil
-      phi (Cons x xs) = case out x of
-        (Wrap y) -> cons y xs
-        (Add y ys) -> cons y (cat' (ys, xs))
+  where
+    phi Nil = nil
+    phi (Cons x xs) = case out x of
+      (Wrap y) -> cons y xs
+      (Add y ys) -> cons y (cat' (ys, xs))
 
 new :: (a, List (NonEmptyList a)) -> List (NonEmptyList a)
 new = uncurry cons . cross (wrap, id)
@@ -264,12 +264,13 @@ glue :: (a, List (NonEmptyList a)) -> List (NonEmptyList a)
 glue = uncurry cons . cross (uncurry add, id) . assocl . cross (id, cons')
 
 glues :: (a, List (NonEmptyList a)) -> List (List (NonEmptyList a))
-glues (a, ys) = case out ys of
-  Nil -> nil
-  _   -> tau $ glue (a, ys)
+glues (a, ys) = cata phi ys
+  where
+    phi Nil = nil
+    phi _   = tau $ glue (a, ys)
 
 partitions :: Fix (ListF a) -> List (List (NonEmptyList a))
 partitions = cata phi
-    where
-      phi Nil = tau nil
-      phi (Cons a xs) = concat . map (uncurry cons . pair (new, glues)) . cpr $ (a, xs)
+  where
+    phi Nil = tau nil
+    phi (Cons a xs) = concat . map (uncurry cons . pair (new, glues)) . cpr $ (a, xs)
