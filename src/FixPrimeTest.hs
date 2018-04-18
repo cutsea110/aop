@@ -258,7 +258,7 @@ new = uncurry cons . cross (wrap, id)
 cons' :: List a -> (a, List a)
 cons' = para phi
   where
-    phi Nil = undefined
+    phi Nil = undefined -- this is a partial function
     phi (Cons a (x, x')) = (a, x)
 
 glue :: (a, List (NonEmptyList a)) -> List (NonEmptyList a)
