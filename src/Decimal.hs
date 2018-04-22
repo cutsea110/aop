@@ -27,7 +27,7 @@ type Decimal = Fix (DecimalF Digit)
 wrap :: Int -> Decimal
 wrap = In . Wrap . dp
 snoc :: Decimal -> Int -> Decimal
-snoc dec n = In (Snoc (dec, d n))
+snoc dec n = In . Snoc . cross (id, d) $ (dec, n)
 
 instance Show Decimal where
     show (In (Wrap x)) = show x
