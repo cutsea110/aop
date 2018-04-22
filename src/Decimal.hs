@@ -3,6 +3,7 @@
  #-}
 module Decimal where
 
+import Prelude hiding (Functor(..))
 import FixPrime
 
 -- Digit = {0,1,2,3,4,5,6,7,8,9}
@@ -33,5 +34,16 @@ instance Show Decimal where
     show (In (Wrap x)) = show x
     show (In (Snoc (x, a))) = show x ++ show a
 
+instance Bifunctor DecimalF where
+    bimap (f, g) (Wrap n) = Wrap n
+    bimap (f, g) (Snoc (x, a)) = Snoc (g x, f a)
+
+instance Functor (DecimalF Digit) where
+    fmap f = bimap (id, f)
+
 data NatPlus = One | Succ NatPlus deriving Show
 
+val :: Decimal -> NatPlus
+val = cata phi
+    where
+        phi = undefined
