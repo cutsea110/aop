@@ -24,6 +24,11 @@ dp n | 0 < n && n < 10 = DP n
 data DecimalF a x = Wrap DigitPlus | Snoc (x, a) deriving Show
 type Decimal = Fix (DecimalF Digit)
 
+wrap :: Int -> Decimal
+wrap = In . Wrap . dp
+snoc :: Decimal -> Int -> Decimal
+snoc dec n = In (Snoc (dec, d n))
+
 instance Show Decimal where
     show (In (Wrap x)) = show x
     show (In (Snoc (x, a))) = show x ++ show a
