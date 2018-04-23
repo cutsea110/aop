@@ -65,7 +65,7 @@ embed (DP n) | n == 1    = One
 
 op :: (NatPlus, Digit) -> NatPlus
 op (m, D n) | n == 0    = nat 10 `mult` m
-            | otherwise = (nat 10) `mult` m `plus` nat n
+            | otherwise = (nat 10 `mult` m) `plus` nat n
 
 val :: Decimal -> NatPlus
 val = cata phi
