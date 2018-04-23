@@ -43,13 +43,20 @@ instance Functor (DecimalF Digit) where
     fmap f = bimap (id, f)
 
 data NatPlus = One | Succ NatPlus deriving Show
+foldn :: (a, a -> a) -> NatPlus -> a
+foldn (c, f) One = c
+foldn (c, f) (Succ n) = f (foldn (c, f) n)
+
+plus x = foldn (Succ x, Succ)
+mult x = foldn (x, plus x)
 
 embed :: DigitPlus -> NatPlus
 embed (DP n) | n == 1 = One
              | otherwise = Succ (embed (DP (n-1)))
 
 op :: (Digit, NatPlus) -> NatPlus
-op = undefined
+op (D n, m) | n == 1 = Succ m
+            | otherwise = op (d (n-1), Succ m)
 
 val :: Decimal -> NatPlus
 val = cata phi
