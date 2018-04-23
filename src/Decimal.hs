@@ -46,9 +46,18 @@ data NatPlus = One | Succ NatPlus deriving Show
 foldn :: (a, a -> a) -> NatPlus -> a
 foldn (c, f) One = c
 foldn (c, f) (Succ n) = f (foldn (c, f) n)
+unfoldn :: (a -> Maybe a) -> a -> NatPlus
+unfoldn psi x = case psi x of
+    Nothing -> One
+    Just x' -> Succ (unfoldn psi x')
 
 plus x = foldn (Succ x, Succ)
 mult x = foldn (x, plus x)
+nat :: Int -> NatPlus
+nat = unfoldn psi
+    where
+        psi n | n == 1 = Nothing
+              | otherwise = Just (n-1)
 
 embed :: DigitPlus -> NatPlus
 embed (DP n) | n == 1 = One
