@@ -56,15 +56,16 @@ mult x = foldn (x, plus x)
 nat :: Int -> NatPlus
 nat = unfoldn psi
     where
-        psi n | n == 1 = Nothing
+        psi n | n == 1    = Nothing
               | otherwise = Just (n-1)
 
 embed :: DigitPlus -> NatPlus
-embed (DP n) | n == 1 = One
+embed (DP n) | n == 1    = One
              | otherwise = Succ (embed (DP (n-1)))
 
 op :: (NatPlus, Digit) -> NatPlus
-op (m, D n) = (nat 10 `mult` m) `plus` nat n
+op (m, D n) | n == 0    = nat 10 `mult` m
+            | otherwise = (nat 10) `mult` m `plus` nat n
 
 val :: Decimal -> NatPlus
 val = cata phi
