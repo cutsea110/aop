@@ -63,13 +63,12 @@ embed :: DigitPlus -> NatPlus
 embed (DP n) | n == 1 = One
              | otherwise = Succ (embed (DP (n-1)))
 
-op :: (Digit, NatPlus) -> NatPlus
-op (D n, m) | n == 1 = Succ m
-            | otherwise = op (d (n-1), Succ m)
+op :: (NatPlus, Digit) -> NatPlus
+op (m, D n) = (nat 10 `mult` m) `plus` nat n
 
 val :: Decimal -> NatPlus
 val = cata phi
     where
         phi (Wrap n) = embed n
-        phi (Snoc (d, n)) = op (n, d)
+        phi (Snoc (np, d)) = op (np, d)
 
