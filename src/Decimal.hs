@@ -31,8 +31,9 @@ snoc :: Decimal -> Int -> Decimal
 snoc dec n = In . Snoc . cross (id, d) $ (dec, n)
 
 instance Show Decimal where
-    show (In (Wrap x)) = show x
-    show (In (Snoc (x, a))) = show x ++ show a
+    show x = case out x of
+        Wrap n      -> show n
+        Snoc (x, a) -> show x ++ show a
 
 instance Bifunctor DecimalF where
     bimap (f, g) (Wrap n) = Wrap n
@@ -43,7 +44,16 @@ instance Functor (DecimalF Digit) where
 
 data NatPlus = One | Succ NatPlus deriving Show
 
+embed :: DigitPlus -> NatPlus
+embed (DP n) | n == 1 = One
+             | otherwise = Succ (embed (DP (n-1)))
+
+op :: (Digit, NatPlus) -> NatPlus
+op = undefined
+
 val :: Decimal -> NatPlus
 val = cata phi
     where
-        phi = undefined
+        phi (Wrap n) = embed n
+        phi (Snoc (d, n)) = op (n, d)
+
