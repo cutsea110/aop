@@ -70,6 +70,6 @@ op (m, D n) | n == 0    = nat 10 `mult` m
 val :: Decimal -> NatPlus
 val = cata phi
     where
-        phi (Wrap n) = embed n
+        phi (Wrap n)       = embed n
         phi (Snoc (np, d)) = op (np, d)
 
