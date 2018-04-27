@@ -3,7 +3,7 @@
  #-}
 module Decimal where
 
-import Prelude hiding (Functor(..), div, mod, pred)
+import Prelude hiding (Functor(..), div, mod, pred, subtract)
 import FixPrime
 
 -- Digit = {0,1,2,3,4,5,6,7,8,9}
@@ -78,7 +78,7 @@ pred One = One
 pred (Succ n) = n
 
 subtract :: NatPlus -> NatPlus -> NatPlus
-subtract = undefined
+subtract x y = foldn (pred x, pred) y
 
 div :: NatPlus -> NatPlus -> NatPlus
 div = undefined
