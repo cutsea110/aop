@@ -3,7 +3,7 @@
  #-}
 module Decimal where
 
-import Prelude hiding (Functor(..), div, mod)
+import Prelude hiding (Functor(..), div, mod, pred)
 import FixPrime
 
 -- Digit = {0,1,2,3,4,5,6,7,8,9}
@@ -72,6 +72,10 @@ val = cata phi
     where
         phi (Wrap n)       = embed n
         phi (Snoc (np, d)) = op (np, d)
+
+pred :: NatPlus -> NatPlus
+pred One = One
+pred (Succ n) = n
 
 subtract :: NatPlus -> NatPlus -> NatPlus
 subtract = undefined
