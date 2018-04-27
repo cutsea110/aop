@@ -73,3 +73,8 @@ val = cata phi
         phi (Wrap n)       = embed n
         phi (Snoc (np, d)) = op (np, d)
 
+div :: NatPlus -> NatPlus -> NatPlus
+div = undefined
+
+mod :: NatPlus -> NatPlus -> NatPlus
+mod = undefined
