@@ -1,3 +1,4 @@
+{-# LANGUAGE LambdaCase #-}
 module List where
 
 import Prelude hiding (foldr, reverse)
@@ -62,3 +63,11 @@ insert v = para (c, g)
   where
     c = Cons v Nil
     g (x, (xs, ys)) = if v <= x then (Cons v (Cons x xs)) else Cons x ys
+
+-- Y for List
+fixL f = \case
+  Nil -> Nil
+  Cons x xs -> Cons x (f xs)
+
+-- I for List
+idL = fixL idL
