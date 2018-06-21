@@ -1,3 +1,4 @@
+{-# LANGUAGE LambdaCase #-}
 module NonEmptyList where
 
 import Prelude hiding (foldr, unfoldr, sum, length, map, concat)
@@ -135,3 +136,15 @@ paralist (d, g) (Cons x xs) = g x (xs, paralist (d, g) xs)
 
 paralist' (c, f, g) (Pair x xs) = g x (xs, paralist (c, f) xs)
 
+-- Y for List
+fixL f = \case
+  Nil -> Nil
+  Cons x xs -> Cons x (f xs)
+
+-- I for List
+idL = fixL idL
+
+fixNL f = \case
+  Pair x xs -> Pair x (f xs)
+
+idNL = fixNL idL
