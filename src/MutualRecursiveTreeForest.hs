@@ -1,3 +1,4 @@
+{-# LANGUAGE LambdaCase #-}
 module MutualRecursiveTreeForest where
 
 import Prelude hiding (null)
@@ -77,3 +78,13 @@ mapf f (Grows ts fs) = Grows (mapt f ts) (mapf f fs)
 parat (g, c, h) (Fork a fs) = g a (fs, (paraf (g, c, h) fs))
 paraf (g, c, h) Null = c
 paraf (g, c, h) (Grows ts fs) = h (ts, parat (g, c, h) ts) (fs, paraf (g, c, h) fs)
+
+
+fixT f = \case
+  Fork x xs -> Fork x (f xs)
+
+fixF t f = \case
+  Null -> Null
+  Grows xs ys -> Grows (t xs) (f ys)
+
+(idT, idF) = (fixT idF, fixF idT idF)
