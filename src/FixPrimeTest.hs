@@ -306,7 +306,8 @@ depth = cata phi
     phi (Tip _) = 0
     phi (Bin n m) = 1 + max n m
     
-genTree :: (Int -> Bool) -> Int -> Tree Int
-genTree p = ana psi
+genTree :: Int -> Tree Int
+genTree = cata phi . gen
   where
-    psi n = if n <= 0 || p n then Tip n else Bin (n-1) (n-2)
+    phi Nil = tip 0
+    phi (Cons a x) = bin (tip a) x
