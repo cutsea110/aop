@@ -120,6 +120,12 @@ instance ApplicativeBifunctor NonEmptyListF where
   biap (Add f g) (Add x y) = Add (f x) (g y)
 
 --
+len :: List a -> Int
+len = cata phi
+  where
+    phi Nil = 0
+    phi (Cons _ n) = 1 + n
+
 init :: List a -> List a
 init = para phi
   where
