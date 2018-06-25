@@ -80,11 +80,11 @@ paraf (g, c, h) Null = c
 paraf (g, c, h) (Grows ts fs) = h (ts, parat (g, c, h) ts) (fs, paraf (g, c, h) fs)
 
 
-fixT f = \case
+fixT (ｔ, f) = \case
   Fork x xs -> Fork x (f xs)
 
-fixF t f = \case
+fixF (t, f) = \case
   Null -> Null
   Grows xs ys -> Grows (t xs) (f ys)
 
-(idT, idF) = (fixT idF, fixF idT idF)
+(idT, idF) = (fixT (idT, idF), fixF (idT, idF))
