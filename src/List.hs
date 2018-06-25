@@ -21,6 +21,7 @@ cfoldr :: (b, a -> b -> b) -> Cons a -> b
 cfoldr (c, f) Nil = c
 cfoldr (c, f) (Cons x xs) = f x (cfoldr (c, f) xs)
 
+unfoldr :: (b -> Maybe (a, b)) -> b -> Cons a
 unfoldr phi x = case phi x of
   Nothing -> nil
   Just (a, x') -> cons (a, unfoldr phi x')
