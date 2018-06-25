@@ -8,9 +8,11 @@ data Tree a = Tip a | Bin (Tree a) (Tree a) deriving (Show, Eq)
 tip = Tip
 bin = uncurry Bin
 
+foldt :: (a -> b, (b, b) -> b) -> Tree a -> b
 foldt (f, g) (Tip a) = f a
 foldt (f, g) (Bin tl tr) = g (foldt (f, g) tl, foldt (f, g) tr)
 
+unfoldt :: (b -> Either a (b, b)) -> b -> Tree a
 unfoldt phi x = case phi x of
   Left a -> tip a
   Right (tl, tr) -> bin (unfoldt phi tl, unfoldt phi tr)
