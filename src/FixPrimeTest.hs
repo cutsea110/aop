@@ -299,3 +299,14 @@ perms = cata phi
   where
     phi Nil = tau nil
     phi (Cons a x) = concat . map adds . cpr $ (a, x)
+
+depth :: Tree a -> Int
+depth = cata phi
+  where
+    phi (Tip _) = 0
+    phi (Bin n m) = 1 + max n m
+    
+genTree :: (Int -> Bool) -> Int -> Tree Int
+genTree p = ana psi
+  where
+    psi n = if n <= 0 || p n then Tip n else Bin (n-1) (n-2)
