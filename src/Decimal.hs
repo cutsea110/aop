@@ -81,7 +81,7 @@ subtract :: NatPlus -> NatPlus -> NatPlus
 subtract x y = foldn (pred x, pred) y
 
 div :: NatPlus -> NatPlus -> NatPlus
-div = undefined
+div x y = undefined
 
 mod :: NatPlus -> NatPlus -> NatPlus
-mod = undefined
+mod x y = undefined
