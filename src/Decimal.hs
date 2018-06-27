@@ -85,8 +85,10 @@ One  `le` y = True
 (Succ n) `le` One = False
 (Succ n) `le` (Succ m) = n `le` m
 
-div :: NatPlus -> NatPlus -> NatPlus
+data Nat = Z | S Nat deriving Show
+
+div :: NatPlus -> NatPlus -> Nat
 div = undefined
 
-mod :: NatPlus -> NatPlus -> NatPlus
+mod :: NatPlus -> NatPlus -> Nat
 mod = undefined
