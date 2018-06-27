@@ -80,6 +80,11 @@ pred (Succ n) = n
 subtract :: NatPlus -> NatPlus -> NatPlus
 subtract x y = foldn (pred x, pred) y
 
+le :: NatPlus -> NatPlus -> Bool
+One  `le` y = True
+(Succ n) `le` One = False
+(Succ n) `le` (Succ m) = n `le` m
+
 div :: NatPlus -> NatPlus -> NatPlus
 div = undefined
 
