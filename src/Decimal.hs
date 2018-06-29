@@ -73,22 +73,28 @@ val = cata phi
         phi (Wrap n)       = embed n
         phi (Snoc (np, d)) = op (np, d)
 
-pred :: NatPlus -> NatPlus
-pred One = One
-pred (Succ n) = n
+data Nat = Z | S Nat deriving Show
 
-subtract :: NatPlus -> NatPlus -> NatPlus
-subtract x y = foldn (pred x, pred) y
+toNat :: NatPlus -> Nat
+toNat One = S Z
+toNat (Succ n) = S (toNat n)
+
+pred :: NatPlus -> Nat
+pred One = Z
+pred (Succ n) = toNat n
 
 le :: NatPlus -> NatPlus -> Bool
 One  `le` y = True
 (Succ n) `le` One = False
 (Succ n) `le` (Succ m) = n `le` m
 
-data Nat = Z | S Nat deriving Show
+{--
+subtract :: NatPlus -> NatPlus -> NatPlus
+subtract x y = foldn (pred x, pred) y
 
 div :: NatPlus -> NatPlus -> Nat
-div = undefined
+div x y = undefined
 
 mod :: NatPlus -> NatPlus -> Nat
-mod = undefined
+mod x y = undefined
+--}
