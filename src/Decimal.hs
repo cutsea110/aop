@@ -88,10 +88,12 @@ One  `le` y = True
 (Succ n) `le` One = False
 (Succ n) `le` (Succ m) = n `le` m
 
-{--
-subtract :: NatPlus -> NatPlus -> NatPlus
-subtract x y = foldn (pred x, pred) y
+subtract :: NatPlus -> NatPlus -> Nat
+subtract x y = foldn (pred x, pred') y
+  where
+    pred' (S n) = n
 
+{--
 div :: NatPlus -> NatPlus -> Nat
 div x y = undefined
 
