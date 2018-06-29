@@ -89,15 +89,13 @@ One  `le` y = True
 (Succ n) `le` (Succ m) = n `le` m
 
 subtract :: NatPlus -> NatPlus -> Nat
-subtract x y = foldn (pred x, pred') y
+subtract x = foldn (pred x, pred')
   where
     pred' Z = Z
     pred' (S n) = n
 
-{--
 div :: NatPlus -> NatPlus -> Nat
 div x y = undefined
 
 mod :: NatPlus -> NatPlus -> Nat
 mod x y = undefined
---}
