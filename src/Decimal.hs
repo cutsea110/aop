@@ -91,6 +91,7 @@ One  `le` y = True
 subtract :: NatPlus -> NatPlus -> Nat
 subtract x y = foldn (pred x, pred') y
   where
+    pred' Z = Z
     pred' (S n) = n
 
 {--
