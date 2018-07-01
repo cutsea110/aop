@@ -75,6 +75,10 @@ val = cata phi
 
 data Nat = Z | S Nat deriving Show
 
+foldN :: (a, a -> a) -> Nat -> a
+foldN (c, f) Z = c
+foldN (c, f) (S n) = f (foldN (c, f) n)
+
 toNat :: NatPlus -> Nat
 toNat One = S Z
 toNat (Succ n) = S (toNat n)
