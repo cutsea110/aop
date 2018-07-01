@@ -103,12 +103,18 @@ subtract x = foldn (pred x, pred')
     pred' Z = Z
     pred' (S n) = n
 
+toNatPlus :: Nat -> NatPlus
+toNatPlus (S Z) = One
+toNatPlus (S n) = Succ (toNatPlus n)
+
 div :: NatPlus -> NatPlus -> Nat
-div x y = unfoldN psi Z
+div x y = unfoldN psi x
   where
+    psi :: NatPlus -> Maybe NatPlus
     psi = undefined
 
 mod :: NatPlus -> NatPlus -> Nat
 mod x y = unfoldN psi x
   where
-    psi = undefined
+    psi :: NatPlus -> Maybe NatPlus
+    psi x' = if x' `le` y then Nothing else Just (toNatPlus (subtract x' y))
