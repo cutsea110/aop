@@ -104,7 +104,11 @@ subtract x = foldn (pred x, pred')
     pred' (S n) = n
 
 div :: NatPlus -> NatPlus -> Nat
-div x y = undefined
+div x y = unfoldN psi Z
+  where
+    psi = undefined
 
 mod :: NatPlus -> NatPlus -> Nat
-mod x y = undefined
+mod x y = unfoldN psi x
+  where
+    psi = undefined
