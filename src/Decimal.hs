@@ -79,6 +79,11 @@ foldN :: (a, a -> a) -> Nat -> a
 foldN (c, f) Z = c
 foldN (c, f) (S n) = f (foldN (c, f) n)
 
+unfoldN :: (a -> Maybe a) -> a -> Nat
+unfoldN psi x = case psi x of
+  Nothing -> Z
+  Just x' -> S (unfoldN psi x')
+
 toNat :: NatPlus -> Nat
 toNat One = S Z
 toNat (Succ n) = S (toNat n)
