@@ -87,6 +87,9 @@ unfoldN psi x = case psi x of
 toNat :: NatPlus -> Nat
 toNat One = S Z
 toNat (Succ n) = S (toNat n)
+fromNat :: Nat -> NatPlus
+fromNat (S Z) = One
+fromNat (S n) = Succ (fromNat n)
 
 pred :: NatPlus -> Nat
 pred One = Z
@@ -109,11 +112,12 @@ toInt :: Nat -> Int
 toInt = foldN (0, (+1))
 
 div :: NatPlus -> NatPlus -> Nat
-div x y = unfoldN psi Z
+div x y = unfoldN psi x
   where
     psi = undefined
 
 mod :: NatPlus -> NatPlus -> Nat
 mod x y = unfoldN psi x
   where
-    psi = undefined
+    psi :: NatPlus -> Maybe NatPlus
+    psi x' = if x' `le` y then Nothing else Just (fromNat (subtract x' y))
