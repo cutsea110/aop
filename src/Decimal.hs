@@ -87,15 +87,27 @@ unfoldN psi x = case psi x of
 toNat :: NatPlus -> Nat
 toNat One = S Z
 toNat (Succ n) = S (toNat n)
+fromNat :: Nat -> NatPlus
+fromNat (S Z) = One
+fromNat (S n) = Succ (fromNat n)
 
 pred :: NatPlus -> Nat
 pred One = Z
 pred (Succ n) = toNat n
 
+eq :: NatPlus -> NatPlus -> Bool
+One `eq` One = True
+One `eq` (Succ y) = False
+(Succ x) `eq` One = False
+(Succ x) `eq` (Succ y) = x `eq` y
+
 le :: NatPlus -> NatPlus -> Bool
 One  `le` y = True
 (Succ n) `le` One = False
 (Succ n) `le` (Succ m) = n `le` m
+
+lt :: NatPlus -> NatPlus -> Bool
+x `lt` y = x `le` y && not (x `eq` y)
 
 subtract :: NatPlus -> NatPlus -> Nat
 subtract x = foldn (pred x, pred')
@@ -103,18 +115,26 @@ subtract x = foldn (pred x, pred')
     pred' Z = Z
     pred' (S n) = n
 
+subtract' :: Nat -> NatPlus -> Nat
+subtract' x y = undefined
+
 toNatPlus :: Nat -> NatPlus
 toNatPlus (S Z) = One
 toNatPlus (S n) = Succ (toNatPlus n)
 
-div :: NatPlus -> NatPlus -> Nat
+fromInt :: Int -> NatPlus
+fromInt n = if n == 1 then One else Succ (fromInt $ n-1)
+toInt :: Nat -> Int
+toInt = foldN (0, (+1))
+
+div :: Nat -> NatPlus -> Nat
 div x y = unfoldN psi x
   where
-    psi :: NatPlus -> Maybe NatPlus
-    psi = undefined
+    psi :: Nat -> Maybe Nat
+    psi x' = undefined
 
-mod :: NatPlus -> NatPlus -> Nat
+mod :: Nat -> NatPlus -> Nat
 mod x y = unfoldN psi x
   where
-    psi :: NatPlus -> Maybe NatPlus
-    psi x' = if x' `le` y then Nothing else Just (toNatPlus (subtract x' y))
+    psi :: Nat -> Maybe Nat
+    psi x' = undefined
