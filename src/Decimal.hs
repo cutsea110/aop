@@ -103,6 +103,11 @@ subtract x = foldn (pred x, pred')
     pred' Z = Z
     pred' (S n) = n
 
+fromInt :: Int -> NatPlus
+fromInt n = if n == 1 then One else Succ (fromInt $ n-1)
+toInt :: Nat -> Int
+toInt = foldN (0, (+1))
+
 div :: NatPlus -> NatPlus -> Nat
 div x y = unfoldN psi Z
   where
