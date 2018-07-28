@@ -116,7 +116,7 @@ subtract x = foldn (pred x, pred')
     pred' (S n) = n
 
 subtract' :: Nat -> NatPlus -> Nat
-subtract' x = foldn (pred' x, undefined)
+subtract' x = foldn (pred' x, pred')
   where
     pred' Z = Z
     pred' (S n) = n
