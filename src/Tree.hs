@@ -52,8 +52,9 @@ instance Functor Tree where
   a <$ (Bin x y) = Bin (a <$ x) (a <$ y)
 
 instance Applicative Tree where
-  pure = undefined
-  (<*>) = undefined
+  pure x = Tip x
+  Tip f <*> Tip x = Tip (f x)
+  Bin f g <*> Bin x y = Bin (f <*> x) (g <*> y)
 
 instance Monad Tree where
   return = pure
