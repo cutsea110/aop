@@ -58,4 +58,5 @@ instance Applicative Tree where
 
 instance Monad Tree where
   return = pure
-  (>>=) = undefined
+  Tip x >>= f  = undefined
+  Bin x y >>= f = undefined
