@@ -44,3 +44,17 @@ fixT f = \case
   Bin xs ys -> Bin (f xs) (f ys)
 
 idT = fixT idT
+
+instance Functor Tree where
+  fmap f (Tip x) = Tip (f x)
+  fmap f (Bin x y) = Bin (fmap f x) (fmap f y)
+  a <$ (Tip _) = Tip a
+  a <$ (Bin x y) = Bin (a <$ x) (a <$ y)
+
+instance Applicative Tree where
+  pure = undefined
+  (<*>) = undefined
+
+instance Monad Tree where
+  return = pure
+  (>>=) = undefined
