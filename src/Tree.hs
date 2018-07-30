@@ -27,8 +27,8 @@ mapt f (Bin l r) = bin (mapt f l, mapt f r)
 mapt' f = foldt (tip . f, bin . cross (id, id))
 
 cat (x, y) = x ++ y
-wrap x = [x]
-cons (x, xs) = x:xs
+wrap = (:[])
+cons = uncurry (:)
 
 tips = foldt (wrap, cat)
 
