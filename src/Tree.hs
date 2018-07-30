@@ -50,10 +50,11 @@ instance Functor Tree where
   a <$ (Tip _) = Tip a
   a <$ (Bin l r) = Bin (a <$ l) (a <$ r)
 
+-- | ref.) http://www.cs.nott.ac.uk/~pszvc/g52afp/functor_applicative.hs
 instance Applicative Tree where
   pure = eta
-  Tip f <*> Tip a = Tip (f a)
-  Bin f g <*> Bin l r = Bin (f <*> l) (g <*> r)
+  Tip f <*> x = fmap f x
+  Bin l r <*> x = Bin (l <*> x) (r <*> x)
 
 -- | ref.) https://stackoverflow.com/questions/6798699/monad-instance-for-binary-tree
 -- and answered by Edward Kmett
