@@ -46,15 +46,15 @@ fixT f = \case
 idT = fixT idT
 
 instance Functor Tree where
-  fmap f (Tip x) = Tip (f x)
-  fmap f (Bin x y) = Bin (fmap f x) (fmap f y)
+  fmap f (Tip a) = Tip (f a)
+  fmap f (Bin l r) = Bin (fmap f l) (fmap f r)
   a <$ (Tip _) = Tip a
-  a <$ (Bin x y) = Bin (a <$ x) (a <$ y)
+  a <$ (Bin l r) = Bin (a <$ l) (a <$ r)
 
 instance Applicative Tree where
-  pure x = Tip x
-  Tip f <*> Tip x = Tip (f x)
-  Bin f g <*> Bin x y = Bin (f <*> x) (g <*> y)
+  pure = Tip
+  Tip f <*> Tip a = Tip (f a)
+  Bin f g <*> Bin l r = Bin (f <*> l) (g <*> r)
 
 -- | ref.) https://stackoverflow.com/questions/6798699/monad-instance-for-binary-tree
 -- and answered by Edward Kmett
