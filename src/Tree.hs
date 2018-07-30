@@ -51,7 +51,7 @@ instance Functor Tree where
   a <$ (Bin l r) = Bin (a <$ l) (a <$ r)
 
 instance Applicative Tree where
-  pure = Tip
+  pure = eta
   Tip f <*> Tip a = Tip (f a)
   Bin f g <*> Bin l r = Bin (f <*> l) (g <*> r)
 
