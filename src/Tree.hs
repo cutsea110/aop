@@ -63,5 +63,5 @@ instance Monad Tree where
   Tip a >>= f  = f a
   Bin l r >>= f = Bin (l >>= f) (r >>= f)
 
-eta = {- [tip, bin] . inl -} tip
-mu = {- (| [id, [tip, bin] . inr] |) -} foldt (id, bin)
+eta = {- alpha . in = [tip, bin] . inl = -} tip
+mu = {- (| id, alpha . inr|) = (| [id, [tip, bin] . inr] |) = -} foldt (id, bin)
