@@ -56,7 +56,9 @@ instance Applicative Tree where
   Tip f <*> Tip x = Tip (f x)
   Bin f g <*> Bin x y = Bin (f <*> x) (g <*> y)
 
+-- | ref.) https://stackoverflow.com/questions/6798699/monad-instance-for-binary-tree
+-- and answered by Edward Kmett
 instance Monad Tree where
   return = pure
-  Tip x >>= f  = undefined
-  Bin x y >>= f = undefined
+  Tip a >>= f  = f a
+  Bin l r >>= f = Bin (l >>= f) (r >>= f)
