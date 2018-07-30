@@ -40,8 +40,8 @@ para (d, g) (Tip x) = d x
 para (d, g) (Bin l r) = g (l, para (d, g) l) (r, para (d, g) r)
 
 fixT f = \case
-  Tip x -> Tip x
-  Bin xs ys -> Bin (f xs) (f ys)
+  Tip x -> tip x
+  Bin xs ys -> bin (f xs, f ys)
 
 idT = fixT idT
 
