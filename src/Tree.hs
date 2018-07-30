@@ -46,8 +46,7 @@ fixT f = \case
 idT = fixT idT
 
 instance Functor Tree where
-  fmap f (Tip a) = Tip (f a)
-  fmap f (Bin l r) = Bin (fmap f l) (fmap f r)
+  fmap = mapt
   a <$ (Tip _) = Tip a
   a <$ (Bin l r) = Bin (a <$ l) (a <$ r)
 
