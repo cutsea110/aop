@@ -62,3 +62,6 @@ instance Monad Tree where
   return = pure
   Tip a >>= f  = f a
   Bin l r >>= f = Bin (l >>= f) (r >>= f)
+
+eta = {- [tip, bin] . inl -} tip
+mu = {- (| [id, [tip, bin] . inr] |) -} foldt (id, bin)
