@@ -65,4 +65,5 @@ instance Monad Tree where
 --  Bin l r >>= f = Bin (l >>= f) (r >>= f)
 
 eta = {- alpha . in = [tip, bin] . inl = -} tip
+-- a.k.a join
 mu = {- (| id, alpha . inr|) = (| [id, [tip, bin] . inr] |) = -} foldt (id, bin)
