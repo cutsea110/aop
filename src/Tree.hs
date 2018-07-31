@@ -66,4 +66,15 @@ instance Monad Tree where
 
 eta = {- alpha . inl = [tip, bin] . inl = -} tip
 -- a.k.a join
+-- >>> let t = tip (bin (tip (tip 1), tip (bin (tip 2, tip 3))))
+-- >>> t
+-- Tip (Bin (Tip (Tip 1)) (Tip (Bin (Tip 2) (Tip 3))))
+-- >>> mu t
+-- Bin (Tip (Tip 1)) (Tip (Bin (Tip 2) (Tip 3)))
+-- >>> mu . mu $ t
+-- Bin (Tip 1) (Bin (Tip 2) (Tip 3))
+-- >>> fmap mu t
+-- Tip (Bin (Tip 1) (Bin (Tip 2) (Tip 3)))
+-- >>> mu . fmap mu $ t
+-- Bin (Tip 1) (Bin (Tip 2) (Tip 3))
 mu = {- (| id, alpha . inr |) = (| id, [tip, bin] . inr |) = -} foldt (id, bin)
