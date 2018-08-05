@@ -90,3 +90,4 @@ fixF (t, f) = \case
 (idT, idF) = (fixT (idT, idF), fixF (idT, idF))
 
 etat x = Fork x Null
+etaf x = Grows (etat x) Null
