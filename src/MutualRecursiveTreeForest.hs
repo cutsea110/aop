@@ -88,3 +88,5 @@ fixF (t, f) = \case
   Grows xs ys -> Grows (t xs) (f ys)
 
 (idT, idF) = (fixT (idT, idF), fixF (idT, idF))
+
+eta x = Fork x Null
