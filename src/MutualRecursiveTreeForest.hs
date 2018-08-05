@@ -89,4 +89,4 @@ fixF (t, f) = \case
 
 (idT, idF) = (fixT (idT, idF), fixF (idT, idF))
 
-eta x = Fork x Null
+etat x = Fork x Null
