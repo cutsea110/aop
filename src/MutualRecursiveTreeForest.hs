@@ -121,7 +121,9 @@ xs <> ys = paraf (g, c, h) xs
     c = ys
     h (_, t') (_, fs') = grows (t', fs')
 
+etat :: a -> Tree a
 etat x = fork (x,null)
+etaf :: a -> Forest a
 etaf x = grows (etat x, null)
 
 mut :: Tree (Tree a) -> Tree a
