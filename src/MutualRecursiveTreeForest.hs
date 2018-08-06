@@ -100,7 +100,9 @@ instance Functor Forest where
 
 instance Applicative Tree where
   pure = etat
-  (<*>) = undefined
+  Fork f fs <*> t@(Fork x xs) =
+    let Fork x' xs' = fmap f t
+    in Fork x' (xs' <> (fs <*> xs))
 
 instance Applicative Forest where
   pure = etaf
