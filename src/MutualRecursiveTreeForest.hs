@@ -17,7 +17,7 @@ grows = uncurry Grows
 foldt (g, c, h) (Fork x fs) = g (x, foldf (g, c, h) fs)
 
 foldf (g, c, h) Null = c
-foldf (g, c, h) (Grows ts fs) = h (foldt (g, c, h) ts, foldf (g, c, h) fs)
+foldf (g, c, h) (Grows t fs) = h (foldt (g, c, h) t, foldf (g, c, h) fs)
 
 unfoldt b@(phi, psi) t = case phi t of
   (a, f') -> Fork a (unfoldf b f')
