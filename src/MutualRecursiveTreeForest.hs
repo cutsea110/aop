@@ -89,5 +89,9 @@ fixF (t, f) = \case
 
 (idT, idF) = (fixT (idT, idF), fixF (idT, idF))
 
+(<>) :: Forest a -> Forest a -> Forest a
+Null <> ys = ys
+Grows t xs <> ys = Grows t (xs <> ys)
+
 etat x = fork (x,null)
 etaf x = grows (etat x, null)
