@@ -89,6 +89,15 @@ fixF (t, f) = \case
 
 (idT, idF) = (fixT (idT, idF), fixF (idT, idF))
 
+instance Functor Tree where
+  fmap = mapt
+  x <$ (Fork _ fs) = Fork x (x <$ fs)
+
+instance Functor Forest where
+  fmap = mapf
+  x <$ Null = Null
+  x <$ (Grows t fs) = Grows (x <$ t) (x <$ fs)
+
 (<>) :: Forest a -> Forest a -> Forest a
 Null <> ys = ys
 Grows t xs <> ys = Grows t (xs <> ys)
