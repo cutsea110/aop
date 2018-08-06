@@ -65,7 +65,7 @@ idf = foldf (fork, null, grows)
 
 mapt f (Fork a fs) = Fork (f a) (mapf f fs)
 mapf f Null = Null
-mapf f (Grows ts fs) = Grows (mapt f ts) (mapf f fs)
+mapf f (Grows t fs) = Grows (mapt f t) (mapf f fs)
 
 (mapt', mapf') = (genMap foldt, genMap foldf)
   where
@@ -77,7 +77,7 @@ mapf f (Grows ts fs) = Grows (mapt f ts) (mapf f fs)
 
 parat (g, c, h) (Fork a fs) = g a (fs, (paraf (g, c, h) fs))
 paraf (g, c, h) Null = c
-paraf (g, c, h) (Grows ts fs) = h (ts, parat (g, c, h) ts) (fs, paraf (g, c, h) fs)
+paraf (g, c, h) (Grows t fs) = h (t, parat (g, c, h) t) (fs, paraf (g, c, h) fs)
 
 
 fixT (ｔ, f) = \case
