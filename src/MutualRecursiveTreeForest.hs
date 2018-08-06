@@ -106,6 +106,14 @@ instance Applicative Forest where
   pure = etaf
   (<*>) = undefined
 
+instance Monad Tree where
+  return = etat
+  m >>= f = mut (fmap f m)
+
+instance Monad Forest where
+  return = etaf
+  m >>= f = muf (fmap f m)
+
 (<>) :: Forest a -> Forest a -> Forest a
 xs <> ys = paraf (g, c, h) xs
   where
@@ -115,3 +123,9 @@ xs <> ys = paraf (g, c, h) xs
 
 etat x = fork (x,null)
 etaf x = grows (etat x, null)
+
+mut :: Tree (Tree a) -> Tree a
+mut = undefined
+
+muf :: Forest (Forest a) -> Forest a
+muf = undefined
