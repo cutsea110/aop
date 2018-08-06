@@ -129,7 +129,10 @@ etaf :: a -> Forest a
 etaf x = grows (etat x, null)
 
 mut :: Tree (Tree a) -> Tree a
-mut = undefined
+mut (Fork (Fork x xs) ys) = Fork x (xs <> muft ys)
+muft :: Forest (Tree a) -> Forest a
+muft Null = Null
+muft (Grows t fs) = Grows (mut t) (muft fs)
 
 muf :: Forest (Forest a) -> Forest a
 muf = undefined
