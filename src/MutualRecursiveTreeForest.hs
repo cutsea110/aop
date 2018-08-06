@@ -98,6 +98,14 @@ instance Functor Forest where
   x <$ Null = Null
   x <$ (Grows t fs) = Grows (x <$ t) (x <$ fs)
 
+instance Applicative Tree where
+  pure = etat
+  (<*>) = undefined
+
+instance Applicative Forest where
+  pure = etaf
+  (<*>) = undefined
+
 (<>) :: Forest a -> Forest a -> Forest a
 Null <> ys = ys
 Grows t xs <> ys = Grows t (xs <> ys)
