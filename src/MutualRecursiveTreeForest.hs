@@ -107,8 +107,11 @@ instance Applicative Forest where
   (<*>) = undefined
 
 (<>) :: Forest a -> Forest a -> Forest a
-Null <> ys = ys
-Grows t xs <> ys = Grows t (xs <> ys)
+xs <> ys = paraf (g, c, h) xs
+  where
+    g t (fs, _) = fork (t, fs)
+    c = ys
+    h (_, t') (_, fs') = grows (t', fs')
 
 etat x = fork (x,null)
 etaf x = grows (etat x, null)
