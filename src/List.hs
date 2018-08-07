@@ -76,4 +76,9 @@ idL = fixL idL
 instance Functor Cons where
   fmap = listr
 
+instance Applicative Cons where
+  pure = eta
+  Cons f fs <*> xxs = ccat (fmap f xxs) (fs <*> xxs)
+  Nil <*> _ = Nil
 
+eta x = Cons x Nil
