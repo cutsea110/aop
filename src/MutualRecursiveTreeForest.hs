@@ -134,5 +134,9 @@ muft :: Forest (Tree a) -> Forest a
 muft Null = Null
 muft (Grows t fs) = Grows (mut t) (muft fs)
 
+mutf :: Tree (Forest a) -> Tree a
+mutf (Fork Null xs) = Fork undefined (muf xs)
+mutf (Fork (Grows (Fork t xs) ys) zs) = Fork t (xs <> ys <> muf zs)
 muf :: Forest (Forest a) -> Forest a
-muf = undefined
+muf Null = Null
+muf (Grows t fs) = Grows (mutf t) (muf fs)
