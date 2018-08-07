@@ -72,3 +72,8 @@ fixL f = \case
 
 -- I for List
 idL = fixL idL
+
+instance Functor Cons where
+  fmap = listr
+
+
