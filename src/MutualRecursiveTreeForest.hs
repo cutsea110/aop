@@ -106,7 +106,7 @@ instance Applicative Tree where
 
 instance Applicative Forest where
   pure = etaf
-  Grows ft ff <*> Grows xt xf = undefined
+  Grows ft ff <*> Grows xt xf = grows (ft <*> xt, ff <*> xf)
   _ <*> _ = null
 
 instance Monad Tree where
