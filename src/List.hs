@@ -82,3 +82,5 @@ instance Applicative Cons where
   Nil <*> _ = Nil
 
 eta x = Cons x Nil
+mu Nil = Nil
+mu (Cons x xs) = x `ccat` (mu xs)
