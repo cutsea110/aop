@@ -81,6 +81,5 @@ instance Applicative Cons where
   Cons f fs <*> xxs = ccat (fmap f xxs) (fs <*> xxs)
   Nil <*> _ = Nil
 
-eta x = Cons x Nil
-mu Nil = Nil
-mu (Cons x xs) = x `ccat` (mu xs)
+eta x = cons (x, nil)
+mu = foldr (nil, cat)
