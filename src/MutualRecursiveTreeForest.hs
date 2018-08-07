@@ -102,7 +102,7 @@ instance Applicative Tree where
   pure = etat
   Fork f fs <*> t@(Fork x xs) =
     let Fork x' xs' = fmap f t
-    in Fork x' (xs' <> (fs <*> xs))
+    in Fork x' (xs' <> (fmap ($ x) fs) <> (fs <*> xs))
 
 instance Applicative Forest where
   pure = etaf
