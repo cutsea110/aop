@@ -129,14 +129,14 @@ etaf :: a -> Forest a
 etaf x = grows (etat x, null)
 
 mut :: Tree (Tree a) -> Tree a
-mut (Fork (Fork x xs) ys) = Fork x (xs <> muft ys)
+mut (Fork (Fork x xs) ys) = fork (x, xs <> muft ys)
 muft :: Forest (Tree a) -> Forest a
-muft Null = Null
-muft (Grows t fs) = Grows (mut t) (muft fs)
+muft Null = null
+muft (Grows t fs) = grows (mut t, muft fs)
 
 mutf :: Tree (Forest a) -> Tree a
-mutf (Fork Null xs) = Fork undefined (muf xs)
-mutf (Fork (Grows (Fork t xs) ys) zs) = Fork t (xs <> ys <> muf zs)
+mutf (Fork Null xs) = fork (undefined, muf xs)
+mutf (Fork (Grows (Fork t xs) ys) zs) = fork (t, xs <> ys <> muf zs)
 muf :: Forest (Forest a) -> Forest a
-muf Null = Null
-muf (Grows t fs) = Grows (mutf t) (muf fs)
+muf Null = null
+muf (Grows t fs) = grows (mutf t, muf fs)
