@@ -81,5 +81,9 @@ instance Applicative Cons where
   Cons f fs <*> xxs = ccat (fmap f xxs) (fs <*> xxs)
   Nil <*> _ = Nil
 
+instance Monad Cons where
+  return = eta
+  m >>= f = mu (fmap f m)
+
 eta x = cons (x, nil)
 mu = foldr (nil, cat)
