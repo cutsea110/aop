@@ -126,10 +126,9 @@ xs <> ys = paraf (g, c, h) xs
     h (_, t') (_, fs') = grows (t', fs')
 
 etat :: a -> Tree a
-etat = fork . pair (id, etaf)
+etat = fork . pair (id, const null)
 etaf :: a -> Forest a
-etaf = const null
--- etaf x = grows (etat x, null)
+etaf = grows . pair (etat, const null)
 
 mut :: Tree (Tree a) -> Tree a
 mut (Fork (Fork a fa) fta) = fork (a, fa <> muft fta)
