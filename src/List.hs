@@ -7,6 +7,7 @@ data Cons a = Nil
             | Cons a (Cons a)
             deriving (Show, Eq)
 
+pair (f, g) x = (f x, g x)
 cross (f, g) (x, y) = (f x, g y)
 compose (f, g) = f . g -- (.) f g => uncurry (.) (f, g)
 
@@ -85,5 +86,7 @@ instance Monad Cons where
   return = eta
   m >>= f = mu (fmap f m)
 
-eta x = cons (x, nil)
+-- bad implementation
+-- eta = cons . pair (id, eta)
+eta = cons . pair (id, const nil)
 mu = foldr (nil, cat)
