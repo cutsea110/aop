@@ -1,6 +1,7 @@
 {-# LANGUAGE LambdaCase #-}
 module Tree where
 
+pair (f, g) x = (f x, g x)
 cross (f, g) (x, y) = (f x, g y)
 compose (h, k) = h . k
 
@@ -64,7 +65,9 @@ instance Monad Tree where
 --  Tip a >>= f  = f a
 --  Bin l r >>= f = Bin (l >>= f) (r >>= f)
 
-
+-- bad implementation
+-- eta = bin . pair (eta, eta)
+--
 -- a.k.a return
 -- >>> let t2 = bin (tip 1, tip 2)
 -- >>> t2
