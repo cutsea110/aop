@@ -88,5 +88,17 @@ instance Monad Cons where
 
 -- bad implementation
 -- eta = cons . pair (id, eta)
+-- 
+-- TA <-------------- 1 + A x TA
+--  ^                   ^
+--  |                   | inr
+--  |                   A x TA
+--  |                   ^
+--  |                   | <id, eta> or <id, const nil>
+--  +-------------------A
+-- eta = [nil, cons] . inr . <id, eta>
+--        OR
+-- eta = [nil, cons] . inr . <id, const nil>
+--
 eta = cons . pair (id, const nil)
 mu = foldr (nil, cat)
