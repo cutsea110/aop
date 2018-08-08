@@ -3,6 +3,7 @@ module MutualRecursiveTreeForest where
 
 import Prelude hiding (null)
 
+pair (f, g) x = (f x, g x)
 cross (f, g) (x, y) = (f x, g y)
 
 data Tree a = Fork a (Forest a) deriving (Show, Eq)
@@ -125,15 +126,16 @@ xs <> ys = paraf (g, c, h) xs
     h (_, t') (_, fs') = grows (t', fs')
 
 etat :: a -> Tree a
-etat x = fork (x,null)
+etat = fork . pair (id, etaf)
 etaf :: a -> Forest a
-etaf x = grows (etat x, null)
+etaf = const null
+-- etaf x = grows (etat x, null)
 
 mut :: Tree (Tree a) -> Tree a
-mut (Fork (Fork x xs) ys) = fork (x, xs <> muft ys)
+mut (Fork (Fork a fa) fta) = fork (a, fa <> muft fta)
 muft :: Forest (Tree a) -> Forest a
 muft Null = null
-muft (Grows t fs) = grows (mut t, muft fs)
+muft (Grows tta fta) = grows (mut tta, muft fta)
 
 mutf :: Tree (Forest a) -> Tree a
 mutf (Fork Null xs) = fork (undefined, muf xs)
