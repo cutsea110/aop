@@ -1,7 +1,7 @@
 {-# LANGUAGE LambdaCase #-}
 module List where
 
-import Prelude hiding (foldr, reverse)
+import Prelude hiding (foldr, reverse, sum)
 
 data Cons a = Nil
             | Cons a (Cons a)
@@ -102,3 +102,8 @@ instance Monad Cons where
 --
 eta = cons . pair (id, const nil)
 mu = foldr (nil, cat)
+
+sum = foldr (0, uncurry (+))
+
+steepNaive Nil = True
+steepNaive (Cons a x) = a > sum x && steepNaive x
