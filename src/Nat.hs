@@ -143,8 +143,24 @@ last p = outl . foldn ((0, 0), h)
   where h (pn, n) | p (n+1)   = (n+1, n+1)
                   | otherwise = (pn,  n+1)
 
-fib = outl . foldn ((0, 1), h)
-  where h (x, y) = (x + y, x)
+-- |             [zero,succ]
+--         N <---------------- 1 + N
+--        /|                     |
+--       / |                     |
+--      /  |                     |
+--     /   | <fib,fib'>          | 1 + <fib,fib'>
+--    /    |                     |
+--   /     |                     |
+--  v      v                     v
+-- F(N)<-F(N)xF'(N) <------ 1 + F(N)xF'(N)
+--                    [c,f]
+-- where
+--   fib' n = fib (n+1)
+--   F(N) = F(N+1)
+fib = outl . foldn (c, f)
+  where
+    c = (0, 1)
+    f (x, y) = (y, x + y)
 
 ack (Zero, y) = Succ y
 ack (Succ x, Zero) = ack (x, Succ Zero)
