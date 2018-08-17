@@ -162,6 +162,7 @@ fib = outl . foldn (c, f)
     c = (0, 1)
     f (x, y) = (y, x + y)
 
+-- compare the performances between map (fib.toNat) [0..100]
 fibStream = thd3 . foldn (c, f)
   where
     c = (0, 1, [])
