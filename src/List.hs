@@ -113,4 +113,7 @@ steepNaive (Cons a x) = a > sum x && steepNaive x
 genSteepList :: Integer -> Cons Integer
 genSteepList = fmap (2^) . gen
 
-steep = outr . foldr ((0, True), \(a, (s, b)) -> (a + s, a > s && b))
+steep = outl . foldr (c, f)
+  where
+    c = (True, 0)
+    f (a, (b, x)) = (a > x && b, a + x)
