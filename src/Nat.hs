@@ -162,6 +162,12 @@ fib = outl . foldn (c, f)
     c = (0, 1)
     f (x, y) = (y, x + y)
 
+fibStream = thd3 . foldn (c, f)
+  where
+    c = (0, 1, [])
+    f (x, y, s) = (y, x+y, x:s)
+    thd3 (_,_,z) = z
+
 ack (Zero, y) = Succ y
 ack (Succ x, Zero) = ack (x, Succ Zero)
 ack (Succ x, Succ y) = ack (x, ack (Succ x, y))
