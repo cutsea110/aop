@@ -10,6 +10,8 @@ data Cons a = Nil
 pair (f, g) x = (f x, g x)
 cross (f, g) (x, y) = (f x, g y)
 compose (f, g) = f . g -- (.) f g => uncurry (.) (f, g)
+outl (x, _) = x
+outr (_, y) = y
 
 nil = Nil
 cons = uncurry Cons
@@ -110,3 +112,5 @@ steepNaive (Cons a x) = a > sum x && steepNaive x
 
 genSteepList :: Integer -> Cons Integer
 genSteepList = fmap (2^) . gen
+
+steep = outr . foldr ((0, True), \(a, (s, b)) -> (a + s, a > s && b))
