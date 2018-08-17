@@ -107,3 +107,6 @@ sum = foldr (0, uncurry (+))
 
 steepNaive Nil = True
 steepNaive (Cons a x) = a > sum x && steepNaive x
+
+genSteepList :: Integer -> Cons Integer
+genSteepList = fmap (2^) . gen
