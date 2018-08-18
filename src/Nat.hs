@@ -165,7 +165,7 @@ fib = outl . foldn (c, f)
 -- compare the performances between map (fib.toNat) [0..100]
 fibStream = foldn (c, f)
   where
-    c = 0:1:[]
+    c = 1:0:[]
     f zs@(x:y:_) = (x+y:zs)
 
 ack (Zero, y) = Succ y
