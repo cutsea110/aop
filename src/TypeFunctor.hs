@@ -39,6 +39,11 @@ foldt (f, g) = u
 --        = foldt ([tip, bin] . (f + id * id))
 tree f = foldt (tip . f, bin . cross (id, id))
 --}
+
+-- Tt * Tf = (A * Tf) " (1 + Tt * Tf)
+-- F(A,Tt,Tf) = (A * Tf) * (1 + Tt * Tf)
+-- F(f,g,h) = (f * h) * (1 + g * h)
+-- F(f,id,id) = (f * id) * (1 + id * id)
 data Tree a = Fork a (Forest a) deriving (Show, Eq)
 data Forest a = Nulls
               | Grows (Tree a) (Forest a)
@@ -52,3 +57,20 @@ foldt (g, c, h) (Fork x fs)  = g (x, foldf (g, c, h) fs)
 
 foldf (g, c, h) Nulls        = c
 foldf (g, c, h) (Grows t fs) = h (foldt (g, c, h) t, foldf (g, c, h) fs)
+
+-- mapt f = foldt (alpha . ((f * id) * (1 + id * id)))
+--        = foldt ((fork * [nulls, grows]) . ((f * id) * (1 + id * id)))
+--        = foldt (fork . cross (f, id), nulls, grows . cross (id, id))
+-- mapf f = foldf (alpha . ((f * id) * (1 + id * id)))
+--        = foldf ((fork * [nulls, grows]) . ((f * id) * (1 + id * id)))
+--        = foldf (fork . cross (f, id), nulls, grows . cross (id, id))
+
+-- mapt f = foldt (fork . cross (f, id), nulls, grows . cross (id, id))
+-- mapf f = foldf (fork . cross (f, id), nulls, grows . cross (id, id))
+(mapt, mapf) = (gen foldt, gen foldf)
+  where
+    gen cata f = cata (g, c, h)
+      where
+        g = fork . cross (f, id)
+        c = nulls
+        h = grows . cross (id, id)
