@@ -21,9 +21,9 @@ cons = uncurry Cons
 --        = fold ([nil, cons] . (id + f * id))
 list f = fold (nil, cons . cross (f, id))
 
-data Tree a = Tip a
-            | Bin (Tree a) (Tree a)
-            deriving (Show, Eq)
+data BTree a = Tip a
+             | Bin (BTree a) (BTree a)
+             deriving (Show, Eq)
 
 tip = Tip
 bin = uncurry Bin
