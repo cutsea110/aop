@@ -20,7 +20,7 @@ cons = uncurry Cons
 -- list f = fold (alpha . F(f, id))
 --        = fold ([nil, cons] . (id + f * id))
 list f = fold (nil, cons . cross (f, id))
-{--
+
 -- F(A,T) = A + T * T
 -- F(f,g) = f + g * g
 data BTree a = Tip a
@@ -38,8 +38,8 @@ foldt (f, g) = u
 -- tree f = foldt (alpha . F(f, id))
 --        = foldt ([tip, bin] . (f + id * id))
 tree f = foldt (tip . f, bin . cross (id, id))
---}
 
+{--
 -- Tt * Tf = (A * Tf) " (1 + Tt * Tf)
 -- F(A,Tt,Tf) = (A * Tf) * (1 + Tt * Tf)
 -- F(f,g,h) = (f * h) * (1 + g * h)
@@ -74,3 +74,25 @@ foldf (g, c, h) (Grows t fs) = h (foldt (g, c, h) t, foldf (g, c, h) fs)
         g = fork . cross (f, id)
         c = nulls
         h = grows . cross (id, id)
+--}
+
+-- F(f,g) = f + G(g)
+-- F(A,B) = A + G(B)
+-- phi = alpha . inl, psi = cata (id, alpha . inr)
+-- F(A,B) = A + B * B
+-- eta = [tip, bin] . inl = tip
+-- mu  = cata (id, [tip, bin] . inr) = cata (id, bin)
+eta = tip
+mu = foldt (id, bin)
+
+instance Functor BTree where
+  fmap = tree
+
+instance Applicative BTree where
+  pure = eta
+  Tip f <*> x = fmap f x
+  Bin l r <*> x = bin (l <*> x, r <*> x)
+
+instance Monad BTree where
+  return = eta
+  m >>= f = mu (fmap f m)
