@@ -80,9 +80,10 @@ foldf (g, c, h) (Grows t fs) = h (foldt (g, c, h) t, foldf (g, c, h) fs)
 -- F(A,B) = A + G(B)
 -- phi = alpha . inl, psi = cata (id, alpha . inr)
 -- F(A,B) = A + B * B
+--
 -- eta = [tip, bin] . inl = tip
--- mu  = cata (id, [tip, bin] . inr) = cata (id, bin)
 eta = tip
+-- mu  = cata (id, [tip, bin] . inr) = cata (id, bin)
 mu = foldt (id, bin)
 
 instance Functor BTree where
