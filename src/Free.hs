@@ -1,7 +1,7 @@
 {-# LANGUAGE FlexibleContexts, UndecidableInstances #-}
 -- Ref.) https://stackoverflow.com/questions/13352205/what-are-free-monads/13352580
 module Free where
-
+{--
 data Free f a = Pure a
               | Roll (f (Free f a))
 
@@ -19,6 +19,25 @@ instance Functor f => Applicative (Free f) where
     Pure f <*> x = fmap f x
     Roll f <*> x = Roll (fmap (<*> x) f)
 
-instance (Functor f,Applicative (Free f)) => Monad (Free f) where
+instance (Functor f, Applicative (Free f)) => Monad (Free f) where
     return = pure
     x >>= f = concatFree (f <$> x)
+--}
+
+-- the case of f is Identity
+data Free a = Pure a
+            | Roll (Free a)
+            deriving (Show, Eq)
+
+--    In = [pure, roll]
+-- Ta <-------------- a + Ta
+-- |                    |
+-- | u                  | 1 + u
+-- |                    |
+-- v                    v
+-- X  <-------------- a + X
+--       [f, g]
+
+cata :: (a -> b, b -> b) -> Free a -> b
+cata (f, g) (Pure x) = f x
+cata (f, g) (Roll x) = g (cata (f, g) x)
