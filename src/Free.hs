@@ -61,3 +61,11 @@ instance Applicative Free where
     pure = pure'
     Pure f <*> x = fmap f x
     Roll f <*> x = Roll (f <*> x)
+
+mu :: Free (Free a) -> Free a
+mu (Pure x) = x
+mu (Roll x) = Roll (mu x)
+
+instance Monad Free where
+    return = pure
+    x >>= f = mu (f <$> x)
