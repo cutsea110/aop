@@ -1,6 +1,9 @@
 {-# LANGUAGE FlexibleContexts, UndecidableInstances #-}
 -- Ref.) https://stackoverflow.com/questions/13352205/what-are-free-monads/13352580
 module Free where
+
+import Prelude hiding (pure)
+
 {--
 data Free f a = Pure a
               | Roll (f (Free f a))
@@ -25,9 +28,13 @@ instance (Functor f, Applicative (Free f)) => Monad (Free f) where
 --}
 
 -- the case of f is Identity
+-- F(A, TA) = A + TA
 data Free a = Pure a
             | Roll (Free a)
             deriving (Show, Eq)
+
+pure = Pure
+roll = Roll
 
 --    In = [pure, roll]
 -- Ta <-------------- a + Ta
@@ -41,3 +48,13 @@ data Free a = Pure a
 cata :: (a -> b, b -> b) -> Free a -> b
 cata (f, g) (Pure x) = f x
 cata (f, g) (Roll x) = g (cata (f, g) x)
+
+-- T f = cata (alpha . F(f, id))
+--     = cata ([pure, roll] . (f + id))
+--     = cata (pure . f, roll)
+freeMap :: (a -> b) -> Free a -> Free b
+freeMap f = cata (pure . f, roll)
+
+instance Functor Free where
+    fmap f (Pure x) = Pure (f x)
+    fmap f (Roll x) = Roll (fmap f x)
