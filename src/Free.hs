@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleContexts, UndecidableInstances, TypeSynonymInstances, FlexibleInstances #-}
+{-# LANGUAGE FlexibleContexts, UndecidableInstances, TypeSynonymInstances, FlexibleInstances, RankNTypes #-}
 -- Ref.) https://stackoverflow.com/questions/13352205/what-are-free-monads/13352580
 module Free where
 
@@ -30,6 +30,10 @@ instance Functor B where
     fmap f (B x y) = B (f x) (f y)
 
 type Tree a = Free B a
+tip :: a -> Tree a
+tip x = pure x
+bin :: Tree a -> Tree a -> Tree a
+bin l r = Roll (B l r)
 
 instance Show a => Show (Tree a) where
     show (Pure a) = "Pure " ++ show a
