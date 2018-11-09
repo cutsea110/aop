@@ -24,6 +24,12 @@ instance (Functor f, Applicative (Free f)) => Monad (Free f) where
     return = pure
     x >>= f = concatFree (f <$> x)
 
+-- example.
+-- L(A) = F(GA, HA) where G,H are unary functor.
+-- phi :: H <- L imples H <- TG where (alpha, T) is initial type over F(AOP exercise 2.39)
+-- 
+-- And then, consider the case when substituted G to Identity functor,and substitute H to `B'.
+-- So, the initial F-Algebra of TA <- F(A, G(TA))) means Binary Tree(Leafy). 
 data B a = B a a deriving Show
 
 instance Functor B where
