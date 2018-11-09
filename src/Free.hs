@@ -54,6 +54,20 @@ instance Show a => Show (Tree a) where
 -- >>> let f2 = bin (tip (*2)) (tip (+2))
 -- >>> f2 <*> tl
 -- >>> f2 <*> t
+monadTest = do
+    x <- bin (tip 'a') (bin (tip 'b') (tip 'c'))
+    y <- bin (bin (tip 1) (tip 2)) (tip 3)
+    return (x,y)
+
+monadTest2 = do
+    f <- bin (tip (+2)) (bin (tip (*2)) (tip (^2)))
+    x <- bin (bin (tip 1) (tip 2)) (tip 3)
+    return (f x)
+
+monadTest3 = do
+    f <- tip (bin (tip (+2)) (tip (*2)))
+    x <- tip (bin (tip 1) (bin (tip 2) (tip 3)))
+    return (f <*> x)
 
 {--
 -- the case of f is Identity
