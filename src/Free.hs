@@ -39,13 +39,13 @@ instance Show a => Show (Tree a) where
     show (Pure a) = "Pure " ++ show a
     show (Roll (B x y)) = "Roll (B {" ++ show x ++ "," ++ show y ++ "})" 
 
--- >>> let tr = Roll (B (Pure 2) (Pure 1))
--- >>> let tl = Roll (B (Pure 4) (Pure 3))
--- >>> let t = Roll (B (Pure 5) (Roll (B tl tr))
--- >>> let f1 = Pure (*2)
+-- >>> let tr = bin (tip 2) (tip 1)
+-- >>> let tl = bin (tip 4) (tip 3)
+-- >>> let t = bin (tip 5) (bin tl tr)
+-- >>> let f1 = tip (*2)
 -- >>> fmap (*2) t
 -- >>> f1 <*> t
--- >>> let f2 = Roll (B (Pure (*2)) (Pure (+2)))
+-- >>> let f2 = bin (tip (*2)) (tip (+2))
 -- >>> f2 <*> tl
 -- >>> f2 <*> t
 
