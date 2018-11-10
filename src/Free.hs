@@ -65,9 +65,9 @@ monadTest2 = do
     return (f x)
 
 monadTest3 = do
-    f <- tip (bin (tip (+2)) (tip (*2)))
-    x <- tip (bin (tip 1) (bin (tip 2) (tip 3)))
-    return (f <*> x)
+    f <- tip $ bin (tip (+2)) (bin (tip (*2)) (tip (^2)))
+    x <- tip $ bin (bin (tip 1) (tip 2)) (tip 3)
+    f <*> x
 
 {--
 -- the case of f is Identity
