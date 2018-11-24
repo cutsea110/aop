@@ -36,3 +36,8 @@ inits = cata (e, f)
         e = wrap nil
         f = cat . pair (const (wrap nil), list cons . cpr)
 
+tails :: [a] -> [[a]]
+tails = cata (e, f)
+    where
+        e = wrap nil
+        f (a, (x:xs)) = [[a] ++ x] ++ [x] ++ xs
