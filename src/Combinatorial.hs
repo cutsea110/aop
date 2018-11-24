@@ -10,6 +10,8 @@ subseqs = foldr f e
 cata (c, f) = foldr (curry f) c
 outl (x, _) = x
 outr (_, y) = y
+cpp (x, y) = [(a, b) | a <- x, b <- y]
+cpl (x, b) = [(a, b) | a <- x]
 cpr (a, x) = [(a, b) | b <- x]
 wrap x = [x]
 nil = []
@@ -25,3 +27,5 @@ subseqs = cata (e, f)
         e = wrap nil
         f = cat . pair (list cons . cpr, outr)
 
+cplist :: [[a]] -> [[a]]
+cplist = cata (wrap nil, list cons . cpp)
