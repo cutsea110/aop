@@ -1,4 +1,5 @@
 module Combinatorial where
+
 {--
 subseqs :: [a] -> [[a]]
 subseqs = foldr f e
@@ -48,3 +49,14 @@ tails = cata (e, f)
         e = wrap nil
         f :: (a, [[a]]) -> [[a]] 
         f (a, (x:xs)) = [[a] ++ x] ++ [x] ++ xs
+
+
+new = cons . cross (wrap, id)
+glues (a, []) = []
+glues (a, x:xs) = [[[a] ++ x] ++ xs]
+
+partitions :: [a] -> [[[a]]]
+partitions = cata (e, f)
+    where
+        e = wrap nil
+        f = concat . list (cons . pair (new, glues)) . cpr
