@@ -34,10 +34,12 @@ inits :: [a] -> [[a]]
 inits = cata (e, f)
     where
         e = wrap nil
+        f :: (a, [[a]]) -> [[a]]
         f = cat . pair (const (wrap nil), list cons . cpr)
 
 tails :: [a] -> [[a]]
 tails = cata (e, f)
     where
         e = wrap nil
+        f :: (a, [[a]]) -> [[a]] 
         f (a, (x:xs)) = [[a] ++ x] ++ [x] ++ xs
