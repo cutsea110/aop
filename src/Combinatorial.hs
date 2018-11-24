@@ -29,3 +29,10 @@ subseqs = cata (e, f)
 
 cplist :: [[a]] -> [[a]]
 cplist = cata (wrap nil, list cons . cpp)
+
+inits :: [a] -> [[a]]
+inits = cata (e, f)
+    where
+        e = wrap nil
+        f = cat . pair (const (wrap nil), list cons . cpr)
+
