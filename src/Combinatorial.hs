@@ -25,6 +25,7 @@ subseqs :: [a] -> [[a]]
 subseqs = cata (e, f)
     where
         e = wrap nil
+        f :: (a, [[a]]) -> [[a]]
         f = cat . pair (list cons . cpr, outr)
 
 cplist :: [[a]] -> [[a]]
