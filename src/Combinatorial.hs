@@ -51,12 +51,11 @@ tails = cata (e, f)
         f (a, (x:xs)) = [[a] ++ x] ++ [x] ++ xs
 
 
-new = cons . cross (wrap, id)
-glues (a, []) = []
-glues (a, x:xs) = [[[a] ++ x] ++ xs]
-
 partitions :: [a] -> [[[a]]]
 partitions = cata (e, f)
     where
+        new = cons . cross (wrap, id)
+        glues (a, []) = []
+        glues (a, x:xs) = [[[a] ++ x] ++ xs]
         e = wrap nil
         f = concat . list (cons . pair (new, glues)) . cpr
