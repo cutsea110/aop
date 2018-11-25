@@ -1,5 +1,7 @@
 module Combinatorial where
 
+import Prelude hiding (concat)
+
 {--
 subseqs :: [a] -> [[a]]
 subseqs = foldr f e
@@ -50,12 +52,17 @@ tails = cata (e, f)
         f :: (a, [[a]]) -> [[a]] 
         f (a, (x:xs)) = [[a] ++ x] ++ [x] ++ xs
 
+concat = cata (nil, cat)
+new = cons . cross (wrap, id)
+glues (a, []) = []
+glues (a, x:xs) = [[[a] ++ x] ++ xs]
 
 partitions :: [a] -> [[[a]]]
 partitions = cata (e, f)
     where
-        new = cons . cross (wrap, id)
-        glues (a, []) = []
-        glues (a, x:xs) = [[[a] ++ x] ++ xs]
         e = wrap nil
         f = concat . list (cons . pair (new, glues)) . cpr
+
+splits = uncurry zip . pair (inits, tails)
+
+adds (a, x) = [y ++ [a] ++ z | (y, z) <- splits x]
