@@ -66,3 +66,9 @@ partitions = cata (e, f)
 splits = uncurry zip . pair (inits, tails)
 
 adds (a, x) = [y ++ [a] ++ z | (y, z) <- splits x]
+
+perms :: [a] -> [[a]]
+perms = cata (e, f)
+    where
+        e = wrap nil
+        f = concat . list adds . cpr
