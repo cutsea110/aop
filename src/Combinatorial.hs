@@ -72,3 +72,13 @@ perms = cata (e, f)
     where
         e = wrap nil
         f = concat . list adds . cpr
+
+consl (a, (x, y)) = (a:x, y)
+consr (a, (x, y)) = (x, a:y)
+conv (l, r) = [l, r]
+
+interleave :: [a] -> [([a],[a])]
+interleave = cata (e, f)
+    where
+        e = wrap (nil, nil)
+        f = concat . list (conv . pair (consl, consr)) . cpr
