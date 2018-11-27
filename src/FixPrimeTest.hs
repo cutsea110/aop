@@ -300,6 +300,16 @@ perms = cata phi
     phi Nil = tau nil
     phi (Cons a x) = concat . map adds . cpr $ (a, x)
 
+consl (a, (x, y)) = (cons (a, x), y)
+consr (a, (x, y)) = (x, cons (a, y))
+conv (l, r) = cons (l, cons (r, nil))
+
+interleave :: List a -> List (List a, List a)
+interleave = cata phi
+  where
+    phi Nil = tau (nil, nil)
+    phi (Cons a x) = concat . map (conv . pair (consl, consr)) . cpr $ (a, x)
+
 depth :: Tree a -> Int
 depth = cata phi
   where
