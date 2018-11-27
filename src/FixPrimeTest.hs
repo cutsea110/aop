@@ -17,7 +17,14 @@ import Prelude hiding (Functor(..),
                        dropWhile,
                        zip,
                        unzip,
-                       concat
+                       concat,
+                       cplist,
+                       inits,
+                       tails,
+                       splits,
+                       partitions,
+                       perms,
+                       interleave
                       )
 import FixPrime
 
