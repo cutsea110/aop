@@ -110,4 +110,4 @@ mu = cata (id, roll)
 
 instance Monad Free where
     return = pure
-    x >>= f = mu (fmap f x)
+    x >>= f = f =<< x where (=<<) = (mu.).fmap
