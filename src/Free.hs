@@ -2,7 +2,7 @@
 -- Ref.) https://stackoverflow.com/questions/13352205/what-are-free-monads/13352580
 module Free where
 
-{-
+
 data Free f a = Pure a
               | Roll (f (Free f a))
 
@@ -68,8 +68,8 @@ monadTest3 = do
     f <- tip $ bin (tip (+2)) (bin (tip (*2)) (tip (^2)))
     x <- tip $ bin (bin (tip 1) (tip 2)) (tip 3)
     f <*> x
--}
 
+{-
 -- the case of f is Identity
 -- F(A, TA) = A + TA
 data Free a = Pure a
@@ -111,3 +111,4 @@ mu = cata (id, roll)
 instance Monad Free where
     return = pure
     x >>= f = f =<< x where (=<<) = (mu.).fmap
+-}
