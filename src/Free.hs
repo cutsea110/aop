@@ -6,6 +6,21 @@ module Free where
 data Free f a = Pure a
               | Roll (f (Free f a))
 
+pure' = Pure
+roll = Roll
+
+--    In = [pure, roll]
+-- Ta <-------------- a + F(Ta)
+-- |                    |
+-- | u                  | 1 + Fu
+-- |                    |
+-- v                    v
+-- X  <-------------- a + FX
+--       [f, g]
+
+cata (f, g) (Pure x) = f x
+cata (f, g) (Roll x) = g (fmap (cata (f, g)) x) -- this fmap is over F not T (= Free f)
+
 instance Functor f => Functor (Free f) where
     fmap f (Pure x) = Pure (f x)
     fmap f (Roll x) = Roll (fmap (fmap f) x)
