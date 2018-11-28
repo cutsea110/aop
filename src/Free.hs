@@ -22,16 +22,18 @@ cata (f, g) (Pure x) = f x
 cata (f, g) (Roll x) = g (fmap (cata (f, g)) x) -- this fmap is over F not T (= Free f)
 
 instance Functor f => Functor (Free f) where
-    fmap f (Pure x) = Pure (f x)
-    fmap f (Roll x) = Roll (fmap (fmap f) x)
+    fmap f = cata (pure' . f, roll)
+--     fmap f (Pure x) = Pure (f x)
+--     fmap f (Roll x) = Roll (fmap (fmap f) x)
 
 concatFree :: Functor f => Free f (Free f a) -> Free f a
-concatFree (Pure x) = x
-concatFree (Roll x) = Roll (fmap concatFree x)
+concatFree = cata (id, roll)
+-- concatFree (Pure x) = x
+-- concatFree (Roll x) = Roll (fmap concatFree x)
 
 -- Ref.) https://stackoverflow.com/questions/22121960/applicative-instance-for-free-monad
 instance Functor f => Applicative (Free f) where
-    pure = Pure
+    pure = pure'
     Pure f <*> x = fmap f x
     Roll f <*> x = Roll (fmap (<*> x) f)
 
