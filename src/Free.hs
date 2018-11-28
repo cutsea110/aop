@@ -35,7 +35,7 @@ concatFree = cata (id, roll)
 instance Functor f => Applicative (Free f) where
     pure = pure'
     Pure f <*> x = fmap f x
-    Roll f <*> x = Roll (fmap (<*> x) f)
+    Roll f <*> x = roll (fmap (<*> x) f)
 
 instance (Functor f, Applicative (Free f)) => Monad (Free f) where
     return = pure
