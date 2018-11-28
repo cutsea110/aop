@@ -39,7 +39,7 @@ instance Functor f => Applicative (Free f) where
 
 instance (Functor f, Applicative (Free f)) => Monad (Free f) where
     return = pure
-    x >>= f = concatFree (f <$> x)
+    x >>= f = concatFree (fmap f x)
 
 -- example.
 -- L(A) = F(GA, HA) where G,H are unary functor.
