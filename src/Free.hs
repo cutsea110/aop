@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleContexts, UndecidableInstances, TypeSynonymInstances, FlexibleInstances, RankNTypes #-}
+{-# LANGUAGE FlexibleContexts, UndecidableInstances, TypeSynonymInstances, FlexibleInstances, RankNTypes, TupleSections #-}
 -- Ref.) https://stackoverflow.com/questions/13352205/what-are-free-monads/13352580
 module Free where
 
@@ -103,8 +103,9 @@ instance Functor Free where
 
 instance Applicative Free where
     pure = pure'
-    Pure f <*> x = fmap f x
-    Roll f <*> x = Roll (f <*> x)
+    (<*>) = cata (fmap, (roll.))
+--    (<*>) (Pure f) = fmap f
+--    (<*>) (Roll f) = Roll . ((<*>) f)
 
 mu :: Free (Free a) -> Free a
 mu = cata (id, roll)
