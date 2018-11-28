@@ -24,7 +24,7 @@ cata (f, g) (Roll x) = g (fmap (cata (f, g)) x) -- this fmap is over F not T (= 
 instance Functor f => Functor (Free f) where
     fmap f = cata (pure' . f, roll)
 --     fmap f (Pure x) = Pure (f x)
---     fmap f (Roll x) = Roll (fmap (fmap f) x)
+--     fmap f (Roll x) = Roll (fmap (fmap f) x) -- 1st fmap is over F and 2nd fmap is the same as lhs (= Free f)
 
 concatFree :: Functor f => Free f (Free f a) -> Free f a
 concatFree = cata (id, roll)
