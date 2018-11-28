@@ -26,10 +26,10 @@ instance Functor f => Functor (Free f) where
 --     fmap f (Pure x) = Pure (f x)
 --     fmap f (Roll x) = Roll (fmap (fmap f) x) -- 1st fmap is over F and 2nd fmap is the same as lhs (= Free f)
 
-concatFree :: Functor f => Free f (Free f a) -> Free f a
-concatFree = cata (id, roll)
--- concatFree (Pure x) = x
--- concatFree (Roll x) = Roll (fmap concatFree x)
+mu :: Functor f => Free f (Free f a) -> Free f a
+mu = cata (id, roll)
+-- mu (Pure x) = x
+-- mu (Roll x) = Roll (fmap mu x)
 
 -- Ref.) https://stackoverflow.com/questions/22121960/applicative-instance-for-free-monad
 instance Functor f => Applicative (Free f) where
@@ -39,7 +39,7 @@ instance Functor f => Applicative (Free f) where
 
 instance (Functor f, Applicative (Free f)) => Monad (Free f) where
     return = pure
-    x >>= f = concatFree (fmap f x)
+    x >>= f = f =<< x where (=<<) = (mu.).fmap
 
 -- example.
 -- L(A) = F(GA, HA) where G,H are unary functor.
