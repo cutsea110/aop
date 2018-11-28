@@ -2,7 +2,7 @@
 -- Ref.) https://stackoverflow.com/questions/13352205/what-are-free-monads/13352580
 module Free where
 
-
+{-
 data Free f a = Pure a
               | Roll (f (Free f a))
 
@@ -68,8 +68,8 @@ monadTest3 = do
     f <- tip $ bin (tip (+2)) (bin (tip (*2)) (tip (^2)))
     x <- tip $ bin (bin (tip 1) (tip 2)) (tip 3)
     f <*> x
+-}
 
-{--
 -- the case of f is Identity
 -- F(A, TA) = A + TA
 data Free a = Pure a
@@ -99,8 +99,7 @@ freeMap :: (a -> b) -> Free a -> Free b
 freeMap f = cata (pure' . f, roll)
 
 instance Functor Free where
-    fmap f (Pure x) = Pure (f x)
-    fmap f (Roll x) = Roll (fmap f x)
+    fmap = freeMap
 
 instance Applicative Free where
     pure = pure'
@@ -108,10 +107,8 @@ instance Applicative Free where
     Roll f <*> x = Roll (f <*> x)
 
 mu :: Free (Free a) -> Free a
-mu (Pure x) = x
-mu (Roll x) = Roll (mu x)
+mu = cata (id, roll)
 
 instance Monad Free where
     return = pure
     x >>= f = mu (f <$> x)
---}
