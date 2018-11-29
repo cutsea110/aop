@@ -63,6 +63,21 @@ instance Show a => Show (Tree a) where
     show (Pure a) = "Pure " ++ show a
     show (Roll (B x y)) = "Roll (B {" ++ show x ++ "," ++ show y ++ "})" 
 
+type Depth = Int
+
+depth :: Tree a -> Depth
+depth = cata (const 0, (+1).maxB)
+    where
+        maxB (B x y) = max x y
+-- depth (Pure a) = 0
+-- depth (Roll (B x y)) = max (depth x) (depth y) + 1
+
+drawTree :: (Show a) => Tree a -> String
+drawTree t = draw t 0
+    where
+        draw :: Tree a -> Depth -> String
+        draw = undefined
+
 -- >>> let tr = bin (tip 2) (tip 1)
 -- >>> let tl = bin (tip 4) (tip 3)
 -- >>> let t = bin (tip 5) (bin tl tr)
