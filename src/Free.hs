@@ -75,6 +75,12 @@ depth = cata (const 0, (+1).maxB)
 -- depth (Pure a) = 0
 -- depth (Roll (B x y)) = max (depth x) (depth y) + 1
 
+withDepth :: Tree a -> Tree (Int, a)
+withDepth = sub 0
+    where
+        sub d (Pure x) = tip (d, x)
+        sub d (Roll (B x y)) = bin (sub (d+1) x) (sub (d+1) y)
+
 drawTree :: (Show a) => Tree a -> String
 drawTree t = draw t 0
     where
