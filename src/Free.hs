@@ -34,8 +34,9 @@ mu = cata (id, roll)
 -- Ref.) https://stackoverflow.com/questions/22121960/applicative-instance-for-free-monad
 instance Functor f => Applicative (Free f) where
     pure = pure'
-    Pure f <*> x = fmap f x
-    Roll f <*> x = roll (fmap (<*> x) f)
+    f <*> x = cata ((<$> x), roll) f -- cata ((`fmap` x), roll) f
+--    (<*> x) (Pure f) = (<$> x) f
+--    (<*> x) (Roll f) = roll (fmap (<*> x) f)
 
 instance (Functor f, Applicative (Free f)) => Monad (Free f) where
     return = pure
