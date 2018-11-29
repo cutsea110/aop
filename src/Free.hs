@@ -82,10 +82,11 @@ withDepth = sub 0
         sub d (Roll (B x y)) = bin (sub (d+1) x) (sub (d+1) y)
 
 drawTree :: (Show a) => Tree a -> String
-drawTree t = draw t 0
+drawTree = draw 0 . withDepth
     where
-        draw :: Tree a -> Int -> String
-        draw = undefined
+--        draw :: Tree (Int, a) -> String 
+        draw pd (Pure (d, x)) = replicate (pd*2) ' ' ++ replicate (d*2) '-' ++ show x ++ "\n"
+        draw pd (Roll (B x y)) = replicate (pd*2) ' ' ++ draw pd x ++ "\n" ++ draw pd y ++ "\n"
 
 -- >>> let tr = bin (tip 2) (tip 1)
 -- >>> let tl = bin (tip 4) (tip 3)
