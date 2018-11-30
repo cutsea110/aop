@@ -86,7 +86,7 @@ drawTree = draw 0 . withDepth
     where
 --        draw :: Tree (Int, a) -> String 
         draw pd (Pure (d, x))  = "-- " ++ show x ++ "\n"
-        draw pd (Roll (B x y)) = replicate (2*pd) '-' ++ "+\n" ++ replicate (2*2*pd) ' ' ++ "|\n" ++ replicate (2*2*pd) ' ' ++ "+-" ++ draw (pd+1) x ++ 
+        draw pd (Roll (B x y)) = replicate (if pd == 0 then 0 else 2) '-' ++ "+\n" ++ replicate (2*2*pd) ' ' ++ "|\n" ++ replicate (2*2*pd) ' ' ++ "+-" ++ draw (pd+1) x ++ 
                                  replicate (2*2*pd) ' ' ++ "|\n" ++ replicate (2*2*pd) ' ' ++ "|\n" ++ replicate (2*2*pd) ' ' ++ "+-" ++ draw (pd+1) y
 test = do
     x <- tip 1
