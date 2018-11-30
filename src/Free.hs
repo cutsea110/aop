@@ -85,8 +85,41 @@ drawTree :: (Show a) => Tree a -> String
 drawTree = draw 0 . withDepth
     where
 --        draw :: Tree (Int, a) -> String 
-        draw pd (Pure (d, x)) = replicate (pd*2) ' ' ++ replicate (d*2) '-' ++ show x ++ "\n"
-        draw pd (Roll (B x y)) = replicate (pd*2) ' ' ++ draw pd x ++ "\n" ++ draw pd y ++ "\n"
+        draw pd (Pure (d, x))  = "-- " ++ show x ++ "\n"
+        draw pd (Roll (B x y)) = replicate (2*pd) '-' ++ "+\n" ++ replicate (2*2*pd) ' ' ++ "|\n" ++ replicate (2*2*pd) ' ' ++ "+-" ++ draw (pd+1) x ++ 
+                                 replicate (2*2*pd) ' ' ++ "|\n" ++ replicate (2*2*pd) ' ' ++ "|\n" ++ replicate (2*2*pd) ' ' ++ "+-" ++ draw (pd+1) y
+test = do
+    x <- tip 1
+    y <- tip 'a'
+    return (x, y)
+test1 = do
+    x <- bin (tip 1) (tip 2)
+    y <- tip 3
+    return (x, y)
+test2 = do
+    x <- tip 1
+    y <- bin (tip 2) (tip 3)
+    return (x, y)
+test3 = do
+    x <- bin (tip 1) (tip 2)
+    y <- bin (tip 'a') (tip 'b')
+    return (x, y)
+test4 = do
+    x <- bin (tip 1) (tip 2)
+    y <- bin (tip 'a') (bin (tip 'b') (tip 'c'))
+    return (x, y)
+test5 = do
+    x <- bin (tip 1) (tip 2)
+    y <- bin (tip 'a') (bin (tip 'b') (tip 'c'))
+    return (y, x)
+test6 = do
+    x <- bin (tip 'a') (bin (tip 'b') (tip 'c'))
+    y <- bin (tip 1) (tip 2)
+    return (x, y)
+test7 = do
+    x <- bin (bin (tip 1) (tip 2)) (tip 3)
+    y <- bin (tip 'a') (bin (tip 'b') (tip 'c'))
+    return (x, y)
 
 -- >>> let tr = bin (tip 2) (tip 1)
 -- >>> let tl = bin (tip 4) (tip 3)
