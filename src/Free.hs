@@ -75,19 +75,35 @@ depth = cata (const 0, (+1).maxB)
 -- depth (Pure a) = 0
 -- depth (Roll (B x y)) = max (depth x) (depth y) + 1
 
-withDepth :: Tree a -> Tree (Int, a)
+withDepth :: Tree a -> Tree (a, Int)
 withDepth = sub 0
     where
-        sub d (Pure x) = tip (d, x)
+        sub d (Pure x) = tip (x, d)
         sub d (Roll (B x y)) = bin (sub (d+1) x) (sub (d+1) y)
 
-drawTree :: (Show a) => Tree a -> String
-drawTree = draw 0 . withDepth
+data LR = L | R deriving (Show, Eq)
+lr (l, r) L = l
+lr (l, r) R = r
+
+assocr :: ((a, b), c) -> (a, (b, c))
+assocr ((x, y), z) = (x, (y, z))
+
+withRoute :: Tree a -> Tree (a, [LR])
+withRoute = sub []
     where
---        draw :: Tree (Int, a) -> String 
-        draw pd (Pure (d, x))  = "-- " ++ show x ++ "\n"
-        draw pd (Roll (B x y)) = replicate (if pd == 0 then 0 else 2) '-' ++ "+\n" ++ replicate (2*2*pd) ' ' ++ "|\n" ++ replicate (2*2*pd) ' ' ++ "+-" ++ draw (pd+1) x ++ 
-                                 replicate (2*2*pd) ' ' ++ "|\n" ++ replicate (2*2*pd) ' ' ++ "|\n" ++ replicate (2*2*pd) ' ' ++ "+-" ++ draw (pd+1) y
+        sub lrs (Pure x) = tip (x, lrs)
+        sub lrs (Roll (B x y)) = bin (sub (L:lrs) x) (sub (R:lrs) y)
+
+drawTree :: (Show a) => Tree a -> String
+drawTree t = "+" ++ (draw . fmap assocr . withRoute . withDepth) t
+    where
+        draw (Pure (x, (d, []))) = " " ++ show x ++ "\n"
+        draw (Pure (x, (d, lrs@(L:_)))) | all (==L) lrs = concat (replicate d "--+") ++ show x ++ "\n"
+                                        | otherwise     = "|" ++ concat (replicate (d-1) "  |") ++ "\n+" ++ concat (replicate d "--+") ++ show x ++ "\n"
+        draw (Pure (x, (d, lrs@(R:_)))) | all (==R) lrs = concat (replicate (d-1) "   ") ++ "|\n " ++ concat (replicate (d-1) "  +") ++ "--+" ++ show x ++ "\n"
+                                        | otherwise     = "|" ++ concat (replicate (d-1) "  |") ++ "\n+" ++ concat (replicate (d-1) "  +") ++ "--+" ++ show x ++ "\n"
+        draw (Roll (B l r)) = draw l ++ draw r
+
 test = do
     x <- tip 1
     y <- tip 'a'
@@ -120,6 +136,7 @@ test7 = do
     x <- bin (bin (tip 1) (tip 2)) (tip 3)
     y <- bin (tip 'a') (bin (tip 'b') (tip 'c'))
     return (x, y)
+test8 = bin (tip 1) (bin (tip 2) (bin (tip 3) (bin (tip 4) (bin (tip 4) (tip 6)))))
 
 -- >>> let tr = bin (tip 2) (tip 1)
 -- >>> let tl = bin (tip 4) (tip 3)
