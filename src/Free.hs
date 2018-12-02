@@ -94,7 +94,7 @@ withRoute = sub []
         sub lrs (Pure x) = tip (x, lrs)
         sub lrs (Roll (B x y)) = bin (sub (L:lrs) x) (sub (R:lrs) y)
 
-data Context = CL | CR deriving (Show, Eq, Ord, Enum)
+type Context = LR
 
 trimR = sub "" ""
   where
@@ -107,13 +107,13 @@ drawTree t = (draw . withRoute) t
     where
       sub :: Context -> [LR] -> ([String], [String]) -> ([String], [String])
       sub _ [] (l1, l2) = (l1, l2)
-      sub CL (L:xs) (pline, line) = sub CL xs ("   ":pline, "+--":line)
-      sub CL (R:xs) (pline, line) = sub CR xs ("|  ":pline, "+--":line)
-      sub CR (L:xs) (pline, line) = sub CR xs ("|  ":pline, "+  ":line)
-      sub CR (R:xs) (pline, line) = sub CR xs ("   ":pline, "   ":line)
+      sub L (L:xs) (pline, line) = sub L xs ("   ":pline, "+--":line)
+      sub L (R:xs) (pline, line) = sub R xs ("|  ":pline, "+--":line)
+      sub R (L:xs) (pline, line) = sub R xs ("|  ":pline, "+  ":line)
+      sub R (R:xs) (pline, line) = sub R xs ("   ":pline, "   ":line)
 
       draw (Pure (x, lrs)) = trimR (concat l1s) ++ "\n" ++ concat l2s ++ " " ++ show x ++ "\n"
-        where (l1s, l2s) = sub CL lrs ([], [])
+        where (l1s, l2s) = sub L lrs ([], [])
       draw (Roll (B l r)) = draw l ++ draw r
 
 tag :: (Int -> a -> b) -> Tree a -> Tree b
