@@ -134,8 +134,7 @@ tagStep f (Roll (B l r)) = do
 --
 
 dup x = (x, x)
-double = uncurry bin . dup 
-
+double = uncurry bin . dup
 genNumTree n = tag const $ iterate double (tip ()) !! n
 
 test = do
