@@ -127,6 +127,11 @@ tagStep f (Roll (B l r)) = do
   l' <- tagStep f l
   r' <- tagStep f r
   return (bin l' r')
+--  
+-- putStr $ drawTree $ tag const test9
+-- putStr $ drawTree $ tag (,) test9
+-- putStr $ drawTree $ tag (,) $ fmap assocr . withRoute . withDepth $ test9
+--
 
 test = do
     x <- tip 1
