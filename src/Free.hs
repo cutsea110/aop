@@ -94,6 +94,12 @@ withRoute = sub []
 
 data Context = CL | CR deriving (Show, Eq, Ord, Enum)
 
+trimR = sub "" ""
+  where
+    sub fix tmp [] = fix
+    sub fix tmp (' ':cs) = sub fix (' ':tmp) cs
+    sub fix tmp (c:cs)   = sub (fix ++ tmp ++ [c]) "" cs
+
 drawTree :: (Show a) => Tree a -> String
 drawTree t = (draw . withRoute) t
     where
@@ -104,10 +110,8 @@ drawTree t = (draw . withRoute) t
       sub CR (L:xs) (pline, line) = sub CR xs ("|  ":pline, "+  ":line)
       sub CR (R:xs) (pline, line) = sub CR xs ("   ":pline, "   ":line)
 
-      trimR = reverse . dropWhile (==' ') . reverse
-      
-      draw (Pure (x, lrs)) = let (l1s, l2s) = sub CL lrs ([], [])
-                             in trimR (concat l1s) ++ "\n" ++ concat l2s ++ " " ++ show x ++ "\n"
+      draw (Pure (x, lrs)) = trimR (concat l1s) ++ "\n" ++ concat l2s ++ " " ++ show x ++ "\n"
+        where (l1s, l2s) = sub CL lrs ([], [])
       draw (Roll (B l r)) = draw l ++ draw r
 
 test = do
