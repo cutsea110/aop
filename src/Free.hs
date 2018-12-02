@@ -133,6 +133,11 @@ tagStep f (Roll (B l r)) = do
 -- putStr $ drawTree $ tag (,) $ fmap assocr . withRoute . withDepth $ test9
 --
 
+dup x = (x, x)
+double = uncurry bin . dup 
+
+genNumTree n = tag const $ iterate double (tip ()) !! n
+
 test = do
     x <- tip 1
     y <- tip 'a'
