@@ -2,7 +2,6 @@
 -- Ref.) https://stackoverflow.com/questions/13352205/what-are-free-monads/13352580
 module Free where
 
-
 data Free f a = Pure a
               | Roll (f (Free f a))
 
@@ -94,15 +93,20 @@ withRoute = sub []
         sub lrs (Pure x) = tip (x, lrs)
         sub lrs (Roll (B x y)) = bin (sub (L:lrs) x) (sub (R:lrs) y)
 
+data Context = CL | CR deriving (Show, Eq, Ord, Enum)
+
 drawTree :: (Show a) => Tree a -> String
-drawTree t = "+" ++ (draw . fmap assocr . withRoute . withDepth) t
+drawTree t = (draw . fmap assocr . withRoute . withDepth) t
     where
-        draw (Pure (x, (d, []))) = " " ++ show x ++ "\n"
-        draw (Pure (x, (d, lrs@(L:_)))) | all (==L) lrs = concat (replicate d "--+") ++ show x ++ "\n"
-                                        | otherwise     = "|" ++ concat (replicate (d-1) "  |") ++ "\n+" ++ concat (replicate d "--+") ++ show x ++ "\n"
-        draw (Pure (x, (d, lrs@(R:_)))) | all (==R) lrs = concat (replicate (d-1) "   ") ++ "|\n " ++ concat (replicate (d-1) "  +") ++ "--+" ++ show x ++ "\n"
-                                        | otherwise     = "|" ++ concat (replicate (d-1) "  |") ++ "\n+" ++ concat (replicate (d-1) "  +") ++ "--+" ++ show x ++ "\n"
-        draw (Roll (B l r)) = draw l ++ draw r
+      sub :: Context -> [LR] -> ([String], [String]) -> ([String], [String])
+      sub _ [] (l1, l2) = (l1, l2)
+      sub CL (L:xs) (pline, line) = sub CL xs ("   ":pline, "+--":line)
+      sub CL (R:xs) (pline, line) = sub CR xs ("|  ":pline, "+--":line)
+      sub CR (L:xs) (pline, line) = sub CR xs ("|  ":pline, "+  ":line)
+      sub CR (R:xs) (pline, line) = sub CR xs ("   ":pline, "   ":line)
+      draw (Pure (x, (d, lrs))) = let (l1s, l2s) = sub CL lrs ([], [])
+                                  in concat l1s ++ "\n" ++ concat l2s ++ " " ++ show x ++ "\n"
+      draw (Roll (B l r)) = draw l ++ draw r
 
 test = do
     x <- tip 1
@@ -137,6 +141,7 @@ test7 = do
     y <- bin (tip 'a') (bin (tip 'b') (tip 'c'))
     return (x, y)
 test8 = bin (tip 1) (bin (tip 2) (bin (tip 3) (bin (tip 4) (bin (tip 4) (tip 6)))))
+test9 = bin (tip 0) (bin (bin (bin (bin (tip 1) (tip 2)) (bin (tip 3) (tip 4))) (bin (tip 5) (bin (tip 6) (tip 7)))) (tip 8))
 
 -- >>> let tr = bin (tip 2) (tip 1)
 -- >>> let tl = bin (tip 4) (tip 3)
