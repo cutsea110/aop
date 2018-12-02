@@ -71,8 +71,6 @@ depth :: Tree a -> Int
 depth = cata (const 0, (+1).maxB)
     where
         maxB (B x y) = max x y
--- depth (Pure a) = 0
--- depth (Roll (B x y)) = max (depth x) (depth y) + 1
 
 withDepth :: Tree a -> Tree (a, Int)
 withDepth = sub 0
@@ -81,6 +79,7 @@ withDepth = sub 0
         sub d (Roll (B x y)) = bin (sub (d+1) x) (sub (d+1) y)
 
 data LR = L | R deriving (Show, Eq)
+-- cata
 lr (l, r) L = l
 lr (l, r) R = r
 
@@ -104,8 +103,11 @@ drawTree t = (draw . withRoute) t
       sub CL (R:xs) (pline, line) = sub CR xs ("|  ":pline, "+--":line)
       sub CR (L:xs) (pline, line) = sub CR xs ("|  ":pline, "+  ":line)
       sub CR (R:xs) (pline, line) = sub CR xs ("   ":pline, "   ":line)
+
+      trimR = reverse . dropWhile (==' ') . reverse
+      
       draw (Pure (x, lrs)) = let (l1s, l2s) = sub CL lrs ([], [])
-                             in concat l1s ++ "\n" ++ concat l2s ++ " " ++ show x ++ "\n"
+                             in trimR (concat l1s) ++ "\n" ++ concat l2s ++ " " ++ show x ++ "\n"
       draw (Roll (B l r)) = draw l ++ draw r
 
 test = do
