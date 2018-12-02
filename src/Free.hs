@@ -2,6 +2,8 @@
 -- Ref.) https://stackoverflow.com/questions/13352205/what-are-free-monads/13352580
 module Free where
 
+import Control.Monad.State
+
 data Free f a = Pure a
               | Roll (f (Free f a))
 
@@ -113,6 +115,18 @@ drawTree t = (draw . withRoute) t
       draw (Pure (x, lrs)) = trimR (concat l1s) ++ "\n" ++ concat l2s ++ " " ++ show x ++ "\n"
         where (l1s, l2s) = sub CL lrs ([], [])
       draw (Roll (B l r)) = draw l ++ draw r
+
+tag :: Tree a -> Tree (Int, a)
+tag tree = evalState (tagStep tree) 0
+tagStep :: Tree a -> State Int (Tree (Int, a))
+tagStep (Pure x) = do
+  c <- get
+  put (c+1)
+  return (tip (c, x))
+tagStep (Roll (B l r)) = do
+  l' <- tagStep l
+  r' <- tagStep r
+  return (bin l' r')
 
 test = do
     x <- tip 1
