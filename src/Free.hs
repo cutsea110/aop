@@ -96,7 +96,7 @@ withRoute = sub []
 data Context = CL | CR deriving (Show, Eq, Ord, Enum)
 
 drawTree :: (Show a) => Tree a -> String
-drawTree t = (draw . fmap assocr . withRoute . withDepth) t
+drawTree t = (draw . withRoute) t
     where
       sub :: Context -> [LR] -> ([String], [String]) -> ([String], [String])
       sub _ [] (l1, l2) = (l1, l2)
@@ -104,8 +104,8 @@ drawTree t = (draw . fmap assocr . withRoute . withDepth) t
       sub CL (R:xs) (pline, line) = sub CR xs ("|  ":pline, "+--":line)
       sub CR (L:xs) (pline, line) = sub CR xs ("|  ":pline, "+  ":line)
       sub CR (R:xs) (pline, line) = sub CR xs ("   ":pline, "   ":line)
-      draw (Pure (x, (d, lrs))) = let (l1s, l2s) = sub CL lrs ([], [])
-                                  in concat l1s ++ "\n" ++ concat l2s ++ " " ++ show x ++ "\n"
+      draw (Pure (x, lrs)) = let (l1s, l2s) = sub CL lrs ([], [])
+                             in concat l1s ++ "\n" ++ concat l2s ++ " " ++ show x ++ "\n"
       draw (Roll (B l r)) = draw l ++ draw r
 
 test = do
