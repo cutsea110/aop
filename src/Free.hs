@@ -80,7 +80,13 @@ withDepth = sub 0
         sub d (Pure x) = tip (x, d)
         sub d (Roll (B x y)) = bin (sub (d+1) x) (sub (d+1) y)
 
-data LR = L | R deriving (Show, Eq)
+data LR = L | R deriving (Show, Eq, Ord)
+instance Semigroup LR where
+  (<>) = max
+instance Monoid LR where
+  mempty = L
+  mappend = (<>)
+  
 -- cata
 lr (l, r) L = l
 lr (l, r) R = r
@@ -105,12 +111,13 @@ trimR = sub "" ""
 drawTree :: (Show a) => Tree a -> String
 drawTree t = (draw . withRoute) t
     where
+      bar L L = ("   ", "+--")
+      bar L R = ("|  ", "+--")
+      bar R L = ("|  ", "+  ")
+      bar R R = ("   ", "   ")
       sub :: Context -> [LR] -> ([String], [String]) -> ([String], [String])
       sub _ [] (l1, l2) = (l1, l2)
-      sub L (L:xs) (pline, line) = sub L xs ("   ":pline, "+--":line)
-      sub L (R:xs) (pline, line) = sub R xs ("|  ":pline, "+--":line)
-      sub R (L:xs) (pline, line) = sub R xs ("|  ":pline, "+  ":line)
-      sub R (R:xs) (pline, line) = sub R xs ("   ":pline, "   ":line)
+      sub c (x:xs) (l1, l2) = sub (c <> x) xs (l1':l1, l2':l2) where (l1', l2') = bar c x
 
       draw (Pure (x, lrs)) = trimR (concat l1s) ++ "\n" ++ concat l2s ++ " " ++ show x ++ "\n"
         where (l1s, l2s) = sub L lrs ([], [])
