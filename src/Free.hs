@@ -2,6 +2,7 @@
 -- Ref.) https://stackoverflow.com/questions/13352205/what-are-free-monads/13352580
 module Free where
 
+import Control.Arrow
 import Control.Monad.State
 
 data Free f a = Pure a
