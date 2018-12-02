@@ -116,16 +116,16 @@ drawTree t = (draw . withRoute) t
         where (l1s, l2s) = sub CL lrs ([], [])
       draw (Roll (B l r)) = draw l ++ draw r
 
-tag :: Tree a -> Tree (Int, a)
-tag tree = evalState (tagStep tree) 0
-tagStep :: Tree a -> State Int (Tree (Int, a))
-tagStep (Pure x) = do
+tag :: (Int -> a -> b) -> Tree a -> Tree b
+tag f tree = evalState (tagStep f tree) 0
+tagStep :: (Int -> a -> b) -> Tree a -> State Int (Tree b)
+tagStep f (Pure x) = do
   c <- get
   put (c+1)
-  return (tip (c, x))
-tagStep (Roll (B l r)) = do
-  l' <- tagStep l
-  r' <- tagStep r
+  return (tip (f c x))
+tagStep f (Roll (B l r)) = do
+  l' <- tagStep f l
+  r' <- tagStep f r
   return (bin l' r')
 
 test = do
