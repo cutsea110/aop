@@ -109,8 +109,11 @@ trimR = sub "" ""
     sub fix tmp (' ':cs) = sub fix (' ':tmp) cs
     sub fix tmp (c:cs)   = sub (fix ++ tmp ++ [c]) "" cs
 
-drawTree :: (Show a) => Tree a -> String
-drawTree t = (draw . withRoute) t
+drawTree :: Show a => Tree a -> IO ()
+drawTree = putStr . showTree
+
+showTree :: (Show a) => Tree a -> String
+showTree t = (draw . withRoute) t
     where
       branch L L = ("   ", "+--")
       branch L R = ("|  ", "+--")
@@ -138,9 +141,9 @@ tagStep f (Roll (B l r)) = do
   r' <- tagStep f r
   return (bin l' r')
 --  
--- putStr $ drawTree $ tag const test9
--- putStr $ drawTree $ tag (,) test9
--- putStr $ drawTree $ tag (,) $ fmap assocr . withRoute . withDepth $ test9
+-- putStr $ showTree $ tag const test9
+-- putStr $ showTree $ tag (,) test9
+-- putStr $ showTree $ tag (,) $ fmap assocr . withRoute . withDepth $ test9
 --
 
 dup x = (x, x)
