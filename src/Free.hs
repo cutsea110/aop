@@ -112,15 +112,17 @@ trimR = sub "" ""
 drawTree :: (Show a) => Tree a -> String
 drawTree t = (draw . withRoute) t
     where
-      bar L L = ("   ", "+--")
-      bar L R = ("|  ", "+--")
-      bar R L = ("|  ", "+  ")
-      bar R R = ("   ", "   ")
+      branch L L = ("   ", "+--")
+      branch L R = ("|  ", "+--")
+      branch R L = ("|  ", "+  ")
+      branch R R = ("   ", "   ")
       sub :: Context -> [LR] -> ([String], [String]) -> ([String], [String])
       sub _ [] (l1, l2) = (l1, l2)
-      sub c (x:xs) (l1, l2) = sub (c <> x) xs (l1':l1, l2':l2) where (l1', l2') = bar c x
+      sub c (x:xs) (l1, l2) = sub (c <> x) xs $ ((:l1) *** (:l2)) (branch c x)
 
-      draw (Pure (x, lrs)) = trimR (concat l1s) ++ "\n" ++ concat l2s ++ " " ++ show x ++ "\n"
+      draw (Pure (x, lrs)) = unlines [ trimR (concat l1s)
+                                     , concat l2s ++ " " ++ show x
+                                     ]
         where (l1s, l2s) = sub L lrs ([], [])
       draw (Roll (B l r)) = draw l ++ draw r
 
