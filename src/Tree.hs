@@ -65,6 +65,25 @@ instance Monad Tree where
 --  Tip a >>= f  = f a
 --  Bin l r >>= f = Bin (l >>= f) (r >>= f)
 
+test = do
+  x <- bin (tip 1,tip 2)
+  y <- bin (tip 'A',tip 'B')
+  return (x, y)
+test' = bin (tip 1,tip 2) >>= \x -> bin (tip 'A',tip 'B') >>= \y -> return (x, y)
+test2 = do
+  x <- bin (tip 1, bin (tip 2, tip 3))
+  y <- bin (tip 'A', tip 'B')
+  return (x, y)
+test2' = bin (tip 1, bin (tip 2, tip 3)) >>= \x -> bin (tip 'A', tip 'B') >>= \y -> return (x, y)
+test3 = do
+  x <- bin (tip 1, bin (tip 2, tip 3))
+  y <- bin (bin (tip 'A', tip 'B'), tip 'C')
+  return (x, y)
+test3' = bin (tip 1, bin (tip 2, tip 3)) >>= \x -> bin (bin (tip 'A', tip 'B'), tip 'C') >>= \y -> return (x, y)
+
+sample = bin (tip (bin (tip (bin (tip 1, tip 2)), tip (bin (tip 3, tip 4)))), tip (bin (tip (bin (tip 5, tip 6)), tip (bin (tip 7, tip 8)))))
+
+
 -- bad implementation
 -- eta = bin . pair (eta, eta)
 --
