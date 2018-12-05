@@ -23,4 +23,9 @@ instance Functor Tree where
 instance Applicative Tree where
     pure = eta
     Empty <*> x = empty
-    Node f l r <*> x = node (undefined, l <*> x, r <*> x)
+    Node f l r <*> Empty = empty
+    Node f l r <*> x@(Node a _ _) = node (f a, l <*> x, r <*> x)
+
+instance Monad Tree where
+    return = eta
+    m >>= f = mu (fmap f m)
