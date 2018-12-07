@@ -14,7 +14,15 @@ data Forest a = Null
 fork = uncurry Fork
 null = Null
 grows = uncurry Grows
+
 {-
+(foldt (g, c, h), foldf (g, c, h)) = (u, v)
+  where
+    u (Fork x fs)  = g (x, v fs)
+    v Null         = c
+    v (Grows t fs) = h (u t, v fs)
+-}
+
 foldt (g, c, h) = u
   where
     v = foldf (g, c, h)
@@ -24,13 +32,13 @@ foldf (g, c, h) = v
     u = foldt (g, c, h)
     v Null         = c
     v (Grows t fs) = h (u t, v fs)
--}
 
+{-
 foldt (g, c, h) (Fork x fs) = g (x, foldf (g, c, h) fs)
 
 foldf (g, c, h) Null = c
 foldf (g, c, h) (Grows t fs) = h (foldt (g, c, h) t, foldf (g, c, h) fs)
-
+-}
 unfoldt b@(phi, psi) t = case phi t of
   (a, f') -> Fork a (unfoldf b f')
 
