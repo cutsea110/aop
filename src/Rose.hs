@@ -26,9 +26,25 @@ mapf f (Cons t fs) = cons (mapt f t, mapf f fs)
         c = nil
         h = cons . cross (id, id)
 
+parat (g, c, h) (Node a fs) = g a (fs, (paraf (g, c, h) fs))
+paraf (g, c, h) Nil = c
+paraf (g, c, h) (Cons t fs) = h (t, parat (g, c, h) t) (fs, paraf (g, c, h) fs)
+
+(<>) :: Forest a -> Forest a -> Forest a
+xs <> ys = paraf (g, c, h) xs
+  where
+    g t (fs, _) = node (t, fs)
+    c = ys
+    h (_, t') (_, fs') = cons (t', fs')
 
 etat :: a -> Tree a
 etat = node . pair (id, etaf)
 etaf :: a -> Forest a
 etaf = const nil
 -- etaf = grows . pair (etat, const null)
+
+mut :: Tree (Tree a) -> Tree a
+mut (Node (Node a fa) fta) = node (a, fa <> muft fta)
+muft :: Forest (Tree a) -> Forest a
+muft Nil = nil
+muft (Cons tta fta) = cons (mut tta, muft fta)
