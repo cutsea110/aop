@@ -82,19 +82,19 @@ idf = foldf (fork, null, grows)
     h (l, r) = l + r
 
 -- type functor
-{-
+
 mapt f (Fork a fs) = Fork (f a) (mapf f fs)
 mapf f Null = Null
 mapf f (Grows t fs) = Grows (mapt f t) (mapf f fs)
--}
 
-(mapt, mapf) = (genMap foldt, genMap foldf)
+(mapt', mapf') = (genMap foldt, genMap foldf)
   where
     genMap cata f = cata (g, c, h)
       where
         g = fork . cross (f, id)
         c = null
         h = grows . cross (id, id)
+
 
 parat (g, c, h) (Fork a fs) = g a (fs, (paraf (g, c, h) fs))
 paraf (g, c, h) Null = c
