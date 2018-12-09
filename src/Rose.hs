@@ -25,3 +25,10 @@ mapf f (Cons t fs) = cons (mapt f t, mapf f fs)
         g = node . cross (f, id)
         c = nil
         h = cons . cross (id, id)
+
+
+etat :: a -> Tree a
+etat = node . pair (id, etaf)
+etaf :: a -> Forest a
+etaf = const nil
+-- etaf = grows . pair (etat, const null)
