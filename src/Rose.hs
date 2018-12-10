@@ -58,18 +58,18 @@ muf (Cons t fs) = cons (mutf t, muf fs)
 
 instance Functor Tree where
   fmap = mapt
-  x <$ (Node _ fs) = Node x (x <$ fs)
+  x <$ (Node _ fs) = node (x, x <$ fs)
 
 instance Functor Forest where
   fmap = mapf
-  x <$ Nil = Nil
-  x <$ (Cons t fs) = Cons (x <$ t) (x <$ fs)
+  x <$ Nil = nil
+  x <$ (Cons t fs) = cons (x <$ t, x <$ fs)
 
 instance Applicative Tree where
   pure = etat
   Node f fs <*> t@(Node x xs) =
     let Node x' xs' = fmap f t
-    in Node x' (xs' <> (fmap ($ x) fs) <> (fs <*> xs))
+    in node (x', xs' <> (fmap ($ x) fs) <> (fs <*> xs))
 
 instance Applicative Forest where
   pure = etaf
