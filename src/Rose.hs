@@ -41,10 +41,45 @@ etat :: a -> Tree a
 etat = node . pair (id, etaf)
 etaf :: a -> Forest a
 etaf = const nil
--- etaf = grows . pair (etat, const null)
+-- etaf = cons . pair (etat, const nil)
 
 mut :: Tree (Tree a) -> Tree a
 mut (Node (Node a fa) fta) = node (a, fa <> muft fta)
 muft :: Forest (Tree a) -> Forest a
 muft Nil = nil
 muft (Cons tta fta) = cons (mut tta, muft fta)
+
+mutf :: Tree (Forest a) -> Tree a
+mutf (Node Nil xs) = node (undefined, muf xs)
+mutf (Node (Cons (Node t xs) ys) zs) = node (t, xs <> ys <> muf zs)
+muf :: Forest (Forest a) -> Forest a
+muf Nil = nil
+muf (Cons t fs) = cons (mutf t, muf fs)
+
+instance Functor Tree where
+  fmap = mapt
+  x <$ (Node _ fs) = Node x (x <$ fs)
+
+instance Functor Forest where
+  fmap = mapf
+  x <$ Nil = Nil
+  x <$ (Cons t fs) = Cons (x <$ t) (x <$ fs)
+
+instance Applicative Tree where
+  pure = etat
+  Node f fs <*> t@(Node x xs) =
+    let Node x' xs' = fmap f t
+    in Node x' (xs' <> (fmap ($ x) fs) <> (fs <*> xs))
+
+instance Applicative Forest where
+  pure = etaf
+  Cons ft ff <*> Cons xt xf = cons (ft <*> xt, ff <*> xf)
+  _ <*> _ = nil
+
+instance Monad Tree where
+  return = etat
+  m >>= f = mut (fmap f m)
+
+instance Monad Forest where
+  return = etaf
+  m >>= f = muf (fmap f m)
