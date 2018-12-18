@@ -15,23 +15,15 @@ fork = uncurry Fork
 null = Null
 grows = uncurry Grows
 
-{-
-(foldt (g, c, h), foldf (g, c, h)) = (u, v)
-  where
-    u (Fork x fs)  = g (x, v fs)
-    v Null         = c
-    v (Grows t fs) = h (u t, v fs)
--}
-
-foldt (g, c, h) = u
-  where
-    v = foldf (g, c, h)
-    u (Fork x fs)  = g (x, v fs)
-foldf (g, c, h) = v
-  where
-    u = foldt (g, c, h)
-    v Null         = c
-    v (Grows t fs) = h (u t, v fs)
+foldt (g, c, h) =
+  let v = foldf (g, c, h)
+      u (Fork x fs)  = g (x, v fs)
+  in u
+foldf (g, c, h) =
+  let u = foldt (g, c, h)
+      v Null         = c
+      v (Grows t fs) = h (u t, v fs)
+  in v
 
 {-
 foldt (g, c, h) (Fork x fs) = g (x, foldf (g, c, h) fs)
