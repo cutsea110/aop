@@ -209,7 +209,7 @@ monadTest3 = do
     x <- tip $ bin (bin (tip 1) (tip 2)) (tip 3)
     f <*> x
 
-{--
+{-
 -- the case of f is Identity
 -- F(A, TA) = A + TA
 data Free a = Pure a
@@ -250,5 +250,5 @@ mu = cata (id, roll)
 
 instance Monad Free where
     return = pure
-    m >>= f = mu (fmap f m) -- f =<< x where (=<<) = (mu.).fmap
---}
+    x >>= f = f =<< x where (=<<) = (mu.).fmap
+-}
