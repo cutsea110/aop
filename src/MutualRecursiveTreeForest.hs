@@ -1,7 +1,7 @@
 {-# LANGUAGE LambdaCase #-}
 module MutualRecursiveTreeForest where
 
-import Prelude hiding (null)
+import Prelude hiding (null,(<>))
 
 pair (f, g) x = (f x, g x)
 cross (f, g) (x, y) = (f x, g y)
