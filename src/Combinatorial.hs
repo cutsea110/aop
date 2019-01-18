@@ -1,6 +1,6 @@
 module Combinatorial where
 
-import Data.List ((\\))
+import Data.List ((\\), intersect, union)
 import Prelude hiding (concat)
 
 {--
@@ -86,3 +86,11 @@ interleave = cata (e, f)
 
 isEqual :: Ord a => [a] -> [a] -> Bool
 xs `isEqual` ys = null (xs \\ ys) && null (ys \\ xs)
+
+-- X in Pow(U) is Open set ...
+-- Property 1. [] `elem` X && U `elem` X
+-- Property 2. forall x y. x in X and y in X => x `cap` y in X
+-- Property 3. forall x y. x in X and y in X => x `cup` y in X
+isSatisfyProp1Over :: Ord a => [[a]] -> [a] -> Bool
+isSatisfyProp1Over xs u = [] `elem` xs && u `elem` xs
+
