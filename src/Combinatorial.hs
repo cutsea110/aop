@@ -102,13 +102,22 @@ isSatisfyProp1Over :: Eq a => [[a]] -> [a] -> Bool
 isSatisfyProp1Over xs u = [] `elem` xs && u `elem` xs
 
 isSatisfyProp2Over :: Eq a => [[a]] -> Bool
-isSatisfyProp2Over xs = all (\(x,y) -> (x `intersect` y) `elem` xs) [(x,y) | x <- xs, y <- xs \\ [x]]
+isSatisfyProp2Over xs = all pred [(x,y) | x <- xs, y <- xs \\ [x]]
+    where
+        pred (x, y) = (x `intersect` y) `elem` xs
 
 isSatisfyProp3Over :: Eq a => [[a]] -> Bool
-isSatisfyProp3Over xs = all (\(x,y) -> (x `union` y) `elem` xs) [(x,y) | x <- xs, y <- xs \\ [x]]
+isSatisfyProp3Over xs = all pred [(x,y) | x <- xs, y <- xs \\ [x]]
+    where
+        pred (x, y) = (x `union` y) `elem` xs
 
 openSets :: Eq a => [a] -> [[[a]]]
-openSets u = filter (\x -> isSatisfyProp3Over x && isSatisfyProp2Over x && x `isSatisfyProp1Over` u) $ subseqs (subseqs u)
+openSets u = filter isOpen $ subseqs $ subseqs u
+    where
+        isOpen x =
+            isSatisfyProp3Over x &&
+            isSatisfyProp2Over x &&
+            x `isSatisfyProp1Over` u
 
 putOpenSets :: (Show a, Eq a) => [a] -> IO ()
 putOpenSets u = mapM_ go $ zip [1..] (openSets u)
