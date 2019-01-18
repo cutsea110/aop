@@ -107,9 +107,14 @@ isSatisfyProp2Over xs = all (\(x,y) -> (x `intersect` y) `elem` xs) [(x,y) | x <
 isSatisfyProp3Over :: Eq a => [[a]] -> Bool
 isSatisfyProp3Over xs = all (\(x,y) -> (x `union` y) `elem` xs) [(x,y) | x <- xs, y <- xs \\ [x]]
 
-excer15_1 = filter (\x -> isSatisfyProp3Over x && isSatisfyProp2Over x && x `isSatisfyProp1Over` u) $ subseqs (subseqs u)
-    where
-        u = [0,1,2] :: [Int]
-
 openSets :: Eq a => [a] -> [[[a]]]
 openSets u = filter (\x -> isSatisfyProp3Over x && isSatisfyProp2Over x && x `isSatisfyProp1Over` u) $ subseqs (subseqs u)
+
+putOpenSets :: (Show a, Eq a) => [a] -> IO ()
+putOpenSets u = mapM_ go $ zip [1..] (openSets u)
+    where
+        go (i, ln) = putStrLn $ show i ++ " : " ++ show ln
+
+excer15_1 = openSets [0,1,2]
+
+putExcer15_1 = putOpenSets [0,1,2]
