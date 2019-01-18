@@ -84,7 +84,7 @@ interleave = cata (e, f)
         e = wrap (nil, nil)
         f = concat . list (conv . pair (consl, consr)) . cpr
 
-isEqual :: Ord a => [a] -> [a] -> Bool
+isEqual :: Eq a => [a] -> [a] -> Bool
 xs `isEqual` ys = null (xs \\ ys) && null (ys \\ xs)
 
 -- X in Pow(U) is Open set ...
@@ -93,4 +93,3 @@ xs `isEqual` ys = null (xs \\ ys) && null (ys \\ xs)
 -- Property 3. forall x y. x in X and y in X => x `cup` y in X
 isSatisfyProp1Over :: Ord a => [[a]] -> [a] -> Bool
 isSatisfyProp1Over xs u = [] `elem` xs && u `elem` xs
-
