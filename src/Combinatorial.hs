@@ -1,5 +1,6 @@
 module Combinatorial where
 
+import Data.List ((\\))
 import Prelude hiding (concat)
 
 {--
@@ -82,3 +83,6 @@ interleave = cata (e, f)
     where
         e = wrap (nil, nil)
         f = concat . list (conv . pair (consl, consr)) . cpr
+
+isEqual :: Ord a => [a] -> [a] -> Bool
+xs `isEqual` ys = null (xs \\ ys) && null (ys \\ xs)
