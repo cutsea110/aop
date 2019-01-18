@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleContexts #-}
 module Combinatorial where
 
 import Data.List ((\\), intersect, union)
@@ -97,7 +98,18 @@ elem x = cata (e, f)
 -- Property 1. [] `elem` X && U `elem` X
 -- Property 2. forall x y. x in X and y in X => x `cap` y in X
 -- Property 3. forall x y. x in X and y in X => x `cup` y in X
-isSatisfyProp1Over :: Ord a => [[a]] -> [a] -> Bool
+isSatisfyProp1Over :: Eq a => [[a]] -> [a] -> Bool
 isSatisfyProp1Over xs u = [] `elem` xs && u `elem` xs
 
-isSatisfyProp2Over xs = undefined
+isSatisfyProp2Over :: Eq a => [[a]] -> Bool
+isSatisfyProp2Over xs = all (\(x,y) -> (x `intersect` y) `elem` xs) [(x,y) | x <- xs, y <- xs \\ [x]]
+
+isSatisfyProp3Over :: Eq a => [[a]] -> Bool
+isSatisfyProp3Over xs = all (\(x,y) -> (x `union` y) `elem` xs) [(x,y) | x <- xs, y <- xs \\ [x]]
+
+excer15_1 = filter (\x -> isSatisfyProp3Over x && isSatisfyProp2Over x && x `isSatisfyProp1Over` u) $ subseqs (subseqs u)
+    where
+        u = [0,1,2] :: [Int]
+
+openSets :: Eq a => [a] -> [[[a]]]
+openSets u = filter (\x -> isSatisfyProp3Over x && isSatisfyProp2Over x && x `isSatisfyProp1Over` u) $ subseqs (subseqs u)
