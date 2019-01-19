@@ -94,23 +94,6 @@ elem x = cata (e, f)
         e = False
         f (y,b) = b || y `isEqual` x
 
--- X in Pow(U) is Open set ...
--- Property 1. [] `elem` X && U `elem` X
--- Property 2. forall x y. x in X and y in X => x `cap` y in X
--- Property 3. forall x y. x in X and y in X => x `cup` y in X
-isSatisfyProp1Over :: Eq a => [[a]] -> [a] -> Bool
-isSatisfyProp1Over xs u = [] `elem` xs && u `elem` xs
-
-isSatisfyProp2Over :: Eq a => [[a]] -> Bool
-isSatisfyProp2Over xs = all pred [(x,y) | x <- xs, y <- xs \\ [x]]
-    where
-        pred (x, y) = (x `intersect` y) `elem` xs
-
-isSatisfyProp3Over :: Eq a => [[a]] -> Bool
-isSatisfyProp3Over xs = all pred [(x,y) | x <- xs, y <- xs \\ [x]]
-    where
-        pred (x, y) = (x `union` y) `elem` xs
-
 openSets :: Eq a => [a] -> [[[a]]]
 openSets u = filter isOpen $ subseqs $ subseqs u
     where
@@ -118,6 +101,23 @@ openSets u = filter isOpen $ subseqs $ subseqs u
             isSatisfyProp3Over x &&
             isSatisfyProp2Over x &&
             x `isSatisfyProp1Over` u
+            
+        -- X in Pow(U) is Open set ...
+        -- Property 1. [] `elem` X && U `elem` X
+        -- Property 2. forall x y. x in X and y in X => x `cap` y in X
+        -- Property 3. forall x y. x in X and y in X => x `cup` y in X
+        isSatisfyProp1Over :: Eq a => [[a]] -> [a] -> Bool
+        isSatisfyProp1Over xs u = [] `elem` xs && u `elem` xs
+
+        isSatisfyProp2Over :: Eq a => [[a]] -> Bool
+        isSatisfyProp2Over xs = all pred [(x,y) | x <- xs, y <- xs \\ [x]]
+            where
+                pred (x, y) = (x `intersect` y) `elem` xs
+
+        isSatisfyProp3Over :: Eq a => [[a]] -> Bool
+        isSatisfyProp3Over xs = all pred [(x,y) | x <- xs, y <- xs \\ [x]]
+            where
+                pred (x, y) = (x `union` y) `elem` xs
 
 putOpenSets :: (Show a, Eq a) => [a] -> IO ()
 putOpenSets u = mapM_ go $ zip [1..] (openSets u)
