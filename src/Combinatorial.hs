@@ -99,7 +99,7 @@ elem x = cata (e, f)
 openSets :: Eq a => [a] -> [[[a]]]
 openSets u = filter isOpen $ candidates u
     where
-        candidates u = map (\x -> u:[]:x) $ subseqs u'
+        candidates u = map (\x -> u:(x ++ [[]])) $ subseqs u'
             where
                 u' = filter (\x -> not (null x || x == u)) $ subseqs u
 
