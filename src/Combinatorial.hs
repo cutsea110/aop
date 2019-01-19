@@ -103,17 +103,9 @@ openSets u = filter isOpen $ candidates u
             where
                 u' = filter (\x -> not (null x || x == u)) $ subseqs u
 
-        isOpen x = isSatisfyProp2Over x && isSatisfyProp3Over x
-
-        isSatisfyProp2Over :: Eq a => [[a]] -> Bool
-        isSatisfyProp2Over xs = all pred [(x,y) | x <- xs, y <- xs \\ [x]]
+        isOpen xs = all pred [(x,y) | x <- xs, y <- xs \\ [x]]
             where
-                pred (x, y) = (x `intersect` y) `elem` xs
-
-        isSatisfyProp3Over :: Eq a => [[a]] -> Bool
-        isSatisfyProp3Over xs = all pred [(x,y) | x <- xs, y <- xs \\ [x]]
-            where
-                pred (x, y) = (x `union` y) `elem` xs
+                pred (x, y) = (x `intersect` y) `elem` xs && (x `union` y) `elem` xs
 
 putOpenSets :: (Show a, Eq a) => [a] -> IO ()
 putOpenSets u = mapM_ go $ zip [1..] (openSets u)
