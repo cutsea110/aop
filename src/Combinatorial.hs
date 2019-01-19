@@ -94,14 +94,19 @@ elem x = cata (e, f)
         e = False
         f (y,b) = b || y `isEqual` x
 
+
+
 openSets :: Eq a => [a] -> [[[a]]]
-openSets u = filter isOpen $ subseqs $ subseqs u
+openSets u = filter isOpen $ candidates u
     where
+        candidates u = map (\x -> u:[]:x) $ subseqs u'
+            where
+                u' = filter (\x -> not (null x || x == u)) $ subseqs u
         isOpen x =
             isSatisfyProp3Over x &&
             isSatisfyProp2Over x &&
             x `isSatisfyProp1Over` u
-            
+
         -- X in Pow(U) is Open set ...
         -- Property 1. [] `elem` X && U `elem` X
         -- Property 2. forall x y. x in X and y in X => x `cap` y in X
