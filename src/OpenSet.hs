@@ -6,7 +6,7 @@ import Data.Set as Set
 e :: Set Int
 e = fromList []
 u :: Set Int
-u = fromList [0,1,2,3]
+u = fromList [0,1,2]
 conpact = fromList [e, u]
 
 
