@@ -6,7 +6,7 @@ import Data.Set as Set
 e :: Set Int
 e = fromList []
 u :: Set Int
-u = fromList [0,1,2]
+u = fromList [0,1,2,3]
 conpact = fromList [e, u]
 
 
@@ -25,4 +25,6 @@ openSets = Set.filter isOpen candidates
 
 openSets' = toList $ Set.map (toList.(Set.map toList)) openSets
 
-main = mapM_ print openSets'
+main = mapM_ go $ zip [1..] openSets'
+    where
+        go (i, ln) = putStrLn $ show i ++ " : " ++ show ln
