@@ -21,10 +21,8 @@ isOpen x = all (==True) ok
         ps' = Set.map (\(a, b) -> (a `intersection` b, a `union` b)) ps
         ok = toList $ Set.map (\(a, b) -> a `member` x && b `member` x) ps'
 
-openSets = Set.filter isOpen candidates
+openSets = toList $ Set.map (toList.(Set.map toList)) $ Set.filter isOpen candidates
 
-openSets' = toList $ Set.map (toList.(Set.map toList)) openSets
-
-main = mapM_ go $ zip [1..] openSets'
+main = mapM_ go $ zip [1..] openSets
     where
         go (i, ln) = putStrLn $ show i ++ " : " ++ show ln
