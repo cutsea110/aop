@@ -17,7 +17,7 @@ openSets x = toList $ Set.map (toList.(Set.map toList)) $ Set.filter isOpen cand
         sub = Prelude.map toList $ toList (pu Set.\\ conpact)
         isOpen o = Set.fold (\a b -> p a && b) True ps
             where
-                p (a, b) = uncurry (&&) ((intersection a b) `member` o, (union a b) `member` o)
+                p (a, b) = uncurry (&&) (intersection a b `member` o, union a b `member` o)
                 ps = Set.filter (uncurry (<)) $ uncurry cartesianProduct $ dup (o Set.\\ conpact)
     
 main :: IO ()    
