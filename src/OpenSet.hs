@@ -3,8 +3,9 @@ module OpenSet where
 import Data.List as List ((\\))
 import Data.Set as Set
 
-dup :: a -> (a, a)
 dup x = (x, x)
+cross (f, g) (x, y) = (f x, g y)
+pair (f, g) x = (f x, g x)
 
 openSets :: Ord a => [a] -> [[[a]]]
 openSets x = toList $ Set.map (toList.(Set.map toList)) $ Set.filter isOpen candidates
@@ -14,9 +15,9 @@ openSets x = toList $ Set.map (toList.(Set.map toList)) $ Set.filter isOpen cand
         pu = powerSet u
         candidates = Set.map (union conpact) $ powerSet (pu Set.\\ conpact)
         sub = Prelude.map toList $ toList (pu Set.\\ conpact)
-        isOpen o = Set.fold p True ps
+        isOpen o = Set.fold (\a b -> p a && b) True ps
             where
-                p (a, b) c = ((a `intersection` b) `member` o && (a `union` b) `member` o) && c
+                p (a, b) = (a `intersection` b) `member` o && (a `union` b) `member` o
                 ps = Set.filter (uncurry (<)) $ uncurry cartesianProduct $ dup (o Set.\\ conpact)
     
 main :: IO ()    
