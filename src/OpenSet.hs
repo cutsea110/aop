@@ -14,7 +14,6 @@ openSets x = toList $ Set.map (toList.(Set.map toList)) $ Set.filter isOpen cand
         conpact = fromList [e, u]
         pu = powerSet u
         candidates = Set.map (union conpact) $ powerSet (pu Set.\\ conpact)
-        sub = Prelude.map toList $ toList (pu Set.\\ conpact)
         isOpen o = Set.fold (\a b -> p a && b) True ps
             where
                 p (a, b) = uncurry (&&) (intersection a b `member` o, union a b `member` o)
