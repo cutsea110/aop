@@ -3,6 +3,8 @@ module OpenSet where
 import Data.List as List ((\\))
 import Data.Set as Set
 
+dup :: a -> (a, a)
+dup x = (x, x)
 
 openSets :: Ord a => [a] -> [[[a]]]
 openSets x = toList $ Set.map (toList.(Set.map toList)) $ Set.filter isOpen candidates
@@ -14,9 +16,8 @@ openSets x = toList $ Set.map (toList.(Set.map toList)) $ Set.filter isOpen cand
         sub = Prelude.map toList $ toList (pu Set.\\ conpact)
         isOpen o = all (==True) ok
             where
-                o' = o Set.\\ conpact
                 f (a, b) = (a `intersection` b) `member` o && (a `union` b) `member` o
-                ps = Set.filter (\(a, b) -> a < b) $ cartesianProduct o' o'
+                ps = Set.filter (uncurry (<)) $ uncurry cartesianProduct $ dup (o Set.\\ conpact)
                 ok = toList $ Set.map f ps
     
 main :: IO ()    
