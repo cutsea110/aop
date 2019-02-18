@@ -15,9 +15,9 @@ openSets x = toList $ Set.map (toList.(Set.map toList)) $ Set.filter isOpen cand
         isOpen o = all (==True) ok
             where
                 o' = o Set.\\ conpact
+                f (a, b) = (a `intersection` b) `member` o && (a `union` b) `member` o
                 ps = Set.filter (\(a, b) -> a < b) $ cartesianProduct o' o'
-                ps' = Set.map (\(a, b) -> (a `intersection` b, a `union` b)) ps
-                ok = toList $ Set.map (\(a, b) -> a `member` o && b `member` o) ps'
+                ok = toList $ Set.map f ps
     
 main :: IO ()    
 main = mapM_ go $ zip [1..] $ openSets [0,1,2]
