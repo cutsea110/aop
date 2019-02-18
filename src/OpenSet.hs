@@ -12,12 +12,12 @@ openSets x = toList $ Set.map (toList.(Set.map toList)) $ Set.filter isOpen cand
         pu = powerSet u
         candidates = Set.map (union conpact) $ powerSet (pu Set.\\ conpact)
         sub = Prelude.map toList $ toList (pu Set.\\ conpact)
-        isOpen x = all (==True) ok
+        isOpen o = all (==True) ok
             where
-                x' = x Set.\\ conpact
-                ps = Set.filter (\(a, b) -> a < b) $ cartesianProduct x' x'
+                o' = o Set.\\ conpact
+                ps = Set.filter (\(a, b) -> a < b) $ cartesianProduct o' o'
                 ps' = Set.map (\(a, b) -> (a `intersection` b, a `union` b)) ps
-                ok = toList $ Set.map (\(a, b) -> a `member` x && b `member` x) ps'
+                ok = toList $ Set.map (\(a, b) -> a `member` o && b `member` o) ps'
     
 main :: IO ()    
 main = mapM_ go $ zip [1..] $ openSets [0,1,2]
