@@ -14,11 +14,11 @@ openSets x = toList $ Set.map (toList.(Set.map toList)) $ Set.filter isOpen cand
         pu = powerSet u
         candidates = Set.map (union conpact) $ powerSet (pu Set.\\ conpact)
         sub = Prelude.map toList $ toList (pu Set.\\ conpact)
-        isOpen o = all (==True) ok
+        isOpen o = ok
             where
                 f (a, b) = (a `intersection` b) `member` o && (a `union` b) `member` o
                 ps = Set.filter (uncurry (<)) $ uncurry cartesianProduct $ dup (o Set.\\ conpact)
-                ok = toList $ Set.map f ps
+                ok = Set.fold (\a b -> f a && b) True ps
     
 main :: IO ()    
 main = mapM_ go $ zip [1..] $ openSets [0,1,2]
