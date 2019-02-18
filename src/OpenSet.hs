@@ -4,8 +4,6 @@ import Data.List as List ((\\))
 import Data.Set as Set
 
 dup x = (x, x)
-cross (f, g) (x, y) = (f x, g y)
-pair (f, g) x = (f x, g x)
 
 openSets :: Ord a => [a] -> [[[a]]]
 openSets x = toList $ Set.map (toList.(Set.map toList)) $ Set.filter isOpen candidates
