@@ -1,6 +1,6 @@
 module OpenSet where
 
-import Data.List as List ((\\))
+import Data.List hiding (union)
 import Data.Set as Set
 
 dup x = (x, x)
