@@ -36,6 +36,12 @@ plusN x = foldn (x, S)
 multN x = foldn (Z, plusN x)
 exprN x = foldn (S Z, multN x)
 
+minusN x y = go x y Z
+  where
+    go x Z n = Just n
+    go Z y n = Nothing
+    go (S x) (S y) n = go x y (S n)
+
 fromNat = foldn (0, (1+))
 toNat = unfoldn phi
   where
@@ -77,10 +83,11 @@ embed DP8 = Spl (embed DP7)
 embed DP9 = Spl (embed DP8)
 
 val = foldDec (embed, op)
+
+op :: (NatPlus, Digit) -> NatPlus
+op (n, d) = add (multNP n10 n) d
   where
     n10 = toNatPlus 10
-    op :: (NatPlus, Digit) -> NatPlus
-    op (n, d) = add (multNP n10 n) d
     add n D0 = n
     add n D1 = Spl n
     add n D2 = Spl (add n D1)
@@ -91,3 +98,19 @@ val = foldDec (embed, op)
     add n D7 = Spl (add n D6)
     add n D8 = Spl (add n D7)
     add n D9 = Spl (add n D8)
+
+divNP :: NatPlus -> NatPlus -> NatPlus
+x `divNP` y = undefined
+
+modNP :: NatPlus -> NatPlus -> NatPlus
+modNP = undefined
+
+npToDigit :: NatPlus -> Digit
+npToDigit = undefined
+
+op' :: NatPlus -> (NatPlus, Digit)
+op' np = (np', d)
+  where
+    n10 = toNatPlus 10
+    np' = np `divNP` n10
+    d   = npToDigit $ np `modNP` n10
