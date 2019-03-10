@@ -10,9 +10,37 @@ foldDec (f, g) = u
     u (Wrap dp) = f dp
     u (Snoc dc d) = g (u dc) d
 
-unfoldDec :: (t -> Either DigitPlus (t, Digit)) -> p -> t -> Decimal
-unfoldDec psi d = v
+unfoldDec :: (t -> Either DigitPlus (t, Digit)) -> t -> Decimal
+unfoldDec psi = v
   where
     v dc = case psi dc of
       Left dp       -> Wrap dp
       Right (dc', d) -> Snoc (v dc') d
+
+data Nat = Z | S Nat deriving (Show, Eq)
+
+foldn :: (t, t -> t) -> Nat -> t
+foldn (c, f) = u
+  where
+    u Z     = c
+    u (S x) = f (u x)
+
+unfoldn :: (t -> Maybe t) -> t -> Nat
+unfoldn psi = v
+  where
+    v x = case psi x of
+      Nothing -> Z
+      Just x' -> S (v x')
+
+data NatPlus = One | Spl NatPlus deriving (Show, Eq)
+
+foldnp (c, f) = u
+  where
+    u One = c
+    u (Spl x) = f (u x)
+
+unfoldnp psi = v
+  where
+    v x = case psi x of
+      Nothing -> One
+      Just x' -> Spl (v x')
