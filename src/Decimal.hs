@@ -32,15 +32,47 @@ unfoldn psi = v
       Nothing -> Z
       Just x' -> S (v x')
 
+paran (c, f) = u
+  where
+    u Z = c
+    u (S n) = f (u n, n)
+
+hylo :: Functor f => (f b -> b, a -> f a) -> a -> b
+hylo (phi, psi) = phi . fmap (hylo (phi, psi)) . psi
+
 plusN x = foldn (x, S)
 multN x = foldn (Z, plusN x)
 exprN x = foldn (S Z, multN x)
-
-minusN x y = go x y Z
+fact = paran (S Z, f)
   where
-    go x Z n = Just n
+    f (m, n) = multN m (S n)
+
+x `minusN` y = go x y Z
+  where
+    go x Z n = Just x
     go Z y n = Nothing
     go (S x) (S y) n = go x y (S n)
+
+succ' Z     = Nothing
+succ' (S n) = Just n
+
+x `divN` y = unfoldn phi x
+  where
+    phi x = x `minusN` y
+
+x `modN` y = hylo (phi, psi) x
+  where
+    phi (Left n) = n
+    phi (Right x) = x
+    psi x = case x `minusN` y of
+      Nothing -> Left x
+      Just x' -> Right x'
+
+{--
+x `modN` y = case x `minusN` y of
+  Nothing -> x
+  Just x' -> x' `modN` y
+--}
 
 fromNat = foldn (0, (1+))
 toNat = unfoldn phi
