@@ -32,6 +32,9 @@ unfoldn psi = v
       Nothing -> Z
       Just x' -> S (v x')
 
+plusN x y = foldn (x, S) y
+multN x y = foldn (Z, plusN x) y
+
 data NatPlus = One | Spl NatPlus deriving (Show, Eq)
 
 foldnp (c, f) = u
@@ -44,6 +47,9 @@ unfoldnp psi = v
     v x = case psi x of
       Nothing -> One
       Just x' -> Spl (v x')
+
+plusNP x y = foldnp (Spl x, Spl) y
+multNP x y = foldnp (x, plusNP x) y
 
 embed :: DigitPlus -> NatPlus
 embed DP1 = One
