@@ -32,8 +32,15 @@ unfoldn psi = v
       Nothing -> Z
       Just x' -> S (v x')
 
-plusN x y = foldn (x, S) y
-multN x y = foldn (Z, plusN x) y
+plusN x = foldn (x, S)
+multN x = foldn (Z, plusN x)
+exprN x = foldn (S Z, multN x)
+
+fromNat = foldn (0, (1+))
+toNat = unfoldn phi
+  where
+    phi x | x <= 0 = Nothing
+          | otherwise = Just (x-1)
 
 data NatPlus = One | Spl NatPlus deriving (Show, Eq)
 
@@ -48,8 +55,15 @@ unfoldnp psi = v
       Nothing -> One
       Just x' -> Spl (v x')
 
-plusNP x y = foldnp (Spl x, Spl) y
-multNP x y = foldnp (x, plusNP x) y
+plusNP x = foldnp (Spl x, Spl)
+multNP x = foldnp (x, plusNP x)
+exprNP x = foldnp (x, multNP x)
+
+fromNatPlus = foldnp (1, (1+))
+toNatPlus = unfoldnp phi
+  where
+    phi x | x <= 1 = Nothing
+          | otherwise = Just (x-1)
 
 embed :: DigitPlus -> NatPlus
 embed DP1 = One
@@ -64,5 +78,16 @@ embed DP9 = Spl (embed DP8)
 
 val = foldDec (embed, op)
   where
+    n10 = toNatPlus 10
     op :: (NatPlus, Digit) -> NatPlus
-    op (n, d) = undefined
+    op (n, d) = add (multNP n10 n) d
+    add n D0 = n
+    add n D1 = Spl n
+    add n D2 = Spl (add n D1)
+    add n D3 = Spl (add n D2)
+    add n D4 = Spl (add n D3)
+    add n D5 = Spl (add n D4)
+    add n D6 = Spl (add n D5)
+    add n D7 = Spl (add n D6)
+    add n D8 = Spl (add n D7)
+    add n D9 = Spl (add n D8)
