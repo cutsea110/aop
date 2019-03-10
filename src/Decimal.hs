@@ -9,3 +9,7 @@ foldDec (f, g) = u
   where
     u (Wrap dp) = f dp
     u (Snoc dc d) = g (u dc) d
+
+unfoldDec psi d = case psi d of
+  Left dp       -> Wrap dp
+  Right (dc, d) -> Snoc (unfoldDec psi dc) d
