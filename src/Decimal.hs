@@ -4,11 +4,11 @@ data Digit = D0 | D1 | D2 | D3 | D4 | D5 | D6 | D7 | D8 | D9 deriving (Show, Eq)
 data DigitPlus = DP1 | DP2 | DP3 | DP4 | DP5 | DP6 | DP7 | DP8 | DP9 deriving (Show, Eq)
 data Decimal = Wrap DigitPlus | Snoc Decimal Digit deriving (Show, Eq)
 
-foldDec :: (DigitPlus -> t, t -> Digit -> t) -> Decimal -> t
+foldDec :: (DigitPlus -> t, (t, Digit) -> t) -> Decimal -> t
 foldDec (f, g) = u
   where
     u (Wrap dp) = f dp
-    u (Snoc dc d) = g (u dc) d
+    u (Snoc dc d) = g (u dc, d)
 
 unfoldDec :: (t -> Either DigitPlus (t, Digit)) -> t -> Decimal
 unfoldDec psi = v
@@ -44,3 +44,19 @@ unfoldnp psi = v
     v x = case psi x of
       Nothing -> One
       Just x' -> Spl (v x')
+
+embed :: DigitPlus -> NatPlus
+embed DP1 = One
+embed DP2 = Spl (embed DP1)
+embed DP3 = Spl (embed DP2)
+embed DP4 = Spl (embed DP3)
+embed DP5 = Spl (embed DP4)
+embed DP6 = Spl (embed DP5)
+embed DP7 = Spl (embed DP6)
+embed DP8 = Spl (embed DP7)
+embed DP9 = Spl (embed DP8)
+
+val = foldDec (embed, op)
+  where
+    op :: (NatPlus, Digit) -> NatPlus
+    op (n, d) = undefined
