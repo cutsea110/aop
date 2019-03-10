@@ -56,9 +56,19 @@ x `minusN` y = go x y Z
 succ' Z     = Nothing
 succ' (S n) = Just n
 
+{--
 x `divN` y = unfoldn phi x
   where
     phi x = x `minusN` y
+--}
+
+x `divN` y = hylo (phi, psi) x
+  where
+    phi (Left n) = Z
+    phi (Right x) = S x
+    psi x = case x `minusN` y of
+      Nothing -> Left x
+      Just x' -> Right x'
 
 x `modN` y = hylo (phi, psi) x
   where
