@@ -10,6 +10,9 @@ foldDec (f, g) = u
     u (Wrap dp) = f dp
     u (Snoc dc d) = g (u dc) d
 
-unfoldDec psi d = case psi d of
-  Left dp       -> Wrap dp
-  Right (dc, d) -> Snoc (unfoldDec psi dc) d
+unfoldDec :: (t -> Either DigitPlus (t, Digit)) -> p -> t -> Decimal
+unfoldDec psi d = v
+  where
+    v dc = case psi dc of
+      Left dp       -> Wrap dp
+      Right (dc', d) -> Snoc (v dc') d
