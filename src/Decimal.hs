@@ -156,3 +156,11 @@ op' np = (np', d)
     n10 = toNatPlus 10
     np' = np `divNP` n10
     d   = npToDigit $ np `modNP` n10
+
+data Bit = B0 | B1 deriving (Show, Eq)
+data ListL a = Nil | Add (ListL a) a deriving (Show, Eq)
+
+foldll (c, f) = u
+  where
+    u Nil = c
+    u (Add xs x) = f (u xs) x
