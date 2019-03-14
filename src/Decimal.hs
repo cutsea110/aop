@@ -41,8 +41,8 @@ hylo :: Functor f => (f b -> b, a -> f a) -> a -> b
 hylo (phi, psi) = phi . fmap (hylo (phi, psi)) . psi
 
 plusN x = foldn (x, S)
-multN x = foldn (Z, plusN x)
-exprN x = foldn (S Z, multN x)
+multN x = foldn (zero, plusN x) where zero = Z
+exprN x = foldn (one, multN x) where one = S Z
 fact = paran (S Z, f)
   where
     f (m, n) = multN m (S n)
