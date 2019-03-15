@@ -172,4 +172,6 @@ convert = foldll (zero, shift)
   where
     zero = Z
     shift :: Nat -> Bit -> Nat
-    shift = undefined
+    shift n d = ((toNat 2) `multN` n) `plusN` toN d
+    toN B0 = Z
+    toN B1 = S Z
