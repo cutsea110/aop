@@ -160,7 +160,7 @@ op' np = (np', d)
 data Bit = B0 | B1 deriving (Show, Eq)
 data ListL a = Nil | Add (ListL a) a deriving (Show, Eq)
 
-foldll (c, f) = u
+foldLL (c, f) = u
   where
     u Nil = c
     u (Add xs x) = f (u xs) x
@@ -168,7 +168,7 @@ foldll (c, f) = u
 type Bin = ListL Bit
 
 convert :: Bin -> Nat
-convert = foldll (zero, shift)
+convert = foldLL (zero, shift)
   where
     zero = Z
     shift :: Nat -> Bit -> Nat
