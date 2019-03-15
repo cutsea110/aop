@@ -164,3 +164,12 @@ foldll (c, f) = u
   where
     u Nil = c
     u (Add xs x) = f (u xs) x
+
+type Bin = ListL Bit
+
+convert :: Bin -> Nat
+convert = foldll (zero, shift)
+  where
+    zero = Z
+    shift :: Nat -> Bit -> Nat
+    shift = undefined
