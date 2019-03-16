@@ -175,3 +175,10 @@ convert = foldLL (zero, shift)
     shift n d = ((toNat 2) `multN` n) `plusN` toN d
     toN B0 = Z
     toN B1 = S Z
+
+expN :: Nat -> Nat -> Nat
+expN a b | b == Z = S Z
+         | otherwise = op a (expN a (b `divN` (S (S Z))), b `modN` (S (S Z)))
+  where
+    op a (n, d) | d == Z =  n `multN` n
+                | otherwise = a `multN` (n `multN` n)
