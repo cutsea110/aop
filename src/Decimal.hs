@@ -182,3 +182,9 @@ expN a b | b == Z = S Z
   where
     op a (n, d) | d == Z =  n `multN` n
                 | otherwise = a `multN` (n `multN` n)
+
+exp' a b | b == 0 = 1
+         | otherwise = let (d, m) = (b `divMod` 2) in op a (exp' a d, m)
+  where
+    op a (n, d) | d == 0 = n * n
+                | otherwise = a * n * n
