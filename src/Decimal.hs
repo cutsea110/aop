@@ -183,6 +183,7 @@ expN a b | b == Z = S Z
     op a (n, d) | d == Z =  n `multN` n
                 | otherwise = a `multN` (n `multN` n)
 
+exp' :: (Integral a, Num p) => p -> a -> p
 exp' a b | b == 0 = 1
          | otherwise = let (d, m) = (b `divMod` 2) in op a (exp' a d, m)
   where
