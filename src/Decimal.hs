@@ -160,6 +160,7 @@ op' np = (np', d)
 data Bit = B0 | B1 deriving (Show, Eq)
 data ListL a = Nil | Add (ListL a) a deriving (Show, Eq)
 
+foldLL :: (b, b -> a -> b) -> ListL a -> b
 foldLL (c, f) = u
   where
     u Nil = c
