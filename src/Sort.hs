@@ -1,6 +1,7 @@
 module Sort where
 
-import Data.List
+import Data.List hiding (null)
+import Prelude hiding (null)
 
 -- selection sort
 ssort :: Ord a => [a] -> [a]
@@ -19,3 +20,11 @@ foldt (c, f) = u
 flatten = foldt (nil, join)
 nil = []
 join (x, a, y) = x ++ [a] ++ y
+
+inordered = foldt (null, fork . check)
+null = Null
+fork = Fork
+
+check = undefined
+intree Null = []
+intree (Fork (lt, a, rt)) = [lt] ++ [rt]
