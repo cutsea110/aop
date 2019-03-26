@@ -71,3 +71,22 @@ fib = fib' . toNat
 ack 0 n = n+1
 ack m 0 = ack (m-1) 1
 ack m n = ack (m-1) (ack m (n-1))
+
+
+data NonEmptyList a = Wrap a | Add a (NonEmptyList a) deriving Show
+
+instance Functor NonEmptyList where
+  fmap f (Wrap a) = Wrap (f a)
+  fmap f (Add x xs) = Add (f x) (fmap f xs)
+
+foldnp (f, g) = u
+  where
+    u (Wrap x) = f x
+    u (Add x xs) = g x (u xs)
+
+unfoldnp psi = v
+  where
+    v x = case psi x of
+      Left y        -> Wrap y
+      Right (y, ys) -> Add y (v ys)
+
