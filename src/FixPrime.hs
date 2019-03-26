@@ -180,6 +180,10 @@ cozygo f psi = ana (either (fmap Left . f, psi)) . Right
 -- dynamorphism
 dyna :: Functor f => (f (Cofree f b) -> b) -> (a -> f a) -> a -> b
 dyna f g = chrono f (fmap inject . g)
+
+dyna' :: Functor f => (f (Cofree f b) -> b) -> (a -> f a) -> a -> b
+dyna' f g = histo f . ana g
+
 -- codynamorphism
 codyna :: Functor f => (f b -> b) -> (a -> f (Free f a)) -> a -> b
 codyna f g = chrono (f . fmap extract) g
