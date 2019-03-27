@@ -39,3 +39,9 @@ data Ano f a x = Ano a (f x) deriving Show
 -- This is the isomorphism to a non-empty list.
 newtype Cf f a = Cf { unCf :: Fix (Ano f a) }
 
+-- epsilon -- the extract function.
+ex cf = case out (unCf cf) of
+  Ano x _ -> x
+-- sub
+sub cf = case out (unCf cf) of
+  Ano _ mv -> fmap Cf mv -- this fmap is over Maybe functor , in the case of Ano Maybe a.
