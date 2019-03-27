@@ -1,3 +1,4 @@
+{-# LANGUAGE TypeSynonymInstances, FlexibleInstances #-}
 module Collatz where
 
 newtype Fix f = In { out :: f (Fix f) }
@@ -5,8 +6,8 @@ newtype Fix f = In { out :: f (Fix f) }
 type Nat = Fix Maybe
 
 instance Show Nat where
-  show (In Nothing) = "In Nothing"
-  show (In (Just x)) = "In (Just (" ++ show x ++ "))"
+  show (In Nothing) = "(In Nothing)"
+  show (In (Just x)) = "(In (Just " ++ show x ++ "))"
 
 z = In Nothing
 s n = In (Just n)
@@ -50,9 +51,21 @@ data Ano f a x = Ano a (f x) deriving Show
 -- This is the isomorphism to a non-empty list.
 newtype Cf f a = Cf { unCf :: Fix (Ano f a) }
 
+type NonEmptyList a = Cf Maybe a
+
 -- epsilon -- the extract function.
 ex cf = case out (unCf cf) of
   Ano x _ -> x
 -- sub
 sub cf = case out (unCf cf) of
   Ano _ mv -> fmap Cf mv -- this fmap is over Maybe functor , in the case of Ano Maybe a.
+
+-- anamorphism over Non Empty List which is Cofree of a fixed point of Ano Maybe a
+anaNEL :: (t -> Either a (a, Maybe t)) -> t -> Fix (Ano Maybe a)
+anaNEL psi cf = case psi cf of
+  Left x       ->  In (Ano x Nothing)
+  Right (x, y) ->  In (Ano x (fmap (anaNEL psi) y))
+
+psi 0 = Left 0
+psi 1 = Right (1, Nothing)
+psi 2 = Right (2, Just 1)
