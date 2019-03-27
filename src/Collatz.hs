@@ -13,12 +13,19 @@ foldn (c, f) = u
     u (In Nothing) = c
     u (In (Just n)) = f (u n)
 
-unfoldn :: (t -> Maybe Nat) -> t -> Nat
-unfoldn phi = v
+unfoldn :: (t -> Maybe t) -> t -> Nat
+unfoldn psi x = v
   where
-    v x = case phi x of
-      Nothing -> z
-      Just x' -> s x'
+  v = case psi x of
+    Nothing -> z
+    Just x' -> s (unfoldn psi x')
+
+-- utilities
+toNat = unfoldn psi
+  where
+    psi 0 = Nothing
+    psi n = Just (n-1)
+fromNat = foldn (0, (1+))
 
 -- with Anotation
 -- Ano F A == (A, F(-))
