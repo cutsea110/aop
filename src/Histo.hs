@@ -51,7 +51,7 @@ instance Functor (ListF Nat) where
 -- >>> Prelude.map (fib . toNat) [1..100]
 -- [1,1,2,3,5,8...]
 fib' :: Num t => Nat -> t
-fib' = histo phi
+fib' = histo phi -- histo is faster than histo'
   where
     phi :: Num t => NatF (Cofree NatF t) -> t
     phi Z = 0

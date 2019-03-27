@@ -37,6 +37,9 @@ fromNat = foldn (0, (1+))
 -- the case of F = Maybe, Ano Maybe A => (A, Maybe -)
 data Ano f a x = Ano a (f x) deriving Show
 
+instance Functor f => Functor (Ano f a) where
+  fmap f (Ano x y) = Ano x (fmap f y)
+
 -- a.k.a. Cofree
 -- the case of F = Maybe, Fix (Ano Maybe A) => the fix point of X = F'(X) = (A, Maybe X) ~ A * (1 + X) = A + A * X,
 -- so this functor is the non-empty list of A, Cofree Maybe A is non-empty list of A
@@ -61,11 +64,28 @@ sub cf = case out (unCf cf) of
   Ano _ mv -> fmap Cf mv -- this fmap is over Maybe functor , in the case of Ano Maybe a.
 
 -- anamorphism over Non Empty List which is Cofree of a fixed point of Ano Maybe a
-anaNEL :: (t -> Either a (a, Maybe t)) -> t -> Fix (Ano Maybe a)
-anaNEL psi cf = case psi cf of
-  Left x       ->  In (Ano x Nothing)
-  Right (x, y) ->  In (Ano x (fmap (anaNEL psi) y))
+ana psi = In . fmap (ana psi) . psi
+{-
+histo phi = phi . fmap (Cf . (ana proj)) . out
+  where
+    proj a = Ano (histo phi a) (out a)
+-}
+pair (f, g) x = (f x, g x)
 
-psi 0 = Left 0
-psi 1 = Right (1, Nothing)
-psi 2 = Right (2, Just 1)
+bimap (g, h) (Ano a x) = Ano (g a) (fmap h x)
+
+cata phi = phi . fmap (cata phi) . out
+
+histo phi = ex . cata ap
+  where
+    ap x = cast $ Ano (phi x) x
+    cast :: Functor f => Ano f a (Cf f a) -> Cf f a
+    cast = Cf . In . bimap (id, unCf)
+
+psi Nothing = 0
+psi (Just n) = f1 n + f2 n
+  where
+    f1 n = ex n
+    f2 n = case sub n of
+      Nothing -> 1
+      Just n' -> ex n'
