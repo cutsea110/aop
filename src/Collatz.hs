@@ -4,6 +4,10 @@ newtype Fix f = In { out :: f (Fix f) }
 
 type Nat = Fix Maybe
 
+instance Show Nat where
+  show (In Nothing) = "In Nothing"
+  show (In (Just x)) = "In (Just (" ++ show x ++ "))"
+
 z = In Nothing
 s n = In (Just n)
 
