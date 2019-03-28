@@ -1,4 +1,3 @@
-{-# LANGUAGE TypeSynonymInstances, FlexibleInstances #-}
 module Collatz where
 
 -- We would like to do this!
@@ -37,8 +36,16 @@ psi'' (In (Just n)) = case psi'' n of
   p@(Ano (f1, Just (Ano (f2, mv)))) -> Ano (f1 + f2, Just p)
 
 ex (Ano (x, _)) = x
+ana psi = In . fmap (ana psi) . psi
+toNat = ana psi
+  where
+    psi 0 = Nothing
+    psi n = Just (n-1)
+{-    
 toNat 0 = In Nothing
 toNat n = In (Just (toNat (n-1)))
-
+-}
 exs (Ano (n, Nothing)) = [n]
 exs (Ano (n, Just x))  = n:exs x
+
+fib = ex . psi'' . toNat
