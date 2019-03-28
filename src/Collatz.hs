@@ -30,12 +30,16 @@ psi' (In (Just (In Nothing))) = Ano (1, Just (Ano (0, Nothing))) -- 1
 psi' (In (Just (In (Just (In Nothing))))) = Ano (1, Just (Ano (1, Just (Ano (0, Nothing))))) -- 2
 
 -- done!
-psi'' (In Nothing) = Ano (0, Nothing)
-psi'' (In (Just p@(In Nothing))) = Ano (1, Just (psi'' p))
-psi'' (In (Just n)) = case psi'' n of
-  p@(Ano (f1, Just (Ano (f2, mv)))) -> Ano (f1 + f2, Just p)
+psi'' n = case fmap psi'' (out n) of
+  p@Nothing   -> Ano (0, p)
+  p@(Just n') -> case sub n' of
+    Nothing  -> Ano (1, p)
+    Just n'' -> Ano (ex n' + ex n'', p)
+--  Just p@(Ano (f1, Nothing))             -> Ano (1, Just p)
+--  Just p@(Ano (f1, Just (Ano (f2, mv)))) -> Ano (f1 + f2, Just p)
 
-ex (Ano (x, _)) = x
+ex  (Ano (x, _)) = x
+sub (Ano (_, y)) = y
 ana psi = In . fmap (ana psi) . psi
 toNat = ana psi
   where
