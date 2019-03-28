@@ -1,14 +1,8 @@
 -- | ref.) http://titech-ssr.blog.jp/archives/1047835805.html
 module Fib where
 
-import Fix
-
-data FibT a = FZero | FOne | FNode a a
-
-instance Functor FibT where
-  fmap _ FZero = FZero
-  fmap _ FOne  = FOne
-  fmap f (FNode x y) = FNode (f x) (f y)
+import Prelude hiding (Functor)
+import FixPrime
 
 fib :: Integer -> Integer
 fib = hylo phi psi
@@ -20,3 +14,25 @@ fib = hylo phi psi
     phi FZero = 0
     phi FOne  = 1
     phi (FNode x y) = x + y
+
+
+data FibF a = FZero | FOne | FNode a a
+
+instance Functor FibF where
+  fmap _ FZero = FZero
+  fmap _ FOne  = FOne
+  fmap f (FNode x y) = FNode (f x) (f y)
+
+type Fib = Fix FibF
+
+fib' :: Num t => Fib -> t
+fib' = histo phi
+  where
+    phi :: Num t => FibF (Cofree FibF t) -> t
+    phi FZero = 0
+    phi FOne  = 1
+    phi (FNode f1 f2) = extract f1 + extract f2
+
+toFib 0 = In FZero
+toFib 1 = In FOne
+toFib n = In (FNode (toFib (n-1)) (toFib (n-2)))
