@@ -101,7 +101,7 @@ apo' :: Functor f => (t -> f (Either (Fix f) t)) -> t -> Fix f
 apo' = cozygo out
 -- histomorphism
 histo :: Functor f => (f (Cofree f t) -> t) -> Fix f -> t
-histo phi = extract . cata ap
+histo phi = extract . cata ap -- more efficient than histo'
   where
     ap = cast . Hisx . pair (phi, id)
     cast :: Functor f => Hisx f a (Cofree f a) -> Cofree f a

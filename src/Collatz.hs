@@ -35,8 +35,6 @@ psi'' n = case fmap psi'' (out n) of
   p@(Just n') -> case sub n' of
     Nothing  -> Ano (1, p)
     Just n'' -> Ano (ex n' + ex n'', p)
---  Just p@(Ano (f1, Nothing))             -> Ano (1, Just p)
---  Just p@(Ano (f1, Just (Ano (f2, mv)))) -> Ano (f1 + f2, Just p)
 
 ex  (Ano (x, _)) = x
 sub (Ano (_, y)) = y
