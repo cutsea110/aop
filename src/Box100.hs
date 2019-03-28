@@ -1,3 +1,4 @@
+{-# LANGUAGE TypeSynonymInstances, FlexibleInstances #-}
 module Box100 where
 
 import Prelude hiding (Functor(..))
