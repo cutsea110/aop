@@ -1,7 +1,7 @@
 {-# LANGUAGE TypeSynonymInstances, FlexibleInstances #-}
 module Box100 where
 
-import Prelude hiding (Functor(..))
+import Prelude as P hiding (Functor(..))
 import FixPrime
 
 -- | Tree a
@@ -32,3 +32,19 @@ a = bin (tip 1) (tip 3)
 b = bin (tip 2) a
 c = bin a (tip 4)
 d = bin b c
+
+rows = [1,2,3]
+cols = [4,5,6]
+
+step l cs r = zipWith bin ([l]++cs) (cs++[r])
+
+zipWind ls cs rs = merge pre
+  where
+    merge [x] = x
+    merge xxs@(x:xs) = merge $ zipWith bin xxs xs
+    pre = foldr (\(l,r) c -> step l c r) cs zs
+    zs = zip ls rs
+
+mkNexus ls rs = zipWind ls' [] rs'
+  where
+    (ls', rs') = (P.map tip ls, P.map tip rs)
