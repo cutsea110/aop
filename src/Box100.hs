@@ -28,14 +28,6 @@ instance ApplicativeBifunctor TreeF where
   biap (Tip f) (Tip x) = Tip (f x)
   biap (Bin f g) (Bin l r) = Bin (f l) (g r)
 
-a = bin (tip 1) (tip 3)
-b = bin (tip 2) a
-c = bin a (tip 4)
-d = bin b c
-
-rows = [1,2,3]
-cols = [4,5,6]
-
 windUp []  = error "Ooops!"
 windUp [x] = x
 windUp xs  = windUp (windUp1 xs)
@@ -53,3 +45,14 @@ mkNexus ls rs = zipWind ls' [] rs'
   where
     (ls', rs') = (P.map tip ls, P.map tip rs)
 
+calc :: Num t => Tree t -> t
+calc = histo psi
+  where
+    psi :: Num t => TreeF t (Cofree (TreeF t) t) -> t
+    psi (Tip a)   = a
+    psi (Bin x y) = extract x + extract y
+
+
+rows,cols :: [Int]
+rows = [4,2,5,6,7,1,3,9,3,2]
+cols = [8,2,4,6,1,8,9,3,1,7]
