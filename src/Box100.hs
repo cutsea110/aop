@@ -36,15 +36,20 @@ d = bin b c
 rows = [1,2,3]
 cols = [4,5,6]
 
+windUp []  = error "Ooops!"
+windUp [x] = x
+windUp xs  = windUp (windUp1 xs)
+
+windUp1 xs = zipWith bin xs (tail xs)
+
 step l cs r = zipWith bin ([l]++cs) (cs++[r])
 
-zipWind ls cs rs = merge pre
-  where
-    merge [x] = x
-    merge xxs@(x:xs) = merge $ zipWith bin xxs xs
-    pre = foldr (\(l,r) c -> step l c r) cs zs
-    zs = zip ls rs
+zipWind [] cs [] = windUp cs
+zipWind [] cs (r:rs) = zipWind [] (windUp1 (cs ++ [r])) rs
+zipWind (l:ls) cs [] = zipWind ls (windUp1 ([l] ++ cs)) []
+zipWind (l:ls) cs (r:rs) = zipWind ls (windUp1 ([l] ++ cs ++ [r])) rs
 
 mkNexus ls rs = zipWind ls' [] rs'
   where
     (ls', rs') = (P.map tip ls, P.map tip rs)
+
