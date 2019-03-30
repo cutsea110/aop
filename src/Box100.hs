@@ -47,6 +47,10 @@ mkNexus ls rs = zipWind ls' [] rs'
   where
     (ls', rs') = (P.map tip ls, P.map tip rs)
 
+mkNexus = ana
+  where
+    
+
 calc :: Num t => Tree t -> t
 calc = histo psi
   where

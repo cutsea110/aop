@@ -184,6 +184,12 @@ dyna f g = chrono f (fmap inject . g)
 dyna' :: Functor f => (f (Cofree f b) -> b) -> (a -> f a) -> a -> b
 dyna' f g = histo f . ana g
 
+-- ref.) http://titech-ssr.blog.jp/archives/1047835805.html
+dyna'' :: Functor f => (f (Cofree f b) -> b) -> (a -> f a) -> a -> b
+dyna'' f g = extract . hylo ap g
+  where
+    ap a = Cf $ In $ Hisx (f a, fmap unCf a)
+
 -- codynamorphism
 codyna :: Functor f => (f b -> b) -> (a -> f (Free f a)) -> a -> b
 codyna f g = chrono (f . fmap extract) g
