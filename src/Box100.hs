@@ -43,9 +43,7 @@ zipWind cs (l:ls, []) = zipWind (windUp1 ([l] ++ cs)) (ls, [])
 zipWind cs (l:ls, r:rs) = zipWind (windUp1 ([l] ++ cs ++ [r])) (ls, rs)
 
 -- mkNexus :: [a] -> [a] -> Tree a
-mkNexus (ls, rs) = zipWind [] (ls', rs')
-  where
-    (ls', rs') = (P.map tip ls, P.map tip rs)
+mkNexus = zipWind [] . cross (P.map tip, P.map tip)
 
 calc :: Num t => Tree t -> t
 calc = histo psi
