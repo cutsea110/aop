@@ -8,6 +8,7 @@ module FixPrime where
 
 import Prelude hiding (Functor(..), map, succ, either, subtract)
 
+dup f = (f, f)
 pair (f, g) x = (f x, g x)
 cross (f, g) (x, y) = (f x, g y)
 either (f, g) (Left x) = f x
