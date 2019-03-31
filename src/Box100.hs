@@ -36,14 +36,14 @@ windUp xs  = windUp (windUp1 xs)
 windUp1 :: [Tree a] -> [Tree a]
 windUp1 xs = zipWith bin xs (tail xs)
 
-zipWind :: [Tree a] -> ([Tree a], [Tree a]) -> Tree a
-zipWind cs ([], []) = windUp cs
-zipWind cs ([], r:rs) = zipWind (windUp1 (cs ++ [r])) ([], rs)
-zipWind cs (l:ls, []) = zipWind (windUp1 ([l] ++ cs)) (ls, [])
-zipWind cs (l:ls, r:rs) = zipWind (windUp1 ([l] ++ cs ++ [r])) (ls, rs)
+zipWind :: ([Tree a], [Tree a], [Tree a]) -> Tree a
+zipWind ([], cs, []) = windUp cs
+zipWind ([], cs, r:rs) = zipWind ([], (windUp1 (cs ++ [r])), rs)
+zipWind (l:ls, cs, []) = zipWind (ls, (windUp1 ([l] ++ cs)), [])
+zipWind (l:ls, cs, r:rs) = zipWind (ls, (windUp1 ([l] ++ cs ++ [r])), rs)
 
 mkNexus :: ([a], [a]) -> Tree a
-mkNexus = zipWind [] . cross (dup (P.map tip))
+mkNexus (ls, rs) = zipWind (P.map tip ls, [], P.map tip rs)
 
 calc :: Num t => Tree t -> t
 calc = histo psi
