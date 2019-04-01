@@ -63,11 +63,14 @@ cols = [8,2,4,6,1,8,9,3,1,7]
 
 exs :: Fix (Hisx (TreeF t) a) -> [a]
 exs x = case out x of
-  Hisx (n, Tip _)   -> [n]
-  Hisx (n, Bin l _) -> n : exs l
+  Hisx (n, Tip _)   -> []
+  Hisx (n, Bin l r) -> n : exsL l ++ exs r
 
+exsL x = case out x of
+  Hisx (n, Tip _) -> []
+  Hisx (n, Bin l r) -> n : exsL l
+    
 {-
-λ> draw' 3 tabulation [1,2,3] [4,5,6]
       4   5   6
    ============
  1|   5  10  16
