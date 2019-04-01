@@ -28,22 +28,23 @@ instance ApplicativeBifunctor TreeF where
   biap (Tip f) (Tip x) = Tip (f x)
   biap (Bin f g) (Bin l r) = Bin (f l) (g r)
 
-windUp :: [Tree a] -> Tree a
+-- windUp :: [Tree a] -> Tree a
 windUp []  = error "Ooops!"
 windUp [x] = x
 windUp xs  = windUp (windUp1 xs)
 
-windUp1 :: [Tree a] -> [Tree a]
-windUp1 xs = zipWith bin xs (tail xs)
+-- windUp1 :: [Tree a] -> [Tree a]
+windUp1 xs = zipWith f xs (tail xs)
+  where
+    f (x, l) (y, r) = (x + y, bin l r)
 
-zipWind :: ([Tree a], [Tree a], [Tree a]) -> Tree a
+-- zipWind :: ([Tree a], [Tree a], [Tree a]) -> Tree a
 zipWind ([], cs, []) = windUp cs
-zipWind ([], cs, r:rs) = zipWind ([], (windUp1 (cs ++ [r])), rs)
-zipWind (l:ls, cs, []) = zipWind (ls, (windUp1 ([l] ++ cs)), [])
-zipWind (l:ls, cs, r:rs) = zipWind (ls, (windUp1 ([l] ++ cs ++ [r])), rs)
+zipWind ([], cs, r:rs) = zipWind ([], (windUp1 (cs ++ [(r, tip r)])), rs)
+zipWind (l:ls, cs, []) = zipWind (ls, (windUp1 ([(l, tip l)] ++ cs)), [])
+zipWind (l:ls, cs, r:rs) = zipWind (ls, (windUp1 ([(l, tip l)] ++ cs ++ [(r, tip r)])), rs)
 
-mkNexus :: ([a], [a]) -> Tree a
-mkNexus (ls, rs) = zipWind (P.map tip ls, [], P.map tip rs)
+mkNexus (ls, rs) = zipWind (ls, [], rs)
 
 calc :: Num t => Tree t -> t
 calc = histo psi
