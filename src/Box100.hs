@@ -58,12 +58,12 @@ cols = [8,2,4,6,1,8,9,3,1,7]
 
 exs :: Fix (Hisx (TreeF t) a) -> [[a]]
 exs x = case out x of
-  Hisx (n, Tip _)   -> []
-  Hisx (n, Bin l r) -> exs r ++ [exsL x]
+  Hisx (_, Tip _)   -> []
+  Hisx (_, Bin _ r) -> exs r ++ [exsL x]
   where
     exsL x = case out x of
-      Hisx (n, Tip _) -> []
-      Hisx (n, Bin l r) -> exsL l ++ [n]
+      Hisx (_, Tip _) -> []
+      Hisx (n, Bin l _) -> exsL l ++ [n]
 
 calc :: Num a => ([a], [a]) -> [[a]]
 calc = exs . unCf . mkNexus
