@@ -50,30 +50,18 @@ zipWind (l:ls, cs, r:rs) = zipWind (ls, (windUp1 ([tip' l] ++ cs ++ [tip' r])), 
 mkNexus :: Num a => ([a], [a]) -> Cofree (TreeF a) a
 mkNexus (ls, rs) = zipWind (ls, [], rs)
 
-calc :: Num t => Tree t -> t
-calc = histo psi
-  where
-    psi :: Num t => TreeF t (Cofree (TreeF t) t) -> t
-    psi (Tip a)   = a
-    psi (Bin x y) = extract x + extract y
-
 rows,cols :: [Int]
 rows = [4,2,5,6,7,1,3,9,3,2]
 cols = [8,2,4,6,1,8,9,3,1,7]
 
-exs :: Fix (Hisx (TreeF t) a) -> [a]
+exs :: Fix (Hisx (TreeF t) a) -> [[a]]
 exs x = case out x of
   Hisx (n, Tip _)   -> []
-  Hisx (n, Bin l r) -> n : exsL l ++ exs r
+  Hisx (n, Bin l r) -> exs r ++ [exsL x]
+  where
+    exsL x = case out x of
+      Hisx (n, Tip _) -> []
+      Hisx (n, Bin l r) -> exsL l ++ [n]
 
-exsL x = case out x of
-  Hisx (n, Tip _) -> []
-  Hisx (n, Bin l r) -> n : exsL l
-    
-{-
-      4   5   6
-   ============
- 1|   5  10  16
- 2|   7  17  33
- 3|  10  27  60
--}
+masu :: Num a => [a] -> [a] -> [[a]]
+masu = curry (exs . unCf . mkNexus)
