@@ -61,6 +61,7 @@ exs x = case out x of
   Hisx (_, Tip _)   -> []
   Hisx (_, Bin _ r) -> exs r ++ [exsL x]
   where
+    exsL :: Fix (Hisx (TreeF t) a) -> [a]
     exsL x = case out x of
       Hisx (_, Tip _) -> []
       Hisx (n, Bin l _) -> exsL l ++ [n]
