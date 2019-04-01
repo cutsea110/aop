@@ -36,13 +36,16 @@ windUp xs  = windUp (windUp1 xs)
 -- windUp1 :: [Tree a] -> [Tree a]
 windUp1 xs = zipWith f xs (tail xs)
   where
-    f (x, l) (y, r) = (x + y, bin l r)
+    f l r = Cf (In (Hisx (extract l + extract r, Bin (unCf l) (unCf r))))
+
+tip' n = Cf (In (Hisx (n, Tip n)))
 
 -- zipWind :: ([Tree a], [Tree a], [Tree a]) -> Tree a
 zipWind ([], cs, []) = windUp cs
-zipWind ([], cs, r:rs) = zipWind ([], (windUp1 (cs ++ [(r, tip r)])), rs)
-zipWind (l:ls, cs, []) = zipWind (ls, (windUp1 ([(l, tip l)] ++ cs)), [])
-zipWind (l:ls, cs, r:rs) = zipWind (ls, (windUp1 ([(l, tip l)] ++ cs ++ [(r, tip r)])), rs)
+zipWind ([], cs, r:rs) = zipWind ([], (windUp1 (cs ++ [tip' r])), rs)
+zipWind (l:ls, cs, []) = zipWind (ls, (windUp1 ([tip' l] ++ cs)), [])
+zipWind (l:ls, cs, r:rs) = zipWind (ls, (windUp1 ([tip' l] ++ cs ++ [tip' r])), rs)
+
 
 mkNexus (ls, rs) = zipWind (ls, [], rs)
 
