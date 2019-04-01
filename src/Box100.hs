@@ -61,9 +61,10 @@ rows,cols :: [Int]
 rows = [4,2,5,6,7,1,3,9,3,2]
 cols = [8,2,4,6,1,8,9,3,1,7]
 
-exs :: Cofree (TreeF t) a -> [a]
-exs (Cf (In (Hisx (n, Tip _)))) = [n]
-exs (Cf (In (Hisx (n, Bin l r)))) = n : (exs (Cf l) ++ exs (Cf r))
+exs :: Fix (Hisx (TreeF t) a) -> [a]
+exs x = case out x of
+  Hisx (n, Tip _)   -> [n]
+  Hisx (n, Bin l _) -> n : exs l
 
 {-
 λ> draw' 3 tabulation [1,2,3] [4,5,6]
