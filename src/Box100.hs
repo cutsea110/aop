@@ -63,5 +63,5 @@ exs x = case out x of
       Hisx (n, Tip _) -> []
       Hisx (n, Bin l r) -> exsL l ++ [n]
 
-masu :: Num a => [a] -> [a] -> [[a]]
-masu = curry (exs . unCf . mkNexus)
+calc :: Num a => [a] -> [a] -> [[a]]
+calc = curry (exs . unCf . mkNexus)
