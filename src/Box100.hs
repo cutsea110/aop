@@ -52,6 +52,18 @@ zipWind (l:ls, cs, r:rs) = zipWind (ls, (windUp1 ([tip' l] ++ cs ++ [tip' r])), 
 mkNexus :: Num a => ([a], [a]) -> Cofree (TreeF a) a
 mkNexus (ls, rs) = zipWind (ls, [], rs)
 
+foo :: ([a], [a]) -> Tree t -- Tree t == Fix (TreeF t)
+foo = ana psi
+  where
+    psi :: ([a], [a]) -> TreeF t ([a], [a])
+    psi = undefined
+
+bar :: Tree t -> a -- Tree t == Fix (TreeF t)
+bar = histo phi
+  where
+    phi :: TreeF t (Cofree (TreeF t) a) -> a
+    phi = undefined
+
 rows,cols :: [Int]
 rows = [4,2,5,6,7,1,3,9,3,2]
 cols = [8,2,4,6,1,8,9,3,1,7]
