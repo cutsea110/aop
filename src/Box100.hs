@@ -2,10 +2,10 @@
 module Box100 where
 
 import Prelude as P hiding (Functor(..))
-import Data.List (map, unfoldr, foldl, foldr)
+import Data.List (map, unfoldr)
 
 import DrawMatrix
-import FixPrime
+import FixPrime hiding (map)
 
 -- | Tree a
 data TreeF a x = Tip a | Bin x x deriving (Show)
@@ -61,7 +61,8 @@ winder f (y, xxs) = case xxs of
 windCol :: (Tree a, [Tree a]) -> [Tree a]
 windCol = unfoldr (winder (uncurry bin))
 
-nexus cs rrs = unfoldr psi (cs, rrs)
+nexus :: [a] -> [a] -> [[Tree a]]
+nexus cols rows = unfoldr psi (map tip cols, map tip rows)
   where
     psi (cs, []) = Nothing
     psi (cs, r:rs) = Just (ps, (ps, rs)) where ps = windCol (r, cs)
