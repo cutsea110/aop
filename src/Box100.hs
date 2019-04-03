@@ -2,6 +2,7 @@
 module Box100 where
 
 import Prelude as P hiding (Functor(..))
+import Data.List (map, unfoldr, foldl, foldr)
 
 import DrawMatrix
 import FixPrime
@@ -51,6 +52,19 @@ zipWind (l:ls, cs, r:rs) = zipWind (ls, (windUp1 ([tip' l] ++ cs ++ [tip' r])), 
 
 mkNexus :: Num a => ([a], [a]) -> Cofree (TreeF a) a
 mkNexus (ls, rs) = zipWind (ls, [], rs)
+
+winder :: ((a, b) -> c) -> (b, [a]) -> Maybe (c, (c, [a]))
+winder f (y, xxs) = case xxs of
+  []     -> Nothing
+  (x:xs) -> Just (y', (y', xs)) where y' = f (x, y)
+
+windCol :: (Tree a, [Tree a]) -> [Tree a]
+windCol = unfoldr (winder (uncurry bin))
+
+nexus cs rrs = unfoldr psi (cs, rrs)
+  where
+    psi (cs, []) = Nothing
+    psi (cs, r:rs) = Just (ps, (ps, rs)) where ps = windCol (r, cs)
 
 foo :: ([a], [a]) -> Tree t -- Tree t == Fix (TreeF t)
 foo = ana psi
