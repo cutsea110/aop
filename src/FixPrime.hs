@@ -83,6 +83,7 @@ ana psi = In . fmap (ana psi) . psi
 -- hylomorphism
 hylo :: Functor f => (f b -> b) -> (a -> f a) -> a -> b
 hylo phi psi = phi . fmap (hylo phi psi) . psi
+
 hylo' :: Functor f => (f b -> b) -> (a -> f a) -> a -> b
 hylo' phi psi = cata phi . ana psi
 -- metamorphism

@@ -67,19 +67,27 @@ nexus cols rows = unfoldr psi (map tip cols, map tip rows)
     psi (cs, []) = Nothing
     psi (cs, r:rs) = Just (ps, (ps, rs)) where ps = windCol (r, cs)
 
-foo :: ([a], [a]) -> Tree t -- Tree t == Fix (TreeF t)
-foo = ana psi
+-- hist but this make intermediate data structure
+foo = histo phi
   where
-    psi :: ([a], [a]) -> TreeF t ([a], [a])
-    psi = undefined
+    phi (Tip a) = a
+    phi (Bin l r) = extract l + extract r
 
-bar :: Tree t -> a -- Tree t == Fix (TreeF t)
-bar = histo phi
+-- dyna''
+bar = dyna'' phi out
   where
-    phi :: TreeF t (Cofree (TreeF t) a) -> a
-    phi = undefined
+    phi (Tip a) = a
+    phi (Bin l r) = extract l + extract r
 
-rows,cols :: [Int]
+-- dyna'' without extract
+quz = hylo ap out
+  where
+    phi (Tip a) = a
+    phi (Bin l r) = extract l + extract r
+
+    ap a = Cf $ In $ Hisx (phi a, fmap unCf a)
+
+-- rows,cols :: [Int]
 rows = [4,2,5,6,7,1,3,9,3,2]
 cols = [8,2,4,6,1,8,9,3,1,7]
 
