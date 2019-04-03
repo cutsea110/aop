@@ -33,7 +33,8 @@ instance ApplicativeBifunctor TreeF where
 
 tip' :: a -> Cofree (TreeF a) a
 tip' n = Cf (In (Hisx (n, Tip n)))
-
+bin' :: Cofree (TreeF t) Integer -> Cofree (TreeF t) Integer -> Cofree (TreeF t) Integer
+bin' = binWith' (+)
 binWith' :: (a -> a -> a) -> Cofree (TreeF t) a -> Cofree (TreeF t) a -> Cofree (TreeF t) a
 binWith' op l r = Cf (In (Hisx (extract l `op` extract r, Bin (unCf l) (unCf r))))
 
