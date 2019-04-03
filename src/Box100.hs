@@ -44,6 +44,12 @@ windUp1 xs = zipWith f xs (tail xs)
 tip' :: a -> Cofree (TreeF a) a
 tip' n = Cf (In (Hisx (n, Tip n)))
 
+binWith' :: (a -> a -> a) -> Cofree (TreeF t) a -> Cofree (TreeF t) a -> Cofree (TreeF t) a
+binWith' op l r = Cf (In (Hisx (extract l `op` extract r, Bin (unCf l) (unCf r))))
+
+bin' :: Num a => Cofree (TreeF t) a -> Cofree (TreeF t) a -> Cofree (TreeF t) a
+bin' = binWith' (+)
+
 zipWind :: Num a => ([a], [Cofree (TreeF a) a], [a]) -> Cofree (TreeF a) a
 zipWind ([], cs, []) = windUp cs
 zipWind ([], cs, r:rs) = zipWind ([], (windUp1 (cs ++ [tip' r])), rs)
@@ -58,36 +64,19 @@ winder f (y, xxs) = case xxs of
   []     -> Nothing
   (x:xs) -> Just (y', (y', xs)) where y' = f (x, y)
 
-windCol :: (Tree a, [Tree a]) -> [Tree a]
-windCol = unfoldr (winder (uncurry bin))
+windCol :: Num a => (Cofree (TreeF t) a, [Cofree (TreeF t) a]) -> [Cofree (TreeF t) a]
+windCol = unfoldr (winder (uncurry bin'))
 
-nexus :: [a] -> [a] -> [[Tree a]]
-nexus cols rows = unfoldr psi (map tip cols, map tip rows)
+nexus :: Num a => [a] -> [a] -> [[Cofree (TreeF a) a]]
+nexus cols rows = unfoldr psi (map tip' cols, map tip' rows)
   where
     psi (cs, []) = Nothing
     psi (cs, r:rs) = Just (ps, (ps, rs)) where ps = windCol (r, cs)
 
--- hist but this make intermediate data structure
-foo = histo phi
-  where
-    phi (Tip a) = a
-    phi (Bin l r) = extract l + extract r
+calc' :: Num a => [a] -> [a] -> [[a]]
+calc' rs cs = map (map extract) $ nexus rs cs
 
--- dyna''
-bar = dyna'' phi out
-  where
-    phi (Tip a) = a
-    phi (Bin l r) = extract l + extract r
-
--- dyna'' without extract
-quz = hylo ap out
-  where
-    phi (Tip a) = a
-    phi (Bin l r) = extract l + extract r
-
-    ap a = Cf $ In $ Hisx (phi a, fmap unCf a)
-
--- rows,cols :: [Int]
+rows,cols :: [Int]
 rows = [4,2,5,6,7,1,3,9,3,2]
 cols = [8,2,4,6,1,8,9,3,1,7]
 
