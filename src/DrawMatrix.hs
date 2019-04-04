@@ -10,11 +10,11 @@ import Text.Printf (printf)
 type Width = Int
 
 drawWith :: Maybe Width -> (([Int], [Int]) -> [[Int]]) -> [Int] -> [Int] -> IO ()
-drawWith mw calc rs cs = do
+drawWith mw calc cs rs = do
   putHdr
   forM_ (zip rs anss) putRow
   where
-    anss = calc (rs, cs)
+    anss = calc (cs, rs)
     digits = length . show . maximum
     (dr, dr', dr'') = (digits rs, dr+1, dr'+1)
     (ds, ds') = (maybe (digits (map maximum anss)) id mw, ds+1)
