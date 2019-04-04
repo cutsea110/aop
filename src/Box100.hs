@@ -33,10 +33,8 @@ instance ApplicativeBifunctor TreeF where
 
 tip' :: a -> Cofree (TreeF a) a
 tip' n = Cf (In (Hisx (n, Tip n)))
-bin' :: (Cofree (TreeF t) Integer, Cofree (TreeF t) Integer) -> Cofree (TreeF t) Integer
-bin' = binWith' (+)
-binWith' :: (a -> a -> a) -> (Cofree (TreeF t) a, Cofree (TreeF t) a) -> Cofree (TreeF t) a
-binWith' op (l, r) = Cf (In (Hisx (extract l `op` extract r, Bin (unCf l) (unCf r))))
+bin' :: (a -> a -> a) -> (Cofree (TreeF t) a, Cofree (TreeF t) a) -> Cofree (TreeF t) a
+bin' op (l, r) = Cf (In (Hisx (extract l `op` extract r, Bin (unCf l) (unCf r))))
 
 winder :: ((a, b) -> c) -> (b, [a]) -> Maybe (c, (c, [a]))
 winder f (y, xxs) = case xxs of
@@ -44,7 +42,7 @@ winder f (y, xxs) = case xxs of
   (x:xs) -> Just (y', (y', xs)) where y' = f (x, y)
 
 windCol :: (a -> a -> a) -> (Cofree (TreeF t) a, [Cofree (TreeF t) a]) -> [Cofree (TreeF t) a]
-windCol op = unfoldr $ winder $ binWith' op
+windCol op = unfoldr (winder (bin' op))
 
 nexus :: (a -> a -> a) -> ([a], [a]) -> [[Cofree (TreeF a) a]]
 nexus op (cs, rs) = unfoldr psi (map tip' cs, map tip' rs)
