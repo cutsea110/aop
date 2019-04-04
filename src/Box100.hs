@@ -33,25 +33,25 @@ instance ApplicativeBifunctor TreeF where
 
 tip' :: a -> Cofree (TreeF a) a
 tip' n = Cf (In (Hisx (n, Tip n)))
--- bin' :: (a -> a -> a) -> (Cofree (TreeF t) a, Cofree (TreeF t) a) -> Cofree (TreeF t) a
+bin' :: Num a => (Cofree (TreeF t) a, Cofree (TreeF t) a) -> Cofree (TreeF t) a
 bin' (l, r) = Cf (In (Hisx (extract l + extract r, Bin (unCf l) (unCf r))))
 
--- winder :: ((a, b) -> c) -> (b, [a]) -> Maybe (c, (c, [a]))
+winder :: ((a, b) -> c) -> (b, [a]) -> Maybe (c, (c, [a]))
 winder f (y, xxs) = case xxs of
   []     -> Nothing
   (x:xs) -> Just (y', (y', xs)) where y' = f (x, y)
 
--- windCol :: (a -> a -> a) -> (Cofree (TreeF t) a, [Cofree (TreeF t) a]) -> [Cofree (TreeF t) a]
-windCol (l, r) = unfoldr (winder bin') (l, r)
+windCol :: Num a => (Cofree (TreeF t) a, [Cofree (TreeF t) a]) -> [Cofree (TreeF t) a]
+windCol = unfoldr (winder bin')
 
--- nexus :: ([a], [a]) -> [[Cofree (TreeF a) a]]
+nexus :: Num a => ([a], [a]) -> [[Cofree (TreeF a) a]]
 nexus (cs, rs) = unfoldr psi (map tip' cs, map tip' rs)
   where
     psi (cs, []) = Nothing
     psi (cs, r:rs) = Just (ps, (ps, rs)) where ps = windCol (r, cs)
 
--- calc :: ([a], [a]) -> [[a]]
-calc (cs, rs) = map (map extract) $ nexus (cs, rs)
+calc :: Num a => ([a], [a]) -> [[a]]
+calc = map (map extract) . nexus
 
 rows,cols :: [Int]
 rows = [4,2,5,6,7,1,3,9,3,2]
