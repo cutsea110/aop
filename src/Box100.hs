@@ -44,7 +44,7 @@ winder f (y, xxs) = case xxs of
   (x:xs) -> Just (y', (y', xs)) where y' = f (x, y)
 
 windCol :: (a -> a -> a) -> (Cofree (TreeF t) a, [Cofree (TreeF t) a]) -> [Cofree (TreeF t) a]
-windCol = unfoldr . winder . binWith'
+windCol op = unfoldr $ winder $ binWith' op
 
 nexus :: (a -> a -> a) -> ([a], [a]) -> [[Cofree (TreeF a) a]]
 nexus op (cs, rs) = unfoldr psi (map tip' cs, map tip' rs)
