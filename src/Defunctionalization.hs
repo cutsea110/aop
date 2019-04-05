@@ -27,4 +27,4 @@ apply = foldlam (cons, o)
 cons_def = LamCons
 o_def = LamO
 flatten_def t = apply (walk_def t) []
-walk_def = foldlam (cons_def, o_def)
+walk_def = foldt (cons_def, o_def)
