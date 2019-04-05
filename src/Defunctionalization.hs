@@ -32,8 +32,7 @@ walk_def = foldt (cons_def, o_def)
 ----------------------
 
 {--
-(1)  walk is a catamorphism on Tree.
-     walk is Tree's catamorphism of [(:),(.)]
+(1)  walk is a Tree's catamorphism([(:),(.)])
 
                   [Leaf, Node]
              T  <------------------ A + T x T
@@ -44,8 +43,8 @@ walk_def = foldt (cons_def, o_def)
 
 
 (2) Lam is equivalent to Tree
-(3) walk_def is a Tree's catamorphism of [LamCons,LamO]
-    apply is a Lam's catamorphism of [(:),(.)]
+(3) walk_def is a Tree's catamorphism([LamCons,LamO])
+    apply is a Lam's catamorphism([(:),(.)])
 
                   [Leaf, Node]
              T  <------------------ A + T x T
