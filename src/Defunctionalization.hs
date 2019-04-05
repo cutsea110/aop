@@ -1,6 +1,6 @@
 module Defunctionalization where
 
--- kazu_yamamoto throw a topic at haskell-jp slack.2019-04-05
+-- kazu_yamamoto throw a topic at haskell-jp slack.2019-04-05(https://haskell-jp.slack.com/archives/C5666B6BB/p1554427355015200)
 data Tree a = Leaf a | Node (Tree a) (Tree a) deriving Show
 
 foldTree (f, g) = u
