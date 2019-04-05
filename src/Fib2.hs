@@ -1,4 +1,4 @@
-module Collatz where
+module Fib2 where
 
 -- We would like to do this!
 psi Nothing = (0, Nothing) -- 0
