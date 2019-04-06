@@ -10,3 +10,7 @@ testBool2 = bool false (1,2)
 pair (x1, x2) = \s -> s (x1, x2)
 first p = p (\(x1, x2) -> x1)
 second p = p (\(x1, x2) -> x2)
+
+zero f x = x
+one  f x = f x
+two f x = f (f x)
