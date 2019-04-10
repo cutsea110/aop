@@ -1,15 +1,15 @@
 module ChurchEncoding where
 
-import Prelude hiding (head, tail)
+import Prelude hiding (head, tail, not, and, or, xor)
 
 bool p a b = p a b
 false a b = b
 true a b = a
 
-cNot p a b = p b a
-cAnd p q = undefined -- p q p -- couldn't infer type
-cOr p q = undefined -- p p q -- couldn't infer type
-cXor p q = p (cNot q) q
+not p a b = p b a
+and p q = undefined -- p q p -- couldn't infer type
+or p q = undefined -- p p q -- couldn't infer type
+xor p q = p (not q) q
 
 testBool1 = bool true 1 2
 testBool2 = bool false 1 2
