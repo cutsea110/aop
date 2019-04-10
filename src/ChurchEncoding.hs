@@ -1,5 +1,7 @@
 module ChurchEncoding where
 
+import Prelude hiding (head, tail)
+
 bool = ($)
 false = fst
 true = snd
@@ -20,3 +22,9 @@ suc n f x = f (n f x)
 plus m n f x = m f (n f x)
 mult m n f x = m (n f) x
 expr m n f x = (n m) f x
+
+nil c = \n -> n
+isNil l = l (\h -> \t -> false) true
+cons h t = \c -> \n -> c h (t c n)
+head l = l (\h -> \t -> h) false
+tail l = \c -> \n -> l (\h -> \t -> \g -> g h (t c)) (\t -> n) (\h -> \t -> t)
