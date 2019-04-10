@@ -2,12 +2,17 @@ module ChurchEncoding where
 
 import Prelude hiding (head, tail)
 
-bool = ($)
-false = fst
-true = snd
+bool p a b = p a b
+false a b = b
+true a b = a
 
-testBool1 = bool true (1,2)
-testBool2 = bool false (1,2)
+cNot p a b = p b a
+cAnd p q = undefined -- p q p -- couldn't infer type
+cOr p q = undefined -- p p q -- couldn't infer type
+cXor p q = p (cNot q) q
+
+testBool1 = bool true 1 2
+testBool2 = bool false 1 2
 
 pair (x1, x2) = \s -> s (x1, x2)
 first p = p (\(x1, x2) -> x1)
