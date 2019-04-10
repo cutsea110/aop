@@ -1,6 +1,6 @@
 module ChurchEncoding where
 
-import Prelude hiding (head, tail, not, and, or, xor)
+import Prelude hiding (head, tail, foldr, not, and, or, xor)
 
 bool p a b = p a b
 false a b = b
@@ -33,3 +33,6 @@ head = first
 tail = second
 nil = false
 isnil l = l (\h t d -> false) true
+-- ref.) http://d.hatena.ne.jp/syamino/20120524/p1
+foldr n c l = l c n
+
