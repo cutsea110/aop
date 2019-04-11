@@ -12,6 +12,8 @@ and p q = p q false -- p q p -- couldn't infer type
 or p q = p true q -- p p q -- couldn't infer type
 xor p q = p (not q) q
 
+unchurchBool = (\a -> \b -> \c -> c a b) True False
+
 testBool1 = bool true 1 2
 testBool2 = bool false 1 2
 
@@ -25,6 +27,10 @@ one  f x = f x
 two f x = f (f x)
 three f x = f (f (f x))
 iszero n = n (\x -> false) true
+unchurchNat a = a (\b -> b + 1) 0
+
+num 0 = \f -> \x -> x;
+num n = \f -> \x -> f (num (n-1) f x)
 
 suc n f x = f (n f x)
 plus m n f x = m f (n f x)
