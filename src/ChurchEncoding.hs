@@ -7,6 +7,7 @@ false a b = b
 true a b = a
 
 not p a b = p b a
+-- ref.) https://github.com/Risto-Stevcev/haskell-church-encodings/blob/master/Rank1Types/Church.hs
 and p q = p q false -- p q p -- couldn't infer type
 or p q = p true q -- p p q -- couldn't infer type
 xor p q = p (not q) q
