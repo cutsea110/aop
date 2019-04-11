@@ -23,6 +23,7 @@ second p = p (\(x1, x2) -> x2)
 zero f x = x
 one  f x = f x
 two f x = f (f x)
+iszero n = n (\x -> false) true
 
 suc n f x = f (n f x)
 plus m n f x = m f (n f x)
