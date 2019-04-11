@@ -15,9 +15,9 @@ xor p q = p (not q) q
 testBool1 = bool true 1 2
 testBool2 = bool false 1 2
 
-pair (x1, x2) = \s -> s (x1, x2)
-first p = p (\(x1, x2) -> x1)
-second p = p (\(x1, x2) -> x2)
+pair x1 x2 = \s -> s x1 x2
+first p = p (\x1 -> \x2 -> x1)
+second p = p (\x1 -> \x2 -> x2)
 
 -- ref.) https://en.wikipedia.org/wiki/Church_encoding
 zero f x = x
@@ -30,11 +30,12 @@ plus m n f x = m f (n f x)
 mult m n f x = m (n f) x
 expr m n f x = (n m) f x
 
-cons = pair
-head = first
-tail = second
-nil = false
-isnil l = l (\h t d -> false) true
+nil = pair true true
+isnil = first
+cons x xs = pair false (pair x xs)
+head z = first (second z)
+tail z = second (second z)
+
 -- ref.) http://d.hatena.ne.jp/syamino/20120524/p1
 foldr n c l = l c n
 
