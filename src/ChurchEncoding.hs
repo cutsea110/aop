@@ -1,6 +1,6 @@
 module ChurchEncoding where
 
-import Prelude hiding (head, tail, foldr, not, and, or, xor, succ, pred)
+import Prelude hiding (head, tail, foldr, not, and, or, xor, succ, pred, exp)
 
 bool p a b = p a b
 false a b = b
@@ -34,10 +34,9 @@ pred n = \f -> \x -> n (\g -> \h -> h (g f)) (\u -> x) (\u -> u)
 num 0 = \f -> \x -> x;
 num n = \f -> \x -> f (num (n-1) f x)
 
-suc n f x = f (n f x)
 plus m n f x = m f (n f x)
 mult m n f x = m (n f) x
-expr m n f x = (n m) f x
+exp m n f x = (n m) f x
 
 nil = pair true true
 isnil = first
