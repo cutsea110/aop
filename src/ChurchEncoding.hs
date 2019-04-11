@@ -23,6 +23,7 @@ second p = p (\x1 -> \x2 -> x2)
 zero f x = x
 one  f x = f x
 two f x = f (f x)
+three f x = f (f (f x))
 iszero n = n (\x -> false) true
 
 suc n f x = f (n f x)
@@ -38,4 +39,3 @@ tail z = second (second z)
 
 -- ref.) http://d.hatena.ne.jp/syamino/20120524/p1
 foldr n c l = l c n
-
