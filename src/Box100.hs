@@ -13,8 +13,15 @@ type Tree a = Fix (TreeF a)
 
 tip :: a -> Tree a
 tip = In . Tip
+
 bin :: Tree a -> Tree a -> Tree a
 bin l r = In (Bin l r)
+
+tip' :: a -> Cofree (TreeF a) a
+tip' n = Cf (In (Hisx (n, Tip n)))
+
+bin' :: Num a => (Cofree (TreeF t) a, Cofree (TreeF t) a) -> Cofree (TreeF t) a
+bin' (l, r) = Cf (In (Hisx (extract l + extract r, Bin (unCf l) (unCf r))))
 
 instance Show a => Show (Tree a) where
   show (In (Tip x)) = "Tip " ++ show x
@@ -31,18 +38,13 @@ instance ApplicativeBifunctor TreeF where
   biap (Tip f) (Tip x) = Tip (f x)
   biap (Bin f g) (Bin l r) = Bin (f l) (g r)
 
-tip' :: a -> Cofree (TreeF a) a
-tip' n = Cf (In (Hisx (n, Tip n)))
-bin' :: Num a => (Cofree (TreeF t) a, Cofree (TreeF t) a) -> Cofree (TreeF t) a
-bin' (l, r) = Cf (In (Hisx (extract l + extract r, Bin (unCf l) (unCf r))))
+windCol :: Num a => (Cofree (TreeF t) a, [Cofree (TreeF t) a]) -> [Cofree (TreeF t) a]
+windCol = unfoldr (winder bin')
 
 winder :: ((a, b) -> c) -> (b, [a]) -> Maybe (c, (c, [a]))
 winder f (y, xxs) = case xxs of
   []     -> Nothing
   (x:xs) -> Just (y', (y', xs)) where y' = f (x, y)
-
-windCol :: Num a => (Cofree (TreeF t) a, [Cofree (TreeF t) a]) -> [Cofree (TreeF t) a]
-windCol = unfoldr (winder bin')
 
 nexus :: Num a => ([a], [a]) -> [[Cofree (TreeF a) a]]
 nexus (cs, rs) = unfoldr psi (map tip' cs, map tip' rs)
@@ -53,9 +55,9 @@ nexus (cs, rs) = unfoldr psi (map tip' cs, map tip' rs)
 calc :: Num a => ([a], [a]) -> [[a]]
 calc = map (map extract) . nexus
 
-rows,cols :: [Int]
-rows = [4,2,5,6,7,1,3,9,3,2]
-cols = [8,2,4,6,1,8,9,3,1,7]
-
 main :: IO ()
 main = draw' 6 calc cols rows
+  where
+    rows,cols :: [Int]
+    rows = [4,2,5,6,7,1,3,9,3,2]
+    cols = [8,2,4,6,1,8,9,3,1,7]
