@@ -17,17 +17,37 @@ extra-source-files:  ChangeLog.md, README.md
 cabal-version:       >=1.10
 
 library
-  exposed-modules:     Nat
-                     , NonEmptyList
-                     , MutualRecursiveTreeForest
+  exposed-modules:     Ack
+                     , BinaryTree
+                     , Box100
+                     , ChurchEncoding
+                     , Combinatorial
+                     , Cpp
+                     , Decimal
+                     , Defunctionalization
+                     , DrawMatrix
+                     , ENat
+                     , Fib
+                     , Fib2
                      , Fix
                      , FixPrime
-                     , Take
-                     , Tree
-                     , List
-                     , FixTest
                      , FixPrimeTest
+                     , FixTest
+                     , Free
+                     , Histo
+                     , Leafy
+                     , List
+                     , MutualRecursiveTreeForest
+                     , Nat
+                     , NonEmptyList
+                     , OpenSet
                      , Promorphism
+                     , Rose
+                     , Sort
+                     , Take
+                     , Traditional
+                     , Tree
+                     , TypeFunctor
   -- other-modules:       
   other-extensions:    DeriveFunctor
                      , TypeSynonymInstances

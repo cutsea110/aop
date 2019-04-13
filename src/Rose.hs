@@ -1,5 +1,7 @@
 module Rose where
 
+import Prelude hiding ((<>))
+
 pair (f, g) x = (f x, g x)
 cross (f, g) (x, y) = (f x, g y)
 

@@ -1,3 +1,4 @@
+{-# LANGUAGE TypeSynonymInstances, FlexibleContexts, FlexibleInstances #-}
 module Histo where
 
 import Prelude hiding (Functor, fmap, succ, cons, nil, subtract)
