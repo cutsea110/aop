@@ -25,6 +25,7 @@ inordered = foldt (null, fork . check)
 null = Null
 fork = Fork
 
-check = undefined
+check :: (Tree a, b, Tree a) -> (Tree a, b, Tree a)
+check (l, x, r) = undefined -- how to...
 intree Null = []
 intree (Fork (lt, a, rt)) = [lt] ++ [rt]
