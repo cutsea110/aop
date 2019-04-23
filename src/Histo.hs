@@ -67,6 +67,12 @@ fib' = histo phi -- histo is faster than histo'
 
 fib :: Int -> Integer
 fib = fib' . toNat
+
+fact = para phi . toNat
+  where
+    phi Z = 1
+    phi (S (r, n)) = (1 + fromNat r) * n
+
 -- ackermann function
 ack 0 n = n+1
 ack m 0 = ack (m-1) 1
