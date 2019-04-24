@@ -51,3 +51,7 @@ fact = para phi . toNat
   where
     phi Z = 1
     phi (S (r, n)) = (1 + fromNat r) * n
+
+lenAlg :: Num a => ListF t a -> a
+lenAlg Nil = 0
+lenAlg (Cons _ r) = r + 1
