@@ -2,6 +2,8 @@
 module Bernoulli where
 
 import Prelude hiding (Functor, fmap, succ, cons, nil, subtract)
+import Data.Ratio
+
 import FixPrime
 
 -- https://repl.it/@lotz84/AjarCelebratedTask
@@ -40,11 +42,15 @@ nil = In Nil
 cons :: a -> List a -> List a
 cons x xs = In (Cons x xs)
 
+toList :: Cofree NatF a -> List a
+toList (Cf (In (Hisx (a, Z))))    = cons a nil
+toList (Cf (In (Hisx (a, S xs)))) = cons a (toList (Cf xs))
+
 instance Bifunctor ListF where
   bimap (f, g) Nil = Nil
   bimap (f, g) (Cons x y) = Cons (f x) (g y)
 
-instance Functor (ListF Nat) where
+instance Functor (ListF a) where
   fmap f = bimap (id, f)
 
 fact = para phi . toNat
@@ -52,6 +58,20 @@ fact = para phi . toNat
     phi Z = 1
     phi (S (r, n)) = (1 + fromNat r) * n
 
+comb :: Integer -> Integer -> Integer
+comb n k = fact n `div` (fact (n-k) * fact k)
+
 lenAlg :: Num a => ListF t a -> a
 lenAlg Nil = 0
 lenAlg (Cons _ r) = r + 1
+
+
+bernoulli = histo phi
+  where
+    phi Z = 1 % 1
+    phi (S r) = (-1) % (n + 1) * zygo lenAlg g rs
+      where
+        rs = toList r
+        n = cata lenAlg rs
+        g Nil = 0
+        g (Cons bn (k, r)) = r + bn * fromIntegral ((n+1) `comb` k)
