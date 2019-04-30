@@ -80,11 +80,13 @@ bernoulli = histo phi
 bernoulli' = histo phi
   where
     phi Z = (0, [1 % 1])
-    phi (S r) = undefined -- (n + 1, bs ++ [bn])
+    phi (S r) = (n + 1, bs ++ [bn])
       where
         n :: Integer
         bs :: [Ratio Integer]
         (n, bs) = extract r
-        ts :: [Ratio Integer]
-        ts = [fromInteger ((n + 1) `comb` k) | k <- [0..n]]
---        bn = (n + 1 - sum (zipWith (*) ts bs)) % (bs !! fromInteger (n + 1))
+        ts :: [Integer]
+        ts' :: [Ratio Integer]
+        (ts, ts') = ([(n+2) `comb` k | k <- [0..n+1]], Prelude.map fromInteger ts)
+        bn :: Ratio Integer
+        bn = (fromInteger(n+2) - sum (zipWith (*) ts' bs)) * (recip (ts' !! fromInteger (n+1)))
