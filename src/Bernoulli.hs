@@ -65,7 +65,7 @@ lenAlg :: Num a => ListF t a -> a
 lenAlg Nil = 0
 lenAlg (Cons _ r) = r + 1
 
-
+bernoulli :: Nat -> Ratio Integer
 bernoulli = histo phi
   where
     phi Z = 1 % 1
@@ -75,3 +75,16 @@ bernoulli = histo phi
         n = cata lenAlg rs
         g Nil = 0
         g (Cons bn (k, r)) = r + bn * fromIntegral ((n+1) `comb` k)
+
+
+bernoulli' = histo phi
+  where
+    phi Z = (0, [1 % 1])
+    phi (S r) = undefined -- (n + 1, bs ++ [bn])
+      where
+        n :: Integer
+        bs :: [Ratio Integer]
+        (n, bs) = extract r
+        ts :: [Ratio Integer]
+        ts = [fromInteger ((n + 1) `comb` k) | k <- [0..n]]
+--        bn = (n + 1 - sum (zipWith (*) ts bs)) % (bs !! fromInteger (n + 1))
