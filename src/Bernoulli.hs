@@ -4,6 +4,8 @@ module Bernoulli where
 import Prelude hiding (Functor, fmap, succ, cons, nil, subtract)
 import Data.Ratio
 
+
+import Box100 (calc)
 import FixPrime hiding (map)
 
 -- https://repl.it/@lotz84/AjarCelebratedTask
@@ -65,8 +67,10 @@ lenAlg :: Num a => ListF t a -> a
 lenAlg Nil = 0
 lenAlg (Cons _ r) = r + 1
 
-genIndex :: Integer -> [(Integer, Integer)]
 genIndex n = [(x, n - x) | x <- [0..n]]
+
+box n = calc (xs, xs)
+  where xs = take n (repeat 1)
 
 -- lotz's solution by using zygo.
 bernoulli' :: Nat -> Ratio Integer
