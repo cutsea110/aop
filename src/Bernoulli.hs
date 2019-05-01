@@ -65,6 +65,9 @@ lenAlg :: Num a => ListF t a -> a
 lenAlg Nil = 0
 lenAlg (Cons _ r) = r + 1
 
+genIndex :: Integer -> [(Integer, Integer)]
+genIndex n = [(x, n - x) | x <- [0..n]]
+
 -- lotz's solution by using zygo.
 bernoulli' :: Nat -> Ratio Integer
 bernoulli' = histo phi
