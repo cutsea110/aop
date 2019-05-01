@@ -4,7 +4,7 @@ module Bernoulli where
 import Prelude hiding (Functor, fmap, succ, cons, nil, subtract)
 import Data.Ratio
 
-import FixPrime
+import FixPrime hiding (map)
 
 -- https://repl.it/@lotz84/AjarCelebratedTask
 
@@ -65,6 +65,7 @@ lenAlg :: Num a => ListF t a -> a
 lenAlg Nil = 0
 lenAlg (Cons _ r) = r + 1
 
+-- lotz's solution by using zygo.
 bernoulli :: Nat -> Ratio Integer
 bernoulli = histo phi
   where
@@ -76,17 +77,13 @@ bernoulli = histo phi
         g Nil = 0
         g (Cons bn (k, r)) = r + bn * fromIntegral ((n+1) `comb` k)
 
-
-bernoulli' = histo phi
+-- my solution to answers between 0 to n at a time.
+bernoulli' :: Nat -> [Ratio Integer]
+bernoulli' = snd . histo phi
   where
     phi Z = (0, [1 % 1])
     phi (S r) = (n + 1, bs ++ [bn])
       where
-        n :: Integer
-        bs :: [Ratio Integer]
         (n, bs) = extract r
-        ts :: [Integer]
-        ts' :: [Ratio Integer]
-        (ts, ts') = ([(n+2) `comb` k | k <- [0..n+1]], Prelude.map fromInteger ts)
-        bn :: Ratio Integer
-        bn = (fromInteger(n+2) - sum (zipWith (*) ts' bs)) * (recip (ts' !! fromInteger (n+1)))
+        ts' = map fromInteger [(n+2) `comb` k | k <- [0..n+1]]
+        bn = (fromInteger(n+2)-sum(zipWith (*) ts' bs)) * recip(ts' !! fromInteger(n+1))
