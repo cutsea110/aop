@@ -87,3 +87,5 @@ bernoulli' = snd . histo phi
         (n, bs) = extract r
         ts' = map fromInteger [(n+2) `comb` k | k <- [0..n+1]]
         bn = (fromInteger(n+2)-sum(zipWith (*) ts' bs)) * recip(ts' !! fromInteger(n+1))
+
+main = mapM_ print (bernoulli' (toNat 50))
