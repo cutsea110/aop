@@ -67,10 +67,14 @@ lenAlg :: Num a => ListF t a -> a
 lenAlg Nil = 0
 lenAlg (Cons _ r) = r + 1
 
+genIndex :: (Num a, Enum a) => a -> [(a, a)]
 genIndex n = [(x, n - x) | x <- [0..n]]
 
-box n = calc (xs, xs)
-  where xs = take n (repeat 1)
+box :: [[Integer]]
+box = ones:(map (1:) (calc (ones, ones))) where ones = repeat 1
+
+combs :: Int -> [Integer]
+combs n = map f (genIndex n) where f (x, y) = box !! x !! y
 
 -- lotz's solution by using zygo.
 bernoulli' :: Nat -> Ratio Integer
