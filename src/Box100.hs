@@ -52,9 +52,21 @@ nexus (cs, rs) = unfoldr psi (map tip' cs, map tip' rs)
     psi (cs, []) = Nothing
     psi (cs, r:rs) = Just (ps, (ps, rs)) where ps = windCol (r, cs)
 
+-- normal 100 masu calc training
 simple :: Num a => ([a], [a]) -> [[a]]
 simple (cs, rs) = [[r+c | c <- cs] | r <- rs]
 
+-- accumulative 100 masu calc naive ver.
+naive :: ([Int], [Int]) -> [[Int]]
+naive (cs, rs) = [[val (i, j) | j <- [0..c']] | i <- [0..r']]
+  where
+    (c', r') = (length cs - 1, length rs - 1)
+    val (0, 0) = rs !! 0 + cs !! 0
+    val (0, j) = val (0, j-1) + cs !! j
+    val (i, 0) = rs !! i + val (i-1, 0)
+    val (i, j) = val (i, j-1) + val (i-1, j)
+
+-- accumulative 100 masu calc using nexus
 calc :: Num a => ([a], [a]) -> [[a]]
 calc = map (map extract) . nexus
 
