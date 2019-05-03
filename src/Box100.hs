@@ -52,6 +52,9 @@ nexus (cs, rs) = unfoldr psi (map tip' cs, map tip' rs)
     psi (cs, []) = Nothing
     psi (cs, r:rs) = Just (ps, (ps, rs)) where ps = windCol (r, cs)
 
+simple :: Num a => ([a], [a]) -> [[a]]
+simple (cs, rs) = [[r+c | c <- cs] | r <- rs]
+
 calc :: Num a => ([a], [a]) -> [[a]]
 calc = map (map extract) . nexus
 
