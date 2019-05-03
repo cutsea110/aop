@@ -70,11 +70,11 @@ lenAlg (Cons _ r) = r + 1
 genIndex :: (Num a, Enum a) => a -> [(a, a)]
 genIndex n = [(x, n - x) | x <- [0..n]]
 
-box :: [[Integer]]
-box = ones:(map (1:) (calc (ones, ones))) where ones = repeat 1
+pascalTriangle :: [[Integer]]
+pascalTriangle = ones:(map (1:) (calc (ones, ones))) where ones = repeat 1
 
 combs :: Integer -> [Integer]
-combs n = map f (genIndex (fromIntegral n)) where f (x, y) = fromInteger (box !! x !! y)
+combs n = map f (genIndex (fromIntegral n)) where f (x, y) = fromInteger (pascalTriangle !! x !! y)
 
 -- lotz's solution by using zygo.
 bernoulli' :: Nat -> Ratio Integer
