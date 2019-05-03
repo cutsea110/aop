@@ -99,4 +99,5 @@ bernoulli = snd . histo phi
         ts = map fromInteger $ init $ combs (n+2)
         bn = (fromInteger(n+2)-sum(zipWith (*) ts bs))*recip(ts!!fromInteger(n+1))
 
-main = mapM_ print (bernoulli (toNat 100))
+main :: IO ()
+main = mapM_ print (bernoulli (toNat 1000))
