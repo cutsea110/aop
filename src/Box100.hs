@@ -38,16 +38,16 @@ instance ApplicativeBifunctor TreeF where
   biap (Tip f) (Tip x) = Tip (f x)
   biap (Bin f g) (Bin l r) = Bin (f l) (g r)
 
-windCol :: Num a => (Cofree (TreeF t) a, [Cofree (TreeF t) a]) -> [Cofree (TreeF t) a]
-windCol = unfoldr (winder bin')
-
 winder :: ((a, b) -> c) -> (b, [a]) -> Maybe (c, (c, [a]))
 winder f (y, xxs) = case xxs of
   []     -> Nothing
   (x:xs) -> Just (y', (y', xs)) where y' = f (x, y)
 
+windCol :: Num a => (Cofree (TreeF t) a, [Cofree (TreeF t) a]) -> [Cofree (TreeF t) a]
+windCol = unfoldr (winder bin')
+
 nexus :: Num a => ([a], [a]) -> [[Cofree (TreeF a) a]]
-nexus (cs, rs) = unfoldr psi (map tip' cs, map tip' rs)
+nexus = unfoldr psi . tupply (map tip')
   where
     psi (cs, []) = Nothing
     psi (cs, r:rs) = Just (ps, (ps, rs)) where ps = windCol (r, cs)
