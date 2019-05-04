@@ -71,7 +71,7 @@ genIndex :: (Num a, Enum a) => a -> [(a, a)]
 genIndex n = [(x, n - x) | x <- [0..n]]
 
 pascalTriangle :: [[Integer]]
-pascalTriangle = ones:(map (1:) (calc (ones, ones))) where ones = repeat 1
+pascalTriangle = ones:(map (1:) (calc (ones, ones))) where ones = 1:ones
 
 combs :: Integer -> [Integer]
 combs n = map f (genIndex (fromIntegral n)) where f (x, y) = fromInteger (pascalTriangle !! x !! y)
