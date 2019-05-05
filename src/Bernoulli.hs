@@ -27,7 +27,9 @@ instance Show Nat where
   show (In (S (In Z))) = "S Z"
   show (In (S n)) = "S (" ++ show n ++ ")"
 
+toNat :: (Ord t, Num t) => t -> Nat
 toNat n = if n <= 0 then zero else succ (toNat (n-1))
+fromNat :: Num p => Fix NatF -> p
 fromNat (In Z) = 0
 fromNat (In (S n)) = 1 + fromNat n
 
@@ -55,6 +57,7 @@ instance Bifunctor ListF where
 instance Functor (ListF a) where
   fmap f = bimap (id, f)
 
+fact :: Integer -> Integer
 fact = para phi . toNat
   where
     phi Z = 1
@@ -66,15 +69,6 @@ comb n k = fact n `div` (fact (n-k) * fact k)
 lenAlg :: Num a => ListF t a -> a
 lenAlg Nil = 0
 lenAlg (Cons _ r) = r + 1
-
-genIndex :: (Num a, Enum a) => a -> [(a, a)]
-genIndex n = [(x, n - x) | x <- [0..n]]
-
-pascalTriangle :: [[Integer]]
-pascalTriangle = ones:(map (1:) (calc (ones, ones))) where ones = 1:ones
-
-combs :: Integer -> [Integer]
-combs n = map f (genIndex (fromIntegral n)) where f (x, y) = fromInteger (pascalTriangle !! x !! y)
 
 -- lotz's solution by using zygo.
 bernoulli' :: Nat -> Ratio Integer
@@ -88,6 +82,15 @@ bernoulli' = histo phi
         g Nil = 0
         g (Cons bn (k, r)) = r + bn * fromIntegral ((n+1) `comb` k)
 
+genIndex :: (Num a, Enum a) => a -> [(a, a)]
+genIndex n = [(x, n - x) | x <- [0..n]]
+
+pascalTriangle :: [[Integer]]
+pascalTriangle = ones:(map (1:) (calc (ones, ones))) where ones = 1:ones
+
+combs :: Integer -> [Integer]
+combs n = map f (genIndex (fromIntegral n)) where f (x, y) = fromInteger (pascalTriangle !! x !! y)
+
 -- my solution to answers between 0 to n at a time.
 bernoulli :: Nat -> [Ratio Integer]
 bernoulli = snd . histo phi
@@ -97,7 +100,7 @@ bernoulli = snd . histo phi
       where
         (n, bs) = extract r
         ts = map fromInteger $ init $ combs (n+2)
-        bn = (fromInteger(n+2)-sum(zipWith (*) ts bs))*recip(ts!!fromInteger(n+1))
+        bn = (fromInteger (n + 2) - sum (zipWith (*) ts bs)) * recip (ts !! fromInteger (n + 1))
 
 main :: IO ()
 main = mapM_ print (bernoulli (toNat 1000))
