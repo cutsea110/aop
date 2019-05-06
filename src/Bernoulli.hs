@@ -86,7 +86,7 @@ genIndex :: (Num a, Enum a) => a -> [(a, a)]
 genIndex n = [(x, n - x) | x <- [0..n]]
 
 pascal'sTriangle :: [[Integer]]
-pascal'sTriangle = ones:(map (1:) (calc (ones, ones))) where ones = 1:ones
+pascal'sTriangle = let ones = 1:ones in ones:(map (1:) (calc (ones, ones)))
 
 combs :: Integer -> [Integer]
 combs = map f . genIndex . fromIntegral where f (x, y) = fromInteger (pascal'sTriangle !! x !! y)
@@ -95,12 +95,15 @@ combs = map f . genIndex . fromIntegral where f (x, y) = fromInteger (pascal'sTr
 bernoulli :: Nat -> [Ratio Integer]
 bernoulli = snd . histo phi
   where
-    phi Z = (0, [1%1])
-    phi (S r) = (n+1, bs++[bn])
+    phi Z = (0, [1])
+    phi (S r) = (n + 1, bs ++ [bn])
       where
         (n, bs) = extract r
-        ts = map fromInteger $ init $ combs (n+2)
+        ts = map fromInteger $ init $ combs (n + 2)
         bn = (fromInteger (n + 2) - sum (zipWith (*) ts bs)) * recip (ts !! fromInteger (n + 1))
 
+pp :: Integer -> IO ()
+pp = mapM_ print . bernoulli . toNat
+
 main :: IO ()
-main = mapM_ print (bernoulli (toNat 1000))
+main = pp 1000
