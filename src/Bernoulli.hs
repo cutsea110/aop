@@ -89,7 +89,7 @@ pascalTriangle :: [[Integer]]
 pascalTriangle = ones:(map (1:) (calc (ones, ones))) where ones = 1:ones
 
 combs :: Integer -> [Integer]
-combs n = map f (genIndex (fromIntegral n)) where f (x, y) = fromInteger (pascalTriangle !! x !! y)
+combs = map f . genIndex . fromIntegral where f (x, y) = fromInteger (pascalTriangle !! x !! y)
 
 -- my solution to answers between 0 to n at a time.
 bernoulli :: Nat -> [Ratio Integer]
