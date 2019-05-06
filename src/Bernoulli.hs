@@ -29,7 +29,7 @@ instance Show Nat where
 
 toNat :: (Ord t, Num t) => t -> Nat
 toNat n = if n <= 0 then zero else succ (toNat (n-1))
-fromNat :: Num p => Fix NatF -> p
+fromNat :: Num p => Nat -> p
 fromNat (In Z) = 0
 fromNat (In (S n)) = 1 + fromNat n
 
@@ -85,11 +85,11 @@ bernoulli' = histo phi
 genIndex :: (Num a, Enum a) => a -> [(a, a)]
 genIndex n = [(x, n - x) | x <- [0..n]]
 
-pascalTriangle :: [[Integer]]
-pascalTriangle = ones:(map (1:) (calc (ones, ones))) where ones = 1:ones
+pascal'sTriangle :: [[Integer]]
+pascal'sTriangle = ones:(map (1:) (calc (ones, ones))) where ones = 1:ones
 
 combs :: Integer -> [Integer]
-combs = map f . genIndex . fromIntegral where f (x, y) = fromInteger (pascalTriangle !! x !! y)
+combs = map f . genIndex . fromIntegral where f (x, y) = fromInteger (pascal'sTriangle !! x !! y)
 
 -- my solution to answers between 0 to n at a time.
 bernoulli :: Nat -> [Ratio Integer]
