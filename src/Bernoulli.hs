@@ -102,8 +102,11 @@ bernoulli = snd . histo phi
         ts = map fromInteger $ init $ combs (n + 2)
         bn = (fromInteger (n + 2) - sum (zipWith (*) ts bs)) * recip (ts !! fromInteger (n + 1))
 
-pp :: Integer -> IO ()
-pp = mapM_ print . bernoulli . toNat
+pr :: Integer -> IO ()
+pr = mapM_ print . bernoulli . toNat
 
 main :: IO ()
-main = pp 1000
+main = do
+  putStrLn "Please Input integer number."
+  n <- getLine
+  pr (read n)
