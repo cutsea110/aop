@@ -39,9 +39,8 @@ instance ApplicativeBifunctor TreeF where
   biap (Bin f g) (Bin l r) = Bin (f l) (g r)
 
 winder :: ((a, b) -> c) -> (b, [a]) -> Maybe (c, (c, [a]))
-winder f (y, xxs) = case xxs of
-  []     -> Nothing
-  (x:xs) -> Just (y', (y', xs)) where y' = f (x, y)
+winder f (y, [])   = Nothing
+winder f (y, x:xs) = Just (y', (y', xs)) where y' = f (x, y)
 
 windCol :: Num a => (Cofree (TreeF t) a, [Cofree (TreeF t) a]) -> [Cofree (TreeF t) a]
 windCol = unfoldr (winder bin')
