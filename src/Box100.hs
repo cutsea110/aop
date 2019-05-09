@@ -1,4 +1,4 @@
-{-# LANGUAGE TypeSynonymInstances, FlexibleInstances #-}
+{-# LANGUAGE TypeSynonymInstances, FlexibleInstances, TupleSections #-}
 module Box100 where
 
 import Prelude as P hiding (Functor(..))
@@ -38,10 +38,10 @@ instance ApplicativeBifunctor TreeF where
   biap (Tip f) (Tip x) = Tip (f x)
   biap (Bin f g) (Bin l r) = Bin (f l) (g r)
 
-winder :: ((a, b) -> c) -> (b, [a]) -> Maybe (c, (c, [a]))
+winder :: Monad m => ((a, b) -> c) -> (b, [a]) -> m (c, (c, [a]))
 winder f (y, xxs) = case xxs of
-  []     -> Nothing
-  (x:xs) -> Just (y', (y', xs)) where y' = f (x, y)
+  []     -> fail "Exhausted"
+  (x:xs) -> return $ (,) <*> (,xs) $ f (x, y)
 
 windCol :: Num a => (Cofree (TreeF t) a, [Cofree (TreeF t) a]) -> [Cofree (TreeF t) a]
 windCol = unfoldr (winder bin')
