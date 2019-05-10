@@ -41,7 +41,7 @@ instance ApplicativeBifunctor TreeF where
 winder :: Monad m => ((a, b) -> c) -> (b, [a]) -> m (c, (c, [a]))
 winder f (y, xxs) = case xxs of
   []     -> fail "Exhausted"
-  (x:xs) -> return $ (,) <*> (,xs) $ f (x, y)
+  (x:xs) -> return (y', (y', xs)) where y' = f (x, y)
 
 windCol :: Num a => (Cofree (TreeF t) a, [Cofree (TreeF t) a]) -> [Cofree (TreeF t) a]
 windCol = unfoldr (winder bin')
