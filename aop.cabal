@@ -18,7 +18,6 @@ cabal-version:       >=1.10
 
 library
   exposed-modules:     Ack
-                     , BDD
                      , Bernoulli
                      , BinaryTree
                      , Box100
@@ -45,6 +44,7 @@ library
                      , OpenSet
                      , Promorphism
                      , Rose
+                     , SimPath
                      , Sort
                      , Take
                      , Traditional

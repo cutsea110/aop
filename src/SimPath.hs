@@ -1,5 +1,5 @@
 {-# LANGUAGE TypeSynonymInstances, FlexibleInstances, TupleSections #-}
-module BDD where
+module SimPath where
 
 import Prelude hiding (either)
 
