@@ -4,7 +4,9 @@ module BDD where
 import Prelude hiding (either)
 
 import Control.Applicative (liftA2)
+import qualified Data.Foldable as Fold
 import Data.Function (on)
+import Data.Set
 
 -- HaskellでSimpathを実装してみる
 -- by @yasuabe2613
@@ -33,3 +35,12 @@ modify = onBoth edge
 
 opposite :: Node -> Edge -> Node
 opposite n (Edge l r) = if l == n then r else l
+
+isOpen :: Edge -> Bool
+isOpen = onBoth (/=) id
+
+find :: Node -> Set Edge -> Maybe Edge
+find = Fold.find . contains
+
+connect :: Node -> Node -> Edge -> Edge
+connect from to = edge from . opposite to
