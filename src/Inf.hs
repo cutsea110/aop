@@ -51,3 +51,14 @@ toIntList = unfoldr psi
     psi n = Just (n, n-1)
 
 infList = unfoldr (\x -> Just (x, x+1)) 0
+
+data Tree a = Leaf a | Node (Tree a) (Tree a) deriving (Show, Eq)
+
+foldt (f, g) = u
+  where
+    u (Leaf x) = f x
+    u (Node l r) = g (u l) (u r)
+
+unfoldt psi x = case psi x of
+  Left x -> Leaf x
+  Right (l, r) -> Node (unfoldt psi l) (unfoldt psi r)
