@@ -3,6 +3,7 @@ module Box100 where
 
 import Prelude as P hiding (Functor(..))
 import Data.List (map, unfoldr)
+import Data.Time
 
 import DrawMatrix
 import FixPrime hiding (map)
@@ -67,9 +68,15 @@ naive (cs, rs) = [[val (i, j) | j <- [0..c']] | i <- [0..r']]
 calc :: Num a => ([a], [a]) -> [[a]]
 calc = map (map extract) . nexus
 
+perfCheck act = do
+  s <- getCurrentTime
+  act
+  e <- getCurrentTime
+  return (diffUTCTime e s)
+
+rows,cols :: [Int]
+rows = [4,2,5,6,7,1,3,9,3,2]
+cols = [8,2,4,6,1,8,9,3,1,7]
+
 main :: IO ()
 main = draw' 6 calc cols rows
-  where
-    rows,cols :: [Int]
-    rows = [4,2,5,6,7,1,3,9,3,2]
-    cols = [8,2,4,6,1,8,9,3,1,7]
