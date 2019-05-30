@@ -36,7 +36,7 @@ library
                      , FixTest
                      , Free
                      , Histo
-                     , Inf
+                     , Infinity
                      , Leafy
                      , List
                      , MutualRecursiveTreeForest

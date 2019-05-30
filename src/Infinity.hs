@@ -1,4 +1,4 @@
-module Inf where
+module Infinity where
 
 import Prelude hiding (foldr)
 
