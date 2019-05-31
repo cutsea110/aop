@@ -68,6 +68,7 @@ naive (cs, rs) = [[val (i, j) | j <- [0..c']] | i <- [0..r']]
 calc :: Num a => ([a], [a]) -> [[a]]
 calc = map (map extract) . nexus
 
+perfCheck :: IO a -> IO NominalDiffTime
 perfCheck act = do
   s <- getCurrentTime
   act
