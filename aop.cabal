@@ -23,6 +23,7 @@ library
                      , Box100
                      , ChurchEncoding
                      , Combinatorial
+                     , CombPlus
                      , Cpp
                      , Decimal
                      , Defunctionalization
