@@ -5,7 +5,7 @@ import Data.List
 
 import Combinatorial (perms)
 
-br 0 = [[],[0]]
+br 0 = [[0]]
 br n = nub $ concatMap (map sort . up) (br (n-1))
 
 up :: Num a => [a] -> [[a]]
