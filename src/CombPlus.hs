@@ -17,3 +17,5 @@ pr xs = forM_ xs pr'
     pr' = putStrLn . concat . intersperse " + " . map show
 
 br' = nub . concatMap perms . br
+
+main = pr . br $ 10
