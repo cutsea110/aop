@@ -46,6 +46,7 @@ library
                      , OpenSet
                      , Promorphism
                      , Rose
+                     , ShortestPathSearch
                      , SimPath
                      , Sort
                      , Take
