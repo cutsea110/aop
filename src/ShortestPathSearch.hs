@@ -1,4 +1,4 @@
-module ShortPathSearch where
+module ShortestPathSearch where
 
 import FixPrime
 
