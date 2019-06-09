@@ -49,3 +49,27 @@ nodeH = bin' ((12, nodeE), (3, nodeF))
 nodeI = bin' ((4, nodeG), (2, nodeH))
 main = print $ extract nodeI
 
+--------
+
+tip'' ch n = Cf (In (Hisx (([ch], n), Tip n)))
+bin'' ch ((x, l), (y, r)) = Cf (In (Hisx (ann, Bin (x, unCf l) (y, unCf r))))
+  where
+    (l', r') = (extract l, extract r)
+    (cl, cr) = (snd l' + x, snd r' + y)
+    (pl, pr) = (ch:fst l', ch:fst r')
+    ann = if cl < cr then (pl, cl) else (pr, cr)
+
+node0' = tip'' '0' 0
+nodeInf' = tip'' '-' (1/0)
+
+nodeA' = bin'' 'A' ((0, node0'), (0, node0'))
+nodeB' = bin'' 'B' ((0, nodeInf'), (2, nodeA'))
+nodeC' = bin'' 'C' ((7, nodeA'), (0, nodeInf'))
+nodeD' = bin'' 'D' ((0, nodeInf'), (8, nodeB'))
+nodeE' = bin'' 'E' ((1, nodeB'), (2, nodeC'))
+nodeF' = bin'' 'F' ((3, nodeC'), (0, nodeInf'))
+nodeG' = bin'' 'G' ((15, nodeD'), (9, nodeE'))
+nodeH' = bin'' 'H' ((12, nodeE'), (3, nodeF'))
+nodeI' = bin'' 'I' ((4, nodeG'), (2, nodeH'))
+
+main2 = print $ extract nodeI'
