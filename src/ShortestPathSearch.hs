@@ -38,3 +38,14 @@ instance ApplicativeBifunctor TreeF where
 node0 = tip' 0
 nodeInf = tip' (1/0)
 
+nodeA = bin' ((0, node0), (0, node0))
+nodeB = bin' ((0, nodeInf), (2, nodeA))
+nodeC = bin' ((7, nodeA), (0, nodeInf))
+nodeD = bin' ((0, nodeInf), (8, nodeB))
+nodeE = bin' ((1, nodeB), (2, nodeC))
+nodeF = bin' ((3, nodeC), (0, nodeInf))
+nodeG = bin' ((15, nodeD), (9, nodeE))
+nodeH = bin' ((12, nodeE), (3, nodeF))
+nodeI = bin' ((4, nodeG), (2, nodeH))
+main = print $ extract nodeI
+
