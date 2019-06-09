@@ -33,7 +33,7 @@ instance Functor (TreeF a) where
 
 instance ApplicativeBifunctor TreeF where
   biap (Tip f) (Tip x) = Tip (f x)
-  biap (Bin (f, g) (h, i)) (Bin (x, l) (y, r)) = Bin (f x, g l) (h y, i r)
+  biap (Bin (f, g) (j, k)) (Bin (x, l) (y, r)) = Bin (f x, g l) (j y, k r)
 
 node0 = tip' 0
 nodeInf = tip' (1/0)
