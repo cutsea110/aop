@@ -55,8 +55,8 @@ tip'' ch n = Cf (In (Hisx (([ch], n), Tip n)))
 bin'' ch ((x, l), (y, r)) = Cf (In (Hisx (ann, Bin (x, unCf l) (y, unCf r))))
   where
     ((pl, cl), (pr, cr)) = tupply extract (l, r)
-    (cl', cr') = (cl + x, cr + y)
-    (pl', pr') = tupply (ch:) (pl, pr)
+    (pl', cl') = cross ((ch:), (+x)) (pl, cl)
+    (pr', cr') = cross ((ch:), (+y)) (pr, cr)
     ann = if cl' < cr' then (pl', cl') else (pr', cr')
 
 node0' = tip'' '0' 0
