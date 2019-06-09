@@ -2,6 +2,8 @@
 module ShortestPathSearch where
 
 import Prelude as P hiding (Functor(..))
+import Data.List
+import Data.Function (on)
 import FixPrime
 
 -- | Tree
@@ -54,10 +56,10 @@ main = print $ extract nodeI
 tip'' ch n = Cf (In (Hisx (([ch], n), Tip n)))
 bin'' ch ((x, l), (y, r)) = Cf (In (Hisx (ann, Bin (x, unCf l) (y, unCf r))))
   where
-    ((pl, cl), (pr, cr)) = tupply extract (l, r)
-    (pl', cl') = cross ((ch:), (+x)) (pl, cl)
-    (pr', cr') = cross ((ch:), (+y)) (pr, cr)
-    ann = if cl' < cr' then (pl', cl') else (pr', cr')
+    (l', r') = tupply extract (l, r)
+    l'' = cross ((ch:), (+x)) l'
+    r'' = cross ((ch:), (+y)) r'
+    ann = if ((<) `on` snd) l'' r'' then l'' else r'' 
 
 node0' = tip'' '0' 0
 nodeInf' = tip'' '-' (1/0)
@@ -72,4 +74,8 @@ nodeG' = bin'' 'G' ((15, nodeD'), (9, nodeE'))
 nodeH' = bin'' 'H' ((12, nodeE'), (3, nodeF'))
 nodeI' = bin'' 'I' ((4, nodeG'), (2, nodeH'))
 
-main2 = print $ extract nodeI'
+main2 = do
+  let (ps, w) = extract nodeI'
+  putStr $ show w
+  putStr " : "
+  putStrLn $ init ps
