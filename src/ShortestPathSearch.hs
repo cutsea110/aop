@@ -56,7 +56,7 @@ main = print $ extract nodeI
 tip'' ch n = Cf (In (Hisx (([ch], n), Tip n)))
 bin'' ch ((x, l), (y, r)) = Cf (In (Hisx (ann, Bin (x, unCf l) (y, unCf r))))
   where
-    (l', r') = cross (cross ((ch:), (+x)), cross ((ch:), (+y))) $ tupply extract (l, r)
+    (l', r') = cross (cross ((ch:), (+x)), cross ((ch:), (+y))) . tupply extract $ (l, r)
     ann = if ((<) `on` snd) l' r' then l' else r' 
 
 node0' = tip'' '0' 0
