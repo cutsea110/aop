@@ -73,7 +73,11 @@ nodeH' = bin'' 'H' ((12, nodeE'), (3, nodeF'))
 nodeI' = bin'' 'I' ((4, nodeG'), (2, nodeH'))
 
 main2 = do
-  let (ps, w) = extract nodeI'
+  let (pth, w) = extract nodeI'
   putStr $ show w
   putStr " : "
-  putStrLn $ init ps
+  pr pth
+  putChar '\n'
+  where
+    pr (x:"0") = putChar x
+    pr (x:xs) = pr xs >> putStr " -> " >> putChar x
