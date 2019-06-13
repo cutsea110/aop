@@ -52,6 +52,7 @@ library
                      , Take
                      , Traditional
                      , Tree
+                     , TutorialZygo
                      , TypeFunctor
   -- other-modules:       
   other-extensions:    DeriveFunctor
