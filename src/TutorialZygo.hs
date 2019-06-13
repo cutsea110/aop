@@ -30,3 +30,11 @@ zygoL :: (a -> b -> b) -> -- a folding function
 zygoL f g z e = snd . cataL (\x (p, q) -> (f x p, g x p q)) (z, e)
 
 pm3 = zygoL (\_ p -> not p) (\x isEven total -> if isEven then x - total else x + total) True 0
+
+
+-- zygo has a big sister called mutumorphism
+mutuL :: (a -> b -> c -> b) ->
+         (a -> b -> c -> c) ->
+         b -> c ->
+         [a] -> c
+mutuL f g z e = snd . cataL (\x (p, q) -> (f x p q, g x p q)) (z, e)
