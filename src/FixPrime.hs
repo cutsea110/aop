@@ -179,6 +179,7 @@ synchro d' f d g1 g2 d'' = h
 -- zygomorphism
 zygo :: Functor f => (f a -> a) -> (f (a, b) -> b) -> Fix f -> b
 zygo f phi = snd . cata (pair (f . fmap fst, phi))
+-- zygomorphism is semi-mutually recursive function
 zygo' :: Functor f => (f a -> a) -> (f (a, b) -> b) -> Fix f -> b
 zygo' f = mutu' (f . fmap fst)
 -- cozygomorphism
