@@ -97,6 +97,8 @@ para :: Functor f => (f (Fix f, t) -> t) -> Fix f -> t
 para phi = phi . fmap (pair (id, para phi)) . out
 para' :: Functor f => (f (Fix f, t) -> t) -> Fix f -> t
 para' = zygo In
+para'' :: Functor f => (f (Fix f, t) -> t) -> Fix f -> t
+para'' f = snd . cata (pair (In . fmap fst, f))
 -- apomorphism
 apo :: Functor f => (t -> f (Either (Fix f) t)) -> t -> Fix f
 apo psi = In . fmap (either (id, apo psi)) . psi
@@ -199,6 +201,9 @@ codyna f g = chrono (f . fmap extract) g
 -- mutumorphism
 mutu :: Functor f => (a -> b) -> (f a -> a) -> Fix f -> b
 mutu proj phi = proj . cata phi
+-- is this mutumorphism so pretty type signature? but there exists tuple is so concrete?
+mutu' :: Functor f => (f (a, b) -> a) -> (f (a, b) -> b) -> Fix f -> b
+mutu' f g = snd . cata (pair (f, g))
 -- comutumorphism
 comutu :: Functor f => (b -> a) -> (a -> f a) -> b -> Fix f
 comutu proj psi = ana psi . proj
