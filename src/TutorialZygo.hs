@@ -38,3 +38,5 @@ mutuL :: (a -> b -> c -> b) ->
          b -> c ->
          [a] -> c
 mutuL f g z e = snd . cataL (\x (p, q) -> (f x p q, g x p q)) (z, e)
+
+pm4 = mutuL (\_ p _ -> not p) (\x isEven total -> if isEven then x - total else x + total) True 0
