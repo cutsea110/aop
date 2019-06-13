@@ -179,6 +179,8 @@ synchro d' f d g1 g2 d'' = h
 -- zygomorphism
 zygo :: Functor f => (f a -> a) -> (f (a, b) -> b) -> Fix f -> b
 zygo f phi = snd . cata (pair (f . fmap fst, phi))
+zygo' :: Functor f => (f a -> a) -> (f (a, b) -> b) -> Fix f -> b
+zygo' f = mutu' (f . fmap fst)
 -- cozygomorphism
 cozygo :: Functor f => (a -> f a) -> (b -> f (Either a b)) -> b -> Fix f
 cozygo f psi = ana (either (fmap Left . f, psi)) . Right
