@@ -204,7 +204,8 @@ codyna f g = chrono (f . fmap extract) g
 -- mutumorphism
 mutu :: Functor f => (a -> b) -> (f a -> a) -> Fix f -> b
 mutu proj phi = proj . cata phi
--- is this mutumorphism so pretty type signature? but there exists tuple is so concrete?
+-- Is this mutumorphism so pretty type signature? but there exists tuple is so concrete?
+-- Does this mutu' use Fokkinga's mutual recursive theorem?
 mutu' :: Functor f => (f (a, b) -> a) -> (f (a, b) -> b) -> Fix f -> b
 mutu' f g = snd . cata (pair (f, g))
 -- comutumorphism
