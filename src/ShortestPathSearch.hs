@@ -72,6 +72,7 @@ nodeG' = bin'' 'G' ((15, nodeD'), (9, nodeE'))
 nodeH' = bin'' 'H' ((12, nodeE'), (3, nodeF'))
 nodeI' = bin'' 'I' ((4, nodeG'), (2, nodeH'))
 
+-- プログラミングの基礎 第12章
 nodeA'' = bin'' 'A' ((0,node0'), (0, node0'))
 nodeB'' = bin'' 'B' ((0, nodeInf'), (10, nodeA''))
 nodeC'' = bin'' 'C' ((2, nodeB''), (1, nodeE''))
