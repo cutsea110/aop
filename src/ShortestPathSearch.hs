@@ -72,8 +72,14 @@ nodeG' = bin'' 'G' ((15, nodeD'), (9, nodeE'))
 nodeH' = bin'' 'H' ((12, nodeE'), (3, nodeF'))
 nodeI' = bin'' 'I' ((4, nodeG'), (2, nodeH'))
 
-main2 = do
-  let (pth, w) = extract nodeI'
+nodeA'' = bin'' 'A' ((0,node0'), (0, node0'))
+nodeB'' = bin'' 'B' ((0, nodeInf'), (10, nodeA''))
+nodeC'' = bin'' 'C' ((2, nodeB''), (1, nodeE''))
+nodeD'' = bin'' 'D' ((4, nodeA''), (0, nodeInf'))
+nodeE'' = bin'' 'E' ((2, nodeB''), (3, nodeD''))
+
+main2 nd = do
+  let (pth, w) = extract nd
   putStr $ show w
   putStr " : "
   pr pth
