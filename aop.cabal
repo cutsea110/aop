@@ -27,6 +27,7 @@ library
                      , Cpp
                      , Decimal
                      , Defunctionalization
+                     , Dijkstra
                      , DrawMatrix
                      , ENat
                      , Fib
