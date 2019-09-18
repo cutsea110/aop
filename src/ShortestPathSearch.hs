@@ -2,10 +2,40 @@
 module ShortestPathSearch where
 
 import Prelude as P hiding (Functor(..))
-import Data.List
+import Control.Arrow ((***))
+import Data.List as List
 import Data.Function (on)
 import FixPrime
 
+-- | Tree
+data TreeF a x = Tip a | Bin [(a, x)] deriving Show
+type Tree a = Fix (TreeF a)
+
+tip :: a -> Tree a
+tip = In . Tip
+
+bin :: [(a, Tree a)] -> Tree a
+bin = In . Bin
+
+tip' :: a -> Cofree (TreeF a) a
+tip' n = Cf (In (Hisx (n, Tip n)))
+
+bin' :: (Fractional a, Ord a) => [(a, Cofree (TreeF a) a)] -> Cofree (TreeF a) a
+bin' [] = Cf (In (Hisx ((1/0), Bin [])))
+bin' xs = Cf (In (Hisx (minimum (List.map (\(v, t) -> extract t + v) xs), Bin (List.map (second unCf) xs))))
+
+instance Show a => Show (Tree a) where
+  show (In (Tip x)) = "Tip " ++ show x
+  show (In (Bin xs)) = "Bin " ++ show xs
+
+instance Bifunctor TreeF where
+  bimap (f, g) (Tip x) = Tip (f x)
+  bimap (f, g) (Bin xs) = Bin (List.map (f *** g) xs)
+
+instance Functor (TreeF a) where
+  fmap f = bimap (id, f)
+
+{--
 -- | Tree
 data TreeF a x = Tip a | Bin (a, x) (a, x) deriving Show
 type Tree a = Fix (TreeF a)
@@ -88,3 +118,4 @@ main2 nd = do
   where
     pr (x:"0") = putChar x
     pr (x:xs) = pr xs >> putStr " -> " >> putChar x
+--}
