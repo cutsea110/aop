@@ -12,6 +12,8 @@ newtype Fix f = In { out :: f (Fix f) }
 newtype Cofree f a = Cf { unCf :: (a, f (Cofree f a)) }
 extract :: Cofree f t -> t
 extract = fst . unCf
+sub :: Functor f => Cofree f a -> f (Cofree f a)
+sub = snd . unCf
 
 newtype Free f a = Fr { unFr :: Either a (f (Free f a)) }
 inject :: a -> Free f a
