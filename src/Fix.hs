@@ -64,3 +64,6 @@ codyna f g = chrono (f . fmap extract) g
 -- mutumorphism
 mutu :: Functor f => (a -> b) -> (f a -> a) -> Fix f -> b
 mutu proj phi = proj . cata phi
+-- comutumorphism
+comutu :: Functor f => (b -> a) -> (a -> f a) -> b -> Fix f
+comutu proj psi = ana psi . proj
