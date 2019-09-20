@@ -39,6 +39,7 @@ library
                      , Free
                      , Histo
                      , Infinity
+                     , KnapSack
                      , Leafy
                      , List
                      , MutualRecursiveTreeForest
