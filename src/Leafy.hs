@@ -20,6 +20,7 @@ instance Functor Leafy where
 
 instance Applicative Leafy where
     pure = eta
+    -- (<*> x) = foldt ((<$> x), bin) = (|(<$> x), inr|)
     fs <*> x = foldt ((<$> x), bin) fs
 
 instance Monad Leafy where
