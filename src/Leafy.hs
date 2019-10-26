@@ -20,9 +20,8 @@ instance Functor Leafy where
 
 instance Applicative Leafy where
     pure = eta
-    Tip f <*> x = fmap f x
-    Bin l r <*> x = bin (l <*> x, r <*> x)
+    fs <*> x = foldt ((<$> x), bin) fs
 
 instance Monad Leafy where
     return = eta
-    m >>= f = mu (fmap f m)
+    m >>= f = mu (f <$> m)
