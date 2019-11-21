@@ -50,9 +50,15 @@ windCol = unfoldr (winder bin')
 nexus :: Num a => ([a], [a]) -> [[Cofree (TreeF a) a]]
 nexus = unfoldr (winder windCol) . tupply (map tip')
 
+simple :: Num a => (a -> a -> a) -> ([a], [a]) -> [[a]]
+simple op (cs, rs) = [[op c r | c <- cs] | r <- rs]
+
 -- normal 100 masu calc training
-simple :: Num a => ([a], [a]) -> [[a]]
-simple (cs, rs) = [[r+c | c <- cs] | r <- rs]
+simplePlus :: Num a => ([a], [a]) -> [[a]]
+simplePlus = simple (+)
+
+simpleMinus :: Num a => ([a], [a]) -> [[a]]
+simpleMinus = simple (-)
 
 -- accumulative 100 masu calc naive ver.
 naive :: ([Int], [Int]) -> [[Int]]
