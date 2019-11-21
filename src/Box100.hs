@@ -60,6 +60,12 @@ simplePlus = simple (+)
 simpleMinus :: Num a => ([a], [a]) -> [[a]]
 simpleMinus = simple (-)
 
+simpleTimes :: Num a => ([a], [a]) -> [[a]]
+simpleTimes = simple (*)
+
+simpleDivide :: Integral a => ([a], [a]) -> [[a]]
+simpleDivide = simple div
+
 -- accumulative 100 masu calc naive ver.
 naive :: ([Int], [Int]) -> [[Int]]
 naive (cs, rs) = [[val (i, j) | j <- [0..c']] | i <- [0..r']]
