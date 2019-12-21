@@ -26,3 +26,9 @@ instance Applicative Leafy where
 instance Monad Leafy where
     return = eta
     m >>= f = mu (f <$> m)
+
+(<**>) :: Monad m => m (a -> b) -> m a -> m b
+fs <**> ts = do
+  f <- fs
+  t <- ts
+  return (f t)
