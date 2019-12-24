@@ -26,3 +26,18 @@ instance Applicative Leafy where
 instance Monad Leafy where
     return = eta
     m >>= f = mu (f <$> m)
+
+
+data NonEmptyList a = Single a | Cons a (NonEmptyList a) deriving Show
+
+single = Single
+cons = uncurry Cons
+
+foldnel :: (a -> b, (a, b) -> b) -> NonEmptyList a -> b
+foldnel (f, g) = u
+  where
+    u (Single x)  = f x
+    u (Cons x xs) = g (x, u xs)
+
+mapnel :: (a -> b) -> NonEmptyList a -> NonEmptyList b
+mapnel f = foldnel (single.f, cons.cross(f,id))
