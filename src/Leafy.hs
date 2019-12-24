@@ -13,8 +13,11 @@ foldt (f, g) = u
     u (Tip x)   = f x
     u (Bin l r) = g (u l, u r)
 
+-- T = mapt f = (|a.F(f,id)|) = (|[tip,bin]+(f+id*id)|) = (|[tip.f, bin.(id*id)]|)
 mapt f = foldt (tip.f, bin.cross(id,id))
+-- eta = a.inl = [tip,bin].inl = tip
 etat = tip
+-- mu = (|id, a.inr|) = (|id, [tip,bin].inr|) = (|id, bin|)
 mut = foldt (id,bin)
 
 instance Functor Leafy where
@@ -23,12 +26,19 @@ instance Functor Leafy where
 instance Applicative Leafy where
     pure = etat
     -- (<*> x) = foldt ((<$> x), bin) = (|(<$> x), inr|)
-    fs <*> x = foldt ((<$> x), bin) fs
+    fs <*> ts = foldt ((<$> ts), bin) fs
 
 instance Monad Leafy where
     return = etat
     m >>= f = mut (f <$> m)
 
+(<**>) :: Monad m => m (a -> b) -> m a -> m b
+fs <**> ts = do
+  f <- fs
+  t <- ts
+  return (f t)
+
+-------------------------
 
 data NonEmptyList a = Single a | Cons a (NonEmptyList a) deriving Show
 
@@ -41,5 +51,9 @@ foldnel (f, g) = u
     u (Single x)  = f x
     u (Cons x xs) = g (x, u xs)
 
-mapnel :: (a -> b) -> NonEmptyList a -> NonEmptyList b
+-- T = mapnel f = (|a.F(f,id)|) = (|[single,cons]+(f+f*id)|) = (|[single.f, cons.(f*id)]|)
 mapnel f = foldnel (single.f, cons.cross(f,id))
+-- eta = a.inl = [single,cons].inl = single
+etanel = single
+-- NOT mu = (|id, a.inr|) = (|id, [single,cons].inr|) = (|id, cons|)
+-- munel = foldnel (id, cons)
