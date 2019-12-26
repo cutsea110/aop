@@ -45,6 +45,7 @@ trees = \case
 splits :: Natural -> [(Natural, Natural)]
 splits = para phi
   where
+    phi :: (Base Natural (Natural, [(Natural, Natural)])) -> [(Natural, Natural)]
     phi = \case
       Nothing -> [(0, 0)]
       Just (n, ds) -> (0, n) : map (first succ) ds
