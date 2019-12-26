@@ -2,6 +2,8 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE NPlusKPatterns #-}
+
+-- | ref.) https://scrapbox.io/Haskell-Misc/木の数え上げ by nobsun
 module CountTree where
 
 import Control.Arrow
@@ -59,3 +61,4 @@ toIndex = head . flip genericFindIndices allTrees . (==)
 fromIndex :: Natural -> Tree
 fromIndex = genericIndex allTrees
 
+test = length $ trees 5
