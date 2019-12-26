@@ -39,15 +39,16 @@ instance Corecursive Tree where
 
 trees :: Natural -> [Tree]
 trees = \case
-  0   -> [Leaf]
-  n+1 -> [s :^: t | (l, r) <- splits n, s <- trees l, t <- trees r]
+  0   -> []
+  1   -> [Leaf]
+  n+1 -> [s :^: t | (l, r) <- splits n, s <- trees (l+1), t <- trees (r+1)]
 
 splits :: Natural -> [(Natural, Natural)]
 splits = para phi
   where
     phi :: (Base Natural (Natural, [(Natural, Natural)])) -> [(Natural, Natural)]
     phi = \case
-      Nothing -> [(0, 0)]
+      Nothing -> []
       Just (n, ds) -> (0, n) : map (first succ) ds
 
 allTrees :: [Tree]
