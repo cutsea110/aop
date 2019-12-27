@@ -63,4 +63,8 @@ toIndex = head . flip genericFindIndices allTrees . (==)
 fromIndex :: Natural -> Tree
 fromIndex = genericIndex allTrees
 
-test = length $ trees 5
+countTrees :: Natural -> Natural
+countTrees = \case
+  0 -> 0
+  1 -> 1
+  n+1 -> sum [ countTrees (succ l) * countTrees (succ r) | (l, r) <- splits n ]
