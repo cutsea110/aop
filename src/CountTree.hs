@@ -39,16 +39,15 @@ instance Corecursive Tree where
 
 trees :: Natural -> [Tree]
 trees = \case
-  0   -> []
-  1   -> [Leaf]
-  n+1 -> [s :^: t | (l, r) <- splits n, s <- trees (succ l), t <- trees (succ r)]
+  0   -> [Leaf]
+  n+1 -> [s :^: t | (l, r) <- splits n, s <- trees l, t <- trees r]
 
 splits :: Natural -> [(Natural, Natural)]
 splits = para phi
   where
     phi :: (Base Natural (Natural, [(Natural, Natural)])) -> [(Natural, Natural)]
     phi = \case
-      Nothing -> []
+      Nothing -> [(0, 0)]
       Just (n, ds) -> (0, n) : map (first succ) ds
 
 allTrees :: [Tree]
@@ -65,6 +64,5 @@ fromIndex = genericIndex allTrees
 
 countTrees :: Natural -> Natural
 countTrees = \case
-  0 -> 0
-  1 -> 1
-  n+1 -> sum [ countTrees (succ l) * countTrees (succ r) | (l, r) <- splits n ]
+  0 -> 1
+  n+1 -> sum [ countTrees l * countTrees r | (l, r) <- splits n ]
