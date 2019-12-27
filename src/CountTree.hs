@@ -41,7 +41,7 @@ trees :: Natural -> [Tree]
 trees = \case
   0   -> []
   1   -> [Leaf]
-  n+1 -> [s :^: t | (l, r) <- splits n, s <- trees (l+1), t <- trees (r+1)]
+  n+1 -> [s :^: t | (l, r) <- splits n, s <- trees (succ l), t <- trees (succ r)]
 
 splits :: Natural -> [(Natural, Natural)]
 splits = para phi
