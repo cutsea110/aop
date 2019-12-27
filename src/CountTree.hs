@@ -48,7 +48,7 @@ splits = para phi
     phi :: (Base Natural (Natural, [(Natural, Natural)])) -> [(Natural, Natural)]
     phi = \case
       Nothing -> [(0, 0)]
-      Just (n, ds) -> (0, n) : map (first succ) ds
+      Just (n, ds) -> (0, succ n) : map (first succ) ds
 
 allTrees :: [Tree]
 allTrees = concatMap trees [0..]
