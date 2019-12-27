@@ -22,7 +22,7 @@ data TreeF r = LeafF
 
 instance Functor TreeF where
   fmap f = \case
-    LeafF -> LeafF
+    LeafF    -> LeafF
     l :^^: r -> f l :^^: f r
 
 type instance Base Tree = TreeF
@@ -34,7 +34,7 @@ instance Recursive Tree where
 
 instance Corecursive Tree where
   embed = \case
-    LeafF -> Leaf
+    LeafF    -> Leaf
     l :^^: r -> l :^: r
 
 trees :: Natural -> [Tree]
@@ -47,7 +47,7 @@ splits = para phi
   where
     phi :: (Base Natural (Natural, [(Natural, Natural)])) -> [(Natural, Natural)]
     phi = \case
-      Nothing -> [(0, 0)]
+      Nothing      -> [(0, 0)]
       Just (n, ds) -> (0, succ n) : map (first succ) ds
 
 allTrees :: [Tree]
