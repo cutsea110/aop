@@ -7,10 +7,13 @@
 module CountTree where
 
 import Control.Arrow
+import Control.Comonad.Cofree
 import Data.Bool
 import Data.List
+import Data.List.NonEmpty
 import Numeric.Natural
 import Data.Functor.Foldable
+import Data.Functor.Base hiding (head, tail)
 
 data Tree = Leaf
           | Tree :^: Tree
@@ -37,11 +40,6 @@ instance Corecursive Tree where
     LeafF    -> Leaf
     l :^^: r -> l :^: r
 
-trees :: Natural -> [Tree]
-trees = \case
-  0   -> [Leaf]
-  n+1 -> [s :^: t | (l, r) <- splits n, s <- trees l, t <- trees r]
-
 splits :: Natural -> [(Natural, Natural)]
 splits = para phi
   where
@@ -66,3 +64,45 @@ countTrees :: Natural -> Natural
 countTrees = \case
   0 -> 1
   n+1 -> sum [ countTrees l * countTrees r | (l, r) <- splits n ]
+
+downFrom :: Natural -> NonEmpty Natural
+downFrom = ana psi
+  where
+    psi :: Natural -> NonEmptyF Natural Natural
+    psi = \case
+      0   -> NonEmpty 0 Nothing
+      n+1 -> NonEmpty (n+1) (Just n)
+
+
+count :: NonEmpty Natural -> Natural
+count = histo phi
+  where
+    phi :: NonEmptyF Natural (Cofree (NonEmptyF Natural) Natural) -> Natural
+    phi = \case
+      NonEmpty 0 _             -> 1
+      NonEmpty (n+1) (Just ns) -> sum $ zipWith (*) <*> reverse $ xs
+        where
+          xs = taking n ns
+
+taking :: Natural -> Cofree (NonEmptyF a) b -> [b]
+taking = \case
+  0   -> const []
+  n+1 -> \case
+    x :< NonEmptyF _ Nothing -> [x]
+    x :< NonEmptyF _ (Just xs) -> x : taking n xs
+
+trees :: Natural -> [Tree]
+trees = mkTrees . downFrom
+
+mkTrees :: NonEmpty Natural -> [Tree]
+mkTrees = histo phi
+  where
+    phi :: NonEmptyF Natural (Cofree (NonEmpty Natural) [Tree]) -> [Tree]
+    phi = \case
+      NonEmptyF 0 _ -> [Leaf]
+      NonEmptyF n (Just ns) -> concat $ zipWith (*^*) <*> reverse $ xs
+        where
+          xs = taking n ns
+
+(*^*) :: [Tree] -> [Tree] -> [Tree]
+ss *^* ts = [ s :^: t | s <- ss, t <- ts ]
