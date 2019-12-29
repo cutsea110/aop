@@ -105,3 +105,11 @@ mkTrees = histo phi
 (*^*) :: [Tree] -> [Tree] -> [Tree]
 ss *^* ts = [ s :^: t | s <- ss, t <- ts ]
 
+catalan :: Natural -> Natural
+catalan = \case
+  0   -> 1
+  n+1 -> dwnprd 1 (2*n) (n+2) `div` dwnprd 1 n 2
+    where
+      dwnprd a m n | m < n     = a
+                   | otherwise = dwnprd (a*m) (pred m) n
+
