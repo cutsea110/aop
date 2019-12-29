@@ -10,7 +10,7 @@ import Control.Arrow
 import Control.Comonad.Cofree
 import Data.Bool
 import Data.List
-import Data.List.NonEmpty
+import Data.List.NonEmpty hiding (reverse, zipWith, zip, map, head)
 import Numeric.Natural
 import Data.Functor.Foldable
 import Data.Functor.Base hiding (head, tail)
@@ -61,17 +61,15 @@ fromIndex :: Natural -> Tree
 fromIndex = genericIndex allTrees
 
 countTrees :: Natural -> Natural
-countTrees = \case
-  0 -> 1
-  n+1 -> sum [ countTrees l * countTrees r | (l, r) <- splits n ]
+countTrees = count . downFrom
 
 downFrom :: Natural -> NonEmpty Natural
 downFrom = ana psi
   where
     psi :: Natural -> NonEmptyF Natural Natural
     psi = \case
-      0   -> NonEmpty 0 Nothing
-      n+1 -> NonEmpty (n+1) (Just n)
+      0   -> NonEmptyF 0 Nothing
+      n+1 -> NonEmptyF (n+1) (Just n)
 
 
 count :: NonEmpty Natural -> Natural
@@ -79,8 +77,8 @@ count = histo phi
   where
     phi :: NonEmptyF Natural (Cofree (NonEmptyF Natural) Natural) -> Natural
     phi = \case
-      NonEmpty 0 _             -> 1
-      NonEmpty (n+1) (Just ns) -> sum $ zipWith (*) <*> reverse $ xs
+      NonEmptyF 0 _             -> 1
+      NonEmptyF (n+1) (Just ns) -> sum $ zipWith (*) <*> reverse $ xs
         where
           xs = taking n ns
 
@@ -97,12 +95,13 @@ trees = mkTrees . downFrom
 mkTrees :: NonEmpty Natural -> [Tree]
 mkTrees = histo phi
   where
-    phi :: NonEmptyF Natural (Cofree (NonEmpty Natural) [Tree]) -> [Tree]
+    phi :: NonEmptyF Natural (Cofree (NonEmptyF Natural) [Tree]) -> [Tree]
     phi = \case
-      NonEmptyF 0 _ -> [Leaf]
+      NonEmptyF 0 _         -> [Leaf]
       NonEmptyF n (Just ns) -> concat $ zipWith (*^*) <*> reverse $ xs
         where
           xs = taking n ns
 
 (*^*) :: [Tree] -> [Tree] -> [Tree]
 ss *^* ts = [ s :^: t | s <- ss, t <- ts ]
+
