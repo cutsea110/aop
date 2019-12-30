@@ -15,3 +15,13 @@ foldt f g = u
 
 -- mapt f = (|[tip, bin] . F(f, id)|) = (|[tip, bin] . (f + id * id)|) = (|tip . f, bin|)
 mapt f = foldt (tip . f) bin
+
+wrap x = [x]
+cat = uncurry (++)
+
+cons = (:)
+compose = uncurry (.)
+
+-- O(n^2)
+-- tips = foldt wrap cat
+tips = foldt cons compose
