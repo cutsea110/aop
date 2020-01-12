@@ -1,4 +1,5 @@
 {-# LANGUAGE LambdaCase, Rank2Types, TypeOperators, TypeSynonymInstances, FlexibleInstances #-}
+-- ref.) https://jtobin.io/promorphisms-pre-post
 module Promorphism where
 
 import Prelude hiding (sum, Functor, fmap, map)
