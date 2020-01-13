@@ -48,6 +48,7 @@ library
                      , Nat
                      , NonEmptyList
                      , OpenSet
+                     , Prepro
                      , Promorphism
                      , Rose
                      , ShortestPathSearch
