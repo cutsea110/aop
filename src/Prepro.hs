@@ -1,10 +1,35 @@
+{-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE DeriveFunctor #-}
-{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE DeriveFoldable #-}
+{-# LANGUAGE DeriveTraversable #-}
 module Prepro where
 
 import Data.Functor.Foldable
-import Prelude hiding (sum)
+import Data.Tree
 
+data TreeF a r = NodeF { rootLabelF :: a, subForestF :: [r] }
+  deriving (Functor, Foldable, Traversable)
+type instance Base (Tree a) = TreeF a
+instance Recursive (Tree a) where project (Node a ts) = NodeF a ts
+instance Corecursive (Tree a) where embed (NodeF a ts) = Node a ts
+
+tree :: Tree Integer
+tree = Node 2 [Node 1 [Node 3 []], Node 7 [Node 1 [], Node 5 []]]
+
+main = do
+  drawTree' tree
+  -- 0th layer : *1
+  -- 1st layer : *2
+  -- 2nd layer : *4
+  drawTree' $ prepro (\(NodeF x y) -> NodeF (x*2) y) embed tree
+
+  -- sum with deeper values weighted more
+  print $ prepro (\(NodeF x y) -> NodeF (x*2) y) ((+) <$> sum <*> rootLabelF) tree
+  
+  where
+    drawTree' = putStr . drawTree . fmap show
+
+{--
 sumAlg :: Num a => ListF a a -> a
 sumAlg = \case
   Cons h t -> h + t
@@ -31,3 +56,4 @@ smallSum = prepro small sumAlg
 smallLen :: (Ord a, Num a) => [a] -> Int
 smallLen = prepro small lenAlg
 
+--}
