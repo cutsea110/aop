@@ -51,11 +51,13 @@ splits = para phi
 allTrees :: [Tree]
 allTrees = concatMap trees [0..]
 
+{--
 toIndex :: Tree -> Natural
 toIndex = head . flip genericFindIndices allTrees . (==)
   where
     genericFindIndices :: (Integral n) => (a -> Bool) -> [a] -> [n]
     genericFindIndices p xs = [ i | (x, i) <- zip xs [0..], p x ]
+--}
 
 fromIndex :: Natural -> Tree
 fromIndex = genericIndex allTrees
@@ -130,3 +132,13 @@ toLocalIndex = cata phi
           k = acc 0 m 0 (m + n) + i * catalan n + j
           acc a 0 _ _ = a
           acc a p q r = acc (a + catalan q * catalan (r - q)) (pred p) (succ q) r
+
+toIndex :: Tree -> Natural
+toIndex = l2g . toLocalIndex
+  where
+    l2g = \case
+      (0, _) -> 0
+      (o, k) -> genericIndex accCatalans o + k
+
+accCatalans :: [Natural]
+accCatalans = scanl' (+) 0 catalans
