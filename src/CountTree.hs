@@ -113,3 +113,7 @@ catalan = \case
       dwnprd a m n | m < n     = a
                    | otherwise = dwnprd (a*m) (pred m) n
 
+catalans :: [Natural]
+catalans = 1 : zipWith rec [0..] catalans
+  where
+    rec n cn = (4*n + 2) * cn `div` (n + 2)
