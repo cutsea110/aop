@@ -57,10 +57,10 @@ toIndex = head . flip genericFindIndices allTrees . (==)
   where
     genericFindIndices :: (Integral n) => (a -> Bool) -> [a] -> [n]
     genericFindIndices p xs = [ i | (x, i) <- zip xs [0..], p x ]
---}
 
 fromIndex :: Natural -> Tree
 fromIndex = genericIndex allTrees
+--}
 
 countTrees :: Natural -> Natural
 countTrees = count . downFrom
@@ -170,3 +170,13 @@ spanCount p = cata phi
     phi = \case
       Nil -> 0
       Cons x c -> bool 0 (succ c) (p x)
+
+fromIndex :: Natural -> Tree
+fromIndex = fromLocalIndex . g2l
+  where
+    g2l = \case
+      0 -> (0, 0)
+      m@(n+1) -> (o, k)
+        where
+          o = pred (spanCount (<= m) accCatalans)
+          k = m - genericIndex accCatalans o
