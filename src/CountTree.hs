@@ -10,7 +10,7 @@ import Control.Arrow
 import Control.Comonad.Cofree
 import Data.Bool
 import Data.List
-import Data.List.NonEmpty hiding (reverse, zipWith, zip, map, head)
+import Data.List.NonEmpty hiding (reverse, zipWith, zip, map, head, scanl1)
 import Numeric.Natural
 import Data.Functor.Foldable
 import Data.Functor.Base hiding (head, tail)
@@ -142,3 +142,31 @@ toIndex = l2g . toLocalIndex
 
 accCatalans :: [Natural]
 accCatalans = scanl' (+) 0 catalans
+
+fromLocalIndex :: (Natural, Natural) -> Tree
+fromLocalIndex = ana psi
+  where
+    psi = \case
+      (0, _) -> LeafF
+      (o, k) -> (m, i) :^^: (n, j)
+        where
+          cs = accDeconCatalans o
+          m = spanCount (<= k) cs
+          n = pred o - m
+          cn = catalan n
+          k' = k - genericIndex cs (pred m)
+          i = bool (spanCount (<= k') (map (* cn) [1..])) 0 (m < 2)
+          j = bool (bool (k' - cn * i) k (m == 0)) 0 (n < 2)
+
+accDeconCatalans :: Natural -> [Natural]
+accDeconCatalans = scanl1 (+) . deconCatalan
+
+deconCatalan :: Natural -> [Natural]
+deconCatalan = (zipWith (*) <*> reverse) . flip genericTake catalans
+
+spanCount :: (a -> Bool) -> [a] -> Natural
+spanCount p = cata phi
+  where
+    phi = \case
+      Nil -> 0
+      Cons x c -> bool 0 (succ c) (p x)
