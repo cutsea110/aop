@@ -117,3 +117,16 @@ catalans :: [Natural]
 catalans = 1 : zipWith rec [0..] catalans
   where
     rec n cn = (4*n + 2) * cn `div` (n + 2)
+
+toLocalIndex :: Tree -> (Natural, Natural)
+toLocalIndex = cata phi
+  where
+    phi :: TreeF (Natural, Natural) -> (Natural, Natural)
+    phi = \case
+      LeafF -> (0, 0)
+      (m, i) :^^: (n, j) -> (o, k)
+        where
+          o = succ (m + n)
+          k = acc 0 m 0 (m + n) + i * catalan n + j
+          acc a 0 _ _ = a
+          acc a p q r = acc (a + catalan q * catalan (r - q)) (pred p) (succ q) r
