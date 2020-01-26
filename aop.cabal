@@ -22,6 +22,7 @@ library
                      , Bernoulli
                      , BinaryTree
                      , Box100
+                     , CategoryTheory
                      , ChurchEncoding
                      , Combinatorial
                      , CombPlus
