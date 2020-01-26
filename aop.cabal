@@ -44,6 +44,7 @@ library
                      , Infinity
                      , KnapSack
                      , Leafy
+                     , Lens
                      , List
                      , MutualRecursiveTreeForest
                      , Nat

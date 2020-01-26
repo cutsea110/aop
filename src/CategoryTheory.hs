@@ -1,6 +1,13 @@
 {-# LANGUAGE InstanceSigs #-}
 module CategoryTheory where
 
+import Prelude hiding (id, (.), (*))
+
+id' :: a -> a
+id' a = a
+(*) :: (b -> c) -> (a -> b) -> (a -> c)
+f * g = \x -> f (g x)
+
 class Category cat where
   id :: cat a a
   (.) :: cat b c -> cat a b -> cat a c
@@ -25,9 +32,9 @@ data Lens a b = Lens (a -> b) (a -> b -> a)
 
 instance Category Lens where
   id :: Lens a a
-  id = Lens Prelude.id (const Prelude.id)
+  id = Lens id' (const id')
 
   (.) :: Lens b c -> Lens a b -> Lens a c
-  Lens g1 s1 . Lens g2 s2 = Lens (g1 Prelude.. g2) s3
+  Lens g1 s1 . Lens g2 s2 = Lens (g1 * g2) s3
     where
       s3 a c = s2 a (s1 (g2 a) c)
