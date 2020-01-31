@@ -1,4 +1,5 @@
 {-# LANGUAGE InstanceSigs #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 module CategoryTheory where
 
 import Prelude hiding (id, (.), (*))
@@ -38,3 +39,10 @@ instance Category Lens where
   Lens g1 s1 . Lens g2 s2 = Lens (g1 * g2) s3
     where
       s3 a c = s2 a (s1 (g2 a) c)
+
+class (Category c, Category d) => Functor' c d f where
+  fmap' :: c a b -> d (f a) (f b)
+
+instance Functor' (->) (->) Maybe where
+  fmap' _ Nothing  = Nothing
+  fmap' f (Just a) = Just (f a)
