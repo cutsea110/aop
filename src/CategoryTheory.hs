@@ -1,5 +1,7 @@
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE TypeOperators #-}
 module CategoryTheory where
 
 import Prelude hiding (id, (.), (*))
@@ -46,3 +48,12 @@ class (Category c, Category d) => Functor' c d f where
 instance Functor' (->) (->) Maybe where
   fmap' _ Nothing  = Nothing
   fmap' f (Just a) = Just (f a)
+
+newtype f :~> g = NT { unNT :: forall x. f x -> g x }
+{--
+instance Category (:~>) where
+  id :: a :~> a
+  id = NT id'
+  (.) :: (b :~> c) -> (a :~> b) -> (a :~> c)
+  NT f . NT g = NT (f * g)
+--}
