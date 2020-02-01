@@ -60,4 +60,11 @@ instance Category (:~>) where
 
 data (f :+: g) e = InL (f e) | InR (g e)
 
-data Const a = Const a
+data Const a b = Const a
+data Identity a = Identity a
+
+toMaybe :: (Const () :+: Identity) :~> Maybe
+toMaybe = undefined
+fromMaybe :: Maybe :~> (Const () :+: Identity)
+fromMaybe = undefined
+
