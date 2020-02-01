@@ -57,3 +57,7 @@ instance Category (:~>) where
   (.) :: (b :~> c) -> (a :~> b) -> (a :~> c)
   NT f . NT g = NT (f * g)
 --}
+
+data (f :+: g) e = InL (f e) | InR (g e)
+
+data Const a = Const a
