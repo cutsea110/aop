@@ -68,3 +68,12 @@ toMaybe = undefined
 fromMaybe :: Maybe :~> (Const () :+: Identity)
 fromMaybe = undefined
 
+newtype Yoneda f a = Yoneda { runYoneda :: forall b. (a -> b) -> f b }
+
+instance Functor (Yoneda f) where
+  fmap f m = Yoneda (\k -> runYoneda m (k . f))
+
+liftYoneda :: Functor f => f a -> Yoneda f a
+liftYoneda = undefined
+lowerYoneda :: Yoneda f a -> f a
+lowerYoneda = undefined
