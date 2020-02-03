@@ -84,3 +84,8 @@ data CoYoneda f a where
 
 instance Functor (CoYoneda f) where
   fmap f (CoYoneda g v) = CoYoneda (f * g) v
+
+liftCoYoneda :: f a -> CoYoneda f a
+liftCoYoneda = undefined
+lowerCoYoneda :: Functor f => CoYoneda f a -> f a
+lowerCoYoneda = undefined
