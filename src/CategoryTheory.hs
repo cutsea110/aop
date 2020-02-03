@@ -1,3 +1,4 @@
+{-# LANGUAGE GADTs #-}
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE RankNTypes #-}
@@ -77,3 +78,9 @@ liftYoneda :: Functor f => f a -> Yoneda f a
 liftYoneda = undefined
 lowerYoneda :: Yoneda f a -> f a
 lowerYoneda = undefined
+
+data CoYoneda f a where
+  CoYoneda :: (z -> a) -> f z -> CoYoneda f a
+
+instance Functor (CoYoneda f) where
+  fmap f (CoYoneda g v) = CoYoneda (f * g) v
