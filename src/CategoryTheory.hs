@@ -89,3 +89,15 @@ liftCoYoneda :: f a -> CoYoneda f a
 liftCoYoneda = undefined
 lowerCoYoneda :: Functor f => CoYoneda f a -> f a
 lowerCoYoneda = undefined
+
+-- covariant Yoneda
+-- f a == forall b. (a -> b) -> f b
+
+-- contravariant Yoneda
+-- f a == exists b. (b -> a, f b)
+
+-- covariant Coyoneda
+-- f a == forall b. (b -> a) -> f b
+
+-- contravariant Coyoneda
+-- f a == exists b. (a -> b, f b)
