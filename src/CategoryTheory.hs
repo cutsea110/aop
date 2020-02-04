@@ -101,3 +101,14 @@ lowerCoYoneda = undefined
 
 -- contravariant Coyoneda
 -- f a == exists b. (a -> b, f b)
+
+class (Functor f, Functor u) => Adjunction f u where
+  unit         :: a -> u (f a)
+  counit       :: f (u a) -> a
+  leftAdjunct  :: (f a -> b) -> a -> u b
+  rightAdjunct :: (a -> u b) -> f a -> b
+
+  unit           = leftAdjunct id'
+  counit         = rightAdjunct id'
+  leftAdjunct f  = fmap f * unit
+  rightAdjunct f = counit * fmap f
