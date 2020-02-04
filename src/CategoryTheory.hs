@@ -112,3 +112,9 @@ class (Functor f, Functor u) => Adjunction f u where
   counit         = rightAdjunct id'
   leftAdjunct f  = fmap f * unit
   rightAdjunct f = counit * fmap f
+
+instance Adjunction ((,) b) ((->) b) where
+  leftAdjunct :: ((b, a) -> c) -> a -> b -> c
+  leftAdjunct f a b = f (b, a)
+  rightAdjunct :: (a -> b -> c) -> (b, a) -> c
+  rightAdjunct f (b, a) = f a b
