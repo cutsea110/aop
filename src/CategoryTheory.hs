@@ -113,6 +113,7 @@ class (Functor f, Functor u) => Adjunction f u where
   leftAdjunct f  = fmap f * unit
   rightAdjunct f = counit * fmap f
 
+-- Hom (AxB, C) == Hom (A, C^B)
 instance Adjunction ((,) b) ((->) b) where
   leftAdjunct :: ((b, a) -> c) -> a -> b -> c
   leftAdjunct f a b = f (b, a)
