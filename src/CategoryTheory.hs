@@ -119,3 +119,8 @@ instance Adjunction ((,) b) ((->) b) where
   leftAdjunct f a b = f (b, a)
   rightAdjunct :: (a -> b -> c) -> (b, a) -> c
   rightAdjunct f (b, a) = f a b
+
+class (Functor' c d f, Functor' d c u) => Adjunction' c d f u where
+  leftAdjunct'  :: d (f a) b -> c a (u b)
+  rightAdjunct' :: c a (u b) -> d (f a) b
+
