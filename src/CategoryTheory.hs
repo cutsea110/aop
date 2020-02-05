@@ -62,7 +62,7 @@ instance Category (:~>) where
 data (f :+: g) e = InL (f e) | InR (g e)
 
 data Const a b = Const a
-data Identity a = Identity a
+newtype Identity a = Identity { runIdentity :: a }
 
 toMaybe :: (Const () :+: Identity) :~> Maybe
 toMaybe = undefined
@@ -124,3 +124,6 @@ class (Functor' c d f, Functor' d c u) => Adjunction' c d f u where
   leftAdjunct'  :: d (f a) b -> c a (u b)
   rightAdjunct' :: c a (u b) -> d (f a) b
 
+instance Monad m => Functor' (->) (Kleisli m) Identity where
+  fmap' :: (a -> b) -> Kleisli m (Identity a) (Identity b)
+  fmap' f = Kleisli $ fmap Identity . (pure . f . runIdentity)
