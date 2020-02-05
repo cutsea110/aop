@@ -3,6 +3,7 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE FlexibleInstances #-}
 module CategoryTheory where
 
 import Prelude hiding (id, (.), (*))
@@ -127,3 +128,14 @@ class (Functor' c d f, Functor' d c u) => Adjunction' c d f u where
 instance Monad m => Functor' (->) (Kleisli m) Identity where
   fmap' :: (a -> b) -> Kleisli m (Identity a) (Identity b)
   fmap' f = Kleisli $ fmap Identity . (pure . f . runIdentity)
+
+instance Monad m => Functor' (Kleisli m) (->) m where
+  fmap' :: Kleisli m a b -> m a -> m b
+  fmap' k = (=<<) (runKleisli k)
+
+instance Monad m => Adjunction' (->) (Kleisli m) Identity m where
+  leftAdjunct' :: Kleisli m (Identity a) b -> a -> m b
+  leftAdjunct' k a = runKleisli k (Identity a)
+
+  rightAdjunct' :: (a -> m b) -> Kleisli m (Identity a) b
+  rightAdjunct' f = Kleisli $ f . runIdentity
