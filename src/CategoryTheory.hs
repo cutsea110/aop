@@ -139,3 +139,14 @@ instance Monad m => Adjunction' (->) (Kleisli m) Identity m where
 
   rightAdjunct' :: (a -> m b) -> Kleisli m (Identity a) b
   rightAdjunct' f = Kleisli $ f . runIdentity
+
+newtype Ran g h a = Ran { runRan :: forall b. (a -> g b) -> h b }
+
+yonedaToRan :: Yoneda f a -> Ran Identity f a
+yonedaToRan = undefined
+
+ranToYoneda :: Ran Identity f a -> Yoneda f a
+ranToYoneda = undefined
+
+data Lan g h a where
+  Lan :: (g b -> a) -> h b -> Lan g h a
