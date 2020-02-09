@@ -150,3 +150,13 @@ ranToYoneda = undefined
 
 data Lan g h a where
   Lan :: (g b -> a) -> h b -> Lan g h a
+
+class Applicative m => Monad' m where
+  join :: m (m a) -> m a
+  join x = x `bind` id
+
+  bind :: m a -> (a -> m b) -> m b
+  m `bind` f = join (fmap f m)
+
+  return :: a -> m a
+  return = pure
