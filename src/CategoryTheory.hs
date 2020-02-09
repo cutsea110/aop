@@ -151,6 +151,7 @@ ranToYoneda = undefined
 data Lan g h a where
   Lan :: (g b -> a) -> h b -> Lan g h a
 
+{--
 class Applicative m => Monad' m where
   join :: m (m a) -> m a
   join x = x `bind` id
@@ -160,3 +161,16 @@ class Applicative m => Monad' m where
 
   return :: a -> m a
   return = pure
+--}
+
+class Adjunction f u => Monad' f u where
+  return' :: a -> u (f a)
+  join' :: u (f (u (f a))) -> u (f a)
+
+instance Monad' ((,) s) ((->) s) where
+  return' :: a -> (s -> (s, a))
+  return' a s = (s, a)
+
+  join' :: (s -> (s, (s -> (s, a)))) -> (s -> (s, a))
+  join' f s = f' s' where (s', f') = f s
+
