@@ -182,3 +182,14 @@ class Functor w => Comonad w where
 
   extend :: (w a -> b) -> w a -> w b
   extend f = fmap f * duplicate
+
+class Adjunction f u => Comonad' f u where
+  extract' :: f (u a) -> a
+  duplicate' :: f (u a) -> f (u (f (u a)))
+
+instance Comonad' ((,) s) ((->) s) where
+  extract' :: (s, s -> a) -> a
+  extract' (s, f) = f s
+
+  duplicate' :: (s, s -> a) -> (s, s -> (s, s -> a))
+  duplicate' (s, f) = (s, \s -> (s, f))
