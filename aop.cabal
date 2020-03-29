@@ -46,6 +46,7 @@ library
                      , Leafy
                      , Lens
                      , List
+                     , MSS
                      , MutualRecursiveTreeForest
                      , Nat
                      , NonEmptyList
