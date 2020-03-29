@@ -58,6 +58,7 @@ library
                      , SimPath
                      , Sort
                      , Take
+                     , TakePrefix
                      , Traditional
                      , Tree
                      , TutorialZygo
