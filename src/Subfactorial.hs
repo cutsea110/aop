@@ -33,4 +33,3 @@ subfact n = snd $ paran ((0, 1), \i (x, y) -> (y, (i-1)*(x+y))) n
 e n = fromIntegral (fact n) / fromIntegral (subfact n)
 
 test n = exp 1 == e n
-
