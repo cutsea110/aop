@@ -46,6 +46,7 @@ library
                      , Leafy
                      , Lens
                      , List
+                     , MSS
                      , MutualRecursiveTreeForest
                      , Nat
                      , NonEmptyList
@@ -58,6 +59,7 @@ library
                      , Sort
                      , Subfactorial
                      , Take
+                     , TakePrefix
                      , Traditional
                      , Tree
                      , TutorialZygo
