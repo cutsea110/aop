@@ -39,6 +39,7 @@ fact'subfact = pair (outl, outr . outr) . paran (c, f)
 -- 2.718281828459045
 -- >>> exp 1
 -- 2.718281828459045
-e n = let (f, s) = fact'subfact n in fromIntegral f / fromIntegral s
+e n = fromIntegral num / fromIntegral den
+  where (num, den) = fact'subfact n
 
 test n = exp 1 == e n
