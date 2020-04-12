@@ -20,9 +20,7 @@ fact = paran (1, (*))
 
 -- >>> subfact 9
 -- 133496
-subfact 1 = 0
-subfact 2 = 1
-subfact n = snd $ paran (c, f) n
+subfact = fst . paran (c, f) . (+1)
   where c = (0, 1)
         f i (x, y) = (y, (i-1)*(x+y))
 
