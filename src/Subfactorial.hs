@@ -2,6 +2,10 @@
 {-# LANGUAGE LambdaCase #-}
 module Subfactorial where
 
+pair (f, g) x = (f x, g x)
+outl (x, _) = x
+outr (_, y) = y
+
 type Nat = Integer
 
 foldn :: (a, a -> a) -> Nat -> a
@@ -24,12 +28,17 @@ subfact = snd . paran (c, f)
   where c = (0, 1)
         f i (x, y) = (y, (i-1)*(x+y))
 
+-- using banana split law over paramorphism
+fact'subfact = pair (outl, outr . outr) . paran (c, f)
+  where c = (1, (0, 1))
+        f n (x, (y, z)) = (n * x, (z, (n-1)*(y+z)))
+
 -- >>> e 9
 -- 2.71828369389345
 -- >>> e 20
 -- 2.718281828459045
 -- >>> exp 1
 -- 2.718281828459045
-e n = fromIntegral (fact n) / fromIntegral (subfact n)
+e n = let (f, s) = fact'subfact n in fromIntegral f / fromIntegral s
 
 test n = exp 1 == e n
