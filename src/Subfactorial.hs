@@ -22,7 +22,9 @@ fact = paran (1, (*))
 -- 133496
 subfact 1 = 0
 subfact 2 = 1
-subfact n = snd $ paran ((0, 1), \i (x, y) -> (y, (i-1)*(x+y))) n
+subfact n = snd $ paran (c, f) n
+  where c = (0, 1)
+        f i (x, y) = (y, (i-1)*(x+y))
 
 -- >>> e 9
 -- 2.71828369389345
