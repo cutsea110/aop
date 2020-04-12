@@ -35,4 +35,3 @@ subfact n = snd $ paran (c, f) n
 e n = fromIntegral (fact n) / fromIntegral (subfact n)
 
 test n = exp 1 == e n
-
