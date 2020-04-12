@@ -28,7 +28,7 @@ subfact = snd . paran (c, f)
   where c = (0, 1)
         f i (x, y) = (y, (i-1)*(x+y))
 
--- using banana split law over paramorphism
+-- using barbed wire split law (like banana split law)
 fact'subfact = pair (outl, outr . outr) . paran (c, f)
   where c = (1, (0, 1))
         f n (x, (y, z)) = (n * x, (z, (n-1)*(y+z)))
