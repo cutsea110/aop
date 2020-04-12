@@ -8,8 +8,8 @@ outr (_, y) = y
 
 type Nat = Integer
 
-foldn :: (a, a -> a) -> Nat -> a
-foldn (c, f) = u
+catan :: (a, a -> a) -> Nat -> a
+catan (c, f) = u
   where u 0     = c
         u (n+1) = f (u n)
 
