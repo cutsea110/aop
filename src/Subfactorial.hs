@@ -33,13 +33,13 @@ fact'subfact = pair (outl, outr . outr) . paran (c, f)
   where c = (1, (0, 1))
         f n (x, (y, z)) = (n * x, (z, (n-1)*(y+z)))
 
--- >>> e 9
+-- >>> calc 9
 -- 2.71828369389345
--- >>> e 20
+-- >>> calc 20
 -- 2.718281828459045
 -- >>> exp 1
 -- 2.718281828459045
-e n = fromIntegral num / fromIntegral den
+calc n = fromIntegral num / fromIntegral den
   where (num, den) = fact'subfact n
 
-test n = exp 1 == e n
+test n = calc n == exp 1
