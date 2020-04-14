@@ -1,19 +1,15 @@
 {-# LANGUAGE NPlusKPatterns #-}
-{-# LANGUAGE LambdaCase #-}
 module Subfactorial where
 
-pair (f, g) x = (f x, g x)
-outl (x, _) = x
-outr (_, y) = y
+import Control.Arrow ((&&&))
+import GHC.Natural (Natural)
 
-type Nat = Integer
-
-catan :: (a, a -> a) -> Nat -> a
+catan :: (a, a -> a) -> Natural -> a
 catan (c, f) = u
   where u 0     = c
         u (n+1) = f (u n)
 
-paran :: (a, Nat -> a -> a) -> Nat -> a
+paran :: (a, Natural -> a -> a) -> Natural -> a
 paran (c, f) = u
   where u 0 = c
         u (n+1) = f (n+1) (u n)
@@ -29,7 +25,7 @@ subfact = snd . paran (c, f)
         f i (x, y) = (y, (i-1)*(x+y))
 
 -- using barbed wire split law (like banana split law)
-fact'subfact = pair (outl, outr . outr) . paran (c, f)
+fact'subfact = (fst &&& snd . snd) . paran (c, f)
   where c = (1, (0, 1))
         f n (x, (y, z)) = (n * x, (z, (n-1)*(y+z)))
 
@@ -42,4 +38,4 @@ fact'subfact = pair (outl, outr . outr) . paran (c, f)
 calc n = fromIntegral num / fromIntegral den
   where (num, den) = fact'subfact n
 
-test n = calc n == exp 1
+test = calc 20 == exp 1
