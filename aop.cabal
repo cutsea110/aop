@@ -34,7 +34,7 @@ library
                      , DrawMatrix
                      , ENat
                      , Fib
-                     , Fib2
+                     , FibAsHisto
                      , Fix
                      , FixPrime
                      , FixPrimeTest

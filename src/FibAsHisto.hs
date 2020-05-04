@@ -1,4 +1,4 @@
-module Fib2 where
+module FibAsHisto where
 
 -- We would like to do this!
 psi Nothing = (0, Nothing) -- 0
@@ -30,13 +30,16 @@ psi' (In (Just (In Nothing))) = Ano (1, Just (Ano (0, Nothing))) -- 1
 psi' (In (Just (In (Just (In Nothing))))) = Ano (1, Just (Ano (1, Just (Ano (0, Nothing))))) -- 2
 
 -- done!
+-- this like histo engine
 psi'' n = case fmap psi'' (out n) of
   p@Nothing   -> Ano (0, p)
   p@(Just n') -> case sub n' of
     Nothing  -> Ano (1, p)
     Just n'' -> Ano (ex n' + ex n'', p)
 
+-- extract
 ex  (Ano (x, _)) = x
+-- sub
 sub (Ano (_, y)) = y
 ana psi = In . fmap (ana psi) . psi
 toNat = ana psi
