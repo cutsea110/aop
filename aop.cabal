@@ -46,6 +46,7 @@ library
                      , Leafy
                      , Lens
                      , List
+                     , Monadic
                      , MSS
                      , MutualRecursiveTreeForest
                      , Nat
