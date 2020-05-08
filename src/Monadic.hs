@@ -2,9 +2,9 @@
 module Monadic where
 
 import Control.Applicative (liftA2)
-import Control.Monad ((<=<), (>=>), (=<<), (>>=))
-import Control.Monad.Trans.Free
-import Data.Functor.Foldable
+import Control.Monad ((<=<), (>=>))
+import Control.Monad.Trans.Free (FreeF (..))
+import Data.Functor.Foldable (Base, Recursive (..), Corecursive (..))
 
 paraM :: (Recursive t, Traversable (Base t), Monad m) => (Base t (t, a) -> m a) -> t -> m a
 paraM alg = h
