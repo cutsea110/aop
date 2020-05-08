@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleContexts, AllowAmbiguousTypes, ScopedTypeVariables, GADTs #-}
+{-# LANGUAGE FlexibleContexts, AllowAmbiguousTypes, ScopedTypeVariables, TypeFamilies #-}
 module Monadic where
 
 import Control.Applicative (liftA2)
@@ -25,9 +25,9 @@ anaM coalg = h
 futuM :: (Corecursive t, Traversable (Base t), Monad m, f ~ Base t) => (a -> m (f (Free f a))) -> a -> m t
 futuM coalg = anaM go . Pure
   where
-    go :: FreeF f a b -> m (f (FreeF f a b))
+    -- go :: FreeF f a (Free f a) -> m (f (FreeF f a (Free f a)))
     go (Pure a)  = undefined
-    go (Free fb) = undefined
+    go (Free fb) = return (fmap (Free . unfix) fb) -- fmap runFree fb ?
 
 hyloM :: (Monad m, Traversable t) => (t b -> m b) -> (a -> m (t a)) -> a -> m b
 hyloM alg coalg = h
