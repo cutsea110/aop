@@ -6,6 +6,7 @@
 module MonadicRecursionScheme where
 
 import           Control.Monad              ((<=<), liftM2)
+import           Control.Monad.Free         (Free (..))
 import           Control.Monad.Trans.Class  (lift)
 import           Control.Monad.Trans.Reader (ReaderT, ask, runReaderT)
 import           Data.Functor.Foldable      (Recursive (..), Corecursive (..), Base, Fix (..))
@@ -88,3 +89,9 @@ hyloM :: (Monad m, Traversable t)
       => (t b -> m b) -> (a -> m (t a)) -> a -> m b
 hyloM phi psi = h
   where h = phi <=< traverse h <=< psi
+
+futuM :: (Monad m, Traversable (Base t), Corecursive t)
+      => (a -> m (Base t (Free (Base t) a))) -> a -> m t
+futuM psi = anaM f . Pure
+  where f (Pure  a) = psi a
+        f (Free fb) = return fb
