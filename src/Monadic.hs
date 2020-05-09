@@ -26,8 +26,8 @@ futuM :: (Corecursive t, Traversable (Base t), Monad m, f ~ Base t) => (a -> m (
 futuM coalg = anaM go . Pure
   where
     -- go :: FreeF f a (Free f a) -> m (f (FreeF f a (Free f a)))
-    go (Pure a)  = coalg a
-    go (Free fb) = return fb
+    go (Pure a)  = undefined -- coalg a
+    go (Free fb) = undefined -- return fb
 
 hyloM :: (Monad m, Traversable t) => (t b -> m b) -> (a -> m (t a)) -> a -> m b
 hyloM alg coalg = h
