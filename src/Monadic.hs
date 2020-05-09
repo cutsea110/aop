@@ -3,7 +3,7 @@ module Monadic where
 
 import Control.Applicative (liftA2)
 import Control.Monad ((<=<), (>=>))
-import Control.Monad.Trans.Free (FreeF (..), Free, FreeT (..), free, runFree)
+import Control.Monad.Free -- (Free (..))
 import Data.Functor.Foldable (Base, Recursive (..), Corecursive (..), Fix (..), unfix)
 
 paraM :: (Recursive t, Traversable (Base t), Monad m) => (Base t (t, a) -> m a) -> t -> m a
@@ -22,12 +22,11 @@ anaM :: (Monad m, Traversable (Base t), Corecursive t) => (a -> m (Base t a)) ->
 anaM coalg = h
   where h = fmap embed . traverse h <=< coalg
 
-futuM :: (Corecursive t, Traversable (Base t), Monad m, f ~ Base t) => (a -> m (f (Free f a))) -> a -> m t
+futuM :: (Corecursive t, Traversable (Base t), Monad m) => (a -> m (Base t (Free (Base t) a))) -> a -> m t
 futuM coalg = anaM go . Pure
   where
-    -- go :: FreeF f a (Free f a) -> m (f (FreeF f a (Free f a)))
-    go (Pure a)  = undefined -- coalg a
-    go (Free fb) = undefined -- return fb
+    go (Pure a)  = coalg a
+    go (Free fb) = return fb
 
 hyloM :: (Monad m, Traversable t) => (t b -> m b) -> (a -> m (t a)) -> a -> m b
 hyloM alg coalg = h
