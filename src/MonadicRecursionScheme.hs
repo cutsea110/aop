@@ -46,11 +46,6 @@ data Error =
   FreeVar String
   deriving Show
 
-cataM :: (Monad m, Traversable (Base t), Recursive t)
-      => (Base t a -> m a) -> t -> m a
-cataM alg = h
-  where h = alg <=< traverse h . project
-
 {--
 eval :: Expr -> Either Error Int
 eval = cataM $ \case
@@ -68,3 +63,28 @@ eval = cataM $ \case
     case Map.lookup v env of
       Nothing -> lift (Left (FreeVar v))
       Just j  -> return j
+
+cataM :: (Monad m, Traversable (Base t), Recursive t)
+      => (Base t a -> m a) -> t -> m a
+cataM phi = h
+  where h = phi <=< traverse h . project
+
+anaM :: (Monad m, Traversable (Base t), Corecursive t)
+     => (a -> m (Base t a)) -> a -> m t
+anaM psi = h
+  where h = (return . embed) <=< traverse h <=< psi
+
+paraM :: (Monad m, Traversable (Base t), Recursive t)
+      => (Base t (t, a) -> m a) -> t -> m a
+paraM phi = h
+  where h = phi <=< traverse (liftM2 (,) <$> return <*> h) . project
+
+apoM :: (Monad m, Traversable (Base t), Corecursive t)
+     => (a -> m (Base t (Either t a))) -> a -> m t
+apoM psi = h
+  where h = (return . embed) <=< traverse (either return h) <=< psi
+
+hyloM :: (Monad m, Traversable t)
+      => (t b -> m b) -> (a -> m (t a)) -> a -> m b
+hyloM phi psi = h
+  where h = phi <=< traverse h <=< psi
