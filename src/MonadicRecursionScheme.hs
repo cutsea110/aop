@@ -102,3 +102,8 @@ futuM :: (Monad m, Traversable (Base t), Corecursive t)
 futuM psi = anaM f . Pure
   where f (Pure  a) = psi a
         f (Free fb) = return fb
+
+zygoM :: (Monad m, Traversable (Base t), Recursive t)
+      => (Base t a -> m a) -> (Base t (a, b) -> m b) -> t -> m b
+zygoM f phi = return . snd <=< cataM g
+  where g = liftM2 (,) <$> (f <=< return . fmap fst) <*> phi
