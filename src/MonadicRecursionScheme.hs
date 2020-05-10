@@ -70,27 +70,27 @@ eval = cataM $ \case
 cataM :: (Monad m, Traversable (Base t), Recursive t)
       => (Base t a -> m a) -> t -> m a
 cataM phi = h
-  where h = phi <=< traverse h . project
+  where h = phi <=< mapM h . project
 
 anaM :: (Monad m, Traversable (Base t), Corecursive t)
      => (a -> m (Base t a)) -> a -> m t
 anaM psi = h
-  where h = (return . embed) <=< traverse h <=< psi
+  where h = (return . embed) <=< mapM h <=< psi
 
 paraM :: (Monad m, Traversable (Base t), Recursive t)
       => (Base t (t, a) -> m a) -> t -> m a
 paraM phi = h
-  where h = phi <=< traverse (liftM2 (,) <$> return <*> h) . project
+  where h = phi <=< mapM (liftM2 (,) <$> return <*> h) . project
 
 apoM :: (Monad m, Traversable (Base t), Corecursive t)
      => (a -> m (Base t (Either t a))) -> a -> m t
 apoM psi = h
-  where h = (return . embed) <=< traverse (either return h) <=< psi
+  where h = (return . embed) <=< mapM (either return h) <=< psi
 
 hyloM :: (Monad m, Traversable t)
       => (t b -> m b) -> (a -> m (t a)) -> a -> m b
 hyloM phi psi = h
-  where h = phi <=< traverse h <=< psi
+  where h = phi <=< mapM h <=< psi
 
 histoM :: (Monad m, Traversable (Base t), Recursive t)
        => (Base t (Cofree (Base t) a) -> m a) -> t -> m a
