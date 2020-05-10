@@ -107,3 +107,8 @@ zygoM :: (Monad m, Traversable (Base t), Recursive t)
       => (Base t a -> m a) -> (Base t (a, b) -> m b) -> t -> m b
 zygoM f phi = return . snd <=< cataM g
   where g = liftM2 (,) <$> (f <=< return . fmap fst) <*> phi
+
+cozygoM :: (Monad m, Traversable (Base t), Corecursive t)
+        => (a -> m (Base t a)) -> (b -> m (Base t (Either a b))) -> b -> m t
+cozygoM f psi = anaM g . Right
+  where g = either (return . fmap Left <=< f) psi
