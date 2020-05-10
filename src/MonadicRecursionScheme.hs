@@ -5,6 +5,8 @@
 {-# LANGUAGE FlexibleContexts #-}
 module MonadicRecursionScheme where
 
+import           Control.Comonad            (Comonad (..))
+import           Control.Comonad.Cofree     (Cofree (..))
 import           Control.Monad              ((<=<), liftM2)
 import           Control.Monad.Free         (Free (..))
 import           Control.Monad.Trans.Class  (lift)
@@ -89,6 +91,11 @@ hyloM :: (Monad m, Traversable t)
       => (t b -> m b) -> (a -> m (t a)) -> a -> m b
 hyloM phi psi = h
   where h = phi <=< traverse h <=< psi
+
+histoM :: (Monad m, Traversable (Base t), Recursive t)
+       => (Base t (Cofree (Base t) a) -> m a) -> t -> m a
+histoM phi = return . extract <=< cataM f
+  where f  = return . uncurry (:<) <=< (liftM2 (,) <$> phi <*> return)
 
 futuM :: (Monad m, Traversable (Base t), Corecursive t)
       => (a -> m (Base t (Free (Base t) a))) -> a -> m t
