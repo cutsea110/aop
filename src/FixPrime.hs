@@ -208,9 +208,18 @@ mutu proj phi = proj . cata phi
 -- Does this mutu' use Fokkinga's mutual recursive theorem?
 mutu' :: Functor f => (f (a, b) -> a) -> (f (a, b) -> b) -> Fix f -> b
 mutu' f g = snd . cata (pair (f, g))
+-- ref.) https://twitter.com/xgrommx/status/1259815344358797314 (@xgrommx's tweet)
+mutu'' :: Functor f => (f (a, a) -> a) -> (f (a, a) -> a) -> Fix f -> a
+mutu'' f g = g . fmap (pair (mutu'' g f, mutu'' f g)) . out
+
 -- comutumorphism
 comutu :: Functor f => (b -> a) -> (a -> f a) -> b -> Fix f
 comutu proj psi = ana psi . proj
+
+-- ref.) https://twitter.com/xgrommx/status/1259815344358797314 (@xgrommx's tweet)
+comutu'' :: Functor f => (t -> f (Either t t)) -> (t -> f (Either t t)) -> t -> Fix f
+comutu'' f g = In . (fmap (either (comutu'' g f, comutu'' f g))) . g
+
 -- prepromorphism
 type f :~> g = forall a. f a -> g a
 -- supermap
