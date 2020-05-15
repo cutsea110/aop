@@ -210,12 +210,12 @@ mutu' :: Functor f => (f (a, b) -> a) -> (f (a, b) -> b) -> Fix f -> b
 mutu' f g = snd . cata (pair (f, g))
 -- ref.) https://twitter.com/xgrommx/status/1259815344358797314 (@xgrommx's tweet)
 -- but this do NOT have the type signature i expected
-mutu'' :: Functor f => (f (a, a) -> a) -> (f (a, a) -> a) -> Fix f -> a
-mutu'' f g = g . fmap (pair (mutu'' g f, mutu'' f g)) . out
+-- mutu'' :: Functor f => (f (a, a) -> a) -> (f (a, a) -> a) -> Fix f -> a
+-- mutu'' f g = g . fmap (pair (mutu'' g f, mutu'' f g)) . out
 
 -- This is the type signature i love. Here is a perfect one!
-mutu''' :: Functor f => (f (a, b) -> b) -> (f (a, b) -> a) -> Fix f -> b
-mutu''' = v
+mutu'' :: Functor f => (f (a, b) -> b) -> (f (a, b) -> a) -> Fix f -> b
+mutu'' = v
   where
     u :: Functor f => (f (a, b) -> a) -> (f (a, b) -> b) -> Fix f -> a
     u f g = f . fmap (pair (u f g, v g f)) . out
@@ -229,12 +229,12 @@ comutu proj psi = ana psi . proj
 
 -- ref.) https://twitter.com/xgrommx/status/1259815344358797314 (@xgrommx's tweet)
 -- but this do NOT have the type signature i expected
-comutu'' :: Functor f => (t -> f (Either t t)) -> (t -> f (Either t t)) -> t -> Fix f
-comutu'' f g = In . (fmap (either (comutu'' g f, comutu'' f g))) . g
+-- comutu'' :: Functor f => (t -> f (Either t t)) -> (t -> f (Either t t)) -> t -> Fix f
+-- comutu'' f g = In . (fmap (either (comutu'' g f, comutu'' f g))) . g
 
 -- This is the type signature i love. Here is a perfect one!
-comutu''' :: Functor f => (b -> f (Either a b)) -> (a -> f (Either a b)) -> b -> Fix f
-comutu''' = v
+comutu'' :: Functor f => (b -> f (Either a b)) -> (a -> f (Either a b)) -> b -> Fix f
+comutu'' = v
   where
     u :: Functor f => (a -> f (Either a b)) -> (b -> f (Either a b)) -> a -> Fix f
     u f g = In . (fmap (either (u f g, v g f))) . f
