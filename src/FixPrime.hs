@@ -213,15 +213,15 @@ mutu' f g = snd . cata (pair (f, g))
 mutu'' :: Functor f => (f (a, a) -> a) -> (f (a, a) -> a) -> Fix f -> a
 mutu'' f g = g . fmap (pair (mutu'' g f, mutu'' f g)) . out
 
--- This is the type signature i love.
+-- This is the type signature i love. Here is a perfect one!
 mutu''' :: Functor f => (f (a, b) -> b) -> (f (a, b) -> a) -> Fix f -> b
-mutu''' = mutu2
+mutu''' = v
   where
-    mutu1 :: Functor f => (f (a, b) -> a) -> (f (a, b) -> b) -> Fix f -> a
-    mutu1 f g = f . fmap (pair (mutu1 f g, mutu2 g f)) . out
+    u :: Functor f => (f (a, b) -> a) -> (f (a, b) -> b) -> Fix f -> a
+    u f g = f . fmap (pair (u f g, v g f)) . out
 
-    mutu2 :: Functor f => (f (a, b) -> b) -> (f (a, b) -> a) -> Fix f -> b
-    mutu2 g f = g . fmap (pair (mutu1 f g, mutu2 g f)) . out
+    v :: Functor f => (f (a, b) -> b) -> (f (a, b) -> a) -> Fix f -> b
+    v g f = g . fmap (pair (u f g, v g f)) . out
 
 -- comutumorphism
 comutu :: Functor f => (b -> a) -> (a -> f a) -> b -> Fix f
