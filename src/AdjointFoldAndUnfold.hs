@@ -15,3 +15,10 @@ newtype Cofix f = Out { unout :: f (Cofix f) }
 total :: Fix Stack -> Natural
 total (In Empty) = 0
 total (In (Push (n, s))) = n + total s
+
+total' :: (t -> Natural) -> Stack t -> Natural
+total' ttl Empty = 0
+total' ttl (Push (n, s)) = n + ttl s
+
+ttl :: Fix Stack -> Natural
+ttl (In s) = total' ttl s
