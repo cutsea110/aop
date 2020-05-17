@@ -11,3 +11,7 @@ instance Functor Stack where
 
 newtype Fix f = In { unIn :: f (Fix f) }
 newtype Cofix f = Out { unout :: f (Cofix f) }
+
+total :: Fix Stack -> Natural
+total (In Empty) = 0
+total (In (Push (n, s))) = n + total s
