@@ -8,3 +8,6 @@ data Stack s = Empty
 instance Functor Stack where
   fmap f Empty = Empty
   fmap f (Push (n, s)) = Push (n, f s)
+
+newtype Fix f = In { unIn :: f (Fix f) }
+newtype Cofix f = Out { unout :: f (Cofix f) }
