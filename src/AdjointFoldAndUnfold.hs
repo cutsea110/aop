@@ -43,3 +43,8 @@ from' frm n = Next (n, frm (n+1))
 
 frm :: Natural -> Cofix Sequ
 frm n = UnOut (from' frm n)  -- Mendler-style equation : x a = UnOut (psi x a)
+
+data Pow a = Zero a
+           | Succ (Pow (Pair a))
+           deriving Show
+type Pair a = (a, a)
