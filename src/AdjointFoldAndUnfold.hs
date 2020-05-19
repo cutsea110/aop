@@ -58,6 +58,22 @@ type ListF x a = Base a (x a)
 newtype List a = InList (ListF List a)
 --}
 
+-- Example 3.1
+data Base a b = Nil | Cons (a, b)
+type ListF x a = Base a (x a)
+newtype List a = In { out :: ListF List a }
+
+base :: (a -> c) -> (b -> d) -> Base a b -> Base c d
+base f g Nil = Nil
+base f g (Cons (x, y)) = Cons (f x, g y)
+
+hfold :: (forall a. ListF n a -> n a) -> List b -> n b
+hfold f = f . listF (hfold f) . out
+
+listF :: (forall a. x a -> y a) -> ListF x b -> ListF y b
+listF f = base id f
+
+{-- Example 3.2
 data Base a b = Nil | Cons (a, b)
 type NestF x a = Base a (x (Pair a))
 type Pair a = (a, a)
@@ -75,3 +91,4 @@ nest f = In . base f (nest (pair f)) . out
 
 pair :: (a -> b) -> Pair a -> Pair b
 pair f (x, y) = (f x, f y)
+--}
