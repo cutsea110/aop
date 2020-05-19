@@ -1,5 +1,6 @@
+{-# LANGUAGE RankNTypes #-}
 module AdjointFoldAndUnfold where
-
+{--
 import Numeric.Natural
 
 data Stack s = Empty
@@ -48,3 +49,29 @@ data Pow a = Zero a
            | Succ (Pow (Pair a))
            deriving Show
 type Pair a = (a, a)
+
+
+data Base a b = Nil
+              | Cons (a, b)
+              deriving Show
+type ListF x a = Base a (x a)
+newtype List a = InList (ListF List a)
+--}
+
+data Base a b = Nil | Cons (a, b)
+type NestF x a = Base a (x (Pair a))
+type Pair a = (a, a)
+newtype Nest a = In { out :: NestF Nest a }
+
+base :: (a -> c) -> (b -> d) -> Base a b -> Base c d
+base f g Nil = Nil
+base f g (Cons (x, y)) = Cons (f x, g y)
+
+hfold :: (forall a. Base a (n (Pair a)) -> n a) -> Nest b -> n b
+hfold f = f . base id (hfold f) . out
+
+nest :: (a -> b) -> Nest a -> Nest b
+nest f = In . base f (nest (pair f)) . out
+
+pair :: (a -> b) -> Pair a -> Pair b
+pair f (x, y) = (f x, f y)
