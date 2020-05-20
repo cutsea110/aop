@@ -282,3 +282,15 @@ map f = cata (In . bimap (f, id))
 
 map' :: (Functor (f c), Bifunctor f) => (a -> c) -> Fix (f a) -> Fix (f c)
 map' f = ana (bimap (f, id) . out)
+
+
+------------
+-- | Mendler style catamorphism
+--   Mendler's catamorphism don't need the Functor f constraint.
+mcata :: ((Fix f -> a) -> f (Fix f) -> a) -> Fix f -> a
+mcata phi = u
+  where
+    u = phi u . out
+
+cata' :: Functor f => (f a -> a) -> Fix f -> a
+cata' phi = mcata (\u -> phi . fmap u)
