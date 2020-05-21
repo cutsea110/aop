@@ -307,3 +307,12 @@ gcata :: (Functor f, C.Comonad w)
       -> Fix f -> a
 gcata k g = C.extract . cata phi
   where phi = C.liftW g . k . fmap C.duplicate
+
+-- | ekmett's recursion-schemes variant
+gcata' :: (Functor f, C.Comonad w)
+       => (forall b. f (w b) -> w (f b))
+       -> (f (w a) -> a)
+       -> Fix f -> a
+gcata' k g = g . C.extract . c
+  where c = k . fmap u . out
+        u = C.duplicate . C.liftW g . c
