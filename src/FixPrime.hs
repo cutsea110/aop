@@ -7,6 +7,7 @@
 module FixPrime where
 
 import Prelude hiding (Functor(..), map, succ, either, subtract)
+import qualified Control.Monad as M
 import qualified Control.Comonad as C
 
 dup f = (f, f)
@@ -316,3 +317,11 @@ gcata' :: (Functor f, C.Comonad w)
 gcata' k g = g . C.extract . c
   where c = k . fmap u . out
         u = C.duplicate . C.liftW g . c
+
+-- | generalized anamorphism
+gana :: (Functor f, Monad m)
+     => (forall b. m (f b) -> f (m b))
+     -> (a -> f (m a))
+     -> a -> Fix f
+gana k f = ana psi . return
+  where psi = fmap M.join . k . M.liftM f
