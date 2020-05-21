@@ -7,6 +7,7 @@
 module FixPrime where
 
 import Prelude hiding (Functor(..), map, succ, either, subtract)
+import qualified Control.Comonad as C
 
 dup f = (f, f)
 tupply f = cross (dup f)
@@ -285,6 +286,10 @@ map' f = ana (bimap (f, id) . out)
 
 
 ------------
+
+-- ref.) https://blog.sumtypeofway.com/posts/recursion-schemes-part-6.html
+-- ref.) https://www.schoolofhaskell.com/user/edwardk/recursion-schemes/catamorphisms
+
 -- | Mendler style catamorphism
 --   Mendler's catamorphism don't need the Functor f constraint.
 mcata :: ((Fix f -> a) -> f (Fix f) -> a) -> Fix f -> a
@@ -294,3 +299,11 @@ mcata phi = u
 
 cata' :: Functor f => (f a -> a) -> Fix f -> a
 cata' phi = mcata (\u -> phi . fmap u)
+
+-- | generalized catamorphism
+gcata :: (Functor f, C.Comonad w)
+      => (forall b. f (w b) -> w (f b))
+      -> (f (w a) -> a)
+      -> Fix f -> a
+gcata k g = C.extract . cata phi
+  where phi = C.liftW g . k . fmap C.duplicate
