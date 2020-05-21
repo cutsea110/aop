@@ -325,3 +325,11 @@ gana :: (Functor f, Monad m)
      -> a -> Fix f
 gana k f = ana psi . return
   where psi = fmap M.join . k . M.liftM f
+
+gana' :: (Functor f, Monad m)
+      => (forall b. m (f b) -> f (m b))
+      -> (a -> f (m a))
+      -> a -> Fix f
+gana' k f = a . return . f
+  where a = In . fmap u . k
+        u = a . M.liftM f . M.join
