@@ -82,7 +82,8 @@ listF :: (forall a. x a -> y a) -> ListF x b -> ListF y b
 listF f = base id f
 --}
 
-{-- Example 3.2
+{--
+-- Example 3.2
 --
 -- NestF X = 1 + Id * (X . Pair)
 --
@@ -136,6 +137,7 @@ host f = In . base f (host (f *** host f)) . out
 (f *** g) (a, b) = (f a, g b)
 --}
 
+{--
 -- Example 4.1
 -- Generalized
 -- F X = B . <Id, X . F_1 X, X . F_2 X, ...>
@@ -177,3 +179,45 @@ gfold :: (forall a. Base (m a) (n a) -> n a)
       -> (forall a. m a -> m a)
       -> List (m b) -> n b
 gfold f g = f . base id (gfold f g . list g) . out
+--}
+
+-- Example 4.2
+-- Generalized
+-- F X = B . <Id, X . F_1 X, X . F_2 X, ...>
+--
+-- NestF X = 1 + Id * (X . Pair)
+--
+-- Base X Y = 1 + X * Y
+-- NestF X = Base . <Id, X . F_1 X>
+-- F_1 X = Pair
+--
+-- NestF X = Base . <Id, X . Pair>
+--         = 1 + Id * (X . Pair)
+--
+
+data Base a b = Nil | Cons (a, b)
+type NestF x a = Base a (x (Pair a))
+type Pair a = (a, a)
+newtype Nest a = In { out :: NestF Nest a }
+
+--
+-- data Nest a = Nil | Cons (a, Nest (a, a))
+--
+
+base :: (a -> c) -> (b -> d) -> Base a b -> Base c d
+base f g Nil = Nil
+base f g (Cons (x, y)) = Cons (f x, g y)
+
+hfold :: (forall a. Base a (n (Pair a)) -> n a) -> Nest b -> n b
+hfold f = f . base id (hfold f) . out
+
+nest :: (a -> b) -> Nest a -> Nest b
+nest f = In . base f (nest (pair f)) . out
+
+pair :: (a -> b) -> Pair a -> Pair b
+pair f (x, y) = (f x, f y)
+
+gfold :: (forall a. Base (m a) (n (Pair a)) -> n a)
+      -> (forall a. Pair (m a) -> m (Pair a))
+      -> Nest (m b) -> n b
+gfold f g = f . base id (gfold f g . nest g) . out
