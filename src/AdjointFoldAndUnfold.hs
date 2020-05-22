@@ -217,7 +217,7 @@ gfold :: (forall a. Base (m a) (n (Pair a)) -> n a)
 gfold f g = f . base id (gfold f g . nest g) . out
 --}
 
-
+{--
 -- Example 4.3
 --
 -- HostF X = 1 + Id * (X . (Id * X))
@@ -254,3 +254,4 @@ gfold :: (forall a. Base (m a) (n (a, n a)) -> n a)
       -> (forall a. m a -> m a)
       -> Host (m b) -> n b
 gfold f g1 g2 = f . base id (gfold f g1 g2 . host (g1 . (id *** (gfold f g1 g2 . host g2)))) . out
+--}
