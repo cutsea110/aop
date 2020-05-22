@@ -58,7 +58,8 @@ type ListF x a = Base a (x a)
 newtype List a = InList (ListF List a)
 --}
 
-{-- Example 3.1
+{--
+-- Example 3.1
 --
 -- ListF X = 1 + Id * X
 --
@@ -108,6 +109,7 @@ pair :: (a -> b) -> Pair a -> Pair b
 pair f (x, y) = (f x, f y)
 --}
 
+{--
 -- Example 3.3
 --
 -- HostF X = 1 + Id * (X . (Id * X))
@@ -132,3 +134,46 @@ host f = In . base f (host (f *** host f)) . out
 
 (***) :: (a -> c) -> (b -> d) -> (a, b) -> (c, d)
 (f *** g) (a, b) = (f a, g b)
+--}
+
+-- Example 4.1
+-- Generalized
+-- F X = B . <Id, X . F_1 X, X . F_2 X, ...>
+
+--
+-- ListF X = 1 + Id * X
+--
+-- Base X Y = 1 + X * Y
+-- ListF X = Base . <Id, X . F_1 X>
+-- F_1 X = Id
+--
+-- ListF X = Base . <Id, X . Id>
+--         = 1 + Id * X . Id
+--         = 1 + Id * X
+--
+
+data Base a b = Nil | Cons (a, b)
+type ListF x a = Base a (x a)
+newtype List a = In { out :: ListF List a }
+
+--
+-- data List a = Nil | Cons (a, List a)
+--
+
+base :: (a -> c) -> (b -> d) -> Base a b -> Base c d
+base f g Nil = Nil
+base f g (Cons (x, y)) = Cons (f x, g y)
+
+hfold :: (forall a. ListF n a -> n a) -> List b -> n b
+hfold f = f . listF (hfold f) . out
+
+listF :: (forall a. x a -> y a) -> ListF x b -> ListF y b
+listF f = base id f
+
+list :: (a -> b) -> List a -> List b
+list f = In . base f (list f) . out
+
+gfold :: (forall a. Base (m a) (n a) -> n a)
+      -> (forall a. m a -> m a)
+      -> List (m b) -> n b
+gfold f g = f . base id (gfold f g . list g) . out
