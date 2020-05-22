@@ -146,12 +146,8 @@ host f = In . base f (host (f *** host f)) . out
 -- ListF X = 1 + Id * X
 --
 -- Base X Y = 1 + X * Y
--- ListF X = Base . <Id, X . F_1 X>
--- F_1 X = Id
---
--- ListF X = Base . <Id, X . Id>
---         = 1 + Id * X . Id
---         = 1 + Id * X
+-- ListF X = Base . <Id, X . F_1 X> == ListF x a = Base (a, x (f1 x a)) ==> Base (a, x a)
+-- F_1 X = Id                       == f1 x a = a
 --
 
 data Base a b = Nil | Cons (a, b)
@@ -189,11 +185,8 @@ gfold f g = f . base id (gfold f g . list g) . out
 -- NestF X = 1 + Id * (X . Pair)
 --
 -- Base X Y = 1 + X * Y
--- NestF X = Base . <Id, X . F_1 X>
--- F_1 X = Pair
---
--- NestF X = Base . <Id, X . Pair>
---         = 1 + Id * (X . Pair)
+-- NestF X = Base . <Id, X . F_1 X> == HostF x a = Base (a, x (f1 x a)) ==> Base (a, x (Pair a))
+-- F_1 X = Pair                     == f1 x a = Pair a
 --
 
 data Base a b = Nil | Cons (a, b)
@@ -238,17 +231,10 @@ newtype Host a = In { out :: HostF Host a }
 -- data Host a = Nil | Cons (a, Host (a, Host a))
 --
 -- Base X Y = 1 + X * Y
--- HostF X = Base . <Id, X . F_1 X>
--- F_1 X = * . <Id, X . F_2 X>
--- F_2 X = Id
+-- HostF X = Base . <Id, X . F_1 X> == HostF x a = Baes (a, x (f1 x a))  ==> Base (a, x (a, x a))
+-- F_1 X = * . <Id, X . F_2 X>      == f1 x a = (a, x (f2 x a))          ==> (a, x a)
+-- F_2 X = Id                       == f2 x a = a
 --
--- F_1 X = * . <Id, X . Id>
---       = Id * X . Id
---       = Id * X
--- HostF X = Base . <Id, X . (Id * X)>
---         = Base . <Id, X . Id * X . X>
---         = Base . <Id, X * X . X>
---         = 1 + Id * (X * X . X)
 
 base :: (a -> c) -> (b -> d) -> Base a b -> Base c d
 base f g Nil = Nil
