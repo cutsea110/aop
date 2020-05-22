@@ -181,6 +181,7 @@ gfold :: (forall a. Base (m a) (n a) -> n a)
 gfold f g = f . base id (gfold f g . list g) . out
 --}
 
+{--
 -- Example 4.2
 -- Generalized
 -- F X = B . <Id, X . F_1 X, X . F_2 X, ...>
@@ -221,3 +222,49 @@ gfold :: (forall a. Base (m a) (n (Pair a)) -> n a)
       -> (forall a. Pair (m a) -> m (Pair a))
       -> Nest (m b) -> n b
 gfold f g = f . base id (gfold f g . nest g) . out
+--}
+
+
+-- Example 4.3
+--
+-- HostF X = 1 + Id * (X . (Id * X))
+--
+--
+data Base a b = Nil | Cons (a, b)
+type HostF x a = Base a (x (a, x a))
+newtype Host a = In { out :: HostF Host a }
+
+--
+-- data Host a = Nil | Cons (a, Host (a, Host a))
+--
+-- Base X Y = 1 + X * Y
+-- HostF X = Base . <Id, X . F_1 X>
+-- F_1 X = * . <Id, X . F_2 X>
+-- F_2 X = Id
+--
+-- F_1 X = * . <Id, X . Id>
+--       = Id * X . Id
+--       = Id * X
+-- HostF X = Base . <Id, X . (Id * X)>
+--         = Base . <Id, X . Id * X . X>
+--         = Base . <Id, X * X . X>
+--         = 1 + Id * (X * X . X)
+
+base :: (a -> c) -> (b -> d) -> Base a b -> Base c d
+base f g Nil = Nil
+base f g (Cons (x, y)) = Cons (f x, g y)
+
+hfold :: (forall a. Base a (n (a, n a)) -> n a) -> Host b -> n b
+hfold f = f . base id (hfold f . host (id *** hfold f)) . out
+
+host :: (a -> b) -> Host a -> Host b
+host f = In . base f (host (f *** host f)) . out
+
+(***) :: (a -> c) -> (b -> d) -> (a, b) -> (c, d)
+(f *** g) (a, b) = (f a, g b)
+
+gfold :: (forall a. Base (m a) (n (a, n a)) -> n a)
+      -> (forall a. (m a, n a) -> m (a, n a))
+      -> (forall a. m a -> m a)
+      -> Host (m b) -> n b
+gfold f g1 g2 = f . base id (gfold f g1 g2 . host (g1 . (id *** (gfold f g1 g2 . host g2)))) . out
