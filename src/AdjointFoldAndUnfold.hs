@@ -189,6 +189,30 @@ gfold f g = f . base id (gfold f g . list g) . out
 -- F_1 X = Pair                     == f1 x a = Pair a
 --
 
+--
+-- o hfold
+--                    out
+--  Nest B  ------------------------> 1 + A x Nest (Pair B)
+--     |                                   |
+--     | (|f|)                             | 1 + 1_A x (|f|)
+--     v                                   v
+--    n B   <------------------------ 1 + A x  n (Pair B)
+--                      ^
+--                      |
+--                      v
+--    n A   <------------------------ 1 + A x  n (Pair A)
+--                      f
+--   * f :: forall a. 1 + A x n (Pair a) -> n a
+--
+-- o nest
+--                                out
+--    A   Nest A  --------------------------------> 1 + A x Nest (Pair A)
+--    |                                                   |
+--    |    nest f                                         | 1 + 1_A x nest (pair f)
+--    v                                                   v
+--    B   Nest B <------ 1 + B x n (Pair B) <------ 1 + A x Nest (Pair B)
+--                  In                      1 + f x id
+
 data Base a b = Nil | Cons (a, b)
 type NestF x a = Base a (x (Pair a))
 type Pair a = (a, a)
