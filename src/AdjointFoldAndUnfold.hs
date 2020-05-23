@@ -200,7 +200,7 @@ gfold f g = f . base id (gfold f g . list g) . out
 --                      ^
 --                      |
 --                      v
---    n A   <------------------------ 1 + A x  n (Pair A)
+--    n a   <------------------------ 1 + A x  n a   forall a.
 --                      f
 --   * f :: forall a. 1 + A x n (Pair a) -> n a
 --
