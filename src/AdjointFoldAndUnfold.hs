@@ -149,7 +149,14 @@ host f = In . base f (host (f *** host f)) . out
 -- ListF X = Base . <Id, X . F_1 X> == ListF x a = Base a (x (f1 x a)) ==> Base a (x a)
 -- F_1 X = Id                       == f1 x a = a
 --
-
+--                   out
+-- List A  ------------------------> 1 + A x List A
+--    |                                |
+--    | (|f|)                          | 1 + 1_A x (|f|)
+--    v                                v
+--   n A   ------------------------> 1 + A x n A
+--                     f
+--
 data Base a b = Nil | Cons (a, b)
 type ListF x a = Base a (x a)
 newtype List a = In { out :: ListF List a }
@@ -192,17 +199,17 @@ gfold f g = f . base id (gfold f g . list g) . out
 --
 -- o hfold
 --                    out
---  Nest B  ------------------------> 1 + A x Nest (Pair B)
+--  Nest A  ------------------------> 1 + A x Nest (Pair A)
 --     |                                   |
 --     | (|f|)                             | 1 + 1_A x (|f|)
 --     v                                   v
---    n B   <------------------------ 1 + A x  n (Pair B)
+--    n A   <------------------------ 1 + A x  n (Pair A)
 --                      ^
 --                      |
 --                      v
---    n a   <------------------------ 1 + A x  n a   forall a.
+--    n a   <------------------------ 1 + a x  n a   forall a.
 --                      f
---   * f :: forall a. 1 + A x n (Pair a) -> n a
+--   * f :: forall a. 1 + a x n (Pair a) -> n a
 --
 -- o nest
 --                                out
