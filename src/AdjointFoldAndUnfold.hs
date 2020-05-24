@@ -246,6 +246,26 @@ gfold f g = f . base id (gfold f g . nest g) . out
 --
 -- HostF X = 1 + Id * (X . (Id * X))
 --
+-- o hfold
+--                           out
+--  Host A  -------------------------------------> 1 + A x Host (A x Host A)
+--     |                                                |
+--     |                                                |  1 + 1_A x host (id_A x (|f|))
+--     |                                                v
+--     | (|f|)                                     1 + A x Host (A x   n A)
+--     |                                                |
+--     |                                                |  1 + 1_A x (|f|)
+--     v                                                v
+--    n A   <------------------------------------- 1 + A x n (A x n A)
+--                             f
+--
+--                            out
+--   Host A   ----------------------------------> 1 + A x Host A
+--     |                                                |
+--     | host f                                         |  1 + 1_A x host f
+--     v                                                v
+--   Host B   <-------- 1 + B x Host B <--------- 1 + A x Host B
+--               In                   1 + f x id
 --
 data Base a b = Nil | Cons (a, b)
 type HostF x a = Base a (x (a, x a))
