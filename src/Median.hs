@@ -6,10 +6,10 @@ module Median where
 import Data.Bool
 
 median :: Ord a => [a] -> [a]
-median = snd3 . foldl med ([],[],[])
+median = snd3 . foldl med ([], [], [])
   where
-    med ([],[],[]) z = ([],[z],[])
-    med (xs,[y],ys) z
+    med ([], [], []) z = ([], [z], [])
+    med (xs, [y], ys) z
       | y <= z = case insert True z ys of
           y':ys' -> (xs, [y,y'], ys')
       | otherwise = case insert False z xs of
@@ -24,5 +24,5 @@ insert _ x [] = [x]
 insert inc x yys@(y:ys)
   = bool (y:insert inc x ys) (x:yys) (bool (x>=y) (x<=y) inc)
 
-snd3 :: (a,b,c) -> b
-snd3 (_,y,_) = y
+snd3 :: (a, b, c) -> b
+snd3 (_, y, _) = y
