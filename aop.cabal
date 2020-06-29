@@ -56,6 +56,7 @@ library
                      , NonEmptyList
                      , OpenSet
                      , Prepro
+                     , Pretty
                      , Promorphism
                      , Rose
                      , ShortestPathSearch
