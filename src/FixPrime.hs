@@ -7,6 +7,8 @@
 module FixPrime where
 
 import Prelude hiding (Functor(..), map, succ, either, subtract)
+import qualified Control.Monad as M
+import qualified Control.Comonad as C
 
 dup f = (f, f)
 tupply f = cross (dup f)
@@ -208,9 +210,42 @@ mutu proj phi = proj . cata phi
 -- Does this mutu' use Fokkinga's mutual recursive theorem?
 mutu' :: Functor f => (f (a, b) -> a) -> (f (a, b) -> b) -> Fix f -> b
 mutu' f g = snd . cata (pair (f, g))
+-- ref.) https://twitter.com/xgrommx/status/1259815344358797314 (@xgrommx's tweet)
+-- but this do NOT have the type signature i expected
+-- mutu'' :: Functor f => (f (a, a) -> a) -> (f (a, a) -> a) -> Fix f -> a
+-- mutu'' f g = g . fmap (pair (mutu'' g f, mutu'' f g)) . out
+
+-- This is the type signature i love. Here is a perfect one!
+mutu'' :: Functor f => (f (a, b) -> b) -> (f (a, b) -> a) -> Fix f -> b
+mutu'' = v
+  where
+    u :: Functor f => (f (a, b) -> a) -> (f (a, b) -> b) -> Fix f -> a
+    u f g = f . fmap (pair (u f g, v g f)) . out
+
+    v :: Functor f => (f (a, b) -> b) -> (f (a, b) -> a) -> Fix f -> b
+    v g f = g . fmap (pair (u f g, v g f)) . out
+
 -- comutumorphism
 comutu :: Functor f => (b -> a) -> (a -> f a) -> b -> Fix f
 comutu proj psi = ana psi . proj
+
+-- ref.) https://twitter.com/xgrommx/status/1259815344358797314 (@xgrommx's tweet)
+-- but this do NOT have the type signature i expected
+-- comutu'' :: Functor f => (t -> f (Either t t)) -> (t -> f (Either t t)) -> t -> Fix f
+-- comutu'' f g = In . (fmap (either (comutu'' g f, comutu'' f g))) . g
+
+-- This is the type signature i love. Here is a perfect one!
+comutu'' :: Functor f => (b -> f (Either a b)) -> (a -> f (Either a b)) -> b -> Fix f
+comutu'' = v
+  where
+    u :: Functor f => (a -> f (Either a b)) -> (b -> f (Either a b)) -> a -> Fix f
+    u f g = In . (fmap (either (u f g, v g f))) . f
+
+    v :: Functor f => (b -> f (Either a b)) -> (a -> f (Either a b)) -> b -> Fix f
+    v g f = In . (fmap (either (u f g, v g f))) . g
+
+
+
 -- prepromorphism
 type f :~> g = forall a. f a -> g a
 -- supermap
@@ -249,3 +284,52 @@ map f = cata (In . bimap (f, id))
 
 map' :: (Functor (f c), Bifunctor f) => (a -> c) -> Fix (f a) -> Fix (f c)
 map' f = ana (bimap (f, id) . out)
+
+
+------------
+
+-- ref.) https://blog.sumtypeofway.com/posts/recursion-schemes-part-6.html
+-- ref.) https://www.schoolofhaskell.com/user/edwardk/recursion-schemes/catamorphisms
+
+-- | Mendler style catamorphism
+--   Mendler's catamorphism don't need the Functor f constraint.
+mcata :: ((Fix f -> a) -> f (Fix f) -> a) -> Fix f -> a
+mcata phi = u
+  where
+    u = phi u . out
+
+cata' :: Functor f => (f a -> a) -> Fix f -> a
+cata' phi = mcata (\u -> phi . fmap u)
+
+-- | generalized catamorphism
+gcata :: (Functor f, C.Comonad w)
+      => (forall b. f (w b) -> w (f b))
+      -> (f (w a) -> a)
+      -> Fix f -> a
+gcata k g = C.extract . cata phi
+  where phi = C.liftW g . k . fmap C.duplicate
+
+-- | ekmett's recursion-schemes variant
+gcata' :: (Functor f, C.Comonad w)
+       => (forall b. f (w b) -> w (f b))
+       -> (f (w a) -> a)
+       -> Fix f -> a
+gcata' k g = g . C.extract . c
+  where c = k . fmap u . out
+        u = C.duplicate . C.liftW g . c
+
+-- | generalized anamorphism
+gana :: (Functor f, Monad m)
+     => (forall b. m (f b) -> f (m b))
+     -> (a -> f (m a))
+     -> a -> Fix f
+gana k f = ana psi . return
+  where psi = fmap M.join . k . M.liftM f
+
+gana' :: (Functor f, Monad m)
+      => (forall b. m (f b) -> f (m b))
+      -> (a -> f (m a))
+      -> a -> Fix f
+gana' k f = a . return . f
+  where a = In . fmap u . k
+        u = a . M.liftM f . M.join
