@@ -1,5 +1,8 @@
+{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE TupleSections #-}
 module Curry where
 
+import Prelude hiding (null)
 import Data.Void
 
 assocr :: ((a, b), c) -> (a, (b, c))
@@ -29,9 +32,9 @@ unit :: (a, ()) -> a
 unit (x, ()) = x
 
 unnull :: Void -> (a, Void)
-unnull = undefined
+unnull = (, undefined::Void) . absurd
 
 null :: (a, Void) -> Void
-null = undefined
+null (_, a) = a
 
 
