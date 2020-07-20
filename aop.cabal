@@ -29,6 +29,7 @@ library
                      , CombPlus
                      , CountTree
                      , Cpp
+                     , Curry
                      , Decimal
                      , Defunctionalization
                      , Dijkstra
