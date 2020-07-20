@@ -1,5 +1,7 @@
 module Curry where
 
+import Data.Void
+
 assocr :: ((a, b), c) -> (a, (b, c))
 assocr ((x, y), z) = (x, (y, z))
 
@@ -22,3 +24,14 @@ distl (Right y, z) = Right (y, z)
 undistl :: Either (a, c) (b, c) -> (Either a b, c)
 undistl (Left  (x, z)) = (Left  x, z)
 undistl (Right (y, z)) = (Right y, z)
+
+unit :: (a, ()) -> a
+unit (x, ()) = x
+
+unnull :: Void -> (a, Void)
+unnull = undefined
+
+null :: (a, Void) -> Void
+null = undefined
+
+
