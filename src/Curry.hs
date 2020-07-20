@@ -31,10 +31,11 @@ undistl (Right (y, z)) = (Right y, z)
 unit :: (a, ()) -> a
 unit (x, ()) = x
 
+void :: Void
+void = undefined
+
 unnull :: Void -> (a, Void)
-unnull = (, undefined::Void) . absurd
+unnull = (, void) . absurd
 
 null :: (a, Void) -> Void
 null (_, a) = a
-
-
