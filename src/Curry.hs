@@ -2,8 +2,12 @@
 {-# LANGUAGE TupleSections #-}
 module Curry where
 
-import Prelude hiding (null)
+import Prelude hiding (null, pred)
 import Data.Void
+
+type Boolean = Either () ()
+true  = Right ()
+false = Left ()
 
 assocr :: ((a, b), c) -> (a, (b, c))
 assocr ((x, y), z) = (x, (y, z))
@@ -39,3 +43,14 @@ unnull = (, void) . absurd
 
 null :: (a, Void) -> Void
 null (_, a) = a
+
+
+pair :: (a -> b, a -> c) -> a -> (b, c)
+pair (f, g) x = (f x, g x)
+
+-- p?
+bool :: (a -> Boolean) -> a -> Either a a
+bool p = either (Left . unit) (Right . unit) . distr . pair (id, p)
+
+pred_test = map (bool isEven) [1..10]
+  where isEven x = if even x then true else false
