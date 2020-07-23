@@ -66,6 +66,9 @@ const f _ = f
 ccons :: a -> [a] -> [a]
 ccons = (:)
 
+cons :: (a, [a]) -> [a]
+cons (x, xs) = x:xs
+
 compose :: (b -> c, a -> b) -> a -> c
 compose (f, g) = f . g
 
@@ -76,3 +79,9 @@ foldr (c, f) = u
 
 ccat :: [a] -> [a] -> [a]
 ccat = foldr (id, compose . cross ((:), id))
+
+outl = fst
+outr = snd
+
+apply :: (b -> a, b) -> a
+apply (f, x) = f x
