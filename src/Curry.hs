@@ -2,7 +2,7 @@
 {-# LANGUAGE TupleSections #-}
 module Curry where
 
-import Prelude hiding (null, pred)
+import Prelude hiding (null, pred, const, foldr)
 import Data.Void
 
 type Boolean = Either () ()
@@ -47,6 +47,8 @@ null (_, a) = a
 
 pair :: (a -> b, a -> c) -> a -> (b, c)
 pair (f, g) x = (f x, g x)
+cross :: (a -> c, b -> d) -> (a, b) -> (c, d)
+cross (f, g) (x, y) = (f x, g y)
 
 -- p?
 bool :: (a -> Boolean) -> a -> Either a a
@@ -58,3 +60,19 @@ pred_test = map (bool isEven) [1..10]
 conditional :: (a -> Boolean) -> (a -> b) -> (a -> b) -> a -> b
 conditional p f g = either f g . bool p
 
+const :: a -> b -> a
+const f _ = f
+
+ccons :: a -> [a] -> [a]
+ccons = (:)
+
+compose :: (b -> c, a -> b) -> a -> c
+compose (f, g) = f . g
+
+foldr :: (b, (a, b) -> b) -> [a] -> b
+foldr (c, f) = u
+  where u [] = c
+        u (x:xs) = f (x, u xs)
+
+ccat :: [a] -> [a] -> [a]
+ccat = foldr (id, compose . cross ((:), id))
