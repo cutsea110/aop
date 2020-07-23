@@ -17,12 +17,14 @@ nil = Nil
 cons = uncurry Cons
 
 foldr :: (b, (a, b) -> b) -> Cons a -> b
-foldr (c, f) Nil = c
-foldr (c, f) (Cons x xs) = f (x, foldr (c, f) xs)
+foldr (c, f) = u
+  where u Nil = c
+        u (Cons x xs) = f (x, u xs)
 
 cfoldr :: (b, a -> b -> b) -> Cons a -> b
-cfoldr (c, f) Nil = c
-cfoldr (c, f) (Cons x xs) = f x (cfoldr (c, f) xs)
+cfoldr (c, f) = u
+  where u Nil = c
+        u (Cons x xs) = f x (u xs)
 
 unfoldr :: (b -> Maybe (a, b)) -> b -> Cons a
 unfoldr phi x = case phi x of
@@ -33,8 +35,9 @@ gen = unfoldr phi
   where
     phi n = if n <= 0 then Nothing else Just (n, n-1)
 
-listr f Nil = nil
-listr f (Cons x xs) = cons (f x, listr f xs)
+listr f = u
+  where u Nil = nil
+        u (Cons x xs) = cons (f x, u xs)
 
 listr' f = foldr (Nil, cons . cross (f, id))
 
@@ -58,8 +61,9 @@ len = foldr (0, plus1)
 reverse bs = foldr (id, (\(b, g) x -> g (Cons b x))) bs Nil
 
 para :: (b, (a, (Cons a, b)) -> b) -> Cons a -> b
-para (c, g) Nil = c
-para (c, g) (Cons x xs) = g (x, (xs, para (c, g) xs))
+para (c, g) = u
+  where u Nil = c
+        u (Cons x xs) = g (x, (xs, u xs))
 
 -- insert 2 $  insert 1 $ insert 4 $ insert 3 Nil
 insert :: Ord a => a -> Cons a -> Cons a
