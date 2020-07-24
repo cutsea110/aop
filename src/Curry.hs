@@ -87,5 +87,5 @@ outr = snd
 apply :: (b -> a, b) -> a
 apply (f, x) = f x
 
-cat :: Either () (a, [a] -> [a]) -> [a] -> Either [a] [a]
-cat = curry $ either (Left . outr) (Right . cons . cross (id, apply) . assocr) . distl
+cat :: Either () (a, [a] -> [a]) -> [a] -> [a]
+cat = curry $ either outr (cons . cross (id, apply) . assocr) . distl
