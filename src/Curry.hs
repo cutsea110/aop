@@ -27,7 +27,6 @@ distl :: (Either a b, c) -> Either (a, c) (b, c)
 distl (Left  x, z) = Left  (x, z)
 distl (Right y, z) = Right (y, z)
 
-
 undistl :: Either (a, c) (b, c) -> (Either a b, c)
 undistl (Left  (x, z)) = (Left  x, z)
 undistl (Right (y, z)) = (Right y, z)
@@ -80,7 +79,9 @@ foldr (c, f) = u
 ccat :: [a] -> [a] -> [a]
 ccat = foldr (id, compose . cross ((:), id))
 
+outl :: (a, b) -> a
 outl = fst
+outr :: (a, b) -> b
 outr = snd
 
 apply :: (b -> a, b) -> a
