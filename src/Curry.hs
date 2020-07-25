@@ -89,7 +89,9 @@ apply (f, x) = f x
 ccat :: [a] -> [a] -> [a]
 ccat = foldr (id, compose . cross (ccons, id))
 
+phi :: (Either () (a, [a]), [a]) -> Either ((), [a]) (a, ([a], [a]))
+phi = either Left (Right . assocr) . distl'
+  where distl' = distl :: (Either () (a, [a]), [a]) -> Either ((), [a]) ((a, [a]), [a])
+
 cat :: Either () (a, [a] -> [a]) -> [a] -> Either [a] [a]
 cat = curry $ either (Left . outr) (Right . cons . cross (id, apply) . assocr) . distl
-
-distl' = distl :: (Either () (a, [a]), [a]) -> Either ((), [a]) ((a, [a]), [a])
