@@ -62,14 +62,27 @@ conditional p f g = either f g . bool p
 const :: a -> b -> a
 const f _ = f
 
+compose :: (b -> c, a -> b) -> a -> c
+compose (f, g) = f . g
+
+data List a = Nil | Cons a (List a) deriving Show
+
+nil :: () -> List a
+nil () = Nil
+cons :: (a, List a) -> List a
+cons (x, xs) = Cons x xs
+
+foldr :: (b, (a, b) -> b) -> List a -> b
+foldr (c, f) = u
+  where u Nil = c
+        u (Cons x xs) = f (x, u xs)
+
+{--
 ccons :: a -> [a] -> [a]
 ccons = (:)
 
 cons :: (a, [a]) -> [a]
 cons (x, xs) = x:xs
-
-compose :: (b -> c, a -> b) -> a -> c
-compose (f, g) = f . g
 
 foldr :: (b, (a, b) -> b) -> [a] -> b
 foldr (c, f) = u
@@ -87,5 +100,6 @@ outr = snd
 apply :: (b -> a, b) -> a
 apply (f, x) = f x
 
-cat :: Either () (a, [a] -> [a]) -> [a] -> [a]
-cat = curry $ either outr (cons . cross (id, apply) . assocr) . distl
+cat :: Either () (a, [a] -> [a]) -> [a] -> Either [a] [a]
+cat = curry $ either (Left . outr) (Right . cons . cross (id, apply) . assocr) . distl
+--}
