@@ -77,6 +77,20 @@ foldr (c, f) = u
   where u Nil = c
         u (Cons x xs) = f (x, u xs)
 
+ccons :: a -> List a -> List a
+ccons x xs = Cons x xs
+
+outl :: (a, b) -> a
+outl = fst
+outr :: (a, b) -> b
+outr = snd
+
+apply :: (b -> a, b) -> a
+apply (f, x) = f x
+
+ccat :: List a -> List a -> List a
+ccat = foldr (id, compose . cross (ccons, id))
+
 {--
 ccons :: a -> [a] -> [a]
 ccons = (:)
@@ -91,14 +105,6 @@ foldr (c, f) = u
 
 ccat :: [a] -> [a] -> [a]
 ccat = foldr (id, compose . cross ((:), id))
-
-outl :: (a, b) -> a
-outl = fst
-outr :: (a, b) -> b
-outr = snd
-
-apply :: (b -> a, b) -> a
-apply (f, x) = f x
 
 cat :: Either () (a, [a] -> [a]) -> [a] -> Either [a] [a]
 cat = curry $ either (Left . outr) (Right . cons . cross (id, apply) . assocr) . distl
