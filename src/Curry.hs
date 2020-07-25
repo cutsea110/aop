@@ -65,20 +65,18 @@ const f _ = f
 compose :: (b -> c, a -> b) -> a -> c
 compose (f, g) = f . g
 
-data List a = Nil | Cons a (List a) deriving Show
+nil :: () -> [a]
+nil () = []
+cons :: (a, [a]) -> [a]
+cons (x, xs) = x:xs
 
-nil :: () -> List a
-nil () = Nil
-cons :: (a, List a) -> List a
-cons (x, xs) = Cons x xs
-
-foldr :: (b, (a, b) -> b) -> List a -> b
+foldr :: (b, (a, b) -> b) -> [a] -> b
 foldr (c, f) = u
-  where u Nil = c
-        u (Cons x xs) = f (x, u xs)
+  where u [] = c
+        u (x:xs) = f (x, u xs)
 
-ccons :: a -> List a -> List a
-ccons x xs = Cons x xs
+ccons :: a -> [a] -> [a]
+ccons = (:)
 
 outl :: (a, b) -> a
 outl = fst
@@ -88,24 +86,10 @@ outr = snd
 apply :: (b -> a, b) -> a
 apply (f, x) = f x
 
-ccat :: List a -> List a -> List a
-ccat = foldr (id, compose . cross (ccons, id))
-
-{--
-ccons :: a -> [a] -> [a]
-ccons = (:)
-
-cons :: (a, [a]) -> [a]
-cons (x, xs) = x:xs
-
-foldr :: (b, (a, b) -> b) -> [a] -> b
-foldr (c, f) = u
-  where u [] = c
-        u (x:xs) = f (x, u xs)
-
 ccat :: [a] -> [a] -> [a]
-ccat = foldr (id, compose . cross ((:), id))
+ccat = foldr (id, compose . cross (ccons, id))
 
 cat :: Either () (a, [a] -> [a]) -> [a] -> Either [a] [a]
 cat = curry $ either (Left . outr) (Right . cons . cross (id, apply) . assocr) . distl
---}
+
+distl' = distl :: (Either () (a, [a]), [a]) -> Either ((), [a]) ((a, [a]), [a])
