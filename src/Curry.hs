@@ -114,7 +114,10 @@ cat (x:xs) = k (Right (x, (xs++)))
 k' :: Either () (a, [a] -> [a]) -> [a] -> [a]
 k' = curry $ either outr (cons . cross (id, apply) . assocr) . distl
 cat' []     = k' (Left ())
-cat' (x:xs) = k' (Right (x,(cat' xs)))
+cat' (x:xs) = k' (Right (x, cat' xs))
+
+cat'' :: [a] -> [a] -> [a]
+cat'' = foldr (k' (Left ()), k' . Right)
 
 lines s = case break (=='\n') s of
   (ps,   []) -> ps : []
