@@ -108,8 +108,13 @@ k = curry $ either (Left . outr) (Right . cons . cross (id, apply) . assocr) . d
 -- >>> k (Right (1, ([2,3]++))) [4,5,6]
 -- Right [1,2,3,4,5,6]
 
-cat []     ys = k (Left ()) ys
-cat (x:xs) ys = k (Right (x, (xs++))) ys
+cat []     = k (Left ())
+cat (x:xs) = k (Right (x, (xs++)))
+
+k' :: Either () (a, [a] -> [a]) -> [a] -> [a]
+k' = curry $ either outr (cons . cross (id, apply) . assocr) . distl
+cat' []     = k' (Left ())
+cat' (x:xs) = k' (Right (x,(cat' xs)))
 
 lines s = case break (=='\n') s of
   (ps,   []) -> ps : []
