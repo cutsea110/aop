@@ -93,7 +93,21 @@ ccat = foldr (id, compose . cross (ccons, id))
 phi :: (Either () (a, [a]), [a]) -> Either ((), [a]) (a, ([a], [a]))
 phi = either Left (Right . assocr) . distl
 
--- cat = either (Left . outr) (Right . cons . cross (id, apply) . assocr) . distl
+-- B == [a]
+-- B^B == [a] -> [a]
+-- k :: () + a * B^B --> B^B
+-- k :: Either () (a, [a] -> [a]) -> [a] -> [a]
+-- k = curry $ either outr (cons . cross (id, apply) . assocr) . distl
+
+k :: Either () (a, [a] -> [a]) -> [a] -> Either [a] [a]
+k = curry $ either (Left . outr) (Right . cons . cross (id, apply) . assocr) . distl
+
+-- >>> k (Left ()) [1,2,3]
+-- Left [1,2,3]
+--
+-- >>> k (Right (1, ([2,3]++))) [4,5,6]
+-- Right [1,2,3,4,5,6]
+
 lines s = case break (=='\n') s of
   (ps,   []) -> ps : []
   (ps, _:qs) -> ps : lines qs
