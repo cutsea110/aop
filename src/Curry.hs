@@ -2,8 +2,9 @@
 {-# LANGUAGE TupleSections #-}
 module Curry where
 
-import Prelude hiding (null, pred, const, foldr)
+import Prelude hiding (null, pred, const, foldr, lines)
 import Data.Void
+import Data.List (unfoldr)
 
 type Boolean = Either () ()
 true  = Right ()
@@ -90,8 +91,9 @@ ccat :: [a] -> [a] -> [a]
 ccat = foldr (id, compose . cross (ccons, id))
 
 phi :: (Either () (a, [a]), [a]) -> Either ((), [a]) (a, ([a], [a]))
-phi = either Left (Right . assocr) . distl'
-  where distl' = distl :: (Either () (a, [a]), [a]) -> Either ((), [a]) ((a, [a]), [a])
+phi = either Left (Right . assocr) . distl
 
-cat :: Either () (a, [a] -> [a]) -> [a] -> Either [a] [a]
-cat = curry $ either (Left . outr) (Right . cons . cross (id, apply) . assocr) . distl
+-- cat = either (Left . outr) (Right . cons . cross (id, apply) . assocr) . distl
+lines s = case break (=='\n') s of
+  (ps,   []) -> ps : []
+  (ps, _:qs) -> ps : lines qs
