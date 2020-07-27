@@ -121,6 +121,7 @@ cat'' = foldr (c, f)
   where c         = k' (Left ())
         f (x, xs) = k' (Right (x, xs))
 
+lines :: String -> [String]
 lines s = case break (=='\n') s of
   (ps,   []) -> ps : []
   (ps, _:qs) -> ps : lines qs
