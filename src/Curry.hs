@@ -117,7 +117,9 @@ cat' []     = k' (Left ())
 cat' (x:xs) = k' (Right (x, cat' xs))
 
 cat'' :: [a] -> [a] -> [a]
-cat'' = foldr (k' (Left ()), k' . Right)
+cat'' = foldr (c, f)
+  where c         = k' (Left ())
+        f (x, xs) = k' (Right (x, xs))
 
 lines s = case break (=='\n') s of
   (ps,   []) -> ps : []
