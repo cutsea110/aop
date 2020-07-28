@@ -13,7 +13,7 @@ import Data.List
 import Data.List.NonEmpty hiding (reverse, zipWith, zip, map, head, scanl1)
 import Numeric.Natural
 import Data.Functor.Foldable
-import Data.Functor.Base hiding (head, tail)
+import Data.Functor.Base hiding (head, tail, TreeF)
 
 data Tree = Leaf
           | Tree :^: Tree

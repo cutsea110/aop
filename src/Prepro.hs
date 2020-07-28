@@ -4,17 +4,21 @@
 {-# LANGUAGE DeriveTraversable #-}
 module Prepro where
 
+import Data.Functor.Base
 import Data.Functor.Foldable
 import Data.Tree
-
+{-
 data TreeF a r = NodeF { rootLabelF :: a, subForestF :: [r] }
   deriving (Functor, Foldable, Traversable)
 type instance Base (Tree a) = TreeF a
 instance Recursive (Tree a) where project (Node a ts) = NodeF a ts
 instance Corecursive (Tree a) where embed (NodeF a ts) = Node a ts
-
+-}
 tree :: Tree Integer
 tree = Node 2 [Node 1 [Node 3 []], Node 7 [Node 1 [], Node 5 []]]
+
+rootLabelF (NodeF x _) = x
+subForestF (NodeF _ y) = y
 
 main = do
   drawTree' tree

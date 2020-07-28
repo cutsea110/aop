@@ -11,7 +11,8 @@ import           Control.Monad              ((<=<), liftM2)
 import           Control.Monad.Free         (Free (..))
 import           Control.Monad.Trans.Class  (lift)
 import           Control.Monad.Trans.Reader (ReaderT, ask, runReaderT)
-import           Data.Functor.Foldable      (Recursive (..), Corecursive (..), Base, Fix (..))
+import           Data.Functor.Foldable      (Recursive (..), Corecursive (..), Base)
+import           Data.Fix                   (Fix (..))
 import           Data.Map.Strict            (Map)
 import qualified Data.Map.Strict            as Map
 
