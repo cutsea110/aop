@@ -136,6 +136,10 @@ foldt (f, g) = u
   where u (Tip x)      = f x
         u (Bin (l, r)) = g (u l, u r)
 
+tips :: Tree a -> [a]
 tips = foldt (wrap, cat)
   where wrap x = [x]
         cat (l, r) = l ++ r
+
+tips' :: Tree a -> [a]
+tips' t = foldt (curry cons, compose) t []
