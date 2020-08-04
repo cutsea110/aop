@@ -125,3 +125,17 @@ lines :: String -> [String]
 lines s = case break (=='\n') s of
   (ps,   []) -> ps : []
   (ps, _:qs) -> ps : lines qs
+
+
+-- Tree
+
+data Tree a = Tip a
+            | Bin (Tree a, Tree a)
+            deriving Show
+foldt (f, g) = u
+  where u (Tip x)      = f x
+        u (Bin (l, r)) = g (u l, u r)
+
+tips = foldt (wrap, cat)
+  where wrap x = [x]
+        cat (l, r) = l ++ r
