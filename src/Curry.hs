@@ -143,3 +143,15 @@ tips = foldt (wrap, cat)
 
 tips' :: Tree a -> [a]
 tips' t = foldt (curry cons, compose) t []
+
+phi' :: (Either a (Tree a, Tree a), [a]) -> Either (a, [a]) (Tree a, (Tree a, [a]))
+phi' = either Left (Right . assocr) . distl
+
+h :: Either a (Tree a, Tree a) -> [a] -> Either [a] [a]
+h = curry $ either (Left . cons) (Right . tipcat . cross (id, tipcat)) . phi'
+
+h' :: Either a (Tree a, Tree a) -> [a] -> [a]
+h' = curry $ either cons (tipcat . cross (id, tipcat) . assocr) . distl
+
+tipcat :: (Tree a, [a]) -> [a]
+tipcat = undefined
