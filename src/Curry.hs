@@ -154,4 +154,5 @@ h' :: Either a (Tree a, Tree a) -> [a] -> [a]
 h' = curry $ either cons (tipcat . cross (id, tipcat) . assocr) . distl
 
 tipcat :: (Tree a, [a]) -> [a]
-tipcat = undefined
+tipcat (Tip x,      xs) = h' (Left x) xs
+tipcat (Bin (l, r), xs) = h' (Right (l, r)) xs
