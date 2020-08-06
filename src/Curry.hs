@@ -156,3 +156,7 @@ h' = curry $ either cons (tipcat . cross (id, tipcat) . assocr) . distl
 tipcat :: (Tree a, [a]) -> [a]
 tipcat (Tip x,      xs) = h' (Left x) xs
 tipcat (Bin (l, r), xs) = h' (Right (l, r)) xs
+
+ctipcat :: Tree a -> [a] -> [a]
+ctipcat (Tip x)      = h' (Left x)
+ctipcat (Bin (l, r)) = h' (Right (l, r))
