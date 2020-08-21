@@ -24,3 +24,31 @@ m1 (x, y) = x + 1
 m2 (x, y) = if x >= y
             then x + 1
             else y - 1
+
+-- | Ex 1.3
+
+data Nat = Zero
+         | Succ Nat
+         deriving (Show, Eq)
+
+foldn (c, f) = u
+  where u Zero     = c
+        u (Succ n) = f (u n)
+
+data NatPlus = One
+             | Next NatPlus
+         deriving (Show, Eq)
+
+foldnplus (c, f) = u
+  where u One      = c
+        u (Next n) = f (u n)
+
+f :: NatPlus -> Nat
+f = foldnplus (Zero, Succ)
+
+g :: Nat -> NatPlus
+g = foldn (One, Next)
+
+-- test
+testfgIsId n = n == (f . g) n
+testgfIsId n = n == (g . f) n

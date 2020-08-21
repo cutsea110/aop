@@ -70,6 +70,8 @@ library
                      , Tree
                      , TutorialZygo
                      , TypeFunctor
+
+                     , Chap01
   -- other-modules:       
   other-extensions:    DeriveFunctor
                      , TypeSynonymInstances
