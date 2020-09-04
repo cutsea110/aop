@@ -145,6 +145,8 @@ cack (x+1) = k (cack x)
 cack = foldn' ((+1), k)
   where k v = foldn' (v 1, v)
 
-ack (0, y) = y + 1
-ack (x+1, 0) = ack (x, 1)
-ack (x+1, y+1) = ack (x, ack (x+1, y))
+cack' = foldn' ((+1), swap f)
+  where f = foldn' (ap1, ap2)
+        ap1 g = g 1
+        ap2 g h = h (g h)
+        swap f a b = f b a
