@@ -1,5 +1,7 @@
 module Chap01 where
 
+import Prelude hiding (last)
+
 -- | Ex 1.1
 -- solution 1
 k1 x = if k1 x == 0 then 1 else 0
@@ -62,3 +64,20 @@ sqr = f . foldn (c, h)
         h (s, dn) = (plus (plus s dn) one, plus dn two)
         (zero, one, two) = (Zero, Succ zero, Succ one)
 
+-- | Ex 1.5
+last :: (Nat  -> Bool) -> Nat -> Nat
+last p = f . foldn (c, h)
+  where f = outl
+        c = (Zero, Succ Zero)
+        h (l, n) = if p n then (n, Succ n) else (l, Succ n)
+
+evenp, oddp :: Nat -> Bool
+evenp Zero = True
+evenp (Succ n) = oddp n
+oddp Zero = False
+oddp (Succ n) = evenp n
+
+toNat 0 = Zero
+toNat n = Succ (toNat (n-1))
+fromNat Zero = 0
+fromNat (Succ n) = 1 + fromNat n
