@@ -170,10 +170,29 @@ foldl (c, f) = u
   where u SNil = c
         u (Snoc (xs, a)) = f (u xs, a)
 
+{--
 convert :: ListL a -> ListR a
 convert SNil = Nil
 convert (Snoc (xs, a)) = snocr (convert xs, a)
+--}
 
+convert :: ListL a -> ListR a
+convert = foldl (Nil, snocr)
+
+{--
 snocr :: (ListR a, a) -> ListR a
 snocr (Nil, b) = Cons (b, Nil)
 snocr (Cons (a, x), b) = Cons (a, snocr (x, b))
+--}
+
+snocr :: (ListR a, a) -> ListR a
+snocr = uncurry . flip $ snocr'
+  where
+    snocr' :: a -> ListR a -> ListR a
+    snocr' b = foldr (c, f)
+      where c = Cons (b, Nil)
+            f = Cons
+{--
+snocr' b Nil = Cons (b, Nil)
+snocr' b (Cons (a, x)) = Cons (a, snocr' b x)
+--}
