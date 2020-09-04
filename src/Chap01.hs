@@ -71,13 +71,15 @@ last p = f . foldn (c, h)
         c = (Zero, Succ Zero)
         h (l, n) = if p n then (n, Succ n) else (l, Succ n)
 
-evenp, oddp :: Nat -> Bool
-evenp Zero = True
-evenp (Succ n) = oddp n
-oddp Zero = False
-oddp (Succ n) = evenp n
+test_1_5 = map (fromNat . last evenp . toNat) [0..100]
+  where
+    evenp, oddp :: Nat -> Bool
+    evenp Zero = True
+    evenp (Succ n) = oddp n
+    oddp Zero = False
+    oddp (Succ n) = evenp n
 
-toNat 0 = Zero
-toNat n = Succ (toNat (n-1))
-fromNat Zero = 0
-fromNat (Succ n) = 1 + fromNat n
+    toNat 0 = Zero
+    toNat n = Succ (toNat (n-1))
+    fromNat Zero = 0
+    fromNat (Succ n) = 1 + fromNat n
