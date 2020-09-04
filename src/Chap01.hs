@@ -1,3 +1,4 @@
+{-# LANGUAGE NPlusKPatterns #-}
 module Chap01 where
 
 import Prelude hiding (last)
@@ -83,3 +84,67 @@ test_1_5 = map (fromNat . last evenp . toNat) [0..100]
     toNat n = Succ (toNat (n-1))
     fromNat Zero = 0
     fromNat (Succ n) = 1 + fromNat n
+
+-- | Ex 1.6
+foldn' :: (a, a -> a) -> Int -> a
+foldn' (c, f) = u
+  where u 0 = c
+        u (n+1) = f (u n)
+
+{--
+cack :: Nat -> Nat -> Nat
+cack = foldn (Succ, swap f)
+  where f = foldn (ap1, ap2)
+        ap1 g = g (Succ Zero)
+        ap2 g h = h (g h)
+        swap f a b = f b a
+--}
+
+{--
+-- step 0
+ack (0, y) = y + 1
+ack (x+1, 0) = ack (x, 1)
+ack (x+1, y+1) = ack (x, ack (x+1, y))
+--}
+
+{--
+-- step 1
+cack 0 y = y + 1
+cack (x+1) 0 = cack x 1
+cack (x+1) (y+1) = cack x (cack (x+1) y)
+--}
+
+{--
+-- step 2
+f y = y + 1       -- f = cack 0
+g 0 = h 1         -- g = cack (x+1), h = cack x
+g (y+1) = h (g y) -- same as above
+--}
+
+{--
+-- step 3
+f = (+1)
+g = foldn' (h 1, h)
+--}
+
+
+{--
+-- step 4
+cack 0 = (+1)
+cack (x+1) = foldn' (cack x 1, cack x)
+--}
+
+{--
+-- step 5
+cack 0 = (+1)
+cack (x+1) = k (cack x)
+  where k v = foldn' (v 1, v)
+--}
+
+-- step 6
+cack = foldn' ((+1), k)
+  where k v = foldn' (v 1, v)
+
+ack (0, y) = y + 1
+ack (x+1, 0) = ack (x, 1)
+ack (x+1, y+1) = ack (x, ack (x+1, y))
