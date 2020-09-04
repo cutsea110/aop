@@ -52,3 +52,13 @@ g = foldn (One, Next)
 -- test
 testfgIsId n = n == (f . g) n
 testgfIsId n = n == (g . f) n
+
+-- | Ex 1.4
+plus = foldn (id, (Succ .))
+outl (x, _) = x
+sqr = f . foldn (c, h)
+  where f = outl
+        c = (zero, zero)
+        h (s, dn) = (plus (plus s dn) one, plus dn two)
+        (zero, one, two) = (Zero, Succ zero, Succ one)
+
