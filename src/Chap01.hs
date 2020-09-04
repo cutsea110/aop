@@ -155,6 +155,8 @@ cack' = foldn' ((+1), swap f)
 data ListR a = Nil
              | Cons (a, ListR a)
              deriving Show
+
+foldr :: (b, (a, b) -> b) -> ListR a -> b
 foldr (c, f) = u
   where u Nil = c
         u (Cons (a, xs)) = f (a, u xs)
@@ -162,6 +164,16 @@ foldr (c, f) = u
 data ListL a = SNil
              | Snoc (ListL a, a)
              deriving Show
+
+foldl :: (b, (b, a) -> b) -> ListL a -> b
 foldl (c, f) = u
   where u SNil = c
         u (Snoc (xs, a)) = f (u xs, a)
+
+convert :: ListL a -> ListR a
+convert SNil = Nil
+convert (Snoc (xs, a)) = snocr (convert xs, a)
+
+snocr :: (ListR a, a) -> ListR a
+snocr (Nil, b) = Cons (b, Nil)
+snocr (Cons (a, x), b) = Cons (a, snocr (x, b))
