@@ -1,7 +1,7 @@
 {-# LANGUAGE NPlusKPatterns #-}
 module Chap01 where
 
-import Prelude hiding (last)
+import Prelude hiding (last, foldr, foldl)
 
 -- | Ex 1.1
 -- solution 1
@@ -150,3 +150,18 @@ cack' = foldn' ((+1), swap f)
         ap1 g = g 1
         ap2 g h = h (g h)
         swap f a b = f b a
+
+-- | Ex 1.7
+data ListR a = Nil
+             | Cons (a, ListR a)
+             deriving Show
+foldr (c, f) = u
+  where u Nil = c
+        u (Cons (a, xs)) = f (a, u xs)
+
+data ListL a = SNil
+             | Snoc (ListL a, a)
+             deriving Show
+foldl (c, f) = u
+  where u SNil = c
+        u (Snoc (xs, a)) = f (u xs, a)
