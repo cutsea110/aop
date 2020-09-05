@@ -221,3 +221,18 @@ catconv = foldl (c, h)
 
 convert' :: ListL a -> ListR a
 convert' x = catconv x Nil
+
+-- | Ex 1.9
+{--
+nil ++ ys == ys
+
+i) ys = nil の場合:
+nil ++ nil = nil
+
+ii) ys = Snoc (ys', y') の場合:
+nil ++ Snoc (ys', y')
+= {- ++ の定義 -}
+Snoc (nil ++ ys', y')
+= {- 帰納法 -}
+Snoc (ys', y')
+--}
