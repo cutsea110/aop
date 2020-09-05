@@ -236,3 +236,9 @@ Snoc (nil ++ ys', y')
 = {- 帰納法 -}
 Snoc (ys', y')
 --}
+
+-- | Ex 1.10
+
+cat :: ListR a -> (ListR a -> ListR a)
+cat Nil = id
+cat (Cons (x, xs)) = \ys -> Cons (x, cat xs ys)
