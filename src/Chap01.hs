@@ -196,3 +196,28 @@ snocr = uncurry . flip $ snocr'
 snocr' b Nil = Cons (b, Nil)
 snocr' b (Cons (a, x)) = Cons (a, snocr' b x)
 --}
+
+-- | Ex 1.8
+{--
+-- step 1
+catconv SNil = id
+catconv (Snoc (xs, a)) = \ys -> catconv xs (Cons (a, ys))
+--}
+{--
+-- step 2
+-- h (catconv xs, a) === \ys -> catconv xs (Cons (a, ys))
+-- h (catconv xs, a) ys === catconv xs (Cons (a, ys))
+-- h (f, a) ys === f (Cons (a, ys)) where f = catconv xs
+catconv SNil = id
+catconv (Snoc (xs, a)) = h (catconv xs, a)
+  where h (f, a) ys = f (Cons (a, ys))
+--}
+
+-- step 3
+catconv :: ListL a -> ListR a -> ListR a
+catconv = foldl (c, h)
+  where c = id
+        h (f, a) ys = f (Cons (a, ys))
+
+convert' :: ListL a -> ListR a
+convert' x = catconv x Nil
