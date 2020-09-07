@@ -1,4 +1,5 @@
 {-# LANGUAGE NPlusKPatterns #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 module Chap01 where
 
 import Prelude hiding (last, foldr, foldl)
@@ -242,3 +243,26 @@ Snoc (ys', y')
 cat :: ListR a -> (ListR a -> ListR a)
 cat Nil = id
 cat (Cons (x, xs)) = \ys -> Cons (x, cat xs ys)
+
+-- | Ex 1.11
+
+-- foldl over cons-list
+{--
+-- step 1
+foldL :: (b, (b, a) -> b) -> ListR a -> b
+foldL (c, f) Nil = c
+foldL (c, f) (Cons (x, xs)) = foldL (f (c, x), f) xs
+--}
+
+-- [a] <----------------------- 1 + a * [a]
+--  |                             |
+--  |u = (|id, g|)                | 1 + 1 * (|id, g|)
+--  |                             |
+--  v                             v
+-- b^b <----------------------- 1 + a * b^b
+--
+foldL :: forall a b. (b, (b, a) -> b) -> ListR a -> b
+foldL (c, f) x = foldr (id, g) x c
+  where
+    g :: (a, b -> b) -> b -> b
+    g (a, h) c = h (f (c, a))
