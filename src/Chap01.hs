@@ -268,7 +268,14 @@ foldL (c, f) x = foldr (id, g) x c
     g (a, h) c = h (f (c, a))
 
 -- | Ex 1.12
+take :: Nat -> ListR a -> ListR a
 take n x = foldr (c, h) x n
   where c a = Nil
         h (a, f) Zero = Nil
         h (a, f) (Succ n) = Cons (a, f n)
+
+drop :: Nat -> ListR a -> ListR a
+drop n x = foldr (d, k) x n
+  where d a = Nil
+        k (a, f) Zero = Cons (a, f Zero)
+        k (a, f) (Succ n) = f n
