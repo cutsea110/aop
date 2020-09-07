@@ -2,7 +2,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module Chap01 where
 
-import Prelude hiding (last, foldr, foldl)
+import Prelude hiding (last, foldr, foldl, take, drop)
 
 -- | Ex 1.1
 -- solution 1
@@ -266,3 +266,9 @@ foldL (c, f) x = foldr (id, g) x c
   where
     g :: (a, b -> b) -> b -> b
     g (a, h) c = h (f (c, a))
+
+-- | Ex 1.12
+take n x = foldr (c, h) x n
+  where c a = Nil
+        h (a, f) Zero = Nil
+        h (a, f) (Succ n) = Cons (a, f n)
