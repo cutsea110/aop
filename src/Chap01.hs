@@ -301,5 +301,5 @@ foldg f = u
   where u (Node (x, ts)) = f (x, listl u ts)
 
 listl :: (a -> b) -> ListL a -> ListL b
-listl f SNil = SNil
-listl f (Snoc (xs, x)) = Snoc (listl f xs, f x)
+listl f = foldl (SNil, g)
+  where g (xs, x) = Snoc (xs, f x)
