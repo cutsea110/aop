@@ -285,3 +285,21 @@ drop n x = foldr (d, k) x n
     k :: (a, Nat -> ListR a) -> Nat -> ListR a
     k (a, f) Zero = Cons (a, f Zero)
     k (a, f) (Succ n) = f n
+
+-- | Ex 1.13
+data GTree a = Node (a, ListL (GTree a)) deriving Show
+
+--               Node
+-- GTree A <----------------- A * [Gtree A]
+--     |                        |
+--     | (|f|)                  | F(|f|)
+--     |                        |
+--     v                        v
+--     B   <----------------- A * [B]
+--                 f
+foldg f = u
+  where u (Node (x, ts)) = f (x, listl u ts)
+
+listl :: (a -> b) -> ListL a -> ListL b
+listl f SNil = SNil
+listl f (Snoc (xs, x)) = Snoc (listl f xs, f x)
