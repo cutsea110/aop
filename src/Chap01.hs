@@ -311,7 +311,8 @@ size = foldg g
         sum :: ListL Integer -> Integer
         sum = foldl (c, f)
           where c = 0
-                f (xs, x) = xs + x
+                f = uncurry (+)
+
 depth :: GTree a -> Integer
 depth = foldg g
   where g (a, SNil) = 0
