@@ -310,12 +310,13 @@ size = foldg g
   where g (x, ts) = 1 + sum ts
         sum :: ListL Integer -> Integer
         sum = foldl (c, f)
-        c = 0
-        f (xs, x) = xs + x
+          where c = 0
+                f (xs, x) = xs + x
 depth :: GTree a -> Integer
 depth = foldg g
   where g (a, SNil) = 0
         g (a, Snoc (xs, x)) = 1 + maxlist xs
         maxlist :: ListL Integer -> Integer
-        maxlist SNil = 0
-        maxlist (Snoc (xs, x)) = max (maxlist xs) x
+        maxlist = foldl (c, f)
+          where c = 0
+                f = uncurry max
