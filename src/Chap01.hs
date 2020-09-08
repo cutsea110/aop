@@ -297,9 +297,18 @@ data GTree a = Node (a, ListL (GTree a)) deriving Show
 --     v                        v
 --     B   <----------------- A * [B]
 --                 f
+foldg :: ((a, ListL b) -> b) -> GTree a -> b
 foldg f = u
   where u (Node (x, ts)) = f (x, listl u ts)
 
 listl :: (a -> b) -> ListL a -> ListL b
 listl f = foldl (SNil, g)
   where g (xs, x) = Snoc (xs, f x)
+
+size :: GTree a -> Integer
+size = foldg g
+  where g (x, ts) = 1 + sum ts
+        sum :: ListL Integer -> Integer
+        sum = foldl (c, f)
+        c = 0
+        f (xs, x) = xs + x
