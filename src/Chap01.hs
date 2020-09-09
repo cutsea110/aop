@@ -2,7 +2,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module Chap01 where
 
-import Prelude hiding (last, foldr, foldl, take, drop)
+import Prelude hiding (last, foldr, foldl, take, drop, zip)
 
 -- | Ex 1.1
 -- solution 1
@@ -354,3 +354,9 @@ test_1_14 = Node ('f', ghd)
         gab = Node ('g', ab)
         hc = Node ('h', Snoc (SNil, c))
         ghd = Snoc (Snoc (Snoc (SNil, gab), hc), d)
+
+-- | Ex 1.15
+zip :: ListR a -> ListR b -> ListR (a, b)
+zip Nil ys = Nil
+zip (Cons (x, xs)) Nil = Nil
+zip (Cons (x, xs)) (Cons (y, ys)) = Cons ((x, y), zip xs ys)
