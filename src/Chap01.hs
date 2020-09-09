@@ -356,7 +356,18 @@ test_1_14 = Node ('f', ghd)
         ghd = Snoc (Snoc (Snoc (SNil, gab), hc), d)
 
 -- | Ex 1.15
+-- [a] <----------------------- 1 + a * [a]
+--  |                             |
+--  |u = (|id, g|)                | 1 + 1 * (|id, g|)
+--  |                             |
+--  v                             v
+-- [(a,b)]^[b] <--------------- 1 + a * [(a,b)]^[b]
+--
 zip :: ListR a -> ListR b -> ListR (a, b)
-zip Nil ys = Nil
-zip (Cons (x, xs)) Nil = Nil
-zip (Cons (x, xs)) (Cons (y, ys)) = Cons ((x, y), zip xs ys)
+zip = foldr (c, h)
+  where
+    c :: ListR b -> ListR (a, b)
+    c ys = Nil
+    h :: (a, ListR b -> ListR (a, b)) -> ListR b -> ListR (a, b)
+    h (x, f) Nil = Nil
+    h (x, f) (Cons (y, ys)) = Cons ((x, y), f ys)
