@@ -1,5 +1,6 @@
 -- ref.) https://stackoverflow.com/questions/3208258/memoization-in-haskell
 {-# LANGUAGE BangPatterns #-}
+{-# LANGUAGE NPlusKPatterns #-}
 module Fiblike where
 
 import Data.Function (fix)
@@ -24,7 +25,7 @@ instance Functor Tree where
 
 index :: Tree a -> Integer -> a
 index (Tree _ x _) 0 = x
-index (Tree l _ r) n = case (n - 1) `divMod` 2 of
+index (Tree l _ r) (n+1) = case n `divMod` 2 of
   (q, 0) -> index l q
   (q, 1) -> index r q
 
