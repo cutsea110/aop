@@ -321,3 +321,25 @@ depth = foldg g
         maxlist = foldl (c, f)
           where c = 0
                 f = uncurry max
+
+-- | Ex 1.14
+
+data Tree a = Tip a
+            | Bin (Tree a, Tree a)
+            deriving Show
+
+foldt :: (a -> b, (b, b) -> b) -> Tree a -> b
+foldt (f, g) = u
+  where u (Tip a) = f a
+        u (Bin (l, r)) = g (u l, u r)
+
+tree f = foldt (Tip . f, Bin)
+
+curryT :: GTree a -> Tree a
+curryT = foldg h
+  where h (x, ts) = foldl (Tip x, Bin) ts
+
+uncurryT :: Tree a -> GTree a
+uncurryT = foldt (f, g)
+  where f a = Node (a, SNil)
+        g (Node (a, xs), ys) = Node (a, Snoc (xs, ys))
