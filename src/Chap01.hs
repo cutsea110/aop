@@ -417,7 +417,17 @@ eval = foldd (i, p)
         j D7 = Next (j D6)
         j D8 = Next (j D7)
         j D9 = Next (j D8)
+        d10 = Next (j D9)
         p :: (NatPlus, D) -> NatPlus
-        p (n, d) = n `plus'` j d
+        p (n, D0) = n `times'` d10
+        p (n, d)  = (n `times'` d10) `plus'` j d
 
-        m `plus'` n = g $ f m `plus` f n
+fromNatPlus :: NatPlus -> Integer
+fromNatPlus = foldnplus (1, (1+))
+toNatPlus :: Integer -> NatPlus
+toNatPlus n | n == 1 = One
+            | n > 1  = Next (toNatPlus (n-1))
+            | otherwise = error "Oops!"
+
+test_1_16 :: NatPlus
+test_1_16 = eval (Add (Wrap D'4, D2))
