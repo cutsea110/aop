@@ -381,3 +381,40 @@ data Digits = Wrap D' | Add (Digits, D) deriving Show
 foldd (f, g) = u
   where u (Wrap d) = f d
         u (Add (ds, d)) = g (u ds, d)
+
+plus' :: NatPlus -> NatPlus -> NatPlus
+plus' = foldnplus (c, f)
+  where c y = Next y
+        f g y = Next (g y)
+-- plus' One y = Next y
+-- plus' (Next x) y = Next (plus' x y)
+times' :: NatPlus -> NatPlus -> NatPlus
+times' One y = y
+times' (Next x) y = plus' y (times' x y)
+  
+
+eval :: Digits -> NatPlus
+eval = foldd (i, p)
+  where i :: D' -> NatPlus
+        i D'1 = One
+        i D'2 = Next (i D'1)
+        i D'3 = Next (i D'2)
+        i D'4 = Next (i D'3)
+        i D'5 = Next (i D'4)
+        i D'6 = Next (i D'5)
+        i D'7 = Next (i D'6)
+        i D'8 = Next (i D'7)
+        i D'9 = Next (i D'8)
+        j D1 = One
+        j D2 = Next (j D1)
+        j D3 = Next (j D2)
+        j D4 = Next (j D3)
+        j D5 = Next (j D4)
+        j D6 = Next (j D5)
+        j D7 = Next (j D6)
+        j D8 = Next (j D7)
+        j D9 = Next (j D8)
+        p :: (NatPlus, D) -> NatPlus
+        p (n, d) = n `plus'` j d
+
+        m `plus'` n = g $ f m `plus` f n
