@@ -371,3 +371,13 @@ zip = foldr (c, h)
     h :: (a, ListR b -> ListR (a, b)) -> ListR b -> ListR (a, b)
     h (x, f) Nil = Nil
     h (x, f) (Cons (y, ys)) = Cons ((x, y), f ys)
+
+-- | Ex 1.16
+data D = D0 | D1 | D2 | D3 | D4 | D5 | D6 | D7 | D8 | D9 deriving Show
+data D' = D'1 | D'2 | D'3 | D'4 | D'5 | D'6 | D'7 | D'8 | D'9 deriving Show
+
+data Digits = Wrap D' | Add (Digits, D) deriving Show
+
+foldd (f, g) = u
+  where u (Wrap d) = f d
+        u (Add (ds, d)) = g (u ds, d)
