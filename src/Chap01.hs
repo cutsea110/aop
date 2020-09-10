@@ -389,8 +389,11 @@ plus' = foldnplus (c, f)
 -- plus' One y = Next y
 -- plus' (Next x) y = Next (plus' x y)
 times' :: NatPlus -> NatPlus -> NatPlus
-times' One y = y
-times' (Next x) y = plus' y (times' x y)
+times' = foldnplus (c, f)
+  where c y = y
+        f g y = plus' y (g y)
+-- times' One y = y
+-- times' (Next x) y = plus' y (times' x y)
   
 
 eval :: Digits -> NatPlus
