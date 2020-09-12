@@ -378,6 +378,7 @@ data D' = D'1 | D'2 | D'3 | D'4 | D'5 | D'6 | D'7 | D'8 | D'9 deriving Show
 
 data Digits = Wrap D' | Add (Digits, D) deriving Show
 
+foldd :: (D' -> a, (a, D) -> a) -> Digits -> a
 foldd (f, g) = u
   where u (Wrap d) = f d
         u (Add (ds, d)) = g (u ds, d)
@@ -394,7 +395,15 @@ times' = foldnplus (c, f)
         f g y = plus' y (g y)
 -- times' One y = y
 -- times' (Next x) y = plus' y (times' x y)
-  
+
+unfoldd :: (a -> Either D' (a, D)) -> a -> Digits
+unfoldd psi = v
+  where v x = case psi x of
+          Left  d'      -> Wrap d'
+          Right (ds, d) -> Add (v ds, d)
+
+decimal :: NatPlus -> Digits
+decimal = undefined
 
 eval :: Digits -> NatPlus
 eval = foldd (i, p)
