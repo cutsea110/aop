@@ -402,34 +402,68 @@ unfoldd psi = v
           Left  d'      -> Wrap d'
           Right (ds, d) -> Add (v ds, d)
 
+
+toD' :: Integer -> D'
+toD' 1 = D'1
+toD' 2 = D'2
+toD' 3 = D'3
+toD' 4 = D'4
+toD' 5 = D'5
+toD' 6 = D'6
+toD' 7 = D'7
+toD' 8 = D'8
+toD' 9 = D'9
+toD' _ = error "Oops!"
+
+fromD' :: D' -> NatPlus
+fromD' D'1 = One
+fromD' D'2 = Next (fromD' D'1)
+fromD' D'3 = Next (fromD' D'2)
+fromD' D'4 = Next (fromD' D'3)
+fromD' D'5 = Next (fromD' D'4)
+fromD' D'6 = Next (fromD' D'5)
+fromD' D'7 = Next (fromD' D'6)
+fromD' D'8 = Next (fromD' D'7)
+fromD' D'9 = Next (fromD' D'8)
+
+toD :: Integer -> D
+toD 0 = D0
+toD 1 = D1
+toD 2 = D2
+toD 3 = D3
+toD 4 = D4
+toD 5 = D5
+toD 6 = D6
+toD 7 = D7
+toD 8 = D8
+toD 9 = D9
+toD _ = error "Oops!"
+
+fromD :: D -> NatPlus
+fromD D0 = error "Oops!"
+fromD D1 = One
+fromD D2 = Next (fromD D1)
+fromD D3 = Next (fromD D2)
+fromD D4 = Next (fromD D3)
+fromD D5 = Next (fromD D4)
+fromD D6 = Next (fromD D5)
+fromD D7 = Next (fromD D6)
+fromD D8 = Next (fromD D7)
+fromD D9 = Next (fromD D8)
+
 decimal :: NatPlus -> Digits
-decimal = undefined
+decimal = unfoldd psi
+  where psi :: NatPlus -> Either D' (NatPlus, D)
+        psi n = case fromNatPlus n `divMod` 10 of
+          (0, m) -> Left (toD' m)
+          (d, m) -> Right (toNatPlus d, toD m)
 
 eval :: Digits -> NatPlus
-eval = foldd (i, p)
-  where i :: D' -> NatPlus
-        i D'1 = One
-        i D'2 = Next (i D'1)
-        i D'3 = Next (i D'2)
-        i D'4 = Next (i D'3)
-        i D'5 = Next (i D'4)
-        i D'6 = Next (i D'5)
-        i D'7 = Next (i D'6)
-        i D'8 = Next (i D'7)
-        i D'9 = Next (i D'8)
-        j D1 = One
-        j D2 = Next (j D1)
-        j D3 = Next (j D2)
-        j D4 = Next (j D3)
-        j D5 = Next (j D4)
-        j D6 = Next (j D5)
-        j D7 = Next (j D6)
-        j D8 = Next (j D7)
-        j D9 = Next (j D8)
-        d10 = Next (j D9)
+eval = foldd (fromD', p)
+  where d10 = Next (fromD D9)
         p :: (NatPlus, D) -> NatPlus
         p (n, D0) = n `times'` d10
-        p (n, d)  = (n `times'` d10) `plus'` j d
+        p (n, d)  = (n `times'` d10) `plus'` fromD d
 
 fromNatPlus :: NatPlus -> Integer
 fromNatPlus = foldnplus (1, (1+))
