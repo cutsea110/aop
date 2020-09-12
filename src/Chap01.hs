@@ -477,7 +477,7 @@ test_1_16 = eval (Add (Wrap D'4, D2))
 test_1_16' :: Integer -> Digits
 test_1_16' = decimal . toNatPlus
 
--- | 1.18
+-- | Ex 1.18
 --                    foo             xs      y
 -- Tree (A * B) <------------------ ListR A * B             A       B
 --      |                                |                  |       |
@@ -489,3 +489,31 @@ test_1_16' = decimal . toNatPlus
 --
 --  tree (cross (f, g))  . foo == foo . cross (listr f, g)
 --
+
+-- | Ex 1.19
+--                foo
+-- ListL A <--------------- GTree A          A
+--    |                        |             |
+--    |ListL f                 |Gtree f      |f
+--    |                        |             |
+--    v                        v             v
+-- ListL B <--------------- GTree B          B
+--                foo
+--
+--  listl f . foo == foo . gtree f
+--
+--                      Node
+--  GTree a <------------------------------ a * ListL (GTree a)            a
+--      |                                        |                         |
+--      | u = (|node . (f * id)|)                | 1 * listl u             |f
+--      |                                        |                         |
+--      v    Node                     f * id     v                         v
+--  GTree b <---- b * ListL (GTree b) ----- a * ListL (GTree b)            b
+--          <------------------------------
+--               Node . (f * id)
+--
+gtree :: (a -> b) -> GTree a -> GTree b
+gtree f = foldg (Node . cross (f, id))
+
+cross :: (a -> c, b -> d) -> (a, b) -> (c, d)
+cross (f, g) (x, y) = (f x, g y)
