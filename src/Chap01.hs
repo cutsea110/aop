@@ -333,6 +333,7 @@ foldt (f, g) = u
   where u (Tip a) = f a
         u (Bin (l, r)) = g (u l, u r)
 
+tree :: (a -> b) -> Tree a -> Tree b
 tree f = foldt (Tip . f, Bin)
 
 curryT :: GTree a -> Tree a
@@ -517,3 +518,4 @@ gtree f = foldg (Node . cross (f, id))
 
 cross :: (a -> c, b -> d) -> (a, b) -> (c, d)
 cross (f, g) (x, y) = (f x, g y)
+
