@@ -476,3 +476,16 @@ test_1_16 :: NatPlus
 test_1_16 = eval (Add (Wrap D'4, D2))
 test_1_16' :: Integer -> Digits
 test_1_16' = decimal . toNatPlus
+
+-- | 1.18
+--                    foo             xs      y
+-- Tree (A * B) <------------------ ListR A * B             A       B
+--      |                                |                  |       |
+--      | Tree (f, g)                    | ListR f * g      |f      |g
+--      |                                |                  |       |
+--      v                                v                  v       v
+-- Tree (C * D) <------------------ LIstR C * D             C       D
+--                    foo
+--
+--  tree (cross (f, g))  . foo == foo . cross (listr f, g)
+--
