@@ -478,6 +478,19 @@ test_1_16 = eval (Add (Wrap D'4, D2))
 test_1_16' :: Integer -> Digits
 test_1_16' = decimal . toNatPlus
 
+-- | Ex 1.17
+--
+-- 1. listr f . concat == concat . listr (listr f)
+--
+-- 2. listl (listl f) . inits == inits . listl f
+--        where inits = foldl ([nil], f)
+--                 where f (snoc (xs, x), a) = snoc (snoc (xs, x), snoc (x, a))
+--
+-- 3. listr f . reverse == reverse . listr f
+--
+-- 4 . listr (cross (f, g)) . zip == zip . cross (listr f, listr g)
+--
+
 -- | Ex 1.18
 --                    foo             xs      y
 -- Tree (A * B) <------------------ ListR A * B             A       B
