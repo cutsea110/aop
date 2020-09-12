@@ -474,3 +474,4 @@ toNatPlus n | n == 1 = One
 
 test_1_16 :: NatPlus
 test_1_16 = eval (Add (Wrap D'4, D2))
+test_1_16' = decimal test_1_16
