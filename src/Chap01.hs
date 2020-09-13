@@ -552,9 +552,31 @@ test_1_16' = decimal . toNatPlus
 -- ==
 --  []
 --
--- base case: xss == (x:xs) {lhs}
+-- base case: xss == (xs:xss) {lhs}
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--- 
+--  map f (concat (xs:xss)
+-- ==
+--  map f (foldr (nil, cat) (xs:xss))
+-- ==
+--  map f (cat (xs, foldr (nil, cat) xss))
+-- ==
+--  map f (xs ++ concat xss)
+-- ==
+--  map f xs ++ map f (concat xss)
+-- ==
+--  map f xs ++ concat (map (map f) xss)
+--
+-- base case: xss == (xs:xss) {lhs}
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--  concat (map (map f) (xs:xss))
+-- ==
+--  concat (map f xs: map (map f) xss)
+-- ==
+--  foldr (nil, cat) (map f xs: map (map f) xss)
+-- ==
+--  cat (map f xs, concat (map (map f) xss))
+-- ==
+--  map f xs ++ concat (map (map f) xss)
 --
 -- 2. listl (listl f) . inits == inits . listl f
 --        where inits = foldl ([nil], f)
