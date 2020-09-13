@@ -174,7 +174,7 @@ foldr (c, f) = u
 --        [nil, cons] . (1 + f * id) == [nil, cons . (f * id)
 --
 listr :: (a -> b) -> ListR a -> ListR b
-listr f = foldr (Nil, Cons . cross (f , id))
+listr f = foldr (Nil, Cons . cross (f, id))
 
 data ListL a = SNil
              | Snoc (ListL a, a)
@@ -497,28 +497,37 @@ test_1_16' = decimal . toNatPlus
 -- 1. listr f . concat == concat . listr (listr f)
 --       where concat = foldr (nil, cat)
 --             cat x = foldl (x, snoc)
+--  Lemma. map f (xs ++ ys) == map f xs ++ map f ys を証明する(ref IFPH exercise 4.3.4)
+--  base case: xs == [] {lhs}
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--  map f ([] ++ ys)
+-- ==
+--  map f ys
 --
---   base case(from lhs)
---  ~~~~~~~~~~~~~~~~~~~~~
---     listr f (concat [])
---  ==
---     listr f (foldr (nil, cat) [])
---  ==
---     listr f []
---  ==
---     []
+--  base case: xs == [] {rhs}
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--  map f xs ++ map f ys
+-- ==
+--  [] ++ map f ys
+-- ==
+--  map f ys
+-- inductive case: xs == (x:xs) {lhs}
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--  map f ((x:xs) ++ ys)
+-- ==
+--  map f (x:(xs ++ ys))
+-- ==
+--  f x:map f (xs ++ ys)
+-- ==
+--  f x:(map f xs ++ map f ys)
 --
---   base case(from rhs)
---  ~~~~~~~~~~~~~~~~~~~~~
---     concat (listr (listr f) [])
---  ==
---     concat []
---  ==
---     []
---
---  inductive case
--- ~~~~~~~~~~~~~~~~
---
+-- inductive case: xs == (x:xs) {rhs}
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--  map f (x:xs) ++ map f ys
+-- ==
+--  (f x:map f xs) ++ map f ys
+-- ==
+--  f x:(map f xs ++ map f ys)
 --
 -- 2. listl (listl f) . inits == inits . listl f
 --        where inits = foldl ([nil], f)
