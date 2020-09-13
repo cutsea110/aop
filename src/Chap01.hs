@@ -162,6 +162,20 @@ foldr (c, f) = u
   where u Nil = c
         u (Cons (a, xs)) = f (a, u xs)
 
+--         [nil, cons]
+-- [a] <------------------------- 1 + a * [a]
+--  |                               |
+--  | u = (|nil, cons . (f * id)|)  | 1 + 1 * u
+--  |                               |
+--  v                               v
+-- [b]  <----- 1 + b * [b] ------ 1 + a * [b]
+--       [nil, cons]       1 + f * id
+--      <------------------------
+--        [nil, cons] . (1 + f * id) == [nil, cons . (f * id)
+--
+listr :: (a -> b) -> ListR a -> ListR b
+listr f = foldr (Nil, Cons . cross (f , id))
+
 data ListL a = SNil
              | Snoc (ListL a, a)
              deriving Show
@@ -481,6 +495,30 @@ test_1_16' = decimal . toNatPlus
 -- | Ex 1.17
 --
 -- 1. listr f . concat == concat . listr (listr f)
+--       where concat = foldr (nil, cat)
+--             cat x = foldl (x, snoc)
+--
+--   base case(from lhs)
+--  ~~~~~~~~~~~~~~~~~~~~~
+--     listr f (concat [])
+--  ==
+--     listr f (foldr (nil, cat) [])
+--  ==
+--     listr f []
+--  ==
+--     []
+--
+--   base case(from rhs)
+--  ~~~~~~~~~~~~~~~~~~~~~
+--     concat (listr (listr f) [])
+--  ==
+--     concat []
+--  ==
+--     []
+--
+--  inductive case
+-- ~~~~~~~~~~~~~~~~
+--
 --
 -- 2. listl (listl f) . inits == inits . listl f
 --        where inits = foldl ([nil], f)
