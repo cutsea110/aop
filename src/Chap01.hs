@@ -498,6 +498,7 @@ test_1_16' = decimal . toNatPlus
 --       where concat = foldr (nil, cat)
 --             cat x = foldl (x, snoc)
 --  Lemma. map f (xs ++ ys) == map f xs ++ map f ys を証明する(ref IFPH exercise 4.3.4)
+--
 --  base case: xs == [] {lhs}
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 --  map f ([] ++ ys)
@@ -528,6 +529,32 @@ test_1_16' = decimal . toNatPlus
 --  (f x:map f xs) ++ map f ys
 -- ==
 --  f x:(map f xs ++ map f ys)
+--
+-- Theorem: map f (concat xss) == concat (map (map f) xss)
+--
+-- base case: xss == [] {lhs}
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--  map f (concat [])
+-- ==
+--  map f (foldr (nil, cat) [])
+-- ==
+--  map f []
+-- ==
+--  []
+--
+-- base case: xss == [] {rhs}
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--  concat (map (map f) [])
+-- ==
+--  concat []
+-- ==
+--  foldr (nil, cat) []
+-- ==
+--  []
+--
+-- base case: xss == (x:xs) {lhs}
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- 
 --
 -- 2. listl (listl f) . inits == inits . listl f
 --        where inits = foldl ([nil], f)
