@@ -2,7 +2,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module Chap01 where
 
-import Prelude hiding (last, foldr, foldl, take, drop, zip)
+import Prelude hiding (last, foldr, foldl, take, drop, zip, concat, inits)
 
 -- | Ex 1.1
 -- solution 1
@@ -507,6 +507,11 @@ test_1_16' = decimal . toNatPlus
 -- 1. listr f . concat == concat . listr (listr f)
 --       where concat = foldr (nil, cat)
 --             cat x = foldl (x, snoc)
+--
+concat :: ListR (ListR a) -> ListR a
+concat Nil = Nil
+concat (Cons (x, xs)) = uncurry cat (x, concat xs)
+
 --  Lemma. map f (xs ++ ys) == map f xs ++ map f ys を証明する(ref IFPH exercise 4.3.4)
 --
 --  base case: xs == [] {lhs}
@@ -618,6 +623,10 @@ test_1_16' = decimal . toNatPlus
 --  inits []
 -- == {- inits の定義 -}
 --  [[]]
+--
+-- inductive case xs == (Snoc (xss, xs)) {lhs}
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--
 --
 -- 3. listr f . reverse == reverse . listr f
 --
