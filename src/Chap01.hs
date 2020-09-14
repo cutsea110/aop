@@ -597,10 +597,10 @@ concat = foldr (Nil, uncurry cat)
 --        where inits = foldl ([nil], f)
 --                 where f (snoc (xs, x), a) = snoc (snoc (xs, x), snoc (x, a))
 inits :: ListL a -> ListL (ListL a)
-inits SNil = Snoc (SNil, SNil)
-inits (Snoc (xs, x)) = f (inits xs, x)
-  where f :: (ListL (ListL a), a) -> ListL (ListL a)
-        f (Snoc (ys, y), z) = Snoc (Snoc (ys, y), Snoc (y, z))
+inits = foldl (c, f)
+  where c = Snoc (SNil, SNil)
+        f :: (ListL (ListL a), a) -> ListL (ListL a)
+        f (yys@(Snoc (ys, y)), z) = Snoc (yys, Snoc (y, z))
 --
 -- base case xs == [] {lhs}
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -630,7 +630,6 @@ inits (Snoc (xs, x)) = f (inits xs, x)
 --
 -- inductive case xs == (Snoc (xss, xs)) {lhs}
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
---
 --
 -- 3. listr f . reverse == reverse . listr f
 --
