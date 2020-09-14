@@ -502,32 +502,33 @@ test_1_16' = decimal . toNatPlus
 --  base case: xs == [] {lhs}
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 --  map f ([] ++ ys)
--- ==
+-- == {- cat の定義 -}
 --  map f ys
 --
 --  base case: xs == [] {rhs}
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 --  map f xs ++ map f ys
--- ==
+-- == {- map(foldr) の定義 -}
 --  [] ++ map f ys
--- ==
+-- == {- cat の定義 -}
 --  map f ys
+--
 -- inductive case: xs == (x:xs) {lhs}
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 --  map f ((x:xs) ++ ys)
--- ==
+-- == {- cat の定義 -}
 --  map f (x:(xs ++ ys))
--- ==
+-- == {- map(foldr) の定義 -}
 --  f x:map f (xs ++ ys)
--- ==
+-- == {- 帰納法 -}
 --  f x:(map f xs ++ map f ys)
 --
 -- inductive case: xs == (x:xs) {rhs}
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 --  map f (x:xs) ++ map f ys
--- ==
+-- == {- map(foldr) の定義 -}
 --  (f x:map f xs) ++ map f ys
--- ==
+-- == {- cat の定義 -}
 --  f x:(map f xs ++ map f ys)
 --
 -- Theorem: map f (concat xss) == concat (map (map f) xss)
@@ -535,47 +536,47 @@ test_1_16' = decimal . toNatPlus
 -- base case: xss == [] {lhs}
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 --  map f (concat [])
--- ==
+-- == {- concat の定義 -}
 --  map f (foldr (nil, cat) [])
--- ==
+-- == {- foldr の定義 -}
 --  map f []
--- ==
+-- == {- map(foldr) の定義 -}
 --  []
 --
 -- base case: xss == [] {rhs}
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 --  concat (map (map f) [])
--- ==
+-- == {- map(folr) の定義 -}
 --  concat []
--- ==
+-- == {- concat の定義 -}
 --  foldr (nil, cat) []
--- ==
+-- == {- foldr の定義 -}
 --  []
 --
 -- base case: xss == (xs:xss) {lhs}
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 --  map f (concat (xs:xss)
--- ==
+-- == {- concat の定義 -}
 --  map f (foldr (nil, cat) (xs:xss))
--- ==
+-- == {- foldr の定義 -}
 --  map f (cat (xs, foldr (nil, cat) xss))
--- ==
+-- == {- cat の定義と concat の定義から foldr を concat に戻す -}
 --  map f (xs ++ concat xss)
--- ==
+-- == {- Lamma から -}
 --  map f xs ++ map f (concat xss)
--- ==
+-- == {- 帰納法 -}
 --  map f xs ++ concat (map (map f) xss)
 --
 -- base case: xss == (xs:xss) {lhs}
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 --  concat (map (map f) (xs:xss))
--- ==
+-- == {- map(foldr) の定義 -}
 --  concat (map f xs: map (map f) xss)
--- ==
+-- == {- concat の定義 -}
 --  foldr (nil, cat) (map f xs: map (map f) xss)
--- ==
+-- == {- foldr の定義と concat の定義から foldr を concat に戻す -}
 --  cat (map f xs, concat (map (map f) xss))
--- ==
+-- == {- cat は ++ -}
 --  map f xs ++ concat (map (map f) xss)
 --
 -- 2. listl (listl f) . inits == inits . listl f
