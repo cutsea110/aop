@@ -2,7 +2,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module Chap01 where
 
-import Prelude hiding (last, foldr, foldl, take, drop, zip, concat, inits)
+import Prelude hiding (last, foldr, foldl, take, drop, zip, concat, inits, reverse)
 
 -- | Ex 1.1
 -- solution 1
@@ -628,10 +628,15 @@ inits = foldl (c, f)
 -- == {- inits の定義 -}
 --  [[]]
 --
--- inductive case xs == (Snoc (xss, xs)) {lhs}
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- inductive case xs == Snoc (xss, xs) {lhs}
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 --
 -- 3. listr f . reverse == reverse . listr f
+--
+reverse :: ListR a -> ListR a
+reverse = foldr (Nil, append)
+  where append (a, x) = snocr (x, a)
+        
 --
 -- 4 . listr (cross (f, g)) . zip == zip . cross (listr f, listr g)
 --
