@@ -509,8 +509,7 @@ test_1_16' = decimal . toNatPlus
 --             cat x = foldl (x, snoc)
 --
 concat :: ListR (ListR a) -> ListR a
-concat Nil = Nil
-concat (Cons (x, xs)) = uncurry cat (x, concat xs)
+concat = foldr (Nil, uncurry cat)
 
 --  Lemma. map f (xs ++ ys) == map f xs ++ map f ys を証明する(ref IFPH exercise 4.3.4)
 --
