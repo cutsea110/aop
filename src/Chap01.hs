@@ -185,6 +185,20 @@ foldl (c, f) = u
   where u SNil = c
         u (Snoc (xs, a)) = f (u xs, a)
 
+--         [snil, snoc]
+-- [a] <------------------------- 1 + [a] * a
+--  |                               |
+--  | u = (|snil, snoc . (id * f)|) | 1 + u * 1
+--  |                               |
+--  v                               v
+-- [b]  <----- 1 + [b] * b ------ 1 + [b] * a
+--       [snil, snoc]     1 + id * f
+--      <------------------------
+--       [snil, snoc] . (1 + id * f) == [snil, snoc . (id * f)
+listl :: (a -> b) -> ListL a -> ListL b
+listl f = foldl (SNil, g)
+  where g (xs, x) = Snoc (xs, f x)
+
 {--
 convert :: ListL a -> ListR a
 convert SNil = Nil
@@ -314,10 +328,6 @@ data GTree a = Node (a, ListL (GTree a)) deriving Show
 foldg :: ((a, ListL b) -> b) -> GTree a -> b
 foldg f = u
   where u (Node (x, ts)) = f (x, listl u ts)
-
-listl :: (a -> b) -> ListL a -> ListL b
-listl f = foldl (SNil, g)
-  where g (xs, x) = Snoc (xs, f x)
 
 size :: GTree a -> Integer
 size = foldg g
@@ -582,6 +592,32 @@ test_1_16' = decimal . toNatPlus
 -- 2. listl (listl f) . inits == inits . listl f
 --        where inits = foldl ([nil], f)
 --                 where f (snoc (xs, x), a) = snoc (snoc (xs, x), snoc (x, a))
+--
+-- base case xs == [] {lhs}
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~
+--  listl (listl f) (inits [])
+-- == {- inits(foldl)の定義 -}
+--  listl (listl f) [[]]
+-- == {- Snocリストの構成 -}
+--  listl (listl f) (Snoc ([],[]))
+-- == {- listl の定義 -}
+--  foldl (SNil, g) (Snoc ([],[])) where g (xs, x) = Snoc (xs, f x)
+-- == {- foldl の定義 -}
+--  g ([], [])
+-- == {- g の定義 -}
+--  Snoc ([], listl f [])
+-- == {- listl の定義 -}
+--  Snoc ([], [])
+-- == {- Snoc構成 -}
+--  [[]]
+--
+-- base case xs == [] {rhs}
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~
+--  inits (listl f [])
+-- == {- listl の定義 -}
+--  inits []
+-- == {- inits の定義 -}
+--  [[]]
 --
 -- 3. listr f . reverse == reverse . listr f
 --
