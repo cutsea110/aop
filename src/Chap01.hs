@@ -747,7 +747,7 @@ reverse = foldr (Nil, append)
 -- == {- listr の定義 -}
 --  []
 --
--- base case (xs = []) {lhs}
+-- base case (xs = []) {rhs}
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~
 --  zip (cross (listr f, listr g) ([], ys))
 -- == {- cross の定義 -}
@@ -756,6 +756,7 @@ reverse = foldr (Nil, append)
 --  zip ([], listr g ys)
 -- == {- zip の定義 -}
 --  []
+--
 
 -- | Ex 1.18
 --                    foo             xs      y
