@@ -21,3 +21,18 @@ module Chap02 where
 -- ゆえに id_A . u == id_A かつ id_A . u == u なので u == id_A
 --
 
+-- | Ex 2.2
+--
+--        f
+--    <---------
+--  A ---------> B
+--  |     h     /
+--  |          /
+-- g|         /k
+--  |        /
+--  v       /
+--  C<-----/
+--
+-- k . h . f . h : C <- A
+-- g . k . h     : type error
+--
