@@ -739,6 +739,23 @@ reverse = foldr (Nil, append)
 --
 -- 4 . listr (cross (f, g)) . zip == zip . cross (listr f, listr g)
 --
+-- base case (xs = []) {lhs}
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~
+--  listr (cross (f, g)) (zip ([], ys))
+-- == {- zip の定義 -}
+--  listr (cross (f, g)) []
+-- == {- listr の定義 -}
+--  []
+--
+-- base case (xs = []) {lhs}
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~
+--  zip (cross (listr f, listr g) ([], ys))
+-- == {- cross の定義 -}
+--  zip (listr f [], listr g ys)
+-- == {- listr の定義 -}
+--  zip ([], listr g ys)
+-- == {- zip の定義 -}
+--  []
 
 -- | Ex 1.18
 --                    foo             xs      y
