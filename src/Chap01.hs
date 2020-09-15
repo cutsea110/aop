@@ -601,6 +601,33 @@ inits = foldl (c, f)
   where c = Snoc (SNil, SNil)
         f :: (ListL (ListL a), a) -> ListL (ListL a)
         f (yys@(Snoc (ys, y)), z) = Snoc (yys, Snoc (y, z))
+
+lastL :: ListL a -> a
+lastL (Snoc (xs, x)) = x
+--
+-- Lamma: lastL (inits xs) == xs
+--
+-- base case (xs = [])
+-- ~~~~~~~~~~~~~~~~~~~~
+--  lastL (inits [])
+-- == {- inits の定義 -}
+--  lastL [[]]
+-- == {- lastL の定義 -}
+--  []
+--
+-- inductive case (xs = xs>:x)
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--  lastL (inits (xs>:x))
+-- == {- inits の定義 -}
+--  lastL (foldl ([nil], g) (xs>:x)) where g (ys>:y, z) = (ys>:y) >: (y>:z)
+-- == {- foldl の定義 -}
+--  lastL (g (inits xs, x))
+-- == {- g の定義 -}
+--  lastL (inits xs >: (y>:x)) where y = last (inits xs)
+-- == {- 帰納法の仮定 -}
+--  lastL (inits xs >: (xs>:x))
+-- == {- lastL の定義 -}
+--  xs>:x
 --
 -- base case xs == [] {lhs}
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -630,6 +657,37 @@ inits = foldl (c, f)
 --
 -- inductive case xs == Snoc (xss, xs) {lhs}
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--  listl (listl f) (inits (xs:x))
+-- == {- inits の定義 -}
+--  listl (listl f) (foldl ([nil], g) (xs>:x)) where g (Snoc (ys, y), z) = Snoc (Snoc (ys, y), Snoc (y, z))
+-- == {- foldl の定義 -}
+--  listl (listl f) (g (inits xs, x))
+-- == {- g の定義 -}
+--  listl (listl f) (inits xs >: (y >: x)) where y = last (inits xs)
+-- == {- Lemma: lastL . inits == id -}
+--  listl (listl f) (inits xs >: (xs >: x))
+-- == {- listl の定義 -}
+--  listl (listl f) (inits xs) >: (listl f (xs >: x))
+-- == {- 帰納法の仮定とlistlの定義 -}
+--  inits (listl f xs) >: (listl f xs >: f x)
+--
+-- inductive case xs == Snoc (xss, xs) {rhs}
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--  inits (listl f (xs>:x))
+-- == {- listl の定義 -}
+--  inits (foldl (SNil, g) (xs>:x)) where g (xs, x) = xs >: f x
+-- == {- foldl の定義 -}
+--  inits (g (listl f xs, x))
+-- == {- g の定義 -}
+--  inits (listl f xs >: f x)
+-- == {- inits の定義 -}
+--  foldl ([nil], g) (listl f xs >: f x) where g (ys >: y, z) = (ys >: y) >: (y >: z)
+-- == {- foldl の定義 -}
+--  g (inits (listl f xs), f x)
+-- == {- g の定義 -}
+--  inits (listl f xs) >: (y >: f x) where y = last (inits (listl f xs))
+-- == {- Lemma: lastL . inits == id -}
+--  inits (listl f xs) >: (listl f xs >: f x)
 --
 -- 3. listr f . reverse == reverse . listr f
 --
