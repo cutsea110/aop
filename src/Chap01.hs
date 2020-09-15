@@ -741,7 +741,7 @@ reverse = foldr (Nil, append)
 --
 -- base case (xs = []) {lhs}
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~
---  listr (cross (f, g)) (zip ([], ys))
+--  listr (cross (f, g)) (uncurry zip ([], ys))
 -- == {- zip の定義 -}
 --  listr (cross (f, g)) []
 -- == {- listr の定義 -}
@@ -749,14 +749,87 @@ reverse = foldr (Nil, append)
 --
 -- base case (xs = []) {rhs}
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~
---  zip (cross (listr f, listr g) ([], ys))
+--  uncurry zip (cross (listr f, listr g) ([], ys))
 -- == {- cross の定義 -}
---  zip (listr f [], listr g ys)
+--  uncurry zip (listr f [], listr g ys)
 -- == {- listr の定義 -}
---  zip ([], listr g ys)
+--  uncurry zip ([], listr g ys)
 -- == {- zip の定義 -}
 --  []
 --
+-- inductive case (xs = x:xs, ys = []) {lhs}
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--  listr (cross (f, g)) (uncurry zip (x:xs, []))
+-- ==
+--  listr (cross (f, g)) (zip (x:xs) [])
+-- ==
+--  listr (cross (f, g)) (foldr (c, h) (x:xs) []) where c ys = [], h (x, f) [] = [], h (x, f) (y:ys) = (x,y):f ys
+-- ==
+--  listr (cross (f, g)) (h (x, zip xs) [])
+-- ==
+--  listr (cross (f, g)) []
+-- ==
+--  []
+-- inductive case (xs = x:xs, ys = []) {rhs}
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--  uncurry zip (cross (listr f, listr g) (x:xs, []))
+-- ==
+--  uncurry zip (listr f (x:xs), listr g [])
+-- ==
+--  uncurry zip (listr f (x:xs), [])
+-- ==
+--  zip (listr f (x:xs)) []
+-- ==
+--  zip (f x:listr f xs) []
+-- ==
+--  foldr (c, h) (f x:listr f xs) [] where c ys = [], h (x, f) [] = [], h (x, f) (y:ys) = (x,y):f ys
+-- ==
+--  h (f x, zip (listr f xs)) []
+-- ==
+--  []
+--
+-- inductive case (xs = x:xs, ys = y:ys) {lhs}
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--  listr (cross (f, g)) (uncurry zip (x:xs, y:ys))
+-- ==
+--  listr (cross (f, g)) (zip (x:xs) (y:ys))
+-- ==
+--  listr (cross (f, g)) (foldr (c, h) (x:xs) (y:ys)) where c ys = [], h (x, f) [] = [], h (x, f) (y:ys) = (x,y):f ys
+-- ==
+--  listr (cross (f, g)) (h (x, zip xs) (y:ys))
+-- ==
+--  listr (cross (f, g)) ((x,y):zip xs ys)
+-- ==
+--  cross (f, g) (x, y):listr (cross (f, g)) (zip xs ys)
+-- ==
+--  (f x, g y):listr (cross (f, g)) (zip xs ys)
+--
+-- inductive case (xs = x:xs, ys = y:ys) {rhs}
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--  uncurry zip (cross (listr f, listr g) (x:xs, y:ys))
+-- ==
+--  uncurry zip (listr f (x:xs), listr g (y:ys))
+-- ==
+--  uncurry zip (listr f (x:xs), listr g (y:ys))
+-- ==
+--  zip (listr f (x:xs)) (listr g (y:ys))
+-- ==
+--  zip (f x:listr f xs) (g y:listr g ys)
+-- ==
+--  foldr (c, h) (f x:listr f xs) (g y:listr g ys) where c ys = [], h (x, f) [] = [], h (x, f) (y:ys) = (x,y):f ys
+-- ==
+--  h (f x, zip (listr f xs)) (g y:listr g ys)
+-- ==
+--  (f x, g y):zip (listr f xs) (listr g ys)
+-- ==
+--  (f x, g y):uncurry zip (listr f xs, listr g ys)
+-- ==
+--  (f x, g y):uncurry zip (cross (listr f, listr g) (xs, ys))
+-- ==
+--  (f x, g y):listr (cross (f, g)) (uncurry zip (xs, ys))
+-- ==
+--  (f x, g y):listr (cross (f, g)) (zip xs ys)
+
 
 -- | Ex 1.18
 --                    foo             xs      y
