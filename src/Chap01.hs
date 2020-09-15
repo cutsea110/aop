@@ -636,7 +636,48 @@ inits = foldl (c, f)
 reverse :: ListR a -> ListR a
 reverse = foldr (Nil, append)
   where append (a, x) = snocr (x, a)
-        
+--
+-- base case (xs = []) {lhs}
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~
+--  list f (reverse [])
+-- ==
+--  listl f []
+-- ==
+--  []
+--
+-- base case (xs = []) {rhs}
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~
+--  reverse (listf f [])
+-- ==
+--  reverse []
+-- ==
+--  []
+--
+-- inductive case (xs = x:xs) {lhs}
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--  listr f (reverse (x:xs))
+-- == {- reverse の定義 -}
+--  listr f (foldr ([], append) (x:xs))
+-- == {- foldr の定義 -}
+--  listr f (append (x, reverse xs))
+-- == {- append(snocr) の定義 -}
+--  listr f (reverse xs ++ [x])
+-- == {- Lemma: map f (xs ++ ys) == map f xs ++ map f ys -}
+--  listr f (reverse xs) ++ listr f [x]
+-- == {- 帰納法とlistrの定義 -}
+--  reverse (listr f xs) ++ [f x]
+--
+-- inductive case (xs = x:xs) {rhs}
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--  reverse (listr f (x:xs))
+-- == {- listr の定義 -}
+--  reverse (f x:listr f xs)
+-- == {- reverse の定義 -}
+--  foldr ([], append) (f x:listr f xs)
+-- == {- foldr の定義 -}
+--  append (f x, reverse (listr f xs))
+-- == {- append(snocr)の定義 -}
+--  reverse (listr f xs) ++ [f x]
 --
 -- 4 . listr (cross (f, g)) . zip == zip . cross (listr f, listr g)
 --
