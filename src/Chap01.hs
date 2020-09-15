@@ -871,4 +871,3 @@ gtree f = foldg (Node . cross (f, id))
 
 cross :: (a -> c, b -> d) -> (a, b) -> (c, d)
 cross (f, g) (x, y) = (f x, g y)
-
