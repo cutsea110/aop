@@ -9,10 +9,15 @@ module Chap02 where
 --
 -- f は任意なので f として id_A をとる
 --
---  id_A
+--  id_A . u
 -- == {- f . u = f -}
+--  id_A
+--
+-- 一方 id_A は単位元なので
 --  id_A . u
 -- == {- id_A は単位元 -}
 --  u
--- よって id_A = u
+--
+-- ゆえに id_A . u == id_A かつ id_A . u == u なので u == id_A
+--
 
