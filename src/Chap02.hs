@@ -98,7 +98,7 @@ module Chap02 where
 --  g . h = g . k
 -- == {- Leibniz -}
 --  f . (g . h) = f . (g . k)
--- == {- 結合は可換 -}
+-- == {- 合成は可換 -}
 --  (f . g) . h = (f . g) . k
 -- == {- f . g = id -}
 --  id . h = id . k
@@ -111,7 +111,7 @@ module Chap02 where
 --  h . f = k . f
 -- == {- Leibniz -}
 --  (h . f) . g = (k . f) . g
--- == {- 結合は可換 -}
+-- == {- 合成は可換 -}
 --  h . (f . g) = k . (f . g)
 -- == {- f . g = id -}
 --  h . id = k . id
@@ -125,8 +125,18 @@ module Chap02 where
 --  h . f = k . f
 -- == {- Leibniz -}
 --  (h . f) . g = (k . f) . g
--- == {- 結合は可換 -}
+-- == {- 合成は可換 -}
 --  h . (f . g) = k . (f . g)
 -- == {- f . g がエピ -}
 --  h = k
---  
+--
+-- 双対: f . g がモノなら g がモノ
+--
+--  g . h = g . k
+-- == {- Leibniz -}
+--  f . (g . h) = f . (g . k)
+-- == {- 合成は可換 -}
+--  (f . g) . h = (f . g) . k
+-- == {- f . g がモノ -}
+--  h = k
+--
