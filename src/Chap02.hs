@@ -217,6 +217,7 @@ module Chap02 where
 -- つまり単調関数.
 --
 -- | Ex 2.11
+--
 -- 圏Cにおける対象AとBの間の射の集合が圏Hにおける対象H(A,B)だから
 -- 圏Hにおける対象は積圏のようなものだと考えられる
 -- 一方圏Hにおける射は以下のように考える
@@ -260,3 +261,36 @@ module Chap02 where
 --
 -- したがって, H : Fun <- C x C^op となる関手である.
 --
+-- | Ex 2.12
+--
+data Tree a = Tip a
+            | Bin (Tree a, Tree a)
+            deriving Show
+
+--       [Tip, Bin]
+-- Ta <----------- a + Ta x Ta
+-- |                 |
+-- | u               | 1 + u x u
+-- |                 |
+-- v                 v
+-- X  <----------- a + X x X
+--      [c, f]
+
+foldt :: (a -> b, (b, b) -> b) -> Tree a -> b
+foldt (f, g) = u
+  where u (Tip x) = f x
+        u (Bin (l, r)) = g (u l, u r)
+
+--           [Tip, Bin]
+-- Ta <--------------------- a + Ta x Ta
+-- |                           |
+-- | mapt f                    | 1 + mapt f x mapt f
+-- |                           |
+-- v                           v
+-- Tb <--- b + Tb x Tb <---- a + Tb x Tb
+-- [Tip, Bin]       f + id x id
+-- [Tip, Bin] . (f + id x id)
+-- [Tip . f, Bin . (id x id)]
+
+mapt :: (a -> b) -> Tree a -> Tree b
+mapt f = foldt (Tip . f, Bin)
