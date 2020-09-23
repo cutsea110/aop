@@ -294,3 +294,25 @@ foldt (f, g) = u
 
 mapt :: (a -> b) -> Tree a -> Tree b
 mapt f = foldt (Tip . f, Bin)
+
+-- | Ex 2.13
+--
+-- ???
+--
+-- | Ex 2.14
+--          swap
+-- (A, B) <------ (B, A)                A      B
+--  |  |           |  |                 |      |
+-- g| f|           |f |g                |g     |f
+--  |  |           |  |                 |      |
+--  v  v           v  v                 v      v
+-- (C, D) <------ (D, C)                C      D
+--          swap
+--
+-- (g x f) . swap = swap (f x g)
+--
+-- g: A -> C と f: B -> D とから f x g へと移す関手を (x) とする
+-- すると g x f へと移す関手を (*) とすると swap の自然性条件は (x) -> (*) への自然変換となる.
+-- ただし T * S = S x T である.
+--
+
