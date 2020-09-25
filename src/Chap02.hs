@@ -373,3 +373,31 @@ tau x = [x]
 -- cp : Set [a] <- [Set a]
 -- cp : Set ([] a) <- [] (Set a)
 --
+-- | Ex 2.17
+--
+-- F, G : A <- B
+-- H : B <- C
+-- phi : F <- G
+-- 定義: (phi H)A = phi (HA)
+--
+--        A               B           C
+----------------------------------------
+--      phi Hc
+--  FHc <----- GHc        Hc          c
+--   |          |         |           |
+--FHf|          |GHf      |Hf         |f
+--   |          |         |           |
+--   v          v         v           v
+--  FHc'<----- GHc'       Hc'         c'
+--      phi Hc'
+--
+-- phi H : FH <- GH
+--
+--  FHf . (phi H)c
+-- == {- phi H の定義 -}
+--  FHf . phi (Hc)
+-- == {- phi : F <- G -}
+--  phi (Hc') . GHf
+-- == {- phi H の定義 -}
+--  (phi H)c' . GHf
+--
