@@ -401,3 +401,40 @@ tau x = [x]
 -- == {- phi H の定義 -}
 --  (phi H)c' . GHf
 --
+-- | Ex 2.18
+--
+--     head
+--  a <---- [a]
+--  |        |
+-- f|        |listr f
+--  |        |
+--  v        v
+--  b <---- [b]
+--     head
+--
+-- 任意の部分関数fについて
+--   f . head == head . listr f
+-- か?という議論.
+--
+-- f = recip
+--  where recip x = 1 / x
+-- とすると
+--
+--  recip (head [1, 0])
+-- ==
+--  recip 1
+-- ==
+--  1 / 1
+-- ==
+--  1
+--
+--  head (listr recip [1,0])
+-- ==
+--  head [recip 1, recip 0]
+-- ==
+--  head undefined
+-- ==
+--  undefined
+--
+-- eager evaluation 前提?
+--
