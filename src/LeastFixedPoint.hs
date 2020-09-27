@@ -1,5 +1,5 @@
 --
--- f = (\f n -> if n == 0 then 1 else n * f (n-1))
+-- g = (\f n -> if n == 0 then 1 else n * f (n-1))
 --
 -- fact0 n = undefined
 --    n = 0 => undefined
@@ -41,3 +41,4 @@
 --    n = 4 => 4 * fact 3 => 4 * 6 => 24 -- 一つ上から
 --    :
 --    :
+--
