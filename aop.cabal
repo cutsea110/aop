@@ -59,6 +59,7 @@ library
                      , OpenSet
                      , Prepro
                      , Pretty
+                     , Prime
                      , Promorphism
                      , Rose
                      , ShortestPathSearch
