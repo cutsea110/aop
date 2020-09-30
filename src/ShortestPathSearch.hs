@@ -73,6 +73,14 @@ nodeH' = bin'' 'H' ((12, nodeE'), (3, nodeF'))
 nodeI' = bin'' 'I' ((4, nodeG'), (2, nodeH'))
 
 -- プログラミングの基礎 第12章
+--       10        2
+--  A ------- B ------- C
+--   \         \       /
+--   4\        2\     /1
+--     \         \   /
+--      \   3     \ /
+--       D ------- E   
+--
 nodeA'' = bin'' 'A' ((0, node0'), (0, node0'))
 nodeB'' = bin'' 'B' ((0, nodeInf'), (10, nodeA''))
 nodeC'' = bin'' 'C' ((2, nodeB''), (1, nodeE''))
@@ -88,3 +96,39 @@ main2 nd = do
   where
     pr (x:"0") = putChar x
     pr (x:xs) = pr xs >> putStr " -> " >> putChar x
+
+--         200       280
+--      A ------ B ----------C
+--      |        |           |
+--   200|        |240        |
+--      |        |           |
+--      D ------ E           |450
+--      |  160   |\ 200      |
+--      |        | +----F    |
+--      |        |       \   |
+--   260|     240|     300\  |
+--      |        |         \ |
+--      G ------ H --------- I
+--         290       240
+--
+main3 = do
+  let (pth, w) = extract nodeA
+  putStr $ show w
+  putStr " : "
+  pr pth
+  putChar '\n'
+  where
+    pr (x:"0") = putChar x
+    pr (x:xs) = pr xs >> putStr " -> " >> putChar x
+    
+    node0 = tip'' '0' 0
+    nodeInf = tip'' '-' (1/0)
+    nodeI = bin'' 'I' ((0, node0), (0, node0))
+    nodeH = bin'' 'H' ((0, nodeInf), (240, nodeI))
+    nodeG = bin'' 'G' ((0, nodeInf), (290, nodeH))
+    nodeF = bin'' 'F' ((0, nodeInf), (300, nodeI))
+    nodeE = bin'' 'E' ((240, nodeH), (200, nodeF))
+    nodeD = bin'' 'D' ((260, nodeG), (160, nodeE))
+    nodeC = bin'' 'C' ((450, nodeI), (0, nodeInf))
+    nodeB = bin'' 'B' ((240, nodeE), (280, nodeC))
+    nodeA = bin'' 'A' ((200, nodeD), (200, nodeB))
