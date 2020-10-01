@@ -37,19 +37,45 @@ instance ApplicativeBifunctor TreeF where
   biap (Tip f) (Tip x) = Tip (f x)
   biap (Bin (f, g) (j, k)) (Bin (x, l) (y, r)) = Bin (f x, g l) (j y, k r)
 
-node0 = tip' 0
-nodeInf = tip' (1/0)
+solve nd = do
+  let (pth, w) = extract nd
+  putStr $ show w
+  putStr " : "
+  pr pth
+  putChar '\n'
+  where
+    pr (x:"0") = putChar x
+    pr (x:xs) = pr xs >> putStr " -> " >> putChar x
 
-nodeA = bin' ((0, node0), (0, node0))
-nodeB = bin' ((0, nodeInf), (2, nodeA))
-nodeC = bin' ((7, nodeA), (0, nodeInf))
-nodeD = bin' ((0, nodeInf), (8, nodeB))
-nodeE = bin' ((1, nodeB), (2, nodeC))
-nodeF = bin' ((3, nodeC), (0, nodeInf))
-nodeG = bin' ((15, nodeD), (9, nodeE))
-nodeH = bin' ((12, nodeE), (3, nodeF))
-nodeI = bin' ((4, nodeG), (2, nodeH))
 main = print $ extract nodeI
+  where
+    node0 = tip' 0
+    nodeInf = tip' (1/0)
+
+    nodeA = bin' ((0, node0), (0, node0))
+    nodeB = bin' ((0, nodeInf), (2, nodeA))
+    nodeC = bin' ((7, nodeA), (0, nodeInf))
+    nodeD = bin' ((0, nodeInf), (8, nodeB))
+    nodeE = bin' ((1, nodeB), (2, nodeC))
+    nodeF = bin' ((3, nodeC), (0, nodeInf))
+    nodeG = bin' ((15, nodeD), (9, nodeE))
+    nodeH = bin' ((12, nodeE), (3, nodeF))
+    nodeI = bin' ((4, nodeG), (2, nodeH))
+
+main1 = solve nodeI
+  where
+    node0 = tip'' '0' 0
+    nodeInf = tip'' '-' (1/0)
+
+    nodeA = bin'' 'A' ((0, node0), (0, node0))
+    nodeB = bin'' 'B' ((0, nodeInf), (2, nodeA))
+    nodeC = bin'' 'C' ((7, nodeA), (0, nodeInf))
+    nodeD = bin'' 'D' ((0, nodeInf), (8, nodeB))
+    nodeE = bin'' 'E' ((1, nodeB), (2, nodeC))
+    nodeF = bin'' 'F' ((3, nodeC), (0, nodeInf))
+    nodeG = bin'' 'G' ((15, nodeD), (9, nodeE))
+    nodeH = bin'' 'H' ((12, nodeE), (3, nodeF))
+    nodeI = bin'' 'I' ((4, nodeG), (2, nodeH))
 
 --------
 
@@ -58,19 +84,6 @@ bin'' ch ((x, l), (y, r)) = Cf (In (Hisx (ann, Bin (x, unCf l) (y, unCf r))))
   where
     (l', r') = cross (cross ((ch:), (+x)), cross ((ch:), (+y))) . tupply extract $ (l, r)
     ann = if ((<) `on` snd) l' r' then l' else r' 
-
-node0' = tip'' '0' 0
-nodeInf' = tip'' '-' (1/0)
-
-nodeA' = bin'' 'A' ((0, node0'), (0, node0'))
-nodeB' = bin'' 'B' ((0, nodeInf'), (2, nodeA'))
-nodeC' = bin'' 'C' ((7, nodeA'), (0, nodeInf'))
-nodeD' = bin'' 'D' ((0, nodeInf'), (8, nodeB'))
-nodeE' = bin'' 'E' ((1, nodeB'), (2, nodeC'))
-nodeF' = bin'' 'F' ((3, nodeC'), (0, nodeInf'))
-nodeG' = bin'' 'G' ((15, nodeD'), (9, nodeE'))
-nodeH' = bin'' 'H' ((12, nodeE'), (3, nodeF'))
-nodeI' = bin'' 'I' ((4, nodeG'), (2, nodeH'))
 
 -- プログラミングの基礎 第12章
 --       10        2
@@ -81,21 +94,15 @@ nodeI' = bin'' 'I' ((4, nodeG'), (2, nodeH'))
 --      \   3     \ /
 --       D ------- E   
 --
-nodeA'' = bin'' 'A' ((0, node0'), (0, node0'))
-nodeB'' = bin'' 'B' ((0, nodeInf'), (10, nodeA''))
-nodeC'' = bin'' 'C' ((2, nodeB''), (1, nodeE''))
-nodeD'' = bin'' 'D' ((4, nodeA''), (0, nodeInf'))
-nodeE'' = bin'' 'E' ((2, nodeB''), (3, nodeD''))
-
-main2 nd = do
-  let (pth, w) = extract nd
-  putStr $ show w
-  putStr " : "
-  pr pth
-  putChar '\n'
+main2 = solve nodeE
   where
-    pr (x:"0") = putChar x
-    pr (x:xs) = pr xs >> putStr " -> " >> putChar x
+    node0 = tip'' '0' 0
+    nodeInf = tip'' '-' (1/0)
+    nodeA = bin'' 'A' ((0, node0), (0, node0))
+    nodeB = bin'' 'B' ((0, nodeInf), (10, nodeA))
+    nodeC = bin'' 'C' ((2, nodeB), (1, nodeE))
+    nodeD = bin'' 'D' ((4, nodeA), (0, nodeInf))
+    nodeE = bin'' 'E' ((2, nodeB), (3, nodeD))
 
 --         200       280
 --      A ------ B ----------C
@@ -111,16 +118,8 @@ main2 nd = do
 --      G ------ H --------- I
 --         290       240
 --
-main3 = do
-  let (pth, w) = extract nodeA
-  putStr $ show w
-  putStr " : "
-  pr pth
-  putChar '\n'
+main3 = solve nodeA
   where
-    pr (x:"0") = putChar x
-    pr (x:xs) = pr xs >> putStr " -> " >> putChar x
-    
     node0 = tip'' '0' 0
     nodeInf = tip'' '-' (1/0)
     nodeI = bin'' 'I' ((0, node0), (0, node0))
