@@ -104,6 +104,7 @@ main2 = solve nodeE
     nodeD = bin'' 'D' ((4, nodeA), (0, nodeInf))
     nodeE = bin'' 'E' ((2, nodeB), (3, nodeD))
 
+-- ref.) https://twitter.com/gou_koutaki/status/1310575479204659203
 --         200       280
 --      A ------ B ----------C
 --      |        |           |
