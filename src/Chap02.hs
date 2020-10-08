@@ -587,3 +587,12 @@ coswap = swap
 
 prop_swap xy = (coswap . swap) xy == xy
 
+assocr :: ((a, b), c) -> (a, (b, c))
+assocr ((x, y), z) = (x, (y, z))
+
+assocl :: (a, (b, c)) -> ((a, b), c)
+assocl (x, (y, z)) = ((x, y), z)
+
+prop_assocr xyz = (assocl . assocr) xyz == xyz
+prop_assocl xyz = (assocr . assocl) xyz == xyz
+
