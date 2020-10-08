@@ -599,10 +599,35 @@ prop_assocl xyz = (assocr . assocl) xyz == xyz
 -- | Ex 2.27
 --
 -- <[f,g],[h,k]> == [<f,h>,<g,k>]
+--   
 --
-e2p :: Either (a,b) (c,d) -> (Either a c, Either b d)
-e2p (Left  (x, y)) = (Left  x, Left  y)
-e2p (Right (v, w)) = (Right v, Right w)
-p2e :: (Either a c, Either b d) -> Either (a,b) (c,d)
-p2e (Left  x, Left  y) = Left  (x, y)
-p2e (Right v, Right w) = Right (v, w)
+-- outl . <f, g> = f       outl (pair (f, g) (x, y)) = outl (f x, g y) = f x
+-- outr . <f, g> = g       outr (pair (f, g) (x, y)) = outr (f x, g y) = g y
+--
+-- [f, g] (inl a) = f a    either (f, g) (Left a)  = f a
+-- [f, g] (inr b) = g b    either (f, g) (Right b) = g b
+--
+--
+-- splitの普遍性 (積の普遍性)
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~
+--  h = <f, g> == outl . h = f and outr . h = g  (2.4)
+-- から
+--  <[f,g],[h,k]> == [<f,h>,<g,k>]
+--     ===
+--  outl . [<f,h>,<g,k>] = [f,h] /\ outr . [<f,h>,<g,k>] = [h,k]
+-- を示す.
+--
+--  outl . [<f,h>,<g,k>]
+-- == {- 余積の融合則 m . [f, g] = [m . f, m . g] -}
+--  [outl . <f, h>, outl . <g, k>]
+-- == {- outl . <f, g> = f -}
+--  [f, g]
+--
+--  同様に
+--
+--  outr . [<f,h>,<g,k>]
+-- == {- 余積の融合則 m . [f, g] = [m . f, m . g] -}
+--  [outr . <f,h>, outr . <g,k>]
+-- == {- outr . <f, g> = g -}
+--  [h, k]
+--
