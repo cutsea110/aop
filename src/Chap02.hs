@@ -596,3 +596,13 @@ assocl (x, (y, z)) = ((x, y), z)
 prop_assocr xyz = (assocl . assocr) xyz == xyz
 prop_assocl xyz = (assocr . assocl) xyz == xyz
 
+-- | Ex 2.27
+--
+-- <[f,g],[h,k]> == [<f,h>,<g,k>]
+--
+e2p :: Either (a,b) (c,d) -> (Either a c, Either b d)
+e2p (Left  (x, y)) = (Left  x, Left  y)
+e2p (Right (v, w)) = (Right v, Right w)
+p2e :: (Either a c, Either b d) -> Either (a,b) (c,d)
+p2e (Left  x, Left  y) = Left  (x, y)
+p2e (Right v, Right w) = Right (v, w)
