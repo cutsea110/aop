@@ -578,12 +578,12 @@ counit x = (x, ())
 
 prop_unit x = (unit . counit) x == x
 prop_counit x = (counit . unit) x == x
---
---     unit
---  A <--- A x 1
---  |        |
--- f|        | f x id
---  |        |
---  v        v
---  B <--- B x 1
---     unit
+
+swap :: (a, b) -> (b, a)
+swap (x, y) = (y, x)
+
+coswap :: (b, a) -> (a, b)
+coswap = swap
+
+prop_swap xy = (coswap . swap) xy == xy
+
