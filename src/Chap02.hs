@@ -565,3 +565,25 @@ tau x = [x]
 --
 -- であること,つまり余積pは4と6の大きい方 max(a,b)
 --
+-- | Ex 2.26
+--
+-- 自然同型であることを示すには同型射だと示せばよい.
+-- つまり逆射の存在を示せばよい
+--
+unit :: (a, ()) -> a
+unit (x, ()) = x
+
+counit :: a -> (a, ())
+counit x = (x, ())
+
+prop_unit x = (unit . counit) x == x
+prop_counit x = (counit . unit) x == x
+--
+--     unit
+--  A <--- A x 1
+--  |        |
+-- f|        | f x id
+--  |        |
+--  v        v
+--  B <--- B x 1
+--     unit
