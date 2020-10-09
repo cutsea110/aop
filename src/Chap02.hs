@@ -631,3 +631,36 @@ prop_assocl xyz = (assocr . assocl) xyz == xyz
 -- == {- outr . <f, g> = g -}
 --  [h, k]
 --
+-- | Ex 2.28
+--
+-- m がモノとは任意の f, g について
+--   f = g == m . f = m . g
+--
+-- e がエピとは任意の f, g について
+--   f = g == f . e = g . e
+--
+-- outl,outr がエピか?
+--  f = g == f . outl = g . outl
+--
+--      f     outl
+--  x <--- a <--- a * b
+--    <---
+--      g
+--
+--  f = g => f . outl = g . outl
+--  f . outl = g . outl => f = g
+--
+-- よって成り立つ. outr も同様.
+--
+-- inl,inr がモノか?
+--  f = g == inl . f = inl . g
+--
+--         inl     f
+--  a + b <--- a <--- x
+--               <---
+--                 g
+--
+--  f = g => inl . f = inl . g
+--  inl . f = inl . g => f = g
+-- よって成り立つ. inr も同様.
+--
