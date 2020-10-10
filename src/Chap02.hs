@@ -680,27 +680,25 @@ prop_assocl xyz = (assocr . assocl) xyz == xyz
 --        f
 --  つまり元の圏Aにおいて上の可換図で k.g=f.h なる(h,k)がArr(A)における射で(h,k):f <- g
 --
---           f
---          /|\
---         / | \
--         /  |  \
-- (h0,k0)/   |   \(h1,k1)
--       /  (i,j)  \
--      /     |     \
--     v      v      v
---  g0 <- g0 x g1 -> g1
+--            f
+--           /|\
+--          / | \
+--         /  |  \
+-- (h0,k0)/   |   \(h1,k1)
+--       /  (i,j)  \
+--      /     |     \
+--     v      v      v
+--   g0 <- g0 x g1 -> g1
+--
+--      outl      outr
+--   A <--- A x B ---> B
+--   |        |        |
+-- g0|     g0 x g1     | g1
+--   v        v        v
+--   C <--- C x D ---> D
+--      outl      outr
 --
 -- (h0,k0) : g0 <- f
 -- (h1,k1) : g1 <- f
 -- とすると, k0.f = g0.h0 と k1.f = g1.h1 である.
--- (i, j) : g0 x g1 <- f といたときに (i, j) を h0,k0,h1,k1 でどう表されるか?を考えれば良い.
---
---
---     outl      outr
---  A <--- A x B ---> B
---  |        |        |
--- f|      f x g      | g
---  v        v        v
---  C <--- C x D ---> D
---     outl      outr
 -- 
