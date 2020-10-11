@@ -710,3 +710,49 @@ prop_assocl xyz = (assocr . assocl) xyz == xyz
 --   (i, j) : g0*g1 <- f は i : <h0, h1> と j : <k0, k1> になるので (i, j) : (<h0, h1>, <k0, k1>) となる.
 --   よって (<h0, h1>, <k0, k1>) : g0 * g1 <- f
 --
+-- | Ex 2.30
+--
+-- (outl . <f, g>) a = f a を確認するというのが本文における問題
+--
+-- ただし
+--  <f, g> a = inl (f a) -- f a 定義, g a 未定義
+--           = inr (g a) -- f a 未定義, g a 定義
+--           = mid (f a, g a) -- それ以外
+--
+-- f a が未定義, g a が定義(本文中のケース)
+-- <f, g> a = inr (g a)
+-- outl (<f, g> a) = outl (inr (g a)) = undefined
+--
+-- f a が定義, g a が未定義
+-- <f, g> a = inl (f a)
+-- outl (<f, g> a) = outl (inl (f a)) = f a
+--
+-- f a が未定義, g a が未定義
+-- <f, g> a = mid (f a, g a)
+-- outl (<f, g> a) = outl (mid (f a, g a)) = f a (未定義だけどね)
+--
+-- f a が定義, g a が定義
+-- <f, g> a = mid (f a, g a)
+-- outl (<f, g> a) = outl (mid (f a, g a)) = f a
+--
+-- outr の場合はどうか
+-- (outr . <f, g>) a = g a を確認する
+--
+-- f a が未定義, g a が定義
+-- <f, g> a = inr (g a)
+-- outr (<f, g> a) = outr (inr (g a)) = g a
+--
+-- f a が定義, g a が未定義
+-- <f, g> a = inl (f a)
+-- outr (<f, g> a) = outr (inl (f a)) = undefined
+--
+-- f a が未定義, g a が未定義
+-- <f, g> a = mid (f a, g a)
+-- outr (<f, g> a) = outr (mid (f a, g a)) = g a(未定義だけどね)
+--
+-- f a が定義, g a が定義
+-- <f, g> a = mid (f a, g a)
+-- outr (<f, g> a) = outr (mid (f a, g a)) = g a
+--
+
+
