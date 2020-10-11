@@ -689,6 +689,7 @@ prop_assocl xyz = (assocr . assocl) xyz == xyz
 --      /     |     \
 --     v      v      v
 --   g0 <- g0 x g1 -> g1
+--      outl      outr
 --
 --      outl      outr
 --   A <--- A x B ---> B
@@ -700,5 +701,6 @@ prop_assocl xyz = (assocr . assocl) xyz == xyz
 --
 -- (h0,k0) : g0 <- f
 -- (h1,k1) : g1 <- f
--- とすると, k0.f = g0.h0 と k1.f = g1.h1 である.
+-- とすると,Arr(A)についての射の定義から k0.f = g0.h0 と k1.f = g1.h1 である.
+--
 -- 
