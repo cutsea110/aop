@@ -754,5 +754,13 @@ prop_assocl xyz = (assocr . assocl) xyz == xyz
 -- <f, g> a = mid (f a, g a)
 -- outr (<f, g> a) = outr (mid (f a, g a)) = g a
 --
-
+-- | Ex 2.31
+--
+-- h  = Pair undefined undefined : Pair A B <- C
+-- h' = undefined : Pair A B <- C
+--
+-- とすると, outl . h = undefined = outl . h' /\ outr . h = undefined = outr . h'
+-- したがって積の図式を可換するような h がただ 1 本に決まらない.(同型でもない)
+-- よって No.
+--
 
