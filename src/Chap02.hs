@@ -763,4 +763,36 @@ prop_assocl xyz = (assocr . assocl) xyz == xyz
 -- したがって積の図式を可換するような h がただ 1 本に決まらない.(同型でもない)
 -- よって No.
 --
+-- | Ex 2.32
+--
+-- f0 : A <- B * A
+-- f1 : A <- A * C
+-- f2 : A <- B
+--
+-- g  : A <- F(A)
+--
+-- phi0 g = f0
+-- phi1 g = f1
+-- phi2 g = f2
+--
+-- F(A) = ((B * A) + (A * C)) + B
+-- g = [[f0, f1], f2]
+--
+-- これは f0, f1, f2 のドメインの型の直和型になっている
+--
+-- phi0 g = g . inl . inl
+-- phi1 g = g . inl . inr
+-- phi2 g = g . inr
+--
+f0 :: (b, a) -> a
+f0 = undefined
+f1 :: (a, c) -> a
+f1 = undefined
+f2 :: b -> a
+f2 = undefined
 
+g :: Either (Either (b, a) (a, c)) b -> a
+-- g (Right b)             = f2 b
+-- g (Left (Left (b, a)))  = f0 (b, a)
+-- g (Left (Right (a, c))) = f1 (a, c)
+g = either (either f0 f1) f2
