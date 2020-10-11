@@ -796,3 +796,19 @@ g :: Either (Either (b, a) (a, c)) b -> a
 -- g (Left (Left (b, a)))  = f0 (b, a)
 -- g (Left (Right (a, c))) = f1 (a, c)
 g = either (either f0 f1) f2
+
+-- | Ex 2.33
+--
+-- 恒等関手Iの場合F代数 X <- I(X) の始代数aは T <- I(T) で以下の図式が可換となるようなもので
+-- 任意のX <- I(X)へただ1本射uがあるようなもの
+--
+--      a
+--  T <--- I(T)
+--  |       |
+-- u|       |I(u)
+--  v       v
+--  X <--- I(X)
+--
+-- すると T はこの圏における始対象なので0でよい.
+--
+
