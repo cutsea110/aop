@@ -1059,6 +1059,6 @@ g = either (either f0 f1) f2
 --  [id, a . inr] . F(Tf, Tf)
 --
 -- これにより [id, a . inr] が T <- F(TA, TA) な自然変換であることが示されたので、
--- Ex 2.39 から (|id, a . inr|) は T <- TT な自然変換である
+-- Ex 2.39 から (|id, a . inr|) すなわち psi は T <- TT な自然変換である
 --
 
