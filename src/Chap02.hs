@@ -955,3 +955,57 @@ g = either (either f0 f1) f2
 -- == {- (|phi|)の自然性 -}
 --   (|phi|) : H <- TG
 --
+-- | Ex 2.40
+--
+-- H : A <- A がモナドとは
+-- mu . Heta = id = mu . eta /\ mu . mu = mu . Hmu を満たすこと.
+-- ただし eta : H <- id および mu : H <- HH なる自然変換とする.
+--
+-- F(f,g) = f + Gg
+--
+-- (a, T) を F の始型とする.
+-- phi = a . inl, psi = (|id, a . inr|) とすると (T, phi, psi) がモナドであることを示す.
+--
+-- 対応は eta => phi, mu => psi および H => T である.
+--
+-- 1. phi : T <- id
+-- 2  psi : T <- TT
+-- 3. phi . Tpsi = id = phi . psi
+-- 4. psi . psi = psi . Tpsi
+--
+-- 1. phi : T <- id
+--
+-- (1) Tf . a = a . F(f, Tf)
+--             a
+-- A     T_A <--- F(A, T_A)
+-- |      |           |
+-- |f   Tf|           |F(f, Tf)
+-- v      v           v
+-- B     T_B <--- F(B, T_B)
+--             a
+-- (2) inl : (+) <- outl
+--
+--              (+)関手
+--        +----------------- (A, C)
+--        |        +---------/
+--        v    inl v   outl関手
+--      A + C <--- A 
+--        |        |
+--     f+g|        |f
+--        v        v
+--      B + D <--- B
+--             inl
+--
+--  (1) より
+--  Tf . a = a . F(f, Tf)
+-- == {- ライプニッツ -}
+--  Tf . a . inl = a . F(f, Tf) . inl
+-- == {- F(f, g) = f + Gg -}
+--  Tf . a . inl = a . (f + GTf) . inl
+-- == {- inl : (+) <- outl -}
+--  Tf . a . inl = a . inl . f
+-- == {- phi の定義 -}
+--  Tf . phi = phi . f
+--
+-- よって phi : T <- id
+--
