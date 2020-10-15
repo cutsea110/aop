@@ -970,7 +970,7 @@ g = either (either f0 f1) f2
 --
 -- 1. phi : T <- id
 -- 2  psi : T <- TT
--- 3. phi . Tpsi = id = phi . psi
+-- 3. psi . Tphi = id = psi . phi
 -- 4. psi . psi = psi . Tpsi
 --
 -- 1. phi : T <- id
@@ -1061,4 +1061,43 @@ g = either (either f0 f1) f2
 -- これにより [id, a . inr] が T <- F(TA, TA) な自然変換であることが示されたので、
 -- Ex 2.39 から (|id, a . inr|) すなわち psi は T <- TT な自然変換である
 --
-
+-- 3. psi . Tphi = id = psi . phi
+--
+--  psi . Tphi
+-- == {- psi の定義 -}
+--  (|id, a . inr|) . Tphi
+-- == {- 型関手融合 (|h|) . Tg = (|h . F(g, id)|) -}
+--  (|[id, a . inr] . F(phi, id)|)
+-- == {- F(f, g) = f + Gg -}
+--  (|[id, a . inr] . (phi + Gid)|)
+-- == {- 余積の融合則 -}
+--  (|phi, a . inr . Gid|)
+-- == {- phi の定義 -}
+--  (|a . inl, a . inr . Gid|)
+-- == {- 余積と余積の融合則を逆に -}
+--  (|a . [inl, inr] . (id + Gid)|)
+-- == {- F(f, g) = f + Gg -}
+--  (|a . [inl, inr] . F(id, id)|)
+-- == {- 余積の反射則 "2.5 余積" -}
+--  (|a . F(id, id)|)
+-- == {- 双関手の反射則 "2.2 の関手の例" -}
+--  (|a|)
+-- == {- cata の反射則 -}
+--  id
+--
+--  psi . phi
+-- == {- phi の定義 -}
+--  psi . a . inl
+-- == {- psi の定義 -}
+--  (|id, a . inr|) . a . inl
+--  ~~~~~~~~~~~~~~~
+--         h
+-- == {- (2.10) の cata の普遍性 h = (|f|) == h . a = f . Fh から -}
+--  [id, a . inr] . F(id, psi) . inl
+-- == {- F(f, g) = f + Gg -}
+--  [id, a . inr] . (id + Gpsi) . inl
+-- == {- 余積の融合則 -}
+--  [id, a . inr . Gpsi] . inl
+-- == {- 余積の普遍性 -}
+--  id
+--
