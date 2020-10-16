@@ -1101,3 +1101,46 @@ g = either (either f0 f1) f2
 -- == {- 余積の普遍性 -}
 --  id
 --
+-- 4. psi . psi = psi . Tpsi
+--
+--  psi . psi = psi . Tpsi
+-- == {- psi の定義 -}
+--  psi . psi = (|id, a . inr|) . Tpsi
+-- == {- 型関手融合 (|h|) . Tg = (|h . F(g, id)|) -}
+--  psi . psi = (|[id, a . inr] . F(psi, id)|)
+-- == {- psi の定義 -}
+--  psi . (|id, a . inr|) = (|[id, a . inr] . F(psi, id)|)
+--  ~~~     ~~~~~~~~~~~       ~~~~~~~~~~~~~~~~~~~~~~~~~~
+--   h          f                      g
+-- <= {- 融合 (2.12) h . (|f|) = (|g|) <= h . f = g . Fh  -}
+--  psi . [id, a . inr] = [id, a . inr] . F(psi, id) . F(id, psi)
+-- == {- Fは双関手 -}
+--  psi . [id, a . inr] = [id, a . inr] . F(psi, psi)
+-- == {- F(f, g) = f + Gg -}
+--  psi . [id, a . inr] = [id, a . inr] . (psi + Gpsi)
+-- == {- 余積の融合則(分配) -}
+--  [psi, psi . a . inr] = [psi, a . inr . Gpsi]
+-- <= {- 余積の融合則 -}
+--  psi . a . inr = a . inr . Gpsi
+-- == {- 下の図式 -}
+--  true
+--                 a            inr
+--           TTA <--- TA + GTTA <--- GTTA
+--            |          /|            |
+--            |         / |            |
+--            |        /  |            |
+--            |       /   |            |
+-- psi=(|phi|)|      /    |            | Gpsi
+--            |    inl    |            |
+--            |    /  F(id,(|phi|))    |
+--            |   /    = id + G(|phi|) |
+--            |  /        |            |
+--            v v         v            v
+--            TA <---- TA + GTA <---- GTA
+--             ^   phi            inr  |
+--              \_                     |
+--                \__________________  |inr
+--                         a         \ |
+--                                    \v
+--                                  A + GTA
+--
