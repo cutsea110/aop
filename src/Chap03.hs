@@ -12,6 +12,7 @@ foldr (c, f) = u
   where u [] = c
         u (x:xs) = f (x, u xs)
 
+sum :: Num a => [a] -> a
 sum = foldr (zero, plus)
   where zero = 0
         plus (x, y) = x + y
@@ -80,3 +81,27 @@ avg = div . foldr (zeross, pluss)
 --   FC <----- F(C * D)            FD <----- F(C * D)
 --       Foutl                         Foutr
 --
+-- | Ex 3.3
+--
+naiveSteep [] = True
+naiveSteep (a:x) = a > sum x && naiveSteep x
+
+--            [nil, cons]
+--         TB <-------- 1 + B * TB
+--        /|                |
+--       / |                |
+-- steep/  |                |
+--     /   |(|c,f|)         |1 + 1 * <steep, sum>
+--    /    | = <steep,sum>  |
+--   /     |                |
+--  v      |                |
+--  A <- A * B <-------- 1 + B * (A * B)
+--    outl        [c, f]
+--
+steep = outl . foldr (c, f)
+  where outl (x, _) = x
+        c = (True, 0)
+        f (a, (b, x)) = (a > x && b, a + x)
+
+test_naiveSteep = naiveSteep $ map (2^) ([5000,4999..0] :: [Integer])
+test_steep = steep $ map (2^) ([5000,4999..0] :: [Integer])
