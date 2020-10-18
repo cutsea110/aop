@@ -6,7 +6,7 @@ import Prelude hiding (foldr, sum, length, div)
 --
 -- FX = 1 + N * X
 --
--- <[zero, plus] . Foutl, [zero, succ . outr] . Foutr> = <zeross, pluss> を示す.
+-- <[zero, plus] . Foutl, [zero, succ . outr] . Foutr> = [zeross, pluss] を示す.
 --
 foldr (c, f) = u
   where u [] = c
@@ -30,3 +30,21 @@ avg = div . foldr (zeross, pluss)
       where zeross = (0, 0)
             pluss (a, (b, n)) = (a + b, n + 1)
             div (x, y) = x / y
+--
+--  <[zero, plus] . Foutl, [zero, succ . outr] . Foutr>
+-- ==
+--  <[zero, plus] . (id + id * outl), [zero, succ . outr] . (id + id * outr)>
+-- ==
+--  <[zero, plus . (id, outl)], [zero, succ . outr . (id * outr)]>
+-- ==
+--  [<zero, zero>, <plus . (id * outl), succ . outr . (id * outr)>]
+--
+-- 第2成分をポイントワイズに解くと
+--  <plus . (id * outl), succ . outr . (id * outr)> (a, (b, n))
+-- ==
+--  (plus . (id * outl) (a, (b, n)), succ . outr . (id * outr) (a, (b, n)))
+-- ==
+--  (plus (a, b), succ (outr (a, n)))
+-- ==
+--  (a+b, 1+n)
+--
