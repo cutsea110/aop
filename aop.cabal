@@ -75,6 +75,7 @@ library
 
                      , Chap01
                      , Chap02
+                     , Chap03
   -- other-modules:       
   other-extensions:    DeriveFunctor
                      , TypeSynonymInstances
