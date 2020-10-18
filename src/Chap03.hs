@@ -48,3 +48,35 @@ avg = div . foldr (zeross, pluss)
 -- ==
 --  (a+b, 1+n)
 --
+-- | Ex 3.2
+--
+-- <Foutl, Foutr> : FA * FB <- F(A * B)
+--
+--                 <Foutl, Foutr>
+--      FA * FB <----------------- F(A * B)
+--         |                           |
+-- Fh * Fk |                           |  F(h * k)
+--         |                           |
+--         v                           v
+--      FC * FD <----------------- F(C * D)
+--                 <Foutl, Foutr>
+--
+--
+--  (Fh * Fk) . <Foutl, Foutr>
+-- == {- 積の吸収則 (2.8) -}
+--  <Fh . Foutl, Fk . Foutr>
+-- == {- 下図 -}
+--  <Foutl . F(h * k), Foutr . F(h * k)>
+-- == {- 積の融合則 (2.6) -}
+--  <Foutl, Foutr> . F(h * k)
+--
+--  Fh . Foutl = Foutl . F(h * k)   Fk . Foutr = Foutr . F(h * k)
+--
+--       Foutl                         Foutr
+--   FA <----- F(A * B)            FB <----- F(A * B)
+--    |            |               |             |
+--  Fh|            | F(h * k)    Fk|             | F(h * k)
+--    v            v               v             v
+--   FC <----- F(C * D)            FD <----- F(C * D)
+--       Foutl                         Foutr
+--
