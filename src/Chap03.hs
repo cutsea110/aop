@@ -183,8 +183,14 @@ size = foldt (c, f)
   where c = 0
         f (n, a, m) = n + 1 + m
 
-balanced :: Tree a -> Bool
-balanced Null = True
-balanced (Node (x, a, y)) = balanced x && balanced y &&
+naiveBalanced :: Tree a -> Bool
+naiveBalanced Null = True
+naiveBalanced (Node (x, a, y)) = balanced x && balanced y &&
                             n + 1 <= 3 * (m + 1) && m + 1 <= 3 * (n + 1)
   where (n, m) = (size x, size y)
+
+balanced :: Tree a -> Bool
+balanced = outl . foldt (c, f)
+  where outl (x, _) = x
+        c = (True, 0)
+        f ((b, n), a, (c, m)) = (b && c && n + 1 <= 3 * (m + 1) && m + 1 <= 3 * (n + 1), n + 1 + m)
