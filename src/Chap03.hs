@@ -162,7 +162,8 @@ data Tree a = Null
             deriving Show
 --
 -- balanced
---    1/3 <= n/(n+m+1) <= 2/3
+--    x 1/3 <= n/(n+m+1) <= 2/3
+--    o n + 1 <= 3(m + 1) /\ m + 1 <= 3(n + 1)
 --
 --       [null, node]
 --  Ta <------------- 1 + Ta * a * Ta
