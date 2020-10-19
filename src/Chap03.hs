@@ -205,3 +205,10 @@ preds = outl . foldn (c, f)
   where outl (x, _) = x
         c = ([], 0)
         f (ns, n) = (n+1:ns, n+1)
+
+-- | Ex 3.7
+--
+fac = outl . foldn (c, f)
+  where outl (x, _) = x
+        c = (1, 0)
+        f (m, n) = ((n+1)*m, n+1)
