@@ -1,3 +1,4 @@
+{-# LANGUAGE NPlusKPatterns #-}
 module Chap03 where
 
 import Prelude hiding (foldr, sum, length, div)
@@ -194,3 +195,13 @@ balanced = outl . foldt (c, f)
   where outl (x, _) = x
         c = (True, 0)
         f ((b, n), a, (c, m)) = (b && c && n + 1 <= 3 * (m + 1) && m + 1 <= 3 * (n + 1), n + 1 + m)
+
+-- | Ex 3.6
+--
+foldn (c, f) 0 = c
+foldn (c, f) (n+1) = f (foldn (c, f) n)
+
+preds = outl . foldn (c, f)
+  where outl (x, _) = x
+        c = ([], 0)
+        f (ns, n) = (n+1:ns, n+1)
