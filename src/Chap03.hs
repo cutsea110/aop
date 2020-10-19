@@ -155,3 +155,35 @@ test_steep = steep $ map (2^) ([5000,4999..0] :: [Integer])
 -- == {- 対の融合 -}
 --  <f, (|h|)> . a
 --
+-- | Ex 3.5
+--
+data Tree a = Null
+            | Node (Tree a, a, Tree a)
+            deriving Show
+--
+-- balanced
+--    1/3 <= n/(n+m+1) <= 2/3
+--
+--       [null, node]
+--  Ta <------------- 1 + Ta * a * Ta
+--  |                        |
+-- u|                        | 1 + u * 1 * u
+--  v                        v
+--  X  <------------- 1 + X  * a * X
+--         [c, f]
+
+foldt :: (a, (a, b, a) -> a) -> Tree b -> a
+foldt (c, f) = u
+  where u Null = c
+        u (Node (l, x, r)) = f (u l, x, u r)
+
+size :: Fractional b => Tree a -> b
+size = foldt (c, f)
+  where c = 0
+        f (n, a, m) = n + 1 + m
+
+balanced :: Tree a -> Bool
+balanced Null = True
+balanced (Node (x, a, y)) = balanced x && balanced y &&
+                            n + 1 <= 3 * (m + 1) && m + 1 <= 3 * (n + 1)
+  where (n, m) = (size x, size y)
