@@ -1,6 +1,7 @@
 {-# LANGUAGE RankNTypes #-}
 module AdjointFoldAndUnfold where
--- | https://www.researchgate.net/publication/221440236_Adjoint_Folds_and_Unfolds
+-- | ref.) http://www.cs.ox.ac.uk/ralf.hinze/SSGIP10/AdjointFolds.pdf
+--         https://www.researchgate.net/publication/221440236_Adjoint_Folds_and_Unfolds
 {--
 import Numeric.Natural
 
