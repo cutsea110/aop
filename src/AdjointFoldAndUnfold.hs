@@ -1,5 +1,6 @@
 {-# LANGUAGE RankNTypes #-}
 module AdjointFoldAndUnfold where
+-- | https://www.researchgate.net/publication/221440236_Adjoint_Folds_and_Unfolds
 {--
 import Numeric.Natural
 
