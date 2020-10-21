@@ -1,7 +1,7 @@
 {-# LANGUAGE NPlusKPatterns #-}
 module Chap03 where
 
-import Prelude hiding (foldr, sum, length, div)
+import Prelude hiding (foldr, sum, product, length, div)
 
 -- | Ex 3.1
 --
@@ -208,7 +208,12 @@ preds = outl . foldn (c, f)
 
 -- | Ex 3.7
 --
-fac = outl . foldn (c, f)
+product = foldr (c, f)
+  where c = 1
+        f (n, m) = n * m
+
+-- fact = product . preds
+fact = outl . foldn (c, f)
   where outl (x, _) = x
         c = (1, 0)
         f (m, n) = ((n+1)*m, n+1)
