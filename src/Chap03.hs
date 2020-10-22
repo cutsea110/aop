@@ -272,3 +272,13 @@ tri f = foldr (c, g)
         g (x, xs) = x:map f xs
 
 slice = tri tail
+
+-- | Ex 3.10
+--
+bhp = prod . tri sqr
+prod = foldr (1, mul)
+mul (x, y) = x * y
+sqr x = x^2
+
+
+
