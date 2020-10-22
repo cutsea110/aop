@@ -265,3 +265,10 @@ fact = outl . foldn (c, f)
 --  と置き換えると
 --  <f, (|h|)> = (|<g, h . Foutr>|)
 --
+-- | Ex 3.9
+--
+tri f = foldr (c, g)
+  where c = []
+        g (x, xs) = x:map f xs
+
+slice = tri tail
