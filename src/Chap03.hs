@@ -280,5 +280,26 @@ prod = foldr (1, mul)
 mul (x, y) = x * y
 sqr x = x^2
 
+--  bhp
+-- == {- bhp の定義 -}
+--  prod . tri sqr
+-- == {- prod の定義 -}
+--  (|1, mul|) . tri sqr
+-- == {- 後述 -}
+--  (|1, mul . (id x sqr)|)
+--
+--
+-- 上記の後述とあるステップは,
+--
+-- ホーナー則
+--  (|c, g|) . tri f = (|c, g . (id x f)|) <= f . c = c かつ f . g = g . (f x f)
+--
+--  (|1, mul|) . tri sqr のケースを考える
+--  c := 1, g := mul, f := sqr と置くと
+--  sqr . 1 = 1 これは sqr 1 = 1 なので真
+--  sqr . mul = mul . (sqr x sqr) これも sqr (mul (a, b)) = sqr (a * b) = sqr a * sqr b = mul (sqr x sqr) (a, b) なので真
+--  よって, (|1, mul|) . tri sqr = (|1, mul . (id x sqr)|) とできる
 
-
+bhp' = foldr (c, f)
+  where c = 1
+        f (a, b) = mul (a, sqr b)
