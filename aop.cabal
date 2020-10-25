@@ -30,6 +30,7 @@ library
                      , CountTree
                      , Cpp
                      , Curry
+                     , Cycle
                      , Decimal
                      , Defunctionalization
                      , Dijkstra
