@@ -20,6 +20,7 @@ library
   exposed-modules:     Ack
                      , Accum
                      , AdjointFoldAndUnfold
+                     , Approx
                      , Bernoulli
                      , BinaryTree
                      , Box100
