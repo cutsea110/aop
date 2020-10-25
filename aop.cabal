@@ -44,6 +44,7 @@ library
                      , FixPrimeTest
                      , FixTest
                      , Free
+                     , Hamming
                      , Histo
                      , Infinity
                      , KnapSack
