@@ -359,8 +359,20 @@ bhp' = foldr (c, f)
 -- h (x + y) = f x + h y
 --
 -- h x = h (x + 0) = f x + h 0 = f x
--- ゆえに h = f
--- つまり h = f とすれば,
+-- ゆえに h = f しか取りえない.
+--
+-- h = f とすれば,
 -- (|0, (+)|) . tri f = (|[0, (+)] . F(id, f)|) = (|[0, (+)] . (id + id * f)|) = (|0, (+) . (id * f) |)
 
 honer f = foldr (0, \(a, b) -> a + f b)
+
+-- | Ex 3.13
+--
+-- \sum_{i=0}^{n-1} i*a_i = 0*a0 + 1*a1 + 2*a2 + .. * i*ai + .. + (n-1)*a_{n-1}
+--
+-- ws = sum . listr mul . tri (succ * id) . listr <zero, id>
+--
+naiveWs = sum . map mul . tri (cross ((1+), id)) . map (pair (const 0, id))
+  where mul (x, y) = x * y
+        pair (f, g) x = (f x, g x)
+        cross (f, g) (x, y) = (f x, g y)
