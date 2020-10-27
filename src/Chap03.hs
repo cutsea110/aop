@@ -414,7 +414,7 @@ plus (x, y) = x + y
 --  outl . (|[<zero, zero>, <plus . (mul * outl), plus . (outr * outr)>] . (1 + <zero, id> * <plus, outr>)|)
 -- == {-  -}
 --  outl . (|<zero, zero>, <plus . (mul * outl), plus . (outr * outr)> . (<zero, id> * <plus, outr>)|)
--- == {-  -}
+-- == {- 後述 -}
 --  outl . (|<zero, zero>, k|) where k (x, (y, z)) = (y+z, x+z)
 
 -- 上記においてホーナー則の適用については <plus, outr> . g = g . F((succ * id), <plus, outr>) を示す必要がある.-
