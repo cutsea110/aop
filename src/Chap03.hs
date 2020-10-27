@@ -373,6 +373,49 @@ honer f = foldr (0, \(a, b) -> a + f b)
 -- ws = sum . listr mul . tri (succ * id) . listr <zero, id>
 --
 naiveWs = sum . map mul . tri (cross ((1+), id)) . map (pair (const 0, id))
-  where mul (x, y) = x * y
-        pair (f, g) x = (f x, g x)
-        cross (f, g) (x, y) = (f x, g y)
+pair (f, g) x = (f x, g x)
+cross (f, g) (x, y) = (f x, g y)
+outl (x, y) = x
+outr (x, y) = y
+plus (x, y) = x + y
+
+-- ここで tri (cross ((1+), id)) . map (pair (const 0, id)) が何をするか見ておく
+--
+-- tri (cross ((1+), id)) . map (pair (const 0, id)) $ [10,20,30,40,50]
+-- => [(0,10),(1,20),(2,30),(3,40),(4,50)]
+--
+--  ws
+-- == {- 仕様 -}
+--  sum . listr mul . tri (succ * id) . listr <zero, id>
+-- == {- sum = (|zero, plus|) -}
+--  (|zero, plus|) . listr mul . tri (succ * id) . listr <zero, id>
+-- == {- 型関手融合 (2.14) : (|h|) . Tg = (|h . F(g, id)|) -}
+--  (|[zero, plus] . F(mul, id)|) . tri (succ * id) . listr <zero, id>
+-- == {- F はリストの台関手 F(a,b) = 1 + a * b  -}
+--  (|zero, plus . (mul * id)|) . tri (succ * id) . listr <zero, id>
+-- == {- ヒント: ペアの二番目は ws に与えられた引数の sum に当たる -}
+--  outl . <(|zero, plus . (mul * id)|), (|zero, plus . (outr * id)|)> . tri (succ * id) . listr <zero, id>
+-- == {- バナナスプリット則 : <(|h|),(|k|)> == (|<h . Foutl, k . Foutr>|) -}
+--  outl . (|<[zero, plus . (mul * id)] . Foutl, [zero, plus . (outr * id)] . Foutr >|) . tri (succ * id) . listr <zero, id>
+-- == {- F はリストの台関手 -}
+--  outl . (|<[zero, plus . (mul * id)] . (id + id * outl), [zero, plus . (outr * id)] . (id + id * outr) >|)
+--             . tri (succ * id) . listr <zero, id>
+-- == {-  -}
+--  outl . (|<[zero, plus . (mul * outl)], [zero, plus . (outr * outr)]>|) . tri (succ * id) . listr <zero, id>
+-- == {- Ex 2.27 交換則 : <[f,g],[h,k]> == [<f,h>,<g,k>] -}
+--  outl . (|<zero, zero>, <plus . (mul * outl), plus . (outr * outr)]>|) . tri (succ * id) . listr <zero, id>
+-- == {- h = <plus, outr> としてホーナー則を適用 : (|g|) . tri f = (|g . F(id, h)|) <= h . g = g . F(f, h) -}
+--  outl . (|[<zero, zero>, <plus . (mul * outl), plus . (outr * outr)>] . F(id, <plus, outr>)|) . list <zero, id>
+-- == {- 型関手融合 -}
+--  outl . (|[<zero, zero>, <plus . (mul * outl), plus . (outr * outr)>] . F(id, <plus, outr>) . F(<zero, id>, id)|)
+-- == {- 関手則 -}
+--  outl . (|[<zero, zero>, <plus . (mul * outl), plus . (outr * outr)>] . F(<zero, id>, <plus, outr>)|)
+-- == {-  -}
+--  outl . (|[<zero, zero>, <plus . (mul * outl), plus . (outr * outr)>] . (1 + (<zero, id> * <plus, outr>))|)
+-- == {-  -}
+--  outl . (|<zero, zero>, <plus . (mul * outl), plus . (outr * outr)> . (<zero, id> * <plus, outr>)|)
+-- == {-  -}
+--
+
+-- 上記においてホーナー則の適用については <plus, outr> . g = g . F((succ * id), <plus, outr>) を示す必要がある.-
+--
