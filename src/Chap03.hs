@@ -411,11 +411,31 @@ plus (x, y) = x + y
 -- == {- 関手則 -}
 --  outl . (|[<zero, zero>, <plus . (mul * outl), plus . (outr * outr)>] . F(<zero, id>, <plus, outr>)|)
 -- == {-  -}
---  outl . (|[<zero, zero>, <plus . (mul * outl), plus . (outr * outr)>] . (1 + (<zero, id> * <plus, outr>))|)
+--  outl . (|[<zero, zero>, <plus . (mul * outl), plus . (outr * outr)>] . (1 + <zero, id> * <plus, outr>)|)
 -- == {-  -}
 --  outl . (|<zero, zero>, <plus . (mul * outl), plus . (outr * outr)> . (<zero, id> * <plus, outr>)|)
 -- == {-  -}
---
+--  outl . (|<zero, zero>, k|) where k (x, (y, z)) = (y+z, x+z)
 
 -- 上記においてホーナー則の適用については <plus, outr> . g = g . F((succ * id), <plus, outr>) を示す必要がある.-
 --
+--  <plus . (mul * outl), plus . (outr * outr)> . (<zero, id> * <plus, outr>) $ (x, (y, z))
+-- ==
+--  <plus . (mul * outl), plus . (outr * outr)> $ (<zero, id> * <plus, outr>) (x, (y, z))
+-- ==
+--  <plus . (mul * outl), plus . (outr * outr)> $ (<zero, id> x, <plus, outr> (y, z))
+-- ==
+--  <plus . (mul * outl), plus . (outr * outr)> ((0, x), (y+z, z))
+-- ==
+--  ((plus . (mul * outl)) ((0, x), (y+z, z)), (plus . (outr * outr)) ((0, x), (y+z, z)))
+-- ==
+--  ((plus $ (mul * outl) ((0, x), (y+z, z)), plus $ (outr * outr) ((0, x), (y+z, z)))
+-- ==
+--  (plus $ (mul (0, x) , outl (y+z, z)), plus $ (outr (0, x), outr (y+z, z)))
+-- ==
+--  (plus (0 , y+z), plus $ (x, z))
+-- ==
+--  (y+z, x+z)
+--
+ws = outl . foldr ((0, 0), k)
+  where k (x, (y, z)) = (y+z, x+z)
