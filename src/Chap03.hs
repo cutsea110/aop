@@ -391,16 +391,16 @@ plus (x, y) = x + y
 --  (|zero, plus|) . listr mul . tri (succ * id) . listr <zero, id>
 -- == {- 型関手融合 (2.14) : (|h|) . Tg = (|h . F(g, id)|) -}
 --  (|[zero, plus] . F(mul, id)|) . tri (succ * id) . listr <zero, id>
--- == {- F はリストの台関手 F(a,b) = 1 + a * b  -}
+-- == {- F はリストの台関手 F(a,b) = 1 + a * b -}
 --  (|zero, plus . (mul * id)|) . tri (succ * id) . listr <zero, id>
 -- == {- ヒント: ペアの二番目は ws に与えられた引数の sum に当たる -}
 --  outl . <(|zero, plus . (mul * id)|), (|zero, plus . (outr * id)|)> . tri (succ * id) . listr <zero, id>
 -- == {- バナナスプリット則 : <(|h|),(|k|)> == (|<h . Foutl, k . Foutr>|) -}
 --  outl . (|<[zero, plus . (mul * id)] . Foutl, [zero, plus . (outr * id)] . Foutr >|) . tri (succ * id) . listr <zero, id>
 -- == {- F はリストの台関手 -}
---  outl . (|<[zero, plus . (mul * id)] . (id + id * outl), [zero, plus . (outr * id)] . (id + id * outr) >|)
+--  outl . (|<[zero, plus . (mul * id)] . (id + id * outl), [zero, plus . (outr * id)] . (id + id * outr)>|)
 --             . tri (succ * id) . listr <zero, id>
--- == {-  -}
+-- == {- 余積関手の融合則 [f,g] . (h + k) = [f . h, g . k] -}
 --  outl . (|<[zero, plus . (mul * outl)], [zero, plus . (outr * outr)]>|) . tri (succ * id) . listr <zero, id>
 -- == {- Ex 2.27 交換則 : <[f,g],[h,k]> == [<f,h>,<g,k>] -}
 --  outl . (|<zero, zero>, <plus . (mul * outl), plus . (outr * outr)]>|) . tri (succ * id) . listr <zero, id>
@@ -410,9 +410,9 @@ plus (x, y) = x + y
 --  outl . (|[<zero, zero>, <plus . (mul * outl), plus . (outr * outr)>] . F(id, <plus, outr>) . F(<zero, id>, id)|)
 -- == {- 関手則 -}
 --  outl . (|[<zero, zero>, <plus . (mul * outl), plus . (outr * outr)>] . F(<zero, id>, <plus, outr>)|)
--- == {-  -}
+-- == {- F はリストの台関手 F(a,b) = 1 + a * b -}
 --  outl . (|[<zero, zero>, <plus . (mul * outl), plus . (outr * outr)>] . (1 + <zero, id> * <plus, outr>)|)
--- == {-  -}
+-- == {- 余積関手の融合則 [f,g] . (h + k) = [f . h, g . k] -}
 --  outl . (|<zero, zero>, <plus . (mul * outl), plus . (outr * outr)> . (<zero, id> * <plus, outr>)|)
 -- == {- 後述 -}
 --  outl . (|<zero, zero>, k|) where k (x, (y, z)) = (y+z, x+z)
