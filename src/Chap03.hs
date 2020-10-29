@@ -403,7 +403,7 @@ plus (x, y) = x + y
 -- == {- 余積関手の融合則 [f,g] . (h + k) = [f . h, g . k] -}
 --  outl . (|<[zero, plus . (mul * outl)], [zero, plus . (outr * outr)]>|) . tri (succ * id) . listr <zero, id>
 -- == {- Ex 2.27 交換則 : <[f,g],[h,k]> == [<f,h>,<g,k>] -}
---  outl . (|<zero, zero>, <plus . (mul * outl), plus . (outr * outr)]>|) . tri (succ * id) . listr <zero, id>
+--  outl . (|<zero, zero>, <plus . (mul * outl), plus . (outr * outr)>|) . tri (succ * id) . listr <zero, id>
 -- == {- h = <plus, outr> としてホーナー則を適用 : (|g|) . tri f = (|g . F(id, h)|) <= h . g = g . F(f, h) -}
 --  outl . (|[<zero, zero>, <plus . (mul * outl), plus . (outr * outr)>] . F(id, <plus, outr>)|) . list <zero, id>
 -- == {- 型関手融合 -}
