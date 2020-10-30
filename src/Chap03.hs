@@ -417,7 +417,21 @@ plus (x, y) = x + y
 -- == {- 後述 -}
 --  outl . (|<zero, zero>, k|) where k (x, (y, z)) = (y+z, x+z)
 
--- 上記においてホーナー則の適用については <plus, outr> . g = g . F((succ * id), <plus, outr>) を示す必要がある.-
+-- 上記においてホーナー則の適用については <plus, outr> . g = g . F((succ * id), <plus, outr>) を示す必要がある.
+-- f = (succ * id), g = [<zero, zero>, <plus . (mul * outl), plus . (outr * outr)>], h = <plus, outr>
+--
+--                            [(0,0),<plus . (mul * outl), plus . (outr * outr)>]
+--     (0,0) + (a*b+c,b+d) <------------------------------------------------------- 1 + ((a, b), (c, d))
+--                 |                                                                   |
+--    <plus, outr> |                                                                   | F((succ * id), <plus, outr>)
+--                 |                                                                   |  = id + (succ * id) * <plus, outr>
+--                 v                                                                   v
+-- (0,0) + (a*b+c+b+d, b+d) <------------------------------------------------------ 1 + ((a+1, b), (c+d, d))
+--       =                    [(0,0),<plus . (mul * outl), plus . (outr * outr)>]
+-- (0,0) + ((a+1)*b+c+d, b+d)
+--       ~ (a*b+b+c+d, b+d)
+--
+-- 後述の箇所の論証
 --
 --  <plus . (mul * outl), plus . (outr * outr)> . (<zero, id> * <plus, outr>) $ (x, (y, z))
 -- ==
