@@ -453,3 +453,37 @@ plus (x, y) = x + y
 --
 ws = outl . foldr ((0, 0), k)
   where k (x, (y, z)) = (y+z, x+z)
+
+-- | Ex 3.14
+--
+data Treee a = Tip a
+             | Nod (Treee a, Treee a)
+             deriving Show
+
+--           [tip,node]
+--         Ta <---- a + Ta * Ta
+--          |          |
+-- u=(|f,g|)|          | id + u * u
+--          v          v
+--          X <---- a + X  * X
+--             [f,g]
+
+foldTreee (f, g) = u
+  where u (Tip x) = f x
+        u (Nod (l, r)) = g (u l, u r)
+
+mapTreee f = foldTreee (Tip . f, Nod)
+
+triTreee f = foldTreee (Tip, Nod . (cross (id, mapTreee f)))
+
+max' :: Ord a => Treee a  -> a
+max' = foldTreee (id, uncurry max)
+
+-- depths = tri (+1) . mapTreee (const 0)
+
+{--
+
+
+wpl :: Num a => Treee a -> a
+wpl = undefined
+--}
