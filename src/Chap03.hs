@@ -492,5 +492,5 @@ depth' = foldTreee (zero, succ . uncurry max)
 
 sumTreee = foldTreee (id, plus)
 
-wpl = foldTreee (id, plus) . mapTreee mul . triTreee (cross (succ, id)) . mapTreee (pair (one, id))
+wpl = sumTreee . mapTreee mul . triTreee (cross (succ, id)) . mapTreee (pair (one, id))
 
