@@ -474,12 +474,15 @@ foldTreee (f, g) = u
 
 mapTreee f = foldTreee (Tip . f, Nod)
 
-triTreee f = foldTreee (Tip, Nod . (cross (id, mapTreee f)))
+-- tri f = (|a . F(id, Tf)|)
+--       = (|[tip, bin] . (id + Tf * Tf)|)
+--       = (|tip, bin . (Tf * Tf)|)
+triTreee f = foldTreee (Tip, Nod . (cross (mapTreee f, mapTreee f)))
 
 max' :: Ord a => Treee a  -> a
 max' = foldTreee (id, uncurry max)
 
--- depths = tri (+1) . mapTreee (const 0)
+depths = triTreee (+1) . mapTreee (const 0)
 
 {--
 
