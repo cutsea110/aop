@@ -484,6 +484,8 @@ max' = foldTreee (id, uncurry max)
 
 depths = triTreee (+1) . mapTreee (const 0)
 
+depth = max' . depths
+
 {--
 
 
