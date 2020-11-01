@@ -431,6 +431,8 @@ plus (x, y) = x + y
 -- (0,0) + ((a+1)*b+c+d, b+d)
 --       ~ (a*b+b+c+d, b+d)
 --
+-- 可換になる. よってホーナー則が適用できる.
+--
 -- 後述の箇所の論証
 --
 --  <plus . (mul * outl), plus . (outr * outr)> . (<zero, id> * <plus, outr>) $ (x, (y, z))
@@ -528,7 +530,23 @@ wpl' = foldTreee (f, g)
 
 -- ホーナー則の適用についての論証は以下.
 --  f = (succ * id), g = [<mul, outr>, <plus . (outl * outl), plus . (outr * outr)>], h = <plus, outr> として
---  h . g = g . F(f, h) を示す.
+--  h . g = g . F(f, h) を示す必要がある.
+--  <plus, outr> . g = g . F((succ * id), <plus, outr>) を示す.
+--
+--
+--                   [<mul, outr>, <plus . (outl * outl), plus . (outr * outr)>]
+--     (a*b,b) + (x+z,y+w) <--------------------------------------------- (a, b) + ((x, y), (z, w))
+--                 |                                                         |
+--    <plus, outr> |                                                         | F((succ * id), <plus, outr>)
+--                 |                                                         |  = (succ * id) + (<plus, outr> * <plus, outr>)
+--                 v                                                         v
+-- (a*b+b,b) + (x+z+y+w, y+w) <------------------------------------------ (a+1,b) + ((x+y, y), (z+w, w))
+--       =           [<mul, outr>, <plus . (outl * outl), plus . (outr * outr)>]
+-- ((a+1)*b,b) + ((x+y)+(z+w),y+w)
+-- ~ (a+b+b,b) + (x+y+z+w,y+w)
+--
+-- 可換になる. よってホーナー則が適用できる.
+--
 --
 --  TODO
 --
