@@ -522,7 +522,7 @@ wpl = sumTreee . mapTreee mul . triTreee (cross (succ, id)) . mapTreee (pair (on
 --  outl . (|[<mul, outr>, <plus . (outl * outl), plus . (outr * outr)>] . F(<one, id>, <plus, outr>)|)
 -- == {- F は木型の台関手 F(a, b) = a + b * b -}
 --  outl . (|[<mul, outr>, <plus . (outl * outl), plus . (outr * outr)>] . (<one, id> + (<plus, outr> * <plus, outr>))|)
--- == {- 余積関手の融合則 [f,g] . (h + k) = [f . h, g . k] -}
+-- == {- 後述 -}
 --  outl . (|f, g|) where f a = (a, a) /\ g ((a, b), (c, d)) = (a+b+c+d, b+d)
 wpl' = foldTreee (f, g)
   where f a = (a, a)
@@ -547,8 +547,6 @@ wpl' = foldTreee (f, g)
 --
 -- 可換になる. よってホーナー則が適用できる.
 --
---
---  TODO
 --
 -- 最後のステップはポイントワイズに計算すれば良い.
 --
