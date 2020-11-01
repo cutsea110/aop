@@ -493,4 +493,56 @@ depth' = foldTreee (zero, succ . uncurry max)
 sumTreee = foldTreee (id, plus)
 
 wpl = sumTreee . mapTreee mul . triTreee (cross (succ, id)) . mapTreee (pair (one, id))
+--  wpl
+-- == {- sumTree -}
+--  (|id, plus|) . map mul . tri (succ * id) . map <one, id>
+-- == {- 型関手融合 (2.14) : (|h|) . Tg = (|h . F(g, id)|) -}
+--  (|[id, plus] . F(mul, id)|) . tri (succ * id) . map <one, id>
+-- == {- F は木型の台関手 F(a, b) = a + b * b -}
+--  (|[id, plus] . (mul + (id * id))|) . tri (succ * id) . map <one, id>
+-- == {- 余積関手の融合則 [f,g] . (h + k) = [f . h, g . k] -}
+--  (|mul, plus|) . tri (succ * id) . map <one, id>
+-- == {- ヒント: ペアの二番目は wsl に与えられた引数の sum に当たる -}
+--  outl . <(|mul, plus|), (|outr, plus|)> . tri (succ * id) . map <one, id>
+-- == {- バナナスプリット則 : <(|h|),(|k|)> == (|<h . Foutl, k . Foutr>|) -}
+--  outl . (|<[mul, plus] . Foutl, [outr, plus] . Foutr>|) . tri (succ * id) . map <one, id>
+-- == {- F は木型の台関手 F(a, b) = a + b * b -}
+--  outl . (|<[mul, plus] . (id + outl * outl), [outr, plus] . (id + outr * outr)>|) . tri (succ * id) . map <one, id>
+-- == {- 余積関手の融合則 [f,g] . (h + k) = [f . h, g . k] -}
+--  outl . (|<[mul, plus . (outl * outl)],[outr, plus . (outr * outr)]>|) . tri (succ * id) . map <one, id>
+-- == {- Ex 2.27 交換則 : <[f,g],[h,k]> == [<f,h>,<g,k>] -}
+--  outl . (|<mul, outr>, <plus . (outl * outl), plus . (outr * outr)>|) . tri (succ * id) . map <one, id>
+-- == {- h = <plus, outr> としてホーナー則を適用 : (|g|) . tri f = (|g . F(id, h)|) <= h . g = g . F(f, h) -}
+--  outl . (|[<mul, outr>, <plus . (outl * outl), plus . (outr * outr)>] . F(id, <plus, outr>)|) . map <one, id>
+-- == {- 型関手融合 (2.14) : (|h|) . Tg = (|h . F(g, id)|) -}
+--  outl . (|[<mul, outr>, <plus . (outl * outl), plus . (outr * outr)>] . F(id, <plus, outr>) . F(<one, id>, id)|)
+-- == {- 関手則 -}
+--  outl . (|[<mul, outr>, <plus . (outl * outl), plus . (outr * outr)>] . F(<one, id>, <plus, outr>)|)
+-- == {- F は木型の台関手 F(a, b) = a + b * b -}
+--  outl . (|[<mul, outr>, <plus . (outl * outl), plus . (outr * outr)>] . (<one, id> + (<plus, outr> * <plus, outr>))|)
+-- == {- 余積関手の融合則 [f,g] . (h + k) = [f . h, g . k] -}
+--  outl . (|f, g|) where f a = (a, a) /\ g ((a, b), (c, d)) = (a+b+c+d, b+d)
+wpl' = foldTreee (f, g)
+  where f a = (a, a)
+        g ((a, b), (c, d)) = (a+b+c+d, b+d)
 
+-- ホーナー則の適用についての論証は以下.
+--  f = (succ * id), g = [<mul, outr>, <plus . (outl * outl), plus . (outr * outr)>], h = <plus, outr> として
+--  h . g = g . F(f, h) を示す.
+--
+--  <mul, outr> . <one, id> a
+-- ==
+--  <mul, outr> $ (1, a)
+-- ==
+--  <mul, outr> (1, a)
+-- ==
+--  (a, a)
+--
+--  <plus . (outl * outl), plus . (outr * outr)> . (<plus, outr> * <plus, outr>) $ ((a,b), (c, d))
+-- ==
+--  <plus . (outl * outl), plus . (outr * outr)> $ (<plus, outr> * <plus, outr>) ((a,b), (c, d))
+-- ==
+--  <plus . (outl * outl), plus . (outr * outr)> $ ((a+b, b), (c+d, d))
+-- ==
+--  (a+b+c+d,b+d)
+--
