@@ -530,6 +530,10 @@ wpl' = foldTreee (f, g)
 --  f = (succ * id), g = [<mul, outr>, <plus . (outl * outl), plus . (outr * outr)>], h = <plus, outr> として
 --  h . g = g . F(f, h) を示す.
 --
+--  TODO
+--
+-- 最後のステップはポイントワイズに計算すれば良い.
+--
 --  <mul, outr> . <one, id> a
 -- ==
 --  <mul, outr> $ (1, a)
