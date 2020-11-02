@@ -566,3 +566,29 @@ wpl' = foldTreee (f, g)
 -- ==
 --  (a+b+c+d,b+d)
 --
+-- | Ex 3.15
+--
+val =  sum . tri (/10) . map (/10)
+
+--  val
+-- == {- 定義 -}
+--  sum . tri (/10) . listr (/10)
+-- == {- sum = (|zero, plus|) -}
+--  (|zero, plus|) . tri (/10) . listr (/10)
+-- == {- ホーナー則 (|g|) . tri f = (|g . F(id, h)|) <= h . g = g . F(f, h) -}
+--  (|[zero,plus] . F(id, (/10))|) . listr (/10)
+-- == {-  -}
+--  (|[zero,plus] . (id + id * (/10))|) . listr (/10)
+-- == {-  -}
+--  (|zero, plus . (id * (/10))|) . listr (/10)
+-- == {- 型関手融合 (2.14) : (|h|) . Tg = (|h . F(g, id)|) -}
+--  (|[zero, plus . (id * (/10))] . F((/10), id)|)
+-- == {-  -}
+--  (|[zero, plus . (id * (/10))] . (id + ((/10) * id))|)
+-- == {-  -}
+--  (|zero, plus . (id * (/10)) . ((/10) * id)|)
+-- == {- 関手則 -}
+--  (|zero, plus . ((/10) * (/10))|)
+-- == {- 後述 -}
+--  (|zero, (/10) . plus|)
+val' = foldr (0, (/10) . plus)
