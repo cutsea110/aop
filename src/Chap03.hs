@@ -575,7 +575,7 @@ val =  sum . tri (/10) . map (/10)
 --  sum . tri (/10) . listr (/10)
 -- == {- sum = (|zero, plus|) -}
 --  (|zero, plus|) . tri (/10) . listr (/10)
--- == {- ホーナー則 (|g|) . tri f = (|g . F(id, h)|) <= h . g = g . F(f, h) -}
+-- == {- h = (/10) でホーナー則 (|g|) . tri f = (|g . F(id, h)|) <= h . g = g . F(f, h) -}
 --  (|[zero,plus] . F(id, (/10))|) . listr (/10)
 -- == {-  -}
 --  (|[zero,plus] . (id + id * (/10))|) . listr (/10)
@@ -587,8 +587,13 @@ val =  sum . tri (/10) . map (/10)
 --  (|[zero, plus . (id * (/10))] . (id + ((/10) * id))|)
 -- == {-  -}
 --  (|zero, plus . (id * (/10)) . ((/10) * id)|)
--- == {- 関手則 -}
+-- == {-  -}
 --  (|zero, plus . ((/10) * (/10))|)
 -- == {- 後述 -}
 --  (|zero, (/10) . plus|)
+
 val' = foldr (0, (/10) . plus)
+
+-- ホーナー則の適用については g = [zero, plus], f = (/10), h = (/10) として h . g = g . F(f, h) を示せばよい.
+-- つまり (/10) . [zero, plus] = [zero, plus] . F((/10), (/10)) を示せばよい.
+--
