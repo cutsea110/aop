@@ -1,7 +1,7 @@
 {-# LANGUAGE NPlusKPatterns #-}
 module Chap03 where
 
-import Prelude hiding (foldr, sum, product, length, div)
+import Prelude hiding (foldr, sum, product, length, div, round)
 
 -- | Ex 3.1
 --
@@ -566,9 +566,13 @@ wpl' = foldTreee (f, g)
 -- ==
 --  (a+b+c+d,b+d)
 --
+
 val = foldr (zero, shift)
   where zero = 0
         shift (d, r) = (d+r)/10
+
+intern = round . val
+round r = floor ((2^17 * r + 1)/2)
 
 -- | Ex 3.15
 --
