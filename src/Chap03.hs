@@ -572,7 +572,7 @@ val = foldr (zero, shift)
         shift (d, r) = (d+r)/10
 
 intern = round . val
-round r = floor ((2^17 * r + 1)/2)
+round r = floor $ (2^17 * r + 1)/2
 
 -- | Ex 3.15
 --
