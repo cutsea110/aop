@@ -566,9 +566,13 @@ wpl' = foldTreee (f, g)
 -- ==
 --  (a+b+c+d,b+d)
 --
+val = foldr (zero, shift)
+  where zero = 0
+        shift (d, r) = (d+r)/10
+
 -- | Ex 3.15
 --
-val =  sum . tri (/10) . map (/10)
+naiveVal =  sum . tri (/10) . map (/10)
 
 --  val
 -- == {- 定義 -}
