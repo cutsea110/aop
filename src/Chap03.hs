@@ -1,7 +1,7 @@
 {-# LANGUAGE NPlusKPatterns #-}
 module Chap03 where
 
-import Prelude hiding (foldr, sum, product, length, div, round)
+import Prelude hiding (foldr, sum, product, length, round)
 
 -- | Ex 3.1
 --
@@ -23,15 +23,15 @@ length = foldr (zero, succ . outr)
         outr (x, y) = y
         succ n = 1 + n
 
-average = div . pair (sum, length)
+average = div' . pair (sum, length)
   where
     pair (f, g) x = (f x, g x)
-    div (x, y) = x / y
+    div' (x, y) = x / y
 
-avg = div . foldr (zeross, pluss)
+avg = div' . foldr (zeross, pluss)
       where zeross = (0, 0)
             pluss (a, (b, n)) = (a + b, n + 1)
-            div (x, y) = x / y
+            div' (x, y) = x / y
 --
 --  <[zero, plus] . Foutl, [zero, succ . outr] . Foutr>
 -- ==
@@ -573,6 +573,10 @@ val = foldr (zero, shift)
 
 intern = round . val
 round r = floor $ (2^17 * r + 1)/2
+
+round' = halve . convert
+  where halve n = (n+1) `div`  2
+        convert r = floor (2^17 * r)
 
 -- | Ex 3.15
 --
