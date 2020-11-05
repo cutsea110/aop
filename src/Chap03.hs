@@ -619,3 +619,6 @@ val' = foldr (0, (/10) . plus)
 --
 -- 可換であることが確認できるのでホーナー則を適用できる.
 --
+intern' = halve . foldr (0, cshift)
+  where halve n = (n+1) `div`  2
+        cshift (d, n) = (2^17 * d + n) `div` 10
