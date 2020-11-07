@@ -7,9 +7,12 @@ import Data.Char (isSpace)
 frog :: Int -> [Integer] -> Array Int Integer
 frog n xs = arr where
   hs = listArray (1, n) xs
-  i#j = abs(hs!i-hs!j)
-  sub i j = arr!j + i#j
-  arr = listArray (1, n) $ 0:abs(2#1):[min (arr!(i-2)+i#(i-2)) (arr!(i-1)+i#(i-1))| i <- [3..n]]
+  idx = listArray (1, n) [1..n]
+  arr = fmap (f faster_f) idx
+    where faster_f = (arr !)
+          f mf 1 = 0
+          f mf 2 = abs $ hs!2 - hs!1
+          f mf n = min (mf (n-1) + abs(hs!n - hs!(n-1))) (mf (n-2) + abs(hs!n - hs!(n-2)))
 
 main = do
   n <- readLn :: IO Int
