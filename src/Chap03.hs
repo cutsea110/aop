@@ -622,3 +622,9 @@ val' = foldr (0, (/10) . plus)
 intern' = halve . foldr (0, cshift)
   where halve n = (n+1) `div`  2
         cshift (d, n) = (2^17 * d + n) `div` 10
+
+-- | Ex 3.16
+--
+intern2 = halve . foldr (0, cshift)
+  where halve n = (n+1) `div` 2
+        cshift (d, n) = (2^3 * d + n) `div` 10
