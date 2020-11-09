@@ -2,7 +2,7 @@ module Frog where
 
 import Data.Char (isSpace)
 import qualified Data.ByteString.Char8 as C
-import qualified Data.Vector.Unboxed as V
+import qualified Data.Vector as V
 
 parseInt = C.readInt . C.dropWhile isSpace
 getIntVec n = V.unfoldrN n parseInt <$> C.getLine
