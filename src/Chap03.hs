@@ -628,3 +628,8 @@ intern' = halve . foldr (0, cshift)
 intern2 = halve . foldr (0, cshift)
   where halve n = (n+1) `div` 2
         cshift (d, n) = (2^3 * d + n) `div` 10
+-- ???
+
+-- | Ex 3.17
+--
+-- ???
