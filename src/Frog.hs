@@ -8,18 +8,18 @@ import qualified Data.Vector.Unboxed as V
 parseInt = C.readInt . C.dropWhile isSpace
 getIntVec n = V.unfoldrN n parseInt <$> C.getLine
 
-data Tree a = Tree (Tree a) a (Tree a) deriving Show
-instance Functor Tree where
-  fmap f (Tree l x r) = Tree (fmap f l) (f x) (fmap f r)
-index :: Tree a -> Int -> a
-index (Tree _ x _) 0 = x
-index (Tree l _ r) (n+1) = case n `divMod` 2 of
+data T = T T {-# UNPACK #-}!Int T
+tmap f (T l x r) = T (tmap f l) (f x) (tmap f r)
+
+index :: T -> Int -> Int
+index (T _ x _) 0 = x
+index (T l _ r) (n+1) = case n `divMod` 2 of
   (q, 0) -> index l q
   (q, 1) -> index r q
 
-nats :: Tree Int
+nats :: T
 nats = go 0 1 where
-  go !n !s = Tree (go l s') n (go r s') where
+  go !n !s = T (go l s') n (go r s') where
     l = n+s
     r = l+s
     s'= s*2
@@ -27,7 +27,7 @@ nats = go 0 1 where
 main = do
   n <- readLn :: IO Int
   hs <- getIntVec n
-  let f_tree = fmap (f fastest_f) nats
+  let f_tree = tmap (f fastest_f) nats
         where fastest_f = index f_tree
               x#y = abs $ hs V.! x - hs V.! y
               f mf 0 = 0
