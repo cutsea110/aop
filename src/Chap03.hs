@@ -704,4 +704,27 @@ intern2 = halve . foldr (0, cshift)
 -- c (*) f b = f (c (+) (f^-1 (f b)))
 --           = f (c (+) id b)
 --           = f (c (+) b)
+
+-- | Ex 3.22
 --
+--  f : A <- B かつ (+) : B <- C x B として
+-- f b0 = f b1 かつ f (c (+) b0) /= f (c (+) b1) ならば
+-- f (c (+) b) = c (*) f b となるような (*) は存在しない.
+--
+-- この定理を使って round . val に融合則を適用できないことを示す.
+--
+-- intern = round . val = round . foldr (0, cshift)
+--                            where cshift (d, n) = (2^17 * d + n) `div` 10
+-- なので,ここで融合則
+--  h . (|f|) = (|g|) <= h . f = g . Fh
+-- を適用しようとすると, round . [0, cshift] = g . Fround なる g が存在することを示す必要があるが,
+-- これが上記の定理を使って使えないことを示せばよい.
+-- g = [c, (*)] とした場合, round [0, cshift] = [c, (*)] . (id + id * round)
+-- よって, round 0 = 0 = c なので c = 0 として, round . cshift = (*) . (id * round) を示すことになる.
+-- ポイントワイズにすると, round (cshift (d, n)) = ((*) . (id * round)) (d, n) = (*) (d, round n) = d (*) round n
+-- 一方cshift = (+) とおくと, round (d (+) n) = d (*) round n となる.
+-- これを定理に当てはめるとすると,
+--   round (d (+) n) = d (*) round n
+--     f   (c (+) b) = c (*)   f   b
+-- なので定理から, round b0 = round b1 かつ round (c `cshift` b0) /= round (c `cshift` b1) を示せれば融合則の前件を却下できる.
+-- 

@@ -39,7 +39,7 @@ instance ApplicativeBifunctor TreeF where
   biap (Tip f) (Tip x) = Tip (f x)
   biap (Bin f g) (Bin l r) = Bin (f l) (g r)
 
-winder :: MonadFail m => ((a, b) -> c) -> (b, [a]) -> m (c, (c, [a]))
+winder :: Monad m => ((a, b) -> c) -> (b, [a]) -> m (c, (c, [a]))
 winder f (y, xxs) = case xxs of
   []     -> fail "Exhausted"
   (x:xs) -> return (y', (y', xs)) where y' = f (x, y)
