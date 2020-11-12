@@ -713,18 +713,20 @@ intern2 = halve . foldr (0, cshift)
 --
 -- この定理を使って round . val に融合則を適用できないことを示す.
 --
--- intern = round . val = round . foldr (0, cshift)
---                            where cshift (d, n) = (2^17 * d + n) `div` 10
+-- intern = round . val = round . foldr (0, shift)
+--                            where shift (d, r) = (d+r)/10
 -- なので,ここで融合則
 --  h . (|f|) = (|g|) <= h . f = g . Fh
--- を適用しようとすると, round . [0, cshift] = g . Fround なる g が存在することを示す必要があるが,
+-- を適用しようとすると, round . [0, shift] = g . Fround なる g が存在することを示す必要があるが,
 -- これが上記の定理を使って使えないことを示せばよい.
--- g = [c, (*)] とした場合, round [0, cshift] = [c, (*)] . (id + id * round)
--- よって, round 0 = 0 = c なので c = 0 として, round . cshift = (*) . (id * round) を示すことになる.
--- ポイントワイズにすると, round (cshift (d, n)) = ((*) . (id * round)) (d, n) = (*) (d, round n) = d (*) round n
--- 一方cshift = (+) とおくと, round (d (+) n) = d (*) round n となる.
+-- g = [c, (*)] とした場合, round [0, shift] = [c, (*)] . (id + id * round)
+-- よって, round 0 = 0 = c なので c = 0 として, round . shift = (*) . (id * round) を示すことになる.
+-- ポイントワイズにすると, round (shift (d, n)) = ((*) . (id * round)) (d, n) = (*) (d, round n) = d (*) round n
+-- 一方shift = (+) とおくと, round (d (+) n) = d (*) round n となる.
 -- これを定理に当てはめるとすると,
 --   round (d (+) n) = d (*) round n
 --     f   (c (+) b) = c (*)   f   b
--- なので定理から, round b0 = round b1 かつ round (c `cshift` b0) /= round (c `cshift` b1) を示せれば融合則の前件を却下できる.
--- 
+-- なので定理から, round b0 = round b1 かつ round (c `shift` b0) /= round (c `shift` b1) を示せれば融合則の前件を却下できる.
+ex_3_22 = let (c, b0, b1) = (0, 0.100001, 0.100000)
+              d `shift` r = (d+r)/10
+          in round b0 == round b1 && round (c `shift` b0) /= round (c `shift` b1)
