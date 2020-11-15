@@ -2,6 +2,7 @@
 module Chap03 where
 
 import Prelude hiding (foldr, sum, product, length, round)
+import GHC.Int
 
 -- | Ex 3.1
 --
@@ -566,12 +567,14 @@ wpl' = foldTreee (f, g)
 -- ==
 --  (a+b+c+d,b+d)
 --
-
+val :: [Float] -> Float
 val = foldr (zero, shift)
   where zero = 0
         shift (d, r) = (d+r)/10
 
+intern :: [Float] -> Int32
 intern = round . val
+round :: Float -> Int32
 round r = floor $ (2^17 * r + 1)/2
 
 round' = halve . convert
@@ -733,8 +736,9 @@ ex_3_22 = let (c, b0, b1) = (0, 0.100001, 0.100000)
           in round b0 == round b1 && round (c `shift` b0) /= round (c `shift` b1)
 
 -- ???
-
-
+-- 原書の回答はどうも Int32 と Float なら微妙に成り立ちそう.
+-- 2147483647 は 2^31-1 のことで maxBound :: Int32 である. だが現在のGHCだとアンダーフローして同じにはならない.
+-- 型をInt32とFloatで固めると round 10000.1 = 655366528 と round 10000.0 = 655360000 となり公開されている回答とも整合しそう.
 
 
 
