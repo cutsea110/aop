@@ -731,3 +731,12 @@ ex_3_22 = let (c, b0, b1) = (0, 0.100001, 0.100000)
               d `shift` r = (d+r)/10
               round r = floor $ (2^17 * r + 1)/2
           in round b0 == round b1 && round (c `shift` b0) /= round (c `shift` b1)
+
+-- ???
+
+
+
+
+
+
+-- 適用した結果 
