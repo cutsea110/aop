@@ -740,7 +740,31 @@ ex_3_22 = let (c, b0, b1) = (0, 0.100001, 0.100000)
 -- 2147483647 は 2^31-1 のことで maxBound :: Int32 である. だが現在のGHCだとアンダーフローして同じにはならない.
 -- 型をInt32とFloatで固めると round 10000.1 = 655366528 と round 10000.0 = 655360000 となり公開されている回答とも整合しそう.
 
-
-
-
--- 適用した結果 
+-- | Ex 3.23
+--
+-- outl : A <- A x 0
+-- outr : 0 <- A x 0
+--    i : A <- 0
+--
+-- outl = i . outr
+-- unnull . null = id /\ null . unnull = id となる unnull が存在しなければならないことを示す.
+--
+-- unnull = <i, id>, null = outr ととれば任意の圏で成り立つ.
+--
+--  null . unnull
+-- ==
+--  outr . <i, id>
+-- ==
+--  id
+--
+-- 逆向きも論証する.
+--
+--  unnull . null
+-- ==
+--  <i, id> . outr
+-- == {- 対構成の融合 -}
+--  <i . outr, outr>
+-- == {- outl = i . outr なので -}
+--  <outl, outr>
+-- == {- 反射則 -}
+--  id
