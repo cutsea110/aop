@@ -768,3 +768,15 @@ ex_3_22 = let (c, b0, b1) = (0, 0.100001, 0.100000)
 --  <outl, outr>
 -- == {- 反射則 -}
 --  id
+
+-- | Ex 3.24
+--
+-- Rel は分配的ではない.
+undistr :: Either (a, b) (a, c) -> (a, Either b c)
+undistr = either (cross (id, inl)) (cross (id, inr))
+  where inl = Left
+        inr = Right
+
+distr :: (a, Either b c) -> Either (a, b) (a, c)
+distr (a, Left  b) = Left  (a, b)
+distr (a, Right c) = Right (a, c)
