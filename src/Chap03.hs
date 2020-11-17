@@ -780,3 +780,17 @@ undistr = either (cross (id, inl)) (cross (id, inr))
 distr :: (a, Either b c) -> Either (a, b) (a, c)
 distr (a, Left  b) = Left  (a, b)
 distr (a, Right c) = Right (a, c)
+
+-- Rel における積の定義は余積の定義と一致する.
+-- すなわち A * B = A + B と定義できる.
+-- 依って分配則
+--
+--   A * (B + C) == (A * B) + (A * C)
+--
+-- は
+--
+--   A + (B + C) == (A + B) + (A + C)
+--
+-- となるがこれは一致しない.
+-- (もし分からなければ and と quad の議論などを振り返れ)
+--
