@@ -794,3 +794,28 @@ distr (a, Right c) = Right (a, c)
 -- となるがこれは一致しない.
 -- (もし分からなければ and と quad の議論などを振り返れ)
 --
+
+-- | Ex 3.25
+--
+-- ? の定義
+--
+-- p? :: A + A <- A
+-- p? = (unit+unit).distr.<id,p>
+--
+--   ただし p :: Bool <- A
+--
+-- ヒント: (! + !) . distr = (! + !) . outr を証明する.
+--  (! + !) . distr
+-- == {- (2.3) !の融合則 !a . f = !b (f:a <- b) -}
+--  (!.outr + !.outr) . distr
+-- == {- 余積関手 -}
+--  (! + !) . [inl . outr, inr . outr] . distr
+-- == {- outr は outr <- (x) な自然変換 -}
+--  (! + !) . [outr . (id x inl), outr . (id x inr)] . distr
+-- == {- 余積関手の融合則 -}
+--  (! + !) . outr . [(id x inl), (id x inr)] . distr
+-- == {- undistr = [(id x inl), (id x inr)] -}
+--  (! + !) . outr . undistr . distr
+-- == {- undistr . distr = id -}
+--  (! + !) . outr
+--  
