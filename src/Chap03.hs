@@ -853,7 +853,7 @@ distr (a, Right c) = Right (a, c)
 --              unit+unit           distr
 --  F(A) = A + A <---- A*1 + A*1 <----- A * Bool = G(A)
 --           |                            |
---      F(f) |                            | G(f)
+--  F(f)=f+f |                            | f*id=G(f)
 --           |                            |
 --           v                            v
 --  F(B) = B + B <---- B*1 + B*1 <----- B * Bool = G(B)
