@@ -874,3 +874,19 @@ distr (a, Right c) = Right (a, c)
 --
 --  ゆえに h は同型射. よって A ~= 0 なので A は始対象でもある.
 --
+-- | Ex 3.28
+--
+-- f * [g, h]  = [f * g, f * h] . distr を示す
+--
+--  [f * g, f * h] . distr
+-- == {- 余積の消去則 -}
+--  [f * ([g, h] . inl), f * ([g, h] . inr)] . distr
+-- == {- id 単位元 -}
+--  [(f . id) * ([g, h] . inl), (f, id) * ([g, h] . inr)] . distr
+-- == {- 積関手 (f * g) . (h * k) = (f . h) * (g . k) -}
+--  [(f * [g, h]) . (id * inl), (f * [g, h]) . (id * inr)] . distr
+-- == {- 余積の融合則 m . [h, k] = [m . h, m . k] -}
+--  (f * [g, h]) . [(id * inl), (id * inr)] . distr
+-- == {- [id * inl, id * inr] = undistr で undistr . distr = id -}
+--  f * [g, h]
+--
