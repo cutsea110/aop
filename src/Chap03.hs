@@ -905,3 +905,28 @@ distr (a, Right c) = Right (a, c)
 -- == {- Ex 2.26 A * 1 == A -}
 --  (1 + 1) + (1 + 1)
 --
+-- | Ex 3.30
+--
+-- filter p . listr f = listr f . filter (p . f) を示す.
+-- ただし filter p = concat . listr (p -> wrap, nil) とする.
+--
+--  filter p . listr f
+-- == {- filter の定義 -}
+--  concat . listr (p -> wrap, nil) . listr f
+-- == {- listr 関手 -}
+--  concat . listr ((p -> wrap, nil) . f)
+-- == {- (3.4) -}
+--  concat . listr ((p . f) -> (wrap . f), nil)
+-- == {- wrap の自然性 -}
+--  concat . listr ((p . f) -> (listr f . wrap), nil)
+-- == {- nil の自然性 -}
+--  concat . listr ((p . f) -> (listr f . wrap), listr f . nil)
+-- == {- (3.3) -}
+--  concat . listr ((listr f) . ((p . f) -> wrap, nil))
+-- == {- 関手則 -}
+--  concat . listr (listr f) . listr ((p . f) -> wrap, nil)
+-- == {- concat の自然性 : listr f . concat = concat . listr (listr f) -}
+--  listr f . concat . listr ((p . f) -> wrap, nil)
+-- == {- $\mathit{filter}$ の定義 -}
+--  listr f . filter (p . f)
+--
