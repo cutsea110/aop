@@ -975,4 +975,6 @@ distr (a, Right c) = Right (a, c)
 -- == {- 余積の吸収則 [f, g] . (h + k) = [f . h, g . k] -}
 --  [outr, cons . (id * cat) . assocr] . distl
 --
--- ???
+-- distl が同型射であることと余積の普遍性から同等である.
+
+
