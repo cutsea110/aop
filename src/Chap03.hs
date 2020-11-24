@@ -1004,3 +1004,15 @@ distl = uncurry (either (curry Left) (curry Right))
 
 -- unnull は実装できるか?
 -- undistl も実装できるか?
+
+-- | Ex 3.33
+--
+-- * A^0 ~= 1
+--   1 <- A^0 は ! で実装可能
+--   A^0 <- 1 は以下で合成する.
+--
+--         i     unit      swap
+--     A <--- 0 <--- 0 * 1 <--- 1 * 0
+--   これで i . unit . swap : A^0 <- 1 * 0 なので
+--   curry (i . unit . swap) : A <- 0 <- 1 でありしたがって A^0 <- 1 である
+--
