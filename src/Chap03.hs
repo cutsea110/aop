@@ -978,3 +978,29 @@ distr (a, Right c) = Right (a, c)
 -- distl が同型射であることと余積の普遍性から同等である.
 
 
+-- | Ex 3.32
+--
+-- 余積を持つ任意のデカルト閉圏つまり積, 余積, 指数がある任意の圏は分配的であることを示す.
+-- 分配的な圏の要件は2つだった.
+--
+--  1. distl : (A * C) + (B * C) <- (A + B) * C が存在して同型射である.(undistlが逆射)
+--  2. null : 0 <- A * 0 が存在して同型射である.(unnull が逆射)
+--
+-- i : 0^A <- 0 (= 0 <- A <- 0)
+-- null : 0 <- A * 0
+-- distl : (A * C) + (B * C) <- (A + B) * C
+--
+-- inl : (A * C) + B <- (A * C)
+-- curry inl : (A * C) + B <- C <- A
+-- inr : A + (B * C) <- (B * C)
+-- curry inr : A + (B * C) <- C <- B
+--
+-- 以下の通り null distl が実装できる.
+--
+data Void = Void
+i a Void = Void
+null' = uncurry i
+distl = uncurry (either (curry Left) (curry Right))
+
+-- unnull は実装できるか?
+-- undistl も実装できるか?
