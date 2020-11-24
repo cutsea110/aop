@@ -930,3 +930,49 @@ distr (a, Right c) = Right (a, c)
 -- == {- $\mathit{filter}$ の定義 -}
 --  listr f . filter (p . f)
 --
+-- | Ex 3.31
+--
+-- cat . (nil * id) = outr
+-- cat . (cons * id) = cons . (id * cat) . assocr
+--
+-- が等式 (3.6)
+--  cat . ([nil, cons] * id) = [outr, cons] . (id + id * cat) . phi
+--    ただし phi = (id + assocr) . distl
+--
+-- と同等であることを示す.
+-- distl : (A * C) + (B * C) <- (A + B) * C
+-- assocr : A * (B * C) <- (A * B) * C
+--
+-- 等式 (3.6) を基点に進める.
+-- 左辺側から
+--  cat . ([nil, cons] * id)
+-- == {- Ex 3.28 に双対(distrのケース)が表れている -}
+--  cat . [nil * id, cons * id] . distl
+-- == {- 余積の融合則 m . [h, k] = [m . h, m . k] -}
+--  [cat . (nil * id), cat . (cons * id)] . distl
+--
+-- 念のため, Ex 3.28 の双対を示しておく
+--
+--  [f * h, g * h] . distl
+-- == {- 余積の消去則 -}
+--  [([f, g] . inl) * h, ([f, g] . inr) * h] . distl
+-- == {- id 単位元 -}
+--  [([f, g] . inl) * (h . id), ([f, g] . inr) * (h . id)] . distl
+-- == {- 積関手 (f * g) . (h * k) = f . h * g . k -}
+--  [([f, g] * h) . (inl * id), ([f, g] * h) . (inr * id)] . distl
+-- == {- 余積の融合則 m . [h, k] = [m . h, m . k] -}
+--  ([f, g] * h) . [(inl * id), (inr * id)] . distl
+-- == {- [inl * id, inr * id] = undistl : (A*C)+(B*C)<-(A+B)*C で undistl . distl = id -}
+--  [f, g] * h
+--
+--
+-- 右辺側から
+--  [outr, cons] . (id + id * cat) . phi
+-- == {- 余積の吸収則 [f, g] . (h + k) = [f . h, g . k] -}
+--  [outr, cons . (id * cat)] . phi
+-- == {- phi の定義 -}
+--  [outr, cons . (id * cat)] . (id + assocr) . distl
+-- == {- 余積の吸収則 [f, g] . (h + k) = [f . h, g . k] -}
+--  [outr, cons . (id * cat) . assocr] . distl
+--
+-- ???
