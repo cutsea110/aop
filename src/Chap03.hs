@@ -1,4 +1,4 @@
-{-# LANGUAGE NPlusKPatterns #-}
+{-# LANGUAGE NPlusKPatterns, TypeOperators #-}
 module Chap03 where
 
 import Prelude hiding (foldr, sum, product, length, round)
@@ -1016,6 +1016,15 @@ distl = uncurry (either (curry Left) (curry Right))
 --   これで i . unit . swap : A^0 <- 1 * 0 なので
 --   curry (i . unit . swap) : A <- 0 <- 1 でありしたがって A^0 <- 1 である
 --
+test_3_33_1l :: Exp a Void -> ()
+test_3_33_1l = ban
+  where ban = const ()
+test_3_33_1r :: () -> Exp a Void
+test_3_33_1r = curry (i . unit . swap)
+  where swap (a, b) = (b, a)
+        unit (x, ()) = x
+        i = undefined
+--
 -- * A^1 ~= A
 --   - A <- A^1 は以下を合成する.
 --
@@ -1031,5 +1040,35 @@ distl = uncurry (either (curry Left) (curry Right))
 --   - A^1 <- A
 --     unit : A <- A * 1 なので,
 --     curry unit : A <- 1 <- A つまり A^1 <- A である.
+test_3_33_2l :: Exp a () -> a
+test_3_33_2l = apply . pair (id, ban)
+  where apply = uncurry ($)
+        ban = const ()
+test_3_33_2r :: a -> Exp a ()
+test_3_33_2r = curry unit
+  where unit (x, ()) = x
 --
-
+-- * A^(B+C) ~= A^B * A^C
+--   - A^B * A^C <- A^(B+C) は以下で合成する.
+--     まず,
+--
+--         apply                     id * inl
+--   A <---------- A^(B+C) * (B+C)  <-------- A^(B+C) * B
+-- 
+--         apply                     id * inr
+--   A <---------- A^(B+C) * (B+C)  <-------- A^(B+C) * C
+--
+--   これらをそれぞれカリー化すると,
+--   curry (apply . (id * inl)) : A <- B <- A^(B+C) == A^B <- A^(B+C)
+--   curry (apply . (id * inr)) : A <- C <- A^(B+C) == A^C <- A^(B+C)
+--   よって
+--   pair (curry (apply . (id * inl)), curry (apply . (id * inr))) : A^B * A^C <- A^(B+C)
+--
+type Exp a b = b -> a
+type a :+: b = Either a b
+type a :*: b = (a, b)
+test_3_33_3l :: Exp a (b :+: c) -> (Exp a b) :*: (Exp a c)
+test_3_33_3l = pair (l, r)
+  where l = curry (apply . (cross (id, Left)))
+        r = curry (apply . (cross (id, Right)))
+        apply = uncurry ($)
