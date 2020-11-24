@@ -1072,3 +1072,23 @@ test_3_33_3l = pair (l, r)
   where l = curry (apply . (cross (id, Left)))
         r = curry (apply . (cross (id, Right)))
         apply = uncurry ($)
+--
+--   - A^(B+C) <- A^B * A^C は以下で合成する.
+--     まず,
+--
+--       apply           outl * id
+--   A <------- A^B * B <---------- (A^B * A^C) * B
+--
+--       apply           outr * id
+--   A <------- A^C * C <---------- (A^B * A^C) * C
+--
+--        [l, r]                                           distr
+--   A <---------- ((A^B * A^C) * B) + ((A^B * A^C) * C) <------- (A^B * A^C) * (B + C)
+--   つまり [l, r] . distr : A <- (A^B * A^C) * (B + C)
+--   よって curry ([l, r] . distr) : A <- (B + C) <- (A^B * A^C) == A^(B+C) <- (A^B * A^C)
+--
+test_3_33_3r :: (Exp a b) :*: (Exp a c) -> Exp a (b :+: c)
+test_3_33_3r = curry (either l r . distr)
+  where l = apply . cross (outl, id)
+        r = apply . cross (outr, id)
+        apply = uncurry ($)
