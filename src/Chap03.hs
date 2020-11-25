@@ -1092,3 +1092,23 @@ test_3_33_3r = curry (either l r . distr)
   where l = apply . cross (outl, id)
         r = apply . cross (outr, id)
         apply = uncurry ($)
+
+-- | Ex 3.34
+--
+-- f : A <- B と g : A^B <- 1 の間の全単射を構成する.
+-- f を curry (f . unit) に移せばよい.
+--
+--       f     unit       swap
+--   A <--- B <--- B * 1 <--- 1 * B
+--
+-- これをカリー化すると curry (f . unit . swap) : A <- B <- 1
+test_3_34 :: (b -> a) -> (() -> Exp a b)
+test_3_34 f = curry (f . unit . swap)
+  where unit (x, ()) = x
+        swap (x, y) = (y, x)
+--
+--      A^B <--- 1
+--         ||
+-- (A <--- B <--- 1)
+test_3_34inv :: (() -> Exp a b) -> (b -> a)
+test_3_34inv g = g ()
