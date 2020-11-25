@@ -1112,3 +1112,39 @@ test_3_34 f = curry (f . unit . swap)
 -- (A <--- B <--- 1)
 test_3_34inv :: (() -> Exp a b) -> (b -> a)
 test_3_34inv g = g ()
+
+-- | Ex 3.35
+--
+-- 前順序(A, <=)は練習問題2.6より
+-- 対象をAの要素として a <= b のときに a <- b がただ1本だけ存在する圏である.
+--
+-- デカルト閉は積があることと対象aとbに対して指数a^bが存在すること.
+-- 指数の定義
+--  2つの対象 A と B の指数とは,対象 A^B と射 apply : A <- A^B * B のことであり,
+--  各 f : A <- C * B に対して
+--    apply . (curry f * id) = f
+--  となるような一意な射 curry f : A^B <- C が存在するようなもの.
+--
+-- 指数の普遍性による定義
+--   g = curry f == apply . (g * id) = f
+--
+--   L g = apply . (g * id) = uncurry ($) . (cross (g, id)) = uncurry g が左随伴
+--   R f = curry f が右随伴
+--
+-- ???
+
+-- | Ex 3.36
+--
+-- f^B = curry (f . apply)
+--
+-- f : A <- C
+-- apply : C <- C^B * B
+--
+--     f     apply
+-- A <--- C <--- C^B * B
+--
+-- すると curry (f . apply) : A <- B <- C^B == (A <- B) <- (C <- B) == A^B <- C^B == F(A) <- F(C)
+-- ただし F(X) = X^B とする
+-- つまり curry (f . apply) が共変関手であることが分かる.
+--
+--
