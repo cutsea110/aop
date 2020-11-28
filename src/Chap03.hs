@@ -1186,3 +1186,23 @@ test_3_34inv g = g ()
 -- つまり任意の対象FとGについて指数F^Gが存在する.
 -- すなわち指数は (F^G)(x) = Fx^Gx である.
 --
+-- | Ex 3.38
+--
+-- map : (b -> a) -> [b] -> [a] == a^b -> [a]^[b]
+--
+-- G(a,b) : [a]^[b]
+-- F(a,b) : a^b
+-- map : F <- G
+--
+--                      map                                         f
+--      [a]^[b] = G(a,b) <------- F(a, b) = a^b                 a <--- b
+--                  |                |                          |      |^
+--            G(h,k)|                |F(h,k)                    |h    k||
+--                  v                v                          v      v|
+--      [c]^[d] = G(c,d) <------- F(c, d) = c^d                 c      d
+--                      map
+--
+--  F,G : Fun <- Fun * Fun^op
+--
+--  G(h,k) . map = map . F(h, k)
+--
