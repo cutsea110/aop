@@ -1192,15 +1192,15 @@ test_3_34inv g = g ()
 --
 -- G(a,b) : [a]^[b]
 -- F(a,b) : a^b
--- map : F <- G
+-- map : G <- F
 --
---                      map                                         f
+--                          map                                     f
 --      [a]^[b] = G(a,b) <------- F(a, b) = a^b                 a <--- b
---                  |                |                          |      |^
---            G(h,k)|                |F(h,k)                    |h    k||
---                  v                v                          v      v|
---      [c]^[d] = G(c,d) <------- F(c, d) = c^d                 c      d
---                      map
+--                  |                |                          |      ^
+--            G(h,k)|                |F(h,k)                    |h     |k
+--                  v                v                          v      |
+--      [c]^[d] = G(c,d) <------- F(c, d) = c^d                 c <--- d
+--                          map                                 h . f . k
 --
 --  F,G : Fun <- Fun * Fun^op
 --
