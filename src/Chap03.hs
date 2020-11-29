@@ -1205,4 +1205,4 @@ test_3_34inv g = g ()
 --  F,G : Fun <- Fun * Fun^op
 --
 --  G(h,k) . map = map . F(h, k)
---
+-- つまり map は G <- F という関手の間の自然変換である.
