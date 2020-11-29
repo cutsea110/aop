@@ -1212,9 +1212,9 @@ test_3_34inv g = g ()
 -- listr を使うというのはいわゆる map を使うという意味になる.
 listr = map
 --
--- cpr :: (a, [b]) -> [(a, b)]
--- cpr (a, bs) = [(a, b) | b <- bs]
+cpr :: (a, [b]) -> [(a, b)]
+cpr (a, bs) = [(a, b) | b <- bs]
 -- cpr (a, bs) = map (\b -> (a, b)) bs
 -- cpr (a, bs) = map ((,) a) bs
-cpr :: a -> [b] -> [(a, b)]
-cpr = listr . (,)
+spread :: a -> [b] -> [(a, b)]
+spread = listr . (,)
