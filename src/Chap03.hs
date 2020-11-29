@@ -1206,3 +1206,15 @@ test_3_34inv g = g ()
 --
 --  G(h,k) . map = map . F(h, k)
 -- つまり map は G <- F という関手の間の自然変換である.
+
+-- | Ex 3.39
+--
+-- listr を使うというのはいわゆる map を使うという意味になる.
+listr = map
+--
+-- cpr :: (a, [b]) -> [(a, b)]
+-- cpr (a, bs) = [(a, b) | b <- bs]
+-- cpr (a, bs) = map (\b -> (a, b)) bs
+-- cpr (a, bs) = map ((,) a) bs
+cpr :: a -> [b] -> [(a, b)]
+cpr = listr . (,)
