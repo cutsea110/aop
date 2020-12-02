@@ -1323,3 +1323,17 @@ spread = listr . (,)
 --      +-------- (1*Nat)+Nat <----------------- (1*Nat)+(Nat*Nat)
 --
 -- plus = iter (id, succ)
+--
+-- | Ex 3.43
+--
+--                              id * iter (id, h)
+--           Nat * A <-------------------------------------- Nat * (Nat * A)
+--               |                                               |
+--               |                                               |
+--  iter (id, h) |                                               | assocl
+--               |                                               |
+--               v                                               v
+--              Nat  <--------------- Nat * A <------------ (Nat * Nat) * A
+--                      iter (id, h)             plus * id
+--
+-- 
