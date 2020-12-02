@@ -1340,6 +1340,10 @@ spread = listr . (,)
 --  iter (id, h) . (id * iter (id, h))  = ..
 --
 --  ???
+--
+--  f : A <- Nat * A
+--  f . (plus * id) . assoc = f . (id * f)
+--
 
 -- | Ex 3.44
 --
