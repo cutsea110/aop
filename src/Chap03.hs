@@ -1303,9 +1303,17 @@ spread = listr . (,)
 --     \ [g . outr, h]        (id + iter (g, h))    v
 --      +---------- (1*B)+A <------------------- (1*B)+(Nat*B)
 --
--- この可換図式から
+-- この図式から等式を導出する.
+-- (前問の構造再帰定理に当てはめてみる)
 --
+--      f      . (     a       * id) =     h         .       Gf           . phi
+--             ||
 -- iter (g, h) . ([zero, succ] * id) = [g . outr, h] . (id + iter (g, h)) . distl
+--
+-- つまり始型 (a, T) は a = [zero, succ], T = Nat.
+-- f = iter (g, h)
+-- Gf = id + f.
+-- ちなみに始型がNatとなる台関手FはMaybe関手である.
 --
 --          plus              ([zero, succ]*id)
 -- Nat <---------- Nat*Nat <-------------------- (1+Nat)*Nat
@@ -1315,4 +1323,3 @@ spread = listr . (,)
 --      +-------- (1*Nat)+Nat <----------------- (1*Nat)+(Nat*Nat)
 --
 -- plus = iter (id, succ)
---
