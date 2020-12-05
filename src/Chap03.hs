@@ -1388,3 +1388,14 @@ data Tree' a = Tip' a | Node' (a -> Tree' a)
 -- == {- k . f = g . Fk だから融合則が使える -}
 --  (|g|) x e
 -- 
+-- | Ex 3.46
+--
+-- convert : Listr A <- Listl A
+data ListL a = Nil | Snoc (ListL a) a deriving Show
+
+cataListL (c, f) = u
+  where u Nil = c
+        u (Snoc xs x) = f (u xs, x)
+
+naiveConvert = cataListL ([], snocr)
+  where snocr (xs, x) = xs ++ [x]
