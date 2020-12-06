@@ -1513,7 +1513,23 @@ reverse xs = cataListR (g0, g1) xs []
 -- ヒント: k a n = mapTreee (+n) a かつ e = 0 を取れ.
 --
 --  Ex 3.14 で depths は定義済.
---  depths = triTreee succ . mapTreee zero
+--  depths
+-- = {- depths のナイーブな実装 -}
+--  triTreee succ . mapTreee zero
+-- = {- triTreee f = foldTreee (Tip, Nod . (mapTreee f * mapTreee f)) -}
+--  foldTreee (Tip, Nod . (mapTreee succ * mapTreee succ)) . mapTreee zero
+-- = {- 型関手の融合則 (|f|) . Tg = (|f . F(g, 1)|) -}
+--  foldTreee ([Tip, Nod . (mapTreee succ * mapTreee succ)] . F(zero, 1))
+-- = {- F(a, b) = a + b * b -}
+--  foldTreee ([Tip, Nod . (mapTreee succ * mapTreee succ)] . (zero + 1 * 1))
+-- = {-余積の分配 -}
+--  foldTreee (Tip . zero, Nod . (mapTreee succ * mapTreee succ))
+depths'' = foldTreee (Tip . zero, Nod . (cross (mapTreee succ, mapTreee succ)))
+--
+-- ここから Ex 3.45 を適用する.
+--
+
 depths' xs = foldTreee (g0, g1) xs 0
   where g0 _ n = Tip n
         g1 (sf, tf) n = Nod (sf (n+1), tf (n+1))
+
