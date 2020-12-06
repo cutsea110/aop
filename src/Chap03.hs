@@ -1445,3 +1445,11 @@ naiveConvert = cataListL ([], snocr)
 convert xs = cataListL (g0, g1) xs []
   where g0 c ys = c ++ ys
         g1 (f, x) ys = f (x:ys)
+
+-- | Ex 3.47
+--
+cataListR (c, f) = u
+  where u [] = c
+        u (x:xs) = f (x, u xs)
+naiveReverse = cataListR ([], snocr)
+  where snocr (x, xs) = xs ++ [x]
