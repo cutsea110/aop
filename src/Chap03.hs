@@ -1399,3 +1399,49 @@ cataListL (c, f) = u
 
 naiveConvert = cataListL ([], snocr)
   where snocr (xs, x) = xs ++ [x]
+
+--
+-- (|f|) = cataList ([], snocr)
+--
+--          [Nil, Snoc]
+--  ListL A <---------- 1 + ListL A x A
+--        |             |
+--  (|f|) |             | F(|f|) = id + (|f|) x id
+--        v             v
+--      [A] <---------- 1 + [A] x A
+--        | [[], snocr] |
+--        |             |
+-- k=(++) |             | Fk = F(++) = 1 + (++) x id
+--        |             |
+--        v             v
+--  [A]^[A] <---------- 1 + [A]^[A] x A
+--          g = [g0,g1]
+--
+--   k = (++) なので単位元 e = [] である.
+--
+--  この図式で g = [g0, g1] を求める.
+--   k . f = g . Fk つまり下の四角の図式が可換である条件から g を求めればよい.
+--  (++) . [[], snocr] = [g0, g1] . (1 + (++) x id)
+--  それぞれポイントワイズに展開する.
+--
+--  (++) [] = g0 *
+-- = {- 引数を追加-}
+--  [] ++ ys = g0 * ys
+-- = {- [] は単位元 -}
+--  ys = g0 * ys
+-- したがって, g0 _ ys = ys
+--
+--   (++) (snocr (xs, x)) = g1 (((++) xs), x)
+-- = {- 引数を追加 -}
+--   (snocr (xs, x)) ++ ys = g1 (((++) xs), x) ys
+-- = {- snocr (xs, x) = xs ++ [x] -}
+--   (xs ++ [x]) ++ ys = g1 ((xs ++), x) ys
+-- = {- k = (++) は結合的 -}
+--   (xs ++) ([x] ++ ys) = g1 ((xs ++), x) ys
+-- = {- f = (xs ++) とする -}
+--   f (x:ys) = g1 (f, x) ys
+-- したがって, g1 (f, x) ys = f (x:ys)
+--
+convert xs = cataListL (g0, g1) xs []
+  where g0 c ys = c ++ ys
+        g1 (f, x) ys = f (x:ys)
