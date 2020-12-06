@@ -1401,7 +1401,7 @@ naiveConvert = cataListL ([], snocr)
   where snocr (xs, x) = xs ++ [x]
 
 --
--- (|f|) = cataList ([], snocr)
+-- (|f|) = cataListL ([], snocr)
 --
 --          [Nil, Snoc]
 --  ListL A <---------- 1 + ListL A x A
@@ -1430,6 +1430,9 @@ naiveConvert = cataListL ([], snocr)
 -- = {- [] は単位元 -}
 --  ys = g0 * ys
 -- したがって, g0 _ ys = ys
+-- しかし, Nil は引数を取らないようにしてあるので g0 ys = ys.
+-- 例えば 構成子を Nil () としておき cataListL (c, f) も c を引数 () を取るようにすれば
+-- g0 () ys = ys となって公開されている回答に合致する.
 --
 --   (++) (snocr (xs, x)) = g1 (((++) xs), x)
 -- = {- 引数を追加 -}
@@ -1454,6 +1457,54 @@ cataListR (c, f) = u
 naiveReverse = cataListR ([], snocr)
   where snocr (x, xs) = xs ++ [x]
 
+--
+-- (|f|) = cataListR ([], snocr)
+--
+--           [[], (:)]
+--      [A] <---------- 1 + A x [A]
+--        |             |
+--  (|f|) |             | F(|f|) = id + id x (|f|)
+--        v             v
+--      [A] <---------- 1 + A x [A]
+--        | [[], snocr] |
+--        |             |
+-- k=(++) |             | Fk = F(++) = 1 + id x (++)
+--        |             |
+--        v             v
+--  [A]^[A] <---------- 1 + A x [A]^[A]
+--          g = [g0,g1]
+--
+--   k = (++) なので単位元 e = [] である.
+--
+--  この図式で g = [g0, g1] を求める.
+--   k . f = g . Fk つまり下の四角の図式が可換である条件から g を求めればよい.
+--  (++) . [[], snocr] = [g0, g1] . (1 + id x (++))
+--  それぞれポイントワイズに展開する.
+--
+--  (++) [] = g0 *
+-- = {- 引数を追加-}
+--  [] ++ ys = g0 * ys
+-- = {- [] は単位元 -}
+--  ys = g0 * ys
+-- したがって, g0 _ ys = ys
+-- しかし, [] は引数を取らないようにしてあるので g0 ys = ys.
+-- 例えば 構成子を [] () としておき cataListR (c, f) も c を引数 () を取るようにすれば
+-- g0 () ys = ys となって公開されている回答に合致する.
+--
+--   (++) (snocr (x, xs)) = g1 (x, ((++) xs))
+-- = {- 引数を追加 -}
+--   (snocr (x, xs)) ++ ys = g1 (x, ((++) xs)) ys
+-- = {- snocr (x, xs) = xs ++ [x] -}
+--   (xs ++ [x]) ++ ys = g1 (x, (xs ++)) ys
+-- = {- k = (++) は結合的 -}
+--   (xs ++) ([x] ++ ys) = g1 (x, (xs ++)) ys
+-- = {- f = (xs ++) とする -}
+--   f (x:ys) = g1 (x, f) ys
+-- したがって, g1 (x, f) ys = f (x:ys)
+--
 reverse xs = cataListR (g0, g1) xs []
   where g0 ys = ys
         g1 (x, f) ys = f (x:ys)
+--
+-- これは 前問の cataListL における convert と同じ
+--
