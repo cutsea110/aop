@@ -1508,3 +1508,12 @@ reverse xs = cataListR (g0, g1) xs []
 --
 -- これは 前問の cataListL における convert と同じ
 --
+-- | Ex 3.48
+--
+-- ヒント: k a n = mapTreee (+n) a かつ e = 0 を取れ.
+--
+--  Ex 3.14 で depths は定義済.
+--  depths = triTreee succ . mapTreee zero
+depths' xs = foldTreee (g0, g1) xs 0
+  where g0 _ n = Tip n
+        g1 (sf, tf) n = Nod (sf (n+1), tf (n+1))
