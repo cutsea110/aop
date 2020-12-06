@@ -1443,7 +1443,7 @@ naiveConvert = cataListL ([], snocr)
 -- したがって, g1 (f, x) ys = f (x:ys)
 --
 convert xs = cataListL (g0, g1) xs []
-  where g0 c ys = c ++ ys
+  where g0 ys = ys
         g1 (f, x) ys = f (x:ys)
 
 -- | Ex 3.47
