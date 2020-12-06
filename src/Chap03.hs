@@ -1,7 +1,7 @@
 {-# LANGUAGE NPlusKPatterns, TypeOperators #-}
 module Chap03 where
 
-import Prelude hiding (foldr, sum, product, length, round)
+import Prelude hiding (foldr, sum, product, length, round, reverse)
 import GHC.Int
 
 -- | Ex 3.1
@@ -1453,3 +1453,7 @@ cataListR (c, f) = u
         u (x:xs) = f (x, u xs)
 naiveReverse = cataListR ([], snocr)
   where snocr (x, xs) = xs ++ [x]
+
+reverse xs = cataListR (g0, g1) xs []
+  where g0 ys = ys
+        g1 (x, f) ys = f (x:ys)
