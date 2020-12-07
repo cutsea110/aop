@@ -1528,6 +1528,19 @@ depths'' = foldTreee (Tip . zero, Nod . (cross (mapTreee succ, mapTreee succ)))
 --
 -- ここから Ex 3.45 を適用する.
 --
+--                            [Tip, Nod]
+--          Ta <------------------------------------- a + Ta * Ta
+--           |                                          |
+--     (|f|) |                                          | 0 + (|f|) * (|f|)
+--           v                                          v
+--          TI <------------------------------------- I + TI * TI
+--           |  f=[Tip . zero, Nod . (Tsucc * Tsucc)]   |
+--           |                                          |
+--           v                                          v
+--         I^I <------------------------------------- I + I^I * I^I
+--                           [g0, g1]
+--
+--
 
 depths' xs = foldTreee (g0, g1) xs 0
   where g0 _ n = Tip n
