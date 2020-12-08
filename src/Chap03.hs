@@ -1576,3 +1576,9 @@ depths' xs = foldTreee (g0, g1) xs 0
   where g0 _ n = Tip n
         g1 (sf, tf) n = Nod (sf (n+1), tf (n+1))
 
+-- | Ex 3.49
+--
+shallow xs = foldTreee (g0, g1) xs (0, 1/0)
+  where g0 a (n, m) = n `min` m
+        g1 (ka, kb) (n, m) | m <= n + 1 = m
+                           | otherwise  = ka(n+1, kb(n+1, m))
