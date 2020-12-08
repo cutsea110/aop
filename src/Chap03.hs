@@ -1578,6 +1578,22 @@ depths' xs = foldTreee (g0, g1) xs 0
 
 -- | Ex 3.49
 --
+naiveShallow = foldTreee (zero, succ . uncurry min)
+-- k a (n, m) = min (a + n, m)
+-- e = (0, Inf)
+--
+--                         [Tip, Nod]
+--               Ta <---------------------- a + Ta * Ta
+--                |                           |
+--          (|f|) |                           | zero + (|f|) * (|f|)
+--                v                           v
+--                I <---------------------- I + I * I
+--   k a (n, m) = |    f=[zero, succ . min]   |
+--   min (a+n, m) |                           | id + k * k
+--                v                           v
+--          I^(I*I) <---------------------- I + I^(I*I) * I^(I*I)
+--                          [g0, g1]
+--
 shallow xs = foldTreee (g0, g1) xs (0, 1/0)
   where g0 a (n, m) = n `min` m
         g1 (ka, kb) (n, m)
