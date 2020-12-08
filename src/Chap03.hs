@@ -1531,15 +1531,45 @@ depths'' = foldTreee (Tip . zero, Nod . (cross (mapTreee succ, mapTreee succ)))
 --                            [Tip, Nod]
 --          Ta <------------------------------------- a + Ta * Ta
 --           |                                          |
---     (|f|) |                                          | 0 + (|f|) * (|f|)
+--     (|f|) |                                          | zero + (|f|) * (|f|)
 --           v                                          v
 --          TI <------------------------------------- I + TI * TI
 --           |  f=[Tip . zero, Nod . (Tsucc * Tsucc)]   |
---           |                                          |
+--  k a n =  |                                          | id + k * k
+--   T(+n) a |                                          |
 --           v                                          v
---         I^I <------------------------------------- I + I^I * I^I
+--        TI^I <------------------------------------- I + TI^I * TI^I
 --                           [g0, g1]
 --
+-- k :: Treee Int -> (Int -> Treee Int)
+-- n = 0 つまり k a 0 = mapTreee (+0) a = a なので単位元 e = 0.
+--
+--  k . f = g . Fk つまり下の四角の図式が可換である条件から g を求める.
+--  (\a n -> T(+n) a) . [Tip . zero, Nod . (Tsucc * Tsucc)] = [g0, g1] . (id + (\a n -> T(+n) a) * (\a n -> T(+n) a))
+--
+--  第一項
+--
+--   k (Tip 0) = g0 x
+--  =
+--   k (Tip 0) n = g0 x n
+--  =
+--   T(+n) (Tip 0) = g0 x n
+--  =
+--   Tip n = g0 x n
+--
+--  第二項
+--
+--   k (Nod (Tsucc ls, Tsucc rs)) = g1 (k ls, k rs)
+--  =
+--   k (Nod (Tsucc ls, Tsucc rs)) n = g1 (k ls, k rs) n
+--  =
+--   T(+n) (Nod (Tsucc ls, Tsucc rs)) = g1 (k ls, k rs) n
+--  =
+--   Nod (T(+(n+1)) ls, T(+(n+1)) rs) = g1 (k ls, k rs) n
+--  =
+--   Nod (k ls (n+1), k rs (n+1)) = g1 (k ls, k rs) n
+--  = {- k ls = sf, k rs = tf とおく -}
+--   Nod (sf (n+1), tf (n+1)) = g1 (sf, tf) n
 --
 
 depths' xs = foldTreee (g0, g1) xs 0
