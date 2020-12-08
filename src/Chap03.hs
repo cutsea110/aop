@@ -1594,6 +1594,37 @@ naiveShallow = foldTreee (zero, succ . uncurry min)
 --          I^(I*I) <---------------------- I + I^(I*I) * I^(I*I)
 --                          [g0, g1]
 --
+-- 第一項
+--
+--  k 0 = g0 x
+-- =
+--  k 0 (n, m) = g0 x (n, m)
+-- =
+--  min (n+0, m) = g0 x (n, m)
+-- =
+--  min (n, m) = g0 x (n, m)
+--
+-- 第二項
+--
+--  k (succ (min (ls, rs))) = g1 (k ls, k rs)
+-- =
+--  k (succ (min (ls, rs))) (n, m) = g1 (k ls, k rs) (n, m)
+-- =
+--  min (succ (min (ls, rs)) + n, m) = g1 (k ls, k rs) (n, m)
+-- =
+--  min (min (ls, rs) + (n+1), m) = g1 (k ls, k rs) (n, m)
+-- =
+--  n+1 >= m  => m
+--  otherwise => min (ls+(n+1), min (rs+(n+1), m))
+-- =
+--  min (ls+(n+1), min (rs+(n+1), m)) = g1 (k ls, k rs) (n, m)
+-- =
+--  k ls (n+1, min (rs+(n+1), m)) = g1 (k ls, k rs) (n, m)
+-- =
+--  k ls (n+1, k rs (n+1, m)) = g1 (k ls, k rs) (n, m)
+-- =
+--  ka (n+1, kb (n+1, m)) = g1 (ka, kb) (n, m)
+--
 shallow xs = foldTreee (g0, g1) xs (0, 1/0)
   where g0 a (n, m) = n `min` m
         g1 (ka, kb) (n, m)
