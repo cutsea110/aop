@@ -1630,3 +1630,15 @@ shallow xs = foldTreee (g0, g1) xs (0, 1/0)
         g1 (ka, kb) (n, m)
           | m <= n + 1 = m
           | otherwise  = ka(n+1, kb(n+1, m))
+
+-- | Ex 3.50
+--
+-- loop h . (a * id) = [id, loop h . (id * h) . assocr] . distl
+--     where a = [nil, snoc]
+--
+-- forall h. loop h は一意に定まることを示す.
+--
+--  ???
+--
+
+
