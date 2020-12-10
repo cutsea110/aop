@@ -1638,7 +1638,10 @@ shallow xs = foldTreee (g0, g1) xs (0, 1/0)
 --
 -- forall h. loop h は一意に定まることを示す.
 --
---  ???
---
-
-
+--  [h, id] . (id + loop (h, k)) . (id + (id * k)) . sigma
+-- = {- 余積の合成 -}
+--  [h, id] . (id + loop (h, k) . (id * k)) . sigma
+-- = {- 余積の融合則 -}
+--  [h, loop (h, k) . (id * k)] . sigma
+-- = {- f = loop (h, k) とおく -}
+--  [h, f . (id * k)] . sigma
