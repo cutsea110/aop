@@ -1640,4 +1640,14 @@ assocl (x,(y,z)) = ((x,y),z)
 --     where a = [nil, snoc]
 --
 -- forall h. loop h は一意に定まることを示す.
---
+
+loop :: ((a, b) -> b) -> (ListL a, b) -> b
+loop h (Nil, b) = b
+loop h (Snoc as a, b) = loop h (as, h (a, b))
+
+-- | Ex 3.51
+convcat x y = convert x ++ y
+
+prop_check arg = uncurry convcat arg == loop cons arg
+  where cons = uncurry (:)
+test_3_51 = prop_check (Snoc (Snoc Nil 1) 2, [3,4,5])
