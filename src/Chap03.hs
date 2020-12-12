@@ -1638,10 +1638,60 @@ shallow xs = foldTreee (g0, g1) xs (0, 1/0)
 assocr ((x,y),z) = (x,(y,z))
 assocl (x,(y,z)) = ((x,y),z)
 --
+-- まず等式論証して loop h を実装してみる
+--
 -- loop h . (a * id) = [id, loop h . (id * h) . assocr] . distl
 --     where a = [nil, snoc]
 --
 -- forall h. loop h は一意に定まることを示す.
+--
+--              a * id                      distl
+--      La * b <------- (1 + La * a) * b ----------> 1 * b + (La * a) * b
+--         |                                               |
+--         |                                               | id + assocr
+--         |                                               v
+--  loop h |                                         1 * b + La * (a * b)
+--         |                                               |
+--         |                                               | id + (id * h)
+--         v                                               v
+--         b <-------------------------------------- 1 * b + La * b
+--                       [outr, loop h]
+--
+--  loop h . (a * id) = [outr, loop h] . (id + (id * h)) . (id + assocr) . distl
+--
+-- 左辺
+--
+--  loop h . (a * id)
+-- = {- a = [nil, snoc] -}
+--  loop h . ([nil, snoc] * id)
+--
+-- 右辺
+--
+--  [outr, loop h] . (id + (id * h)) . (id + assocr) . distl
+-- = {- 余積の合成 -}
+--  [outr, loop h] . (id + (id * h) . assocr) . distl
+-- = {- 余積の融合則 -}
+--  [outr, loop h . (id * h) . assocr] . distl
+--
+-- loop h (Nil,       b) = outr (Nil, b) = b
+-- loop h (Snoc as a, b) = loop h (as, h (a, b))
+--
+-- とすると上の式は
+--  loop h . (a * id) = [outr, loop h] . (id + (id * h)) . (id + assocr) . distl
+-- = {- 余積の合成 -}
+--  loop h . (a * id) = [outr, loop h] . (id + (id * h). assocr) . distl
+-- = {- 余積の融合則を逆に -}
+--  loop h . (a * id) = [outr, id] . (id + loop h) . (id + (id * h) . assocr) . distl
+--
+-- これを定理 3.1 に照らすと
+--  loop h . (a * id) = [outr, id] . (id + loop h) . (id + (id * h) . assocr) . distl
+--  ~~~~~~~             ~~~~~~~~~~   ~~~~~~~~~~~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--     f                    h            Gf                     phi
+--  f = loop h
+--  Gh = id + h
+--  phi = (id + (id * h) . assocr) . distl
+--  Fh = id + (h * id)
+--
 
 loop :: ((a, b) -> b) -> (ListL a, b) -> b
 loop h = u
