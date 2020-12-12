@@ -1646,6 +1646,11 @@ loop h = u
   where u (Nil, b) = b
         u (Snoc as a, b) = u (as, h (a, b))
 
+loop' :: (a -> Exp b b) -> ListL a -> Exp b b
+loop' h = u
+  where u Nil b = b
+        u (Snoc as a) b = u as (h a b)
+
 -- | Ex 3.51
 convcat x y = convert x ++ y
 
