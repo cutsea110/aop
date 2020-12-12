@@ -1642,8 +1642,9 @@ assocl (x,(y,z)) = ((x,y),z)
 -- forall h. loop h は一意に定まることを示す.
 
 loop :: ((a, b) -> b) -> (ListL a, b) -> b
-loop h (Nil, b) = b
-loop h (Snoc as a, b) = loop h (as, h (a, b))
+loop h = u
+  where u (Nil, b) = b
+        u (Snoc as a, b) = loop h (as, h (a, b))
 
 -- | Ex 3.51
 convcat x y = convert x ++ y
