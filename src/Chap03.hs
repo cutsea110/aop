@@ -1393,6 +1393,7 @@ data Tree' a = Tip' a | Node' (a -> Tree' a)
 -- convert : Listr A <- Listl A
 data ListL a = Nil | Snoc (ListL a) a deriving Show
 
+cataListL :: (a, (a, b) -> a) -> ListL b -> a
 cataListL (c, f) = u
   where u Nil = c
         u (Snoc xs x) = f (u xs, x)
@@ -1451,6 +1452,7 @@ convert xs = cataListL (g0, g1) xs []
 
 -- | Ex 3.47
 --
+cataListR :: (a, (b, a) -> a) -> [b] -> a
 cataListR (c, f) = u
   where u [] = c
         u (x:xs) = f (x, u xs)
@@ -1645,6 +1647,7 @@ loop :: ((a, b) -> b) -> (ListL a, b) -> b
 loop h = u
   where u (Nil, b) = b
         u (Snoc as a, b) = u (as, h (a, b))
+
 
 loop' :: (a -> Exp b b) -> ListL a -> Exp b b
 loop' h = u
