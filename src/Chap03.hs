@@ -1692,6 +1692,7 @@ assocl (x,(y,z)) = ((x,y),z)
 --  phi = (id + (id * h) . assocr) . distl
 --  Fh = id + (h * id)
 --
+-- ???
 
 loop :: ((a, b) -> b) -> (ListL a, b) -> b
 loop h = u
