@@ -1722,4 +1722,6 @@ test_3_51 = prop_check (Snoc (Snoc Nil 1) 2, [3,4,5])
 -- loop : b <- (ListL a, b) <- (b <- (a, b))
 -- であり cons : [a] <- (a, [a]) なので loop cons : [a] <- (ListL a, [a])
 -- であり単にconvcatを非カリー化したものであることが分かる.
+
+-- ???
 --
