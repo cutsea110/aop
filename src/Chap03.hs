@@ -1710,3 +1710,15 @@ convcat x y = convert x ++ y
 prop_check arg = uncurry convcat arg == loop cons arg
   where cons = uncurry (:)
 test_3_51 = prop_check (Snoc (Snoc Nil 1) 2, [3,4,5])
+
+--
+-- uncurry convcat = loop cons
+--
+-- convcat x y = convert x ++ y なので
+-- convert : [a] <- ListL a から
+-- convcat : [a] <- [a] <- ListL a
+-- 一方,
+-- loop : b <- (ListL a, b) <- (b <- (a, b))
+-- であり cons : [a] <- (a, [a]) なので loop cons : [a] <- (ListL a, [a])
+-- であり単にconvcatを非カリー化したものであることが分かる.
+--
