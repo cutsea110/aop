@@ -14,3 +14,12 @@ module Chap04 where
 -- = {- 交わりの普遍性 -}
 --  X \subseteq (R \cap S) \cap T
 
+-- | Ex 4.2
+--
+-- 左の図式
+--  S . R \subseteq T
+--
+-- 右の図式
+--  S . R \subseteq T /\ T . V \subseteq U
+--
+
