@@ -23,3 +23,19 @@ module Chap04 where
 --  S . R \subseteq T /\ T . V \subseteq U
 --
 
+-- | Ex 4.3
+--
+-- (R . S) \cap (R . T) \subseteq R . (S \cap T)
+--
+-- R = {(0, 0), (0, 1)}
+-- S = {(0, 0)}
+-- T = {(1, 0)}
+-- とすると,
+--  R . S = {(0, 0)}
+--  R . T = {(0, 0)}
+--  なので R . S \cap R . T = {(0, 0)} = S
+-- 一方,
+--  S \cap T = {}
+-- なので, R . (S \cap T) = {}
+--
+
