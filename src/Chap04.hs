@@ -43,3 +43,21 @@ module Chap04 where
 --
 -- 前順序の圏で考えると,射 A <- B は A >= B.
 -- すると積はminに当たる.
+
+-- | Ex 4.5
+--
+-- R \cap (S . T) = R \cap (S . ((S^op . R) \cap T)) を示す
+--
+-- モジュラ則を利用する.
+--    (R . S) \cap T \subseteq R . (S \cap (R^op . T))
+--
+--  R \cap (S . T) \subseteq R \cap (S . ((S^op . R) \cap T))
+-- = {- 交わりの普遍性 -}
+--  R \cap (S . T) \subseteq R /\ R \cap (S . T) \subseteq S . ((S^op . R) \cap T)
+-- = {- 交わりの下界 R \cap X \subseteq R -}
+--  true /\ R \cap (S . T) \subseteq S . ((S^op . R) \cap T)
+-- = {- 連言 -}
+--  (S . T) \cap R \subseteq S . (T \cap (S^op . R))
+-- = {- モジュラ則 -}
+--  true
+--
