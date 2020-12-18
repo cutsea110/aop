@@ -61,3 +61,17 @@ module Chap04 where
 -- = {- モジュラ則 -}
 --  true
 --
+-- 逆方向の証明
+--
+--  R \cap (S . ((S^op . R) \cap T)) \subseteq R \cap (S . T)
+-- = {- 交わりの普遍性 -}
+--  R \cap (S . ((S^op . R) \cap T)) \subseteq R /\ R \cap (S . ((S^op . R) \cap T)) \subseteq S . T
+-- = {- 交わりの下界 R \cap X \subseteq R -}
+--  true /\ R \cap (S . ((S^op . R) \cap T)) \subseteq S . T
+-- = {- 連言 -}
+--  R \cap (S . ((S^op . R) \cap T)) \subseteq S . T
+-- <= {- 交わりの下界 X \cap T \subseteq T -}
+--  R \cap (S . T) \subseteq S . T
+-- = {- 交わりの下界 X \cap S . T \subseteq S . T -}
+--  true
+--
