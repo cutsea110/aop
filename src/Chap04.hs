@@ -108,7 +108,8 @@ module Chap04 where
 -- なぜなら左辺は R \subseteq R' かつ S \subseteq S' であり,
 -- 右辺は cRa => cR'a かつ dSb => dS'b であるから.
 --
--- 交わりは ...
+-- 交わりの普遍性は任意の (X, Y) について,
+-- (X, Y) \subseteq ((R, R') \cap (S, S')) == (X, Y) \subseteq (R, R') /\ (X, Y) \subseteq (S, S') とポイントワイズに定義すれば良い.
 --
 -- 逆は (R, S)^op = (R^op, S^op) であり,
 -- ((R, S)^op)^op = (R^op, S^op)^op = ((R^op)^op, (S^op)^op) = (R, S) となり,
