@@ -75,3 +75,23 @@ module Chap04 where
 -- = {- 交わりの下界 X \cap S . T \subseteq S . T -}
 --  true
 --
+
+-- | Ex 4.6
+--
+-- モジュラ則
+--    (R . S) \cap T \subseteq R . (S \cap (R^op . T))
+--
+--  R
+-- = {- 交わりの冪等則 -}
+--  R \cap R
+-- = {- id -}
+--  (R . id) \cap R
+-- \subseteq {- モジュラ則 -}
+--  R . (id \cap (R^op . R))
+-- = {- 単調性の公理 -}
+--  R . id \cap R . (R^op . R)
+-- \subseteq {- 交わりの下限 X \cap R \subseteq R -}
+--  R . (R^op . R)
+-- = {- 合成の結合則 -}
+--  R . R^op . R
+--
