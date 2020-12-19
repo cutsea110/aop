@@ -95,3 +95,26 @@ module Chap04 where
 -- = {- 合成の結合則 -}
 --  R . R^op . R
 --
+
+-- | Ex 4.7
+--
+-- A と B とが寓なら A x B も寓.
+-- 対象を (A, B) とし射をポイントワイズに定義する.
+-- (R, S) (a, b) = (c, d) は (cRa, dSb) とすれば良い.
+-- 圏としてはそれで成立するとして寓に追加の演算について検討する.
+--
+-- 包含は R \subseteq R' == aRb => aR'b かつ S \subseteq S' == aSb => aS'b とすると,
+-- (R, S) \subseteq (R', S') == (c, d) (R, S) (a, b) => (c, d) (R', S') (a, b) である.
+-- なぜなら左辺は R \subseteq R' かつ S \subseteq S' であり,
+-- 右辺は cRa => cR'a かつ dSb => dS'b であるから.
+--
+-- 交わりは ...
+--
+-- 逆は (R, S)^op = (R^op, S^op) であり,
+-- ((R, S)^op)^op = (R^op, S^op)^op = ((R^op)^op, (S^op)^op) = (R, S) となり,
+-- 対合が成り立つ
+-- また, (R, S) \subseteq (R', S') なら (R, S)^op \subseteq (R', S')^op も言える.
+-- なぜなら (R^op, S^op) \subseteq (R'^op, S'^op) であり, ポイントワイズに
+-- R^op \subseteq R'^op と S^op \subseteq S'^op も言えるからだ.
+-- 反変についても ...
+-- 
