@@ -116,5 +116,5 @@ module Chap04 where
 -- また, (R, S) \subseteq (R', S') なら (R, S)^op \subseteq (R', S')^op も言える.
 -- なぜなら (R^op, S^op) \subseteq (R'^op, S'^op) であり, ポイントワイズに
 -- R^op \subseteq R'^op と S^op \subseteq S'^op も言えるからだ.
--- 反変についても ...
+-- 反変については ((R, R') . (S, S'))^op = (S, S')^op . (R, R')^op もそのまま成り立つ.
 -- 
