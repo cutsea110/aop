@@ -119,3 +119,15 @@ module Chap04 where
 -- R^op \subseteq R'^op と S^op \subseteq S'^op も言えるからだ.
 -- 反変については ((R, R') . (S, S'))^op = (S, S')^op . (R, R')^op もそのまま成り立つ.
 -- 
+
+-- | Ex 4.8
+--
+-- C : A <- A を余反射とする.
+-- つまり C \subseteq id_A とする.
+--
+--  C . C
+-- \subseteq {- 余反射 -}
+--  id_A . C
+-- = {- 恒等射は単位元 -}
+--  C
+--
