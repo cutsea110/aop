@@ -131,3 +131,49 @@ module Chap04 where
 -- = {- 恒等射は単位元 -}
 --  C
 --
+
+-- | Ex 4.9
+--
+-- A と B が余反射で A . B と合成できたり A \cap B で交わりが取れるためには同じ型である必要がある.
+-- つまり A, B : C <- C であるとする.
+-- A \subseteq id_C かつ B \subseteq id_C である.
+--
+-- 左から右
+--  A . B
+-- = {- 交わりの冪等 -}
+--  A . B \cap A . B
+-- \subseteq {- A B 余反射 -}
+--  A . id_C \cap id_C . B
+-- = {- 恒等射 -}
+--  A \cap B
+--
+-- 右から左
+--  A \cap B
+-- = {- 恒等射 -}
+--  (A . id_C) \cap B
+-- \subseteq {- モジュラ則 -}
+--  A . (id_C \cap (A^op . B))
+-- \subseteq {- 単調性 -}
+--  A . id_C \cap A . A^op . B
+-- \subseteq {- 交わりの下界 X \cap R \subseteq R -}
+--  A . A^op . B
+-- \subseteq {- 後述 -}
+--  A . (id_C)^op . B
+-- = {- (id_C)^op = id_C -}
+--  A . id_C . B
+-- = {- 恒等射は単位元 -}
+--  A . B
+--
+-- 上記の後述.
+--   A が余反射なら A^op も余反射である.以下にそれを論証する.
+--
+--  Aが余反射
+-- = {- 余反射の定義 -}
+--  A \subseteq id
+-- = {- 逆の順序保存 (4.3) -}
+--  A^op \subseteq id^op
+-- = {- 恒等射の逆は恒等射 -}
+--  A^op \subseteq id
+-- = {- 余反射の定義 -}
+--  A^op は余反射
+--
