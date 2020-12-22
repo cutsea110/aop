@@ -177,3 +177,21 @@ module Chap04 where
 -- = {- 余反射の定義 -}
 --  A^op は余反射
 --
+
+-- | Ex 4.10
+--
+-- C を余反射とする.
+-- (C . R) \cap S = C . (R \cap S) を示す.
+--
+--  (C . R) \cap S
+-- \subseteq {- モジュラ則 -}
+--  C . (R \cap (C^op . S))
+-- \subseteq {- C^op も余反射 C^op \subseteq id -}
+--  C . (R \cap S)
+--
+--  C . (R \cap S)
+-- \subseteq {- 単調性 -}
+--  (C . R) \cap (C . S)
+-- \subseteq {- C は余反射 -}
+--  (C . R) \cap S
+--
