@@ -195,3 +195,42 @@ module Chap04 where
 -- \subseteq {- C は余反射 -}
 --  (C . R) \cap S
 --
+
+-- | Ex 4.11
+--
+-- Ex 4.9 A, B が余反射なら A . B = A \cap B
+-- Ex 4.10 の双対により (X \cap id) . C = (X . C) \cap id
+--
+-- 下から順に
+--
+--  (X \cap id) . C   -- 下から一番目
+-- = {- Ex 4.9 (X \cap id) は余反射 -}
+--  (X \cap id) \cap C
+-- = {- 交わりの交換則 -}
+--  C \cap (X \cap id)
+-- = {- Ex 4.9 -}
+--  C . (X \cap id)   -- 下から二番目
+-- = {- Ex 4.9 -}
+--  C \cap (X \cap id) -- ★途中
+-- = {- 交わりの冪等則 -}
+--  C \cap (X \cap id) \cap C
+-- = {- Ex 4.10 の双対 -}
+--  C \cap (X . C \cap id)
+-- = {- Ex 4.9 -}
+--  C . (X . C \cap id)
+-- = {- Ex 4.10 -}
+--  (C . X . C) \cap id -- 下から三番目
+--
+--  (C . X) \cap id  -- 一番上の左辺
+-- = {- Ex 4.10 -}
+--  C . (X \cap id)  -- 下から二番目
+-- = {- Ex 4.9 (X \cap id) は余反射 -}
+--  C \cap (X \cap id)
+-- = {- 交わりの交換則 -}
+--  (X \cap id) \cap C
+-- = {- Ex 4.10 の双対 -}
+--  (X . C) \cap id  -- 一番上の右辺
+--
+
+
+
