@@ -232,5 +232,19 @@ module Chap04 where
 --  (X . C) \cap id  -- 一番上の右辺
 --
 
-
-
+-- | Ex 4.12
+--
+--  C が余反射なら ran (C . R) = C . ran R を示す.
+--
+--  ran (C . R)
+-- = {- ran の定義 (4.12) ran R = (R . R^op) \cap id -}
+--  id \cap (C . R . (C . R)^op)
+-- = {- 逆 -}
+--  id \cap (C . R . R^op . C^op)
+-- = {- 余反射は対称的 -}
+--  id \cap (C . R . R^op . C)
+-- = {- Ex 4.11 (C . X . C) \cap id = C . (X \cap id) -}
+--  C . (id \cap (R . R^op))
+-- = {- ran の定義 (4.12) ran R = (R . R^op) \cap id -}
+--  C . ran R
+--
