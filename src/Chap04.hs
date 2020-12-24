@@ -248,3 +248,21 @@ module Chap04 where
 -- = {- ran の定義 (4.12) ran R = (R . R^op) \cap id -}
 --  C . ran R
 --
+
+-- | Ex 4.13
+--
+-- R . R = R なら冪等.
+-- 対称的かつ推移的なら冪等であることを示す.
+--
+-- 対称的 : R \subseteq R^op これは R = R^op でもある.
+-- 推移的 : R . R \subseteq R
+--
+--
+--  R
+-- \subseteq {- Ex 4.6 -}
+--  R . R^op . R
+-- = {- R が対称的 -}
+--  R . R . R
+-- \subseteq {- R が推移的 -}
+--  R . R
+--
