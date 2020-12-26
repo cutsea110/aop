@@ -294,3 +294,13 @@ module Chap04 where
 --  R . R = R
 -- したがって推移的である.
 --
+
+-- | Ex 4.15
+--
+-- S が単一 => S = S . S^op . S
+-- 逆は成り立つか? という設問
+--
+-- まず S がなんであれ S \subseteq S . S^op . S (Ex 4.6)
+-- S が単一つまり S . S^op \subseteq id なので S . S^op . S \subseteq id . S = S でもある.
+-- よって S = S . S^op . S
+--
