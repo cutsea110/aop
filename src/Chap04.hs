@@ -309,3 +309,24 @@ module Chap04 where
 -- S . S^op . S = {(0, 0), (1, 0)} となり S と等しい.
 -- だが S . S^op = {(0,0),(0,1),(1,0),(1,1)} なので id より大きく, この S は単一ではない.
 --
+
+-- | Ex 4.16
+--
+-- ran (R \cap (S . T)) = ran ((R . T^op) \cap S)
+--
+-- 普遍性による定義 (4.11)
+--   任意の余反射 X について ran R \subseteq X == R \subseteq X . R
+--
+-- 直接的な定義 (4.12)
+--   ran R = (R . R^op) \cap id
+--
+--  ran (R \cap (S . T))
+-- = {- (4.15) ran (X \cap Y) = id \cap (X . Y^op) -}
+--  id \cap (R . (S . T)^op)
+-- = {- 逆 -}
+--  id \cap (R . (T^op . S^op))
+-- = {- 合成は結合的 -}
+--  id \cap ((R . T^op) . S^op)
+-- = {- (4.15) ran (X \cap Y) = id \cap (X . Y^op) -}
+--  ran ((R . T^op) \cap S)
+--
