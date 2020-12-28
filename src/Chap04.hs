@@ -330,3 +330,25 @@ module Chap04 where
 -- = {- (4.15) ran (X \cap Y) = id \cap (X . Y^op) -}
 --  ran ((R . T^op) \cap S)
 --
+
+-- | Ex 4.17
+--
+-- dom R . f = f . dom (R . f) を示す
+--
+-- まず dom R = ran R^op と ran の直接的な定義 (4.12) ran R = (R . R^op) \cap id とから
+-- dom R = ran R^op = (R^op . R) \cap id である.
+--
+--  dom R . f
+-- = {- dom R = id \cap (R^op . R) -}
+--  (id \cap (R^op . R)) . f
+-- = {- 関数を交わりに分配 -}
+--  id . f \cap (R^op . R . f)
+-- = {- id は左右の単位元 -}
+--  f . id \cap (R^op . R . f)
+-- = {- モジュラ恒等, f は単一 -}
+--  f . (id \cap (f^op . R^op . R . f))
+-- = {- 逆 -}
+--  f . (id \cap ((R . f)^op . R . f))
+-- = {- dom R = id \cap (R^op . R) -}
+--  f . dom (R . f)
+--
