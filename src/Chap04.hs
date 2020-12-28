@@ -345,7 +345,7 @@ module Chap04 where
 --  id . f \cap (R^op . R . f)
 -- = {- id は左右の単位元 -}
 --  f . id \cap (R^op . R . f)
--- = {- モジュラ恒等, f は単一 -}
+-- = {- 関数は単一, (4.16): S が単一 => モジュラ則は等式 (S . R) \cap T = S . (R \cap (S^op . T)) -}
 --  f . (id \cap (f^op . R^op . R . f))
 -- = {- 逆 -}
 --  f . (id \cap ((R . f)^op . R . f))
