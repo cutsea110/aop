@@ -352,3 +352,14 @@ module Chap04 where
 -- = {- dom R = id \cap (R^op . R) -}
 --  f . dom (R . f)
 --
+
+-- | Ex 4.18
+--
+-- 以下の通り定義すればよい
+--
+--  (R . S) (a, b) = \sqcup (R (a, c) \sqcap S (c, b))
+--  R^op (a, b) = R (b, a)
+--  (R \cap S) (a, b) = R (a, b) \sqcap S (a, b)
+--
+-- ???
+--
