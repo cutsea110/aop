@@ -385,5 +385,5 @@ module Chap04 where
 -- = {- m はモノ -}
 --  g = f
 -- => {- (f, g) が m^op . m の表 -}
---  ???
+--  m^op . m = f . g^op = f . f^op = id
 --
