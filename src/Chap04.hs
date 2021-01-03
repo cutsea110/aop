@@ -431,4 +431,22 @@ module Chap04 where
 --
 -- 任意の m は同型を除いて一意であることを示す.
 -- ???
+
+-- | Ex 4.21
+--
+-- (f, g) が R の表なので,
+-- R = f . g^op で f^op . f \cap g^op . g = id
+--
+-- R が単一なので
+--  R . R^op \subseteq id
+-- = {- R = f . g^op -}
+--  f . g^op . g . f^op \subseteq id
+-- = {- 入れ替え -}
+--  g^op . g \subseteq f^op . f
+-- = {- 交わり: R \subseteq S は R \cap S = R の省略形として定義 -}
+--  g^op . g \cap f^op . f = g^op . g
+-- = {- (f, g) は表 g^op . g \cap f^op . f = id なので -}
+--  g^op . g = id
+-- = {- Ex 2.4 -}
+--  g はモノ
 --
