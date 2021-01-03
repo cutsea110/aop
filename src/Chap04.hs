@@ -400,3 +400,34 @@ module Chap04 where
 -- => {- (f, g) が m^op . m の表 -}
 --  m^op . m = f . g^op = f . f^op = id
 --
+
+-- | Ex 4.20
+--
+-- 任意の射 f について f = m . c で c . c^op = id , m^op . m = id なる関数 c, m が存在することを示す.
+--
+-- (m, n) を f . f^op の表とすると,
+--  f . f^op = m . n^op で m^op . m \cap n^op . n = id
+--
+-- f は関数で関数は単一なので f . f^op \subseteq id.
+-- よって m . n^op \subseteq id である.
+--
+-- m^op . m \cap n^op . n = id なので,
+-- m . n^op \subseteq id であり,よって m \subseteq n が得られるが,
+-- 関数なので m = n と等式にできる.
+-- よって m^op . m = id である.
+-- 前問により m がモノであることが分かる.
+-- f . f^op = m . m^op なので f = m . m^op . f となり
+-- f = m . c となるような c が存在する.(c = m^op . f)
+--
+-- m^op . m = id なので m^op . m . c = c であり, よって m^op . f = c が得られる.
+-- よって,
+--  c . c^op
+-- = {- m^op . f = c -}
+--  m^op . f . f^op . m
+-- = {- (m, m) は f . f^op の表 -}
+--  m^op . m . m^op . m
+-- = {- m^op . m = id -}
+--  id
+--
+-- 
+
