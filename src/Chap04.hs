@@ -450,3 +450,25 @@ module Chap04 where
 -- = {- Ex 2.4 -}
 --  g はモノ
 --
+
+-- | Ex 4.22
+--
+-- R = f . g^op で R が全面なら g . g^op = id を示す
+--  (memo: Sが単一とは S . S^op \subseteq id のこと)
+--
+-- R が全面なので
+--
+--  id \subseteq R^op . R
+-- = {- R = f . g^op -}
+--  id \subseteq g . f^op . f . g^op
+-- = {- 交わり: R \subseteq S は R \cap S = R の省略形として定義 -}
+--  id \cap g . f^op . f . g^op = id
+--  ~~     ~~   ~~~~~~~~~~~~~~~
+--  T       S       R
+-- = {- g は関数、関数は単一なのでモジュラ則は (S . R) \cap T = S . (R \cap (S^op . T)) -}
+--  g . (f^op . f . g^op \cap (g^op . id)) = id
+-- = {- id は単位元 -}
+--  g . (f^op . f . g^op \cap g^op) = id
+-- = {-  -}
+--  ???
+--
