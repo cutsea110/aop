@@ -469,6 +469,17 @@ module Chap04 where
 --  g . (f^op . f . g^op \cap (g^op . id)) = id
 -- = {- id は単位元 -}
 --  g . (f^op . f . g^op \cap g^op) = id
--- = {-  -}
---  ???
+-- = {- 交わりを使った単調性の公理 -}
+--  id \subseteq ((g . f^op . f . g^op) \cap (g . g^op))
+-- = {- 交わり: R \subseteq S は R \cap S = R の省略形として定義 -}
+--  id \cap (g . f^op . f . g^op) \cap (g . g^op) = id
+-- = {- 交わりの結合性 -}
+--  (id \cap (g . f^op . f . g^op)) \cap g . g^op = id
+-- = {- 上の通り id \cap g . f^op . f . g^op = id -}
+--  id \cap g . g^op = id
+-- = {- 交わり: R \subseteq S は R \cap S = R の省略形として定義 -}
+--  id \subseteq g . g^op
+--
+-- なお, g は関数なので単一つまり g . g^op \subseteq id なので,
+--  id \subseteq g . g^op \subseteq id だから g . g^op = id
 --
