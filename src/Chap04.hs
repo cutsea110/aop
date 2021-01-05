@@ -463,6 +463,12 @@ module Chap04 where
 --  id \subseteq g . f^op . f . g^op
 -- = {- 交わり: R \subseteq S は R \cap S = R の省略形として定義 -}
 --  id \cap g . f^op . f . g^op = id
+--  ~~     ~~   ~~~~~~~~~~~~~~~
+--  T       S       R
+-- = {- g は関数、関数は単一なのでモジュラ則は (S . R) \cap T = S . (R \cap (S^op . T)) -}
+--  g . (f^op . f . g^op \cap (g^op . id)) = id
+-- = {- id は単位元 -}
+--  g . (f^op . f . g^op \cap g^op) = id
 -- = {-  -}
 --  ???
 --
