@@ -490,3 +490,39 @@ module Chap04 where
 -- Ex 4.22 から (f, g) が R の表で, R が全面なら g . g^op = id
 -- よって R が関数なら単一かつ全面なので g^op . g = g^op . g = id なので同型射である.
 --
+
+-- | Ex 4.24
+--
+-- h . Q^op \subseteq R かつ Q . k^op \subseteq S
+-- となる全面な関係 Q が存在する場合に限り h . k^op \subseteq R . S を示す.
+--
+-- 単調性から
+-- h . Q^op . Q . k^op \subseteq R . S
+-- Qが全面なので, id \subseteq Q^op . Q だから
+-- h . k^op \subseteq R . S となる.
+--
+-- 逆に, h . k^op \subseteq R . S とする.
+-- Q = (R^op . h) \cap (S . k) と定義する.
+--
+--  Q が全面
+-- = {- (4.18)により -}
+--  id \subseteq h^op . R . S . k
+-- = {- 入れ換え -}
+--  h . k^op \subseteq R . S
+-- = {- 仮定から -}
+--  true
+--
+-- h . Q^op \subseteq R と Q . k^op \subseteq S を示すには,
+--
+--  h . Q^op
+-- \subseteq {- Q の定義 -}
+--  h . (R^op . h)^op
+-- = {- 逆 -}
+--  h . h^op . R
+-- \subseteq {- h は単一 -}
+--  R
+--
+-- Q . k^op \subseteq S は両辺相補演算をとり k . Q \subseteq S^op となるので,
+-- k => h , S^op => R ととれば上の証明と同じ.
+--
+
