@@ -483,3 +483,10 @@ module Chap04 where
 -- なお, g は関数なので単一つまり g . g^op \subseteq id なので,
 --  id \subseteq g . g^op \subseteq id だから g . g^op = id
 --
+
+-- | Ex 4.23
+--
+-- Ex 4.21 から (f, g) が R の表で, R が単一なら g^op . g = id
+-- Ex 4.22 から (f, g) が R の表で, R が全面なら g . g^op = id
+-- よって R が関数なら単一かつ全面なので g^op . g = g^op . g = id なので同型射である.
+--
