@@ -526,3 +526,8 @@ module Chap04 where
 -- k => h , S^op => R ととれば上の証明と同じ.
 --
 
+-- | Ex 4.25
+--
+-- skip
+--
+
