@@ -537,7 +537,7 @@ module Chap04 where
 --
 -- A <- 1 が A の要素を指定しているとみなせば自明に思える.
 --
--- ???
+-- ran X . !^op = X を示せれば良い.
 --
 
 -- | Ex 4.27
@@ -556,7 +556,7 @@ module Chap04 where
 --  C \subseteq !^op . ! . S
 -- = {- 入れ換え -}
 --  ! . C \subseteq ! . S
--- = {- Ex 4.26 の双対 -}
+-- = {- Ex 4.26 の双対 dom C = ! . C -}
 --  dom C \subseteq dom S
 -- = {- C は余反射なので dom C = C -}
 --  C \subseteq dom S
