@@ -531,3 +531,11 @@ module Chap04 where
 -- skip
 --
 
+-- | Ex 4.26
+--
+-- 任意の X, Y : A <- 1 について (X \subseteq Y) == (ran X \subseteq ran Y) を示す.
+--
+-- A <- 1 が A の要素を指定しているとみなせば自明に思える.
+--
+-- ???
+--
