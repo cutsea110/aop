@@ -539,3 +539,25 @@ module Chap04 where
 --
 -- ???
 --
+
+-- | Ex 4.27
+--
+-- dom S = id \cap \Pi . S を示す
+--
+-- まず C を余反射とする,
+--   dom S が余反射であるため, C \subseteq dom S となる任意の C も余反射である.
+--   よって C を余反射と仮定しても一般性は損なわれない.
+-- すると,
+--
+--  C \subseteq id \cap \Pi . S
+-- = {- 交わり X \cap Y \subseteq Y -}
+--  C \subseteq \Pi . S
+-- = {- \Pi = !^op . ! -}
+--  C \subseteq !^op . ! . S
+-- = {- 入れ換え -}
+--  ! . C \subseteq ! . S
+-- = {- Ex 4.26 の双対 -}
+--  dom C \subseteq dom S
+-- = {- C は余反射なので dom C = C -}
+--  C \subseteq dom S
+--
