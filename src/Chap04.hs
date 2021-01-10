@@ -561,3 +561,15 @@ module Chap04 where
 -- = {- C は余反射なので dom C = C -}
 --  C \subseteq dom S
 --
+
+-- | Ex 4.28
+--
+-- 交わりの普遍性は
+--  X \subseteq A \cap B == X \subseteq A /\ X \subseteq B
+-- 結びの普遍性は
+--  A \cup B \subseteq X == A \subseteq X /\ B \subseteq X
+-- ということに注目.
+--
+-- \Cap H = \Cup {S | forall R <- H | S \subseteq R} を示す.
+
+-- 
