@@ -571,3 +571,10 @@ module Chap04 where
 --
 -- ???
 --
+
+-- | Ex 4.29
+--
+-- ran (\Cup H) = \Cup {ran X | X <- H} を示す.
+--
+-- ???
+--
