@@ -564,12 +564,10 @@ module Chap04 where
 
 -- | Ex 4.28
 --
--- 交わりの普遍性は
---  X \subseteq A \cap B == X \subseteq A /\ X \subseteq B
--- 結びの普遍性は
---  A \cup B \subseteq X == A \subseteq X /\ B \subseteq X
--- ということに注目.
+-- 結びの普遍性
+--  \Cup H \subseteq X == forall R <- H: R \subseteq X
 --
--- \Cap H = \Cup {S | forall R <- H | S \subseteq R} を示す.
-
--- 
+-- \Cap H = \Cup {S | R <- H: S \subseteq R} を示したい.
+--
+-- ???
+--
