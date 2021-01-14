@@ -578,3 +578,14 @@ module Chap04 where
 --
 -- ???
 --
+
+-- | Ex 4.30
+--
+-- R - S \subseteq X == R \subseteq S \cup X
+--
+-- まず(-)演算の存在を示す.
+--
+-- R - S = \Cap {X | R \subseteq S \cup X} と定義すればよい.
+--
+-- ???
+--
