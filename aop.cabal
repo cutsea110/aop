@@ -76,6 +76,7 @@ library
                      , Tree
                      , TutorialZygo
                      , TypeFunctor
+                     , ZipUnzip
 
                      , Chap01
                      , Chap02
