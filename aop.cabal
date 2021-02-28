@@ -46,7 +46,9 @@ library
                      , FixTest
                      , Free
                      , Frog
+                     , GCD
                      , Hamming
+                     , Hangman
                      , Histo
                      , Infinity
                      , KnapSack
