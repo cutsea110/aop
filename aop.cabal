@@ -24,6 +24,7 @@ library
                      , Bernoulli
                      , BinaryTree
                      , Box100
+                     , Calculations
                      , CategoryTheory
                      , ChurchEncoding
                      , Combinatorial
@@ -37,6 +38,7 @@ library
                      , Dijkstra
                      , DrawMatrix
                      , ENat
+                     , Expressions
                      , Fib
                      , Fiblike
                      , FibAsHisto
@@ -53,6 +55,7 @@ library
                      , Hylo
                      , Infinity
                      , KnapSack
+                     , Laws
                      , Leafy
                      , Lens
                      , List
@@ -64,6 +67,7 @@ library
                      , Nat
                      , NonEmptyList
                      , OpenSet
+                     , Parsing
                      , Pazzle8
                      , Prepro
                      , Pretty
@@ -80,6 +84,8 @@ library
                      , Tree
                      , TutorialZygo
                      , TypeFunctor
+                     , Utilities
+                     , Rewrites
                      , ZipUnzip
 
                      , Chap01
