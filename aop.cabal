@@ -59,6 +59,7 @@ library
                      , Leafy
                      , Lens
                      , List
+                     , Matchings
                      , Median
                      , Monadic
                      , MonadicRecursionScheme
@@ -78,6 +79,7 @@ library
                      , SimPath
                      , Sort
                      , Subfactorial
+                     , Substitutions
                      , Take
                      , TakePrefix
                      , Traditional
