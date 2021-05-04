@@ -54,6 +54,7 @@ library
                      , Histo
                      , Hylo
                      , Infinity
+                     , Kaprekar
                      , KnapSack
                      , Laws
                      , Leafy
