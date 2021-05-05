@@ -33,20 +33,9 @@ digits4 = map f ds
 check :: [(String, String)]
 check = map ((head &&& last) . steps) digits4
 
-kap :: Int -> Int
-kap = read . step . show
-
-kapsDigit4 :: [(Int, Int)]
-kapsDigit4 = map (id &&& kap) [0..9999]
-
 dump = do
-  let csv = intercalate "\n" $ map (\(x, y) -> show x ++ "," ++ show x ++ "," ++ show y) kapsDigit4
+  let csv = intercalate "\n" $ map ((\xs -> head xs ++ "," ++ head xs ++ "," ++ last xs ++ "," ++ show (length xs)) . steps) digits4
   writeFile "kaprekar.csv" csv
-
-dump' = writeFile "kaprekar.csv" csv
-  where
-    rel = map (id &&& step) digits4
-    csv = intercalate "\n" $ map (\(x, y) -> x ++ "," ++ x ++ "," ++ y ) rel
 
 main = do
   cs <- getLine
