@@ -4,7 +4,7 @@ module Kaprekar where
 import Control.Arrow ((&&&))
 import Control.Monad (forM_)
 import Data.Char (ord, chr)
-import Data.List (sortBy, foldl')
+import Data.List (sortBy, foldl', intercalate)
 
 toInt :: [Int] -> Int
 toInt = foldl' (\a b -> 10 * a + b) 0
@@ -31,6 +31,21 @@ digits4 = map f ds
 
 check :: [(String, String)]
 check = map ((head &&& last) . kaprekar) digits4
+
+kap :: Int -> Int
+kap = read . step . show
+
+kapsDigit4 :: [(Int, Int)]
+kapsDigit4 = map (id &&& kap) [0..9999]
+
+dump = do
+  let csv = intercalate "\n" $ map (\(x, y) -> show x ++ "," ++ show x ++ "," ++ show y) kapsDigit4
+  writeFile "kaprekar.csv" csv
+
+dump' = writeFile "kaprekar.csv" csv
+  where
+    rel = map (id &&& step) digits4
+    csv = intercalate "\n" $ map (\(x, y) -> x ++ "," ++ x ++ "," ++ y ) rel
 
 main = do
   cs <- getLine
