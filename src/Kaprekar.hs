@@ -24,6 +24,12 @@ steps cs = cs : map snd seqs
     sols = iterate step cs
     seqs = takeWhile (uncurry (/=)) $ zip sols (tail sols)
 
+digits3 :: [String]
+digits3 = map f ds
+  where
+    f = map (\x -> chr (x + ord '0'))
+    ds = [[d1,d2,d3] | d1 <- [0..9], d2 <- [0..9], d3 <- [0..9]]
+
 digits4 :: [String]
 digits4 = map f ds
   where
@@ -40,6 +46,4 @@ dump = do
 
 main = do
   cs <- getLine
-  n :: Int  <- fmap read getLine
-  let sols = iterate step cs
-  print $ take n sols
+  print $ steps cs
