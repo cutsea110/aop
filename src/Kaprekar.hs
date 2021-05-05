@@ -10,15 +10,16 @@ toInt :: [Int] -> Int
 toInt = foldl' (\a b -> 10 * a + b) 0
 
 step :: String -> String
-step cs = show cs'
+step cs = replicate (l-l') '0' ++ cs'
   where
+    (l, l') = (length cs, length cs')
     nums = map (\x -> ord x - ord '0') cs
-    (b, s) = (sortBy (flip compare) nums, sortBy compare nums)
-    (b', s') = (toInt b, toInt s)
-    cs' = b' - s'
+    (b, s) = (toInt . sortBy (flip compare) &&& toInt . sortBy compare) nums
+    cs' = show $ b - s
+    
 
-kaprekar :: String -> [String]
-kaprekar cs = cs : map snd seqs
+steps :: String -> [String]
+steps cs = cs : map snd seqs
   where
     sols = iterate step cs
     seqs = takeWhile (uncurry (/=)) $ zip sols (tail sols)
@@ -30,7 +31,7 @@ digits4 = map f ds
     ds = [[d1,d2,d3,d4] | d1 <- [0..9], d2 <- [0..9], d3 <- [0..9], d4 <- [0..9]]
 
 check :: [(String, String)]
-check = map ((head &&& last) . kaprekar) digits4
+check = map ((head &&& last) . steps) digits4
 
 main = do
   cs <- getLine
