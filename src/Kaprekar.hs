@@ -34,7 +34,8 @@ check :: [(String, String)]
 check = map ((head &&& last) . steps) digits4
 
 dump = do
-  let csv = intercalate "\n" $ map ((\xs -> head xs ++ "," ++ head xs ++ "," ++ last xs ++ "," ++ show (length xs)) . steps) digits4
+  let val = map ((id &&& step) &&& steps) digits4
+  let csv = intercalate "\n" $ map (\((n, s), ss) -> n ++ "," ++ n ++ "," ++ s ++ "," ++ show (length ss)) val
   writeFile "kaprekar.csv" csv
 
 main = do
