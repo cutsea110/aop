@@ -39,11 +39,14 @@ digits4 = map f ds
 check :: [(String, String)]
 check = map ((head &&& last) . steps) digits4
 
+dump :: IO ()
 dump = do
-  let val = map ((id &&& step) &&& steps) digits4
-  let csv = intercalate "\n" $ map (\((n, s), ss) -> n ++ "," ++ n ++ "," ++ s ++ "," ++ show (length ss)) val
+  let csv = intercalate "\n" $ map (mkCSV . ((id &&& step) &&& steps)) digits4
   writeFile "kaprekar.csv" csv
+    where
+      mkCSV ((n, s), ss) =  n ++ "," ++ n ++ "," ++ s ++ "," ++ show (length ss)
 
+main :: IO ()
 main = do
   cs <- getLine
   print $ steps cs
