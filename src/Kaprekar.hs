@@ -16,7 +16,9 @@ step cs = replicate (l-l') '0' ++ cs'
     nums = map (\x -> ord x - ord '0') cs
     (b, s) = (toInt . sortBy (flip compare) &&& toInt . sortBy compare) nums
     cs' = show $ b - s
-    
+
+isKaprekar :: String -> Bool
+isKaprekar = (==) <$> id <*> step
 
 steps :: String -> [String]
 steps cs = cs : map snd seqs
