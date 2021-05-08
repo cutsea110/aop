@@ -66,7 +66,22 @@ dump = do
     where
       mkCSV ((n, s), ss) =  n ++ "," ++ n ++ "," ++ s ++ "," ++ show (length ss)
 
-main :: IO ()
-main = do
+manual :: IO ()
+manual = do
   cs <- getLine
   print $ steps cs
+
+main :: IO ()
+main = do
+  print "digits 2"
+  print (sub digits2)
+  print "digits 3"
+  print (sub digits3)
+  print "digits 4"
+  print (sub digits4)
+  print "digits 5"
+  print (sub digits5)
+  print "digits 6"
+  print (sub digits6)
+  where
+    sub = filter (\(x,y) -> y) . map (id &&& isKaprekar)
