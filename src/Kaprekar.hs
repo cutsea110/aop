@@ -26,6 +26,12 @@ steps cs = cs : map snd seqs
     sols = iterate step cs
     seqs = takeWhile (uncurry (/=)) $ zip sols (tail sols)
 
+digits2 :: [String]
+digits2 = map f ds
+  where
+    f = map (\x -> chr (x + ord '0'))
+    ds = [[d1,d2] | d1 <- [0..9], d2 <- [0..9]]
+
 digits3 :: [String]
 digits3 = map f ds
   where
@@ -37,6 +43,18 @@ digits4 = map f ds
   where
     f = map (\x -> chr (x + ord '0'))
     ds = [[d1,d2,d3,d4] | d1 <- [0..9], d2 <- [0..9], d3 <- [0..9], d4 <- [0..9]]
+
+digits5 :: [String]
+digits5 = map f ds
+  where
+    f = map (\x -> chr (x + ord '0'))
+    ds = [[d1,d2,d3,d4,d5] | d1 <- [0..9], d2 <- [0..9], d3 <- [0..9], d4 <- [0..9], d5 <- [0..9]]
+
+digits6 :: [String]
+digits6 = map f ds
+  where
+    f = map (\x -> chr (x + ord '0'))
+    ds = [[d1,d2,d3,d4,d5,d6] | d1 <- [0..9], d2 <- [0..9], d3 <- [0..9], d4 <- [0..9], d5 <- [0..9], d6 <- [0..9]]
 
 check :: [(String, String)]
 check = map ((head &&& last) . steps) digits4
