@@ -27,7 +27,7 @@ steps cs = cs : map snd seqs
     seqs = takeWhile (uncurry (/=)) $ zip sols (tail sols)
 
 digitsN :: Int -> [String]
-digitsN n = map f $ sub n
+digitsN = map f . sub
   where
     f = map (\x -> chr (x + ord '0'))
     sub :: Int -> [[Int]]
