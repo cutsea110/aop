@@ -52,17 +52,9 @@ manual = do
   print $ steps cs
 
 main :: IO ()
-main = do
-  print "digits 2"
-  print $ kaprekar 2
-  print "digits 3"
-  print $ kaprekar 3
-  print "digits 4"
-  print $ kaprekar 4
-  print "digits 5"
-  print $ kaprekar 5
-  print "digits 6"
-  print $ kaprekar 6
+main = forM_ [2..6] $ \i -> do
+  putStrLn $ "digits " ++ show i
+  print $ kaprekar i
   where
     kaprekar = sub . digitsN
     sub = filter snd . map (id &&& isKaprekar)
