@@ -26,42 +26,21 @@ steps cs = cs : map snd seqs
     sols = iterate step cs
     seqs = takeWhile (uncurry (/=)) $ zip sols (tail sols)
 
-digits2 :: [String]
-digits2 = map f ds
+digitsN :: Int -> [String]
+digitsN n = map f $ sub n
   where
     f = map (\x -> chr (x + ord '0'))
-    ds = [[d1,d2] | d1 <- [0..9], d2 <- [0..9]]
-
-digits3 :: [String]
-digits3 = map f ds
-  where
-    f = map (\x -> chr (x + ord '0'))
-    ds = [[d1,d2,d3] | d1 <- [0..9], d2 <- [0..9], d3 <- [0..9]]
-
-digits4 :: [String]
-digits4 = map f ds
-  where
-    f = map (\x -> chr (x + ord '0'))
-    ds = [[d1,d2,d3,d4] | d1 <- [0..9], d2 <- [0..9], d3 <- [0..9], d4 <- [0..9]]
-
-digits5 :: [String]
-digits5 = map f ds
-  where
-    f = map (\x -> chr (x + ord '0'))
-    ds = [[d1,d2,d3,d4,d5] | d1 <- [0..9], d2 <- [0..9], d3 <- [0..9], d4 <- [0..9], d5 <- [0..9]]
-
-digits6 :: [String]
-digits6 = map f ds
-  where
-    f = map (\x -> chr (x + ord '0'))
-    ds = [[d1,d2,d3,d4,d5,d6] | d1 <- [0..9], d2 <- [0..9], d3 <- [0..9], d4 <- [0..9], d5 <- [0..9], d6 <- [0..9]]
+    sub :: Int -> [[Int]]
+    sub i
+      | i == 0 = [[]]
+      | otherwise = [ x:xs | x <- [0..9], xs <- sub (i-1)]
 
 check :: [(String, String)]
-check = map ((head &&& last) . steps) digits4
+check = map ((head &&& last) . steps) $ digitsN 4
 
 dump :: IO ()
 dump = do
-  let csv = intercalate "\n" $ map (mkCSV . ((id &&& step) &&& steps)) digits4
+  let csv = intercalate "\n" $ map (mkCSV . ((id &&& step) &&& steps)) $ digitsN 4
   writeFile "kaprekar.csv" csv
     where
       mkCSV ((n, s), ss) =  n ++ "," ++ n ++ "," ++ s ++ "," ++ show (length ss)
@@ -74,14 +53,14 @@ manual = do
 main :: IO ()
 main = do
   print "digits 2"
-  print (sub digits2)
+  print (sub $ digitsN 2)
   print "digits 3"
-  print (sub digits3)
+  print (sub $ digitsN 3)
   print "digits 4"
-  print (sub digits4)
+  print (sub $ digitsN 4)
   print "digits 5"
-  print (sub digits5)
+  print (sub $ digitsN 5)
   print "digits 6"
-  print (sub digits6)
+  print (sub $ digitsN 6)
   where
     sub = filter (\(x,y) -> y) . map (id &&& isKaprekar)
