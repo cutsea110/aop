@@ -30,10 +30,12 @@ digitsN :: Int -> [String]
 digitsN = map f . sub
   where
     f = map (\x -> chr (x + ord '0'))
-    sub :: Int -> [[Int]]
-    sub i
-      | i == 0 = [[]]
-      | otherwise = [ x:xs | x <- [0..9], xs <- sub (i-1)]
+
+sub :: Int -> [[Int]]
+sub = (map f [0..] !!)
+  where
+    f i | i == 0 = [[]]
+        | otherwise = [x:xs | x <- [0..9], xs <- sub (i-1)]
 
 check :: [(String, String)]
 check = map ((head &&& last) . steps) $ digitsN 4
