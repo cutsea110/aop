@@ -64,4 +64,4 @@ main = do
   print "digits 6"
   print (sub $ digitsN 6)
   where
-    sub = filter (\(x,y) -> y) . map (id &&& isKaprekar)
+    sub = filter snd . map (id &&& isKaprekar)
