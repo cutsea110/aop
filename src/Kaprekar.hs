@@ -54,14 +54,15 @@ manual = do
 main :: IO ()
 main = do
   print "digits 2"
-  print (sub $ digitsN 2)
+  print $ kaprekar 2
   print "digits 3"
-  print (sub $ digitsN 3)
+  print $ kaprekar 3
   print "digits 4"
-  print (sub $ digitsN 4)
+  print $ kaprekar 4
   print "digits 5"
-  print (sub $ digitsN 5)
+  print $ kaprekar 5
   print "digits 6"
-  print (sub $ digitsN 6)
+  print $ kaprekar 6
   where
+    kaprekar = sub . digitsN
     sub = filter snd . map (id &&& isKaprekar)
