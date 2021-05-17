@@ -17,14 +17,14 @@ step cs = replicate (l-l') '0' ++ cs'
     (b, s) = (toInt . sortBy (flip compare) &&& toInt . sortBy compare) nums
     cs' = show $ b - s
 
-isKaprekar :: String -> Bool
-isKaprekar = (==) <$> id <*> step
-
 steps :: String -> [String]
 steps cs = cs : map snd seqs
   where
     sols = iterate step cs
     seqs = takeWhile (uncurry (/=)) $ zip sols (tail sols)
+
+isKaprekar :: String -> Bool
+isKaprekar = (==) <$> id <*> step
 
 digitsN :: Int -> [String]
 digitsN = map f . sub
@@ -38,6 +38,8 @@ digitsN = map f . sub
 
 check :: Int -> [(String, String)]
 check = map ((head &&& last) . steps) . digitsN
+
+-- MAIN
 
 dump :: IO ()
 dump = do
