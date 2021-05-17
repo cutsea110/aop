@@ -36,8 +36,8 @@ digitsN = map f . sub
         f i | i == 0    = [[]]
             | otherwise = [x:xs | x <- [0..9], xs <- sub (i-1)]
 
-check :: [(String, String)]
-check = map ((head &&& last) . steps) $ digitsN 4
+check :: Int -> [(String, String)]
+check = map ((head &&& last) . steps) . digitsN
 
 dump :: IO ()
 dump = do
