@@ -4,15 +4,16 @@ module Kaprekar where
 import Control.Arrow ((&&&))
 import Control.Monad (forM_)
 import Data.Char (ord, chr)
+import Data.Function (on)
 import Data.List (sortBy, foldl', intercalate)
 
 toInt :: [Int] -> Int
 toInt = foldl' (\a b -> 10 * a + b) 0
 
 step :: String -> String
-step cs = replicate (l-l') '0' ++ cs'
+step cs = replicate (diff cs cs') '0' ++ cs'
   where
-    (l, l') = (length cs, length cs')
+    diff = (-) `on` length
     nums = map (\x -> ord x - ord '0') cs
     (b, s) = (toInt . sortBy (flip compare) &&& toInt . sortBy compare) nums
     cs' = show $ b - s
