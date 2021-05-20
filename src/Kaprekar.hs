@@ -42,18 +42,6 @@ check = map ((head &&& last) . steps) . digitsN
 
 -- MAIN
 
-dump :: IO ()
-dump = do
-  let csv = intercalate "\n" $ map (mkCSV . ((id &&& step) &&& steps)) $ digitsN 4
-  writeFile "kaprekar.csv" csv
-    where
-      mkCSV ((n, s), ss) =  n ++ "," ++ n ++ "," ++ s ++ "," ++ show (length ss)
-
-manual :: IO ()
-manual = do
-  cs <- getLine
-  print $ steps cs
-
 main :: IO ()
 main = forM_ [2..6] $ \i -> do
   putStrLn $ "digits " ++ show i
