@@ -5,7 +5,7 @@ import Control.Arrow ((&&&))
 import Control.Monad (forM_)
 import Data.Char (ord, chr)
 import Data.Function (on)
-import Data.List (sortBy, foldl', intercalate)
+import Data.List (sortBy, foldl')
 
 toInt :: [Int] -> Int
 toInt = foldl' (\a b -> 10 * a + b) 0
