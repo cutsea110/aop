@@ -8,7 +8,7 @@ import Data.Function (on)
 import Data.List (sortBy, foldl')
 
 toInt :: [Int] -> Int
-toInt = foldl' (\a b -> 10 * a + b) 0
+toInt = foldl' (\a b -> 10*a+b) 0
 
 step :: String -> String
 step cs = replicate (diff cs cs') '0' ++ cs'
