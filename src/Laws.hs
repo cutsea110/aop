@@ -40,15 +40,3 @@ isDefn _ = False
 
 isVar (Compose [Var _]) = True
 isVar _ = False
-
-{--
-simplify :: [String] -> String -> Calculation
-simplify strings string = let laws = map (parse law) stgins
-                              e = parse expr string
-                          in calculate laws e
-
-prove :: [String] -> String -> Calculation
-prove strings string = let laws = map (parse law) stgins
-                           (e1, e2) = parse equation string
-                       in paste (calculate laws e1) (calculate raws e2)
---}

@@ -78,6 +78,7 @@ library
                      , Rose
                      , ShortestPathSearch
                      , SimPath
+                     , Simplify
                      , Sort
                      , Subfactorial
                      , Substitutions
