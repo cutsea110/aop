@@ -19,6 +19,8 @@ prove strings string = let laws = map (parse law) strings
                        in paste (calculate laws e1) (calculate laws e2)
 
 
+-- TFWH p305 12.8 運算器のテスト
+
 customLaws :: [String]
 customLaws = [ "pruneByの定義: pruneBy f = f . map pruneRow . f"
              , "expand-boxs則: expand . boxs = map boxs . expand"
