@@ -102,7 +102,7 @@ customLaws30 = [ "matchの定義: match = cmap matchesA . alignments"
                , "cpの定義: cp . nil = one . nil"
                , "cpの定義: cp . cons = map cons . cpp . (id * cp)"
                , "unifyAllの定義: unifyAll . nil = one . nil"
-               , "unifyAllの定義: unifiAll . cons = cup . (one * unifiAll)"
+               , "unifyAllの定義: unifyAll . cons = cup . (one * unifyAll)"
                , "unify-nil則: unify . (id * nil) = one . fst"
              
                , "mapのファンクタ則: map f . map g = map (f . g)"
@@ -118,3 +118,7 @@ test6 :: Calculation
 test6 = prove customLaws30 "cmap xmatchesA . cpp . (xmatchA * one) . assocl = cup . (xmatchA * matchesA) . assocl"
 
     
+test7_1 :: Calculation
+test7_1 = prove customLaws30 "cmap xmatchesA . cpp . (xmatchA * one) . assocl = cup . (xmatchA * matchesA) . assocl"
+test7_2 :: Calculation
+test7_2 = prove customLaws30 "xmatchesA . (id * cons) = cup . (xmatchA * matchesA) . assocl"
