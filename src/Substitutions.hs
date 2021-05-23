@@ -1,4 +1,4 @@
-module Substitutions (Subst, unitSub, combine, apply) where
+module Substitutions (Subst, emptySub, unitSub, combine, apply) where
 
 import Expressions
 import Utilities (cp)
