@@ -8,31 +8,44 @@ import Control.Monad.State
 
 select :: [Int] -> [(Int, [Int])]
 select [x] = [(x, [])]
-select (x:xs) = (x,xs) : map (\(y, ys) -> (y, x:ys)) (select xs)
+select (x:xs) = (x,xs) : [ (y, x:ys)
+                         | (y, ys) <- select xs
+                         ]
 
 perms :: Int -> [Int] -> [([Int], [Int])]
 perms 0 [] = [([], [])]
 perms 0 xs = [([], xs)]
-perms n xs = [(y:zs, ws) | (y, ys) <- select xs, (zs, ws) <- perms (n-1) ys]
+perms n xs = [ (y:zs, ws)
+             | (y, ys) <- select xs
+             , (zs, ws) <- perms (n-1) ys
+             ]
 
 gen :: Int -> [([Int], [Int])]
-gen n = [(xs, zs) | (xs, ys) <- perms n [0..9], (zs, ws) <- perms n ys, xs < zs]
+gen n = [ (xs, zs)
+        | (xs, ys) <- perms n [0..9]
+        , (zs, ws) <- perms n ys
+        , xs < zs -- 対称な組み合わせを排除
+        ]
 
 calc :: [Int] -> [Int] -> (Int, Int, Int)
 calc xs ys = (xs', ys', ys'-xs')
   where
-    num i j = i*10+j
     tapply f (x, y) = (f x, f y)
-    (xs', ys') = tapply (foldl' num 0) (xs, ys)
+    (xs', ys') = tapply (foldl' digit 0) (xs, ys)
+    digit i j = i*10+j
 
 num8 :: StateT (Int, Int, Int) IO ()
 num8 = forM_ (gen 4) $ \(xs, ys) -> do
-  let upd@(_, _, v') = calc xs ys
-  (_, _, v) <- get
-  when (v' < v) $ do
-    { put upd
-    ; liftIO $ putStrLn $ "=> " ++ show upd
+  let v' = calc xs ys
+  v <- get
+  when (thd3 v' < thd3 v) $ do
+    { put v'
+    ; liftIO $ putStrLn $ "=> " ++ show v'
     }
+
+thd3 :: (a, b, c) -> c
+thd3 (_, _, x) = x
+
 
 main :: IO (Int, Int, Int)
 main = evalStateT (num8 >> get) (9999, 0, 9999)
