@@ -49,7 +49,7 @@ quiz n | n <= 5  = do { num n
                       ; (_, _, v) <- get
                       ; return v
                       } `evalStateT` (def, 0, def)
-       | otherwise = fail "digits must be below 5"
+       | otherwise = fail "digits must be less than or equal 5"
   where
     def = 10^n-1
 
