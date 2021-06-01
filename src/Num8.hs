@@ -14,20 +14,19 @@ perms :: Int -> [Int] -> [[Int]]
 perms 0 _ = [[]]
 perms n xs = [y:zs | (y, ys) <- select xs, zs <- perms (n-1) ys]
 
-cpp (x, y) = [(a, b) | a <- x, b <- y]
-
+gen :: Int -> [([Int], [Int])]
 gen n = [ (xs, ys) | xs <- perms n [0..9], ys <- perms n ([0..9] \\ xs)]
 
 calc :: [Int] -> [Int] -> (Int, Int, Int)
 calc xs ys = (xs', ys', abs(xs'-ys'))
   where
     num i j = i*10+j
-    xs' = foldl' num 0 xs
-    ys' = foldl' num 0 ys
+    tapply f (x, y) = (f x, f y)
+    (xs', ys') = tapply (foldl' num 0) (xs, ys)
 
 num8 :: StateT (Int, Int, Int) IO ()
 num8 = forM_ (gen 4) $ \(xs, ys) -> do
-  let upd@(xs', ys', v') = calc xs ys
+  let upd@(_, _, v') = calc xs ys
   (_, _, v) <- get
   when (v' < v) $ do
     { put upd
