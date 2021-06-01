@@ -31,9 +31,9 @@ gen' = filter (uncurry (<)) . map (toInt***toInt ) . gen
   where
     toInt = foldl' (\b a -> b*10+a) 0
 
-num8 :: StateT (Int, Int, Int) IO ()
-num8 = do
-  forM_ (gen' 4) $ \(xs, ys) -> do
+num :: Int -> StateT (Int, Int, Int) IO ()
+num n = do
+  forM_ (gen' n) $ \(xs, ys) -> do
     let v' = (xs, ys, ys-xs)
     v <- get
     when (thd3 v' < thd3 v) $ do
@@ -44,5 +44,14 @@ num8 = do
 thd3 :: (a, b, c) -> c
 thd3 (_, _, x) = x
 
+quiz :: Int -> IO Int
+quiz n | n <= 5  = do { num n
+                      ; (_, _, v) <- get
+                      ; return v
+                      } `evalStateT` (def, 0, def)
+       | otherwise = fail "digits must be below 5"
+  where
+    def = 10^n-1
+
 main :: IO Int
-main = evalStateT (num8 >> get >>= return . thd3) (9999, 0, 9999)
+main = quiz 4
