@@ -4,6 +4,7 @@
 module Num8 where
 
 import Data.List (foldl')
+import Control.Arrow ((***))
 import Control.Monad.State
 
 select :: [Int] -> [(Int, [Int])]
@@ -23,19 +24,16 @@ gen :: Int -> [([Int], [Int])]
 gen n = [ (xs, zs)
         | (xs, ys) <- perms n [0..9]
         , (zs, ws) <- perms n ys
-        , xs < zs -- 対称な組み合わせを排除
         ]
 
-calc :: [Int] -> [Int] -> (Int, Int, Int)
-calc xs ys = (xs', ys', ys'-xs')
+gen' :: Int -> [(Int, Int)]
+gen' = filter (uncurry (<)) . map (toInt***toInt ) . gen
   where
-    tapply f (x, y) = (f x, f y)
-    (xs', ys') = tapply (foldl' digit 0) (xs, ys)
-    digit i j = i*10+j
+    toInt = foldl' (\b a -> b*10+a) 0
 
 num8 :: StateT (Int, Int, Int) IO ()
-num8 = forM_ (gen 4) $ \(xs, ys) -> do
-  let v' = calc xs ys
+num8 = forM_ (gen' 4) $ \(xs, ys) -> do
+  let v' = (xs, ys, ys-xs)
   v <- get
   when (thd3 v' < thd3 v) $ do
     { put v'
