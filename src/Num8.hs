@@ -1,3 +1,6 @@
+-- | 0 から 9 までの 10 種類の数字を高々一度だけ使って 4 桁の数字を 2 つ用意する
+-- それら 2 つの数の差の最小を求めよ
+--
 module Num8 where
 
 import Data.List ((\\), foldl')
@@ -24,13 +27,11 @@ calc xs ys = (xs', ys', abs(xs'-ys'))
 
 num8 :: StateT (Int, Int, Int) IO ()
 num8 = forM_ (gen 4) $ \(xs, ys) -> do
-  let (xs', ys', v') = calc xs ys
+  let upd@(xs', ys', v') = calc xs ys
   (_, _, v) <- get
   when (v' < v) $ do
-    { put (xs', ys', v')
-    ; liftIO $ print (xs', ys', v')
+    { put upd
+    ; liftIO $ print upd
     }
-
-
 
 main = evalStateT (num8 >> get) (9999, 0, 9999)
