@@ -3,7 +3,7 @@
 --
 module Num8 where
 
-import Data.List ((\\), foldl')
+import Data.List (foldl')
 import Control.Monad.State
 
 select :: [Int] -> [(Int, [Int])]
