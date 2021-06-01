@@ -32,16 +32,16 @@ gen' = filter (uncurry (<)) . map (toInt***toInt ) . gen
     toInt = foldl' (\b a -> b*10+a) 0
 
 num8 :: StateT (Int, Int, Int) IO ()
-num8 = forM_ (gen' 4) $ \(xs, ys) -> do
-  let v' = (xs, ys, ys-xs)
-  v <- get
-  when (thd3 v' < thd3 v) $ do
-    { put v'
-    ; liftIO $ putStrLn $ "=> " ++ show v'
-    }
-
-thd3 :: (a, b, c) -> c
-thd3 (_, _, x) = x
+num8 = do
+  forM_ (gen' 4) $ \(xs, ys) -> do
+    let v' = (xs, ys, ys-xs)
+    v <- get
+    when (thd3 v' < thd3 v) $ do
+      { put v'
+      ; liftIO $ putStrLn $ "=> " ++ show v'
+      }
+  where
+    thd3 (_, _, x) = x
 
 
 main :: IO (Int, Int, Int)
