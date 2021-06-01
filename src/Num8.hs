@@ -5,7 +5,7 @@ module Num8 where
 
 import Data.List (foldl')
 import Control.Arrow ((***))
-import Control.Monad.State
+import Control.Monad.State (StateT, evalStateT, get, put, forM_, when, liftIO)
 
 select :: [Int] -> [(Int, [Int])]
 select [x] = [(x, [])]
@@ -40,9 +40,9 @@ num8 = do
       { put v'
       ; liftIO $ putStrLn $ "=> " ++ show v'
       }
-  where
-    thd3 (_, _, x) = x
 
+thd3 :: (a, b, c) -> c
+thd3 (_, _, x) = x
 
-main :: IO (Int, Int, Int)
-main = evalStateT (num8 >> get) (9999, 0, 9999)
+main :: IO Int
+main = evalStateT (num8 >> get >>= return . thd3) (9999, 0, 9999)
