@@ -13,7 +13,6 @@ select (x:xs) = (x,xs) : [ (y, x:ys)
                          ]
 
 perms :: Int -> [Int] -> [([Int], [Int])]
-perms 0 [] = [([], [])]
 perms 0 xs = [([], xs)]
 perms n xs = [ (y:zs, ws)
              | (y, ys) <- select xs
