@@ -1,4 +1,5 @@
 -- | ref.) http://titech-ssr.blog.jp/archives/1047835805.html
+{-# LANGUAGE NPlusKPatterns #-}
 module Fib where
 
 import Prelude hiding (Functor)
@@ -39,3 +40,10 @@ toFib n = In (FNode (toFib (n-1)) (toFib (n-2)))
 
 -- | memoized ver
 fib_ = (Prelude.map f [0..] !!) where f 0 = 1;f 1 = 1;f n = fib_ (n-2) + fib_ (n-1)
+
+foldn c f = u
+  where
+    u 0     = c
+    u (n+1) = f (u n)
+
+fib__ = foldn (1, 1) (\(x,y) -> (y,x+y))
