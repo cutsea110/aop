@@ -36,3 +36,6 @@ fib' = histo phi
 toFib 0 = In FZero
 toFib 1 = In FOne
 toFib n = In (FNode (toFib (n-1)) (toFib (n-2)))
+
+-- | memoized ver
+fib_ = (Prelude.map f [0..] !!) where f 0 = 1;f 1 = 1;f n = fib_ (n-2) + fib_ (n-1)
