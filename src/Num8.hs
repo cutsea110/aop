@@ -20,20 +20,20 @@ perms n xs = [ (y:zs, ws)
              , (zs, ws) <- perms (n-1) ys
              ]
 
-gen :: Int -> [([Int], [Int])]
-gen n = [ (xs, zs)
-        | (xs, ys) <- perms n [0..9]
-        , (zs, ws) <- perms n ys
-        ]
+gen :: [Int] -> Int -> [([Int], [Int])]
+gen seeds n = [ (xs, zs)
+              | (xs, ys) <- perms n seeds
+              , (zs, ws) <- perms n ys
+              ]
 
-gen' :: Int -> [(Int, Int)]
-gen' = filter (uncurry (<)) . map (toInt***toInt ) . gen
+gen' :: [Int] -> Int -> [(Int, Int)]
+gen' seeds = filter (uncurry (<)) . map (toInt***toInt ) . gen seeds
   where
     toInt = foldl' (\b a -> b*10+a) 0
 
-num :: Int -> StateT (Int, Int, Int) IO ()
-num n = do
-  forM_ (gen' n) $ \(xs, ys) -> do
+num :: [Int] -> Int -> StateT (Int, Int, Int) IO ()
+num seeds n = do
+  forM_ (gen' seeds n) $ \(xs, ys) -> do
     let v' = (xs, ys, ys-xs)
     v <- get
     when (thd3 v' < thd3 v) $ do
@@ -44,14 +44,14 @@ num n = do
 thd3 :: (a, b, c) -> c
 thd3 (_, _, x) = x
 
-quiz :: Int -> IO Int
-quiz n | n <= 5  = do { num n
-                      ; (_, _, v) <- get
-                      ; return v
-                      } `evalStateT` (def, 0, def)
-       | otherwise = fail "digits must be less than or equal 5"
+quiz :: [Int] -> Int -> IO Int
+quiz seeds n | n <= 5  = do { num seeds n
+                            ; (_, _, v) <- get
+                            ; return v
+                            } `evalStateT` (def, 0, def)
+             | otherwise = fail "digits must be less than or equal 5"
   where
     def = 10^n-1
 
 main :: IO Int
-main = quiz 4
+main = quiz [0..9] 4
