@@ -25,4 +25,7 @@ test2 = imager heatMap
 
 test3 = imager soundMap
 
-imager iffie = fmap iffie [True, False, True, True]
+internalBools = [True, False, True, True]
+imager iffie = fmap iffie internalBools
+
+test = internalBools == imager idBool
