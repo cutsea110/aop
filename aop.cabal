@@ -67,11 +67,11 @@ library
                      , NonEmptyList
                      , Num8
                      , OpenSet
-                     , Pazzle8
                      , Prepro
                      , Pretty
                      , Prime
                      , Promorphism
+                     , Puzzle8
                      , Rose
                      , ShortestPathSearch
                      , SimPath

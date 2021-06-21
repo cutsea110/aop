@@ -1,4 +1,4 @@
-module Pazzle8 where
+module Puzzle8 where
 
 import Control.Monad.ST (ST, runST)
 import Data.Array.ST (STArray)
