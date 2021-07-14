@@ -35,7 +35,7 @@ instance Show Term where
 
 eval :: Term -> Rat
 eval (Val x)     = ctor x
-eval (App o l r) = (ctoo o) (eval l) (eval r)
+eval (App o l r) = ctoo o (eval l) (eval r)
 
 ctor :: Char -> Rat
 ctor x = (ord x - ord '0', 1)
