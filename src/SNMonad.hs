@@ -16,16 +16,16 @@ instance Applicative NumberedM where
   -- ^ m :: Int -> (Int, a)
   -- ^ f :: Int -> (Int, a -> b)
   NumberedM f <*> NumberedM m
-    = NumberedM $ \n -> let (n', v)   = m n
-                            (n'', f') = f n'
-                        in (n'', f' v)
+    = NumberedM $ \n -> let (n1, v)   = m n
+                            (n2, f1) = f n1
+                        in (n2, f1 v)
 
 instance Monad NumberedM where
   NumberedM m >>= f
-    = NumberedM $ \n -> let (n', v) = m n
-                            NumberedM m' = f v
-                        in m' n'
-  return x = NumberedM (,x)
+    = NumberedM $ \n -> let (n1, v) = m n
+                            NumberedM m1 = f v
+                        in m1 n1
+  -- return x = NumberedM (,x)
 
 incr :: NumberedM Int
 incr = NumberedM $ \n -> (n+1, n)
@@ -36,16 +36,50 @@ incr = NumberedM $ \n -> (n+1, n)
 data Tree a = Nd a (Forest a) deriving Show
 type Forest a = [Tree a]
 
+makeNode :: a -> Forest (Int, a) -> NumberedM (Tree (Int, a))
 makeNode val kids = do
   { n <- incr
   ; return (Nd (n, val) kids)
   }
 
 
+{- | makeBtree
+>>> runNumberedM (makeBtree 3) 100
+(115,Nd (114,3) [Nd (106,2) [Nd (102,1) [Nd (100,0) [],Nd (101,0) []],Nd (105,1) [Nd (103,0) [],Nd (104,0) []]],Nd (113,2) [Nd (109,1) [Nd (107,0) [],Nd (108,0) []],Nd (112,1) [Nd (110,0) [],Nd (111,0) []]]])
+-}
 makeBtree :: Int -> NumberedM (Tree (Numbered Int))
 makeBtree 0 = makeNode 0 []
 makeBtree depth = do
-  { left <- makeBtree (depth - 1)
+  { left  <- makeBtree (depth - 1)
   ; right <- makeBtree (depth - 1)
   ; makeNode depth [left, right]
   }
+
+
+----
+
+type Numberedlike a = (Int, a)
+newtype NumberedlikeM a = NumberedlikeM { runNumberedlikeM :: Int -> Numberedlike a }
+
+ret :: a -> NumberedlikeM a
+ret x = NumberedlikeM $ \n -> (n, x)
+
+app :: (a -> NumberedlikeM b) -> NumberedlikeM a -> NumberedlikeM b
+app f (NumberedlikeM m)
+  = NumberedlikeM $ \n -> let (n1, v) = m n
+                              NumberedlikeM m1 = f v
+                          in m1 n1
+
+incrlike :: NumberedlikeM Int
+incrlike = NumberedlikeM $ \n -> (n+1, n)
+
+makeNode' :: a -> Forest (Int, a) -> NumberedlikeM (Tree (Int, a))
+makeNode' val kids = app (\n -> ret (Nd (n, val) kids)) incrlike
+
+{- | makeBtree'
+>>> runNumberedlikeM (makeBtree' 3) 100
+(115,Nd (114,3) [Nd (106,2) [Nd (102,1) [Nd (100,0) [],Nd (101,0) []],Nd (105,1) [Nd (103,0) [],Nd (104,0) []]],Nd (113,2) [Nd (109,1) [Nd (107,0) [],Nd (108,0) []],Nd (112,1) [Nd (110,0) [],Nd (111,0) []]]])
+-}
+makeBtree' :: Int -> NumberedlikeM (Tree (Numberedlike Int))
+makeBtree' 0 = makeNode' 0 []
+makeBtree' depth = app (\left -> app (\right -> makeNode' depth [left, right]) (makeBtree' (depth-1))) (makeBtree' (depth-1))
