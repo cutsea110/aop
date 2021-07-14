@@ -75,6 +75,7 @@ library
                      , Rose
                      , ShortestPathSearch
                      , SimPath
+                     , SNMonad
                      , Sort
                      , Subfactorial
                      , Take
