@@ -79,6 +79,7 @@ library
                      , Subfactorial
                      , Take
                      , TakePrefix
+                     , TicketProblem
                      , Traditional
                      , Tree
                      , TutorialZygo
