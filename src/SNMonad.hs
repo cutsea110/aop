@@ -21,9 +21,10 @@ instance Applicative NumberedM where
                         in (n'', f' v)
 
 instance Monad NumberedM where
-  NumberedM m >>= f = NumberedM $ \n -> let (n', v) = m n
-                                            NumberedM m' = f v
-                                        in m' n'
+  NumberedM m >>= f
+    = NumberedM $ \n -> let (n', v) = m n
+                            NumberedM m' = f v
+                        in m' n'
   return x = NumberedM (,x)
 
 incr :: NumberedM Int
@@ -35,14 +36,16 @@ incr = NumberedM $ \n -> (n+1, n)
 data Tree a = Nd a (Forest a) deriving Show
 type Forest a = [Tree a]
 
-makeNode val kids = do { n <- incr
-                       ; return (Nd (n, val) kids)
-                       }
+makeNode val kids = do
+  { n <- incr
+  ; return (Nd (n, val) kids)
+  }
 
 
 makeBtree :: Int -> NumberedM (Tree (Numbered Int))
 makeBtree 0 = makeNode 0 []
-makeBtree depth = do { left <- makeBtree (depth - 1)
-                     ; right <- makeBtree (depth - 1)
-                     ; makeNode depth [left, right]
-                     }
+makeBtree depth = do
+  { left <- makeBtree (depth - 1)
+  ; right <- makeBtree (depth - 1)
+  ; makeNode depth [left, right]
+  }
