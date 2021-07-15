@@ -70,11 +70,13 @@ app f (NumberedlikeM m)
                               NumberedlikeM m1 = f v
                           in m1 n1
 
+m >>- f = app f m
+
 incrlike :: NumberedlikeM Int
 incrlike = NumberedlikeM $ \n -> (n+1, n)
 
 makeNode' :: a -> Forest (Int, a) -> NumberedlikeM (Tree (Int, a))
-makeNode' val kids = app (\n -> ret (Nd (n, val) kids)) incrlike
+makeNode' val kids = incrlike >>- (\n -> ret (Nd (n, val) kids))
 
 {- | makeBtree'
 >>> runNumberedlikeM (makeBtree' 3) 100
@@ -82,4 +84,6 @@ makeNode' val kids = app (\n -> ret (Nd (n, val) kids)) incrlike
 -}
 makeBtree' :: Int -> NumberedlikeM (Tree (Numberedlike Int))
 makeBtree' 0 = makeNode' 0 []
-makeBtree' depth = app (\left -> app (\right -> makeNode' depth [left, right]) (makeBtree' (depth-1))) (makeBtree' (depth-1))
+makeBtree' depth = makeBtree' (depth-1) >>-
+                   (\left -> makeBtree' (depth-1) >>-
+                     (\right -> makeNode' depth [left, right]))
