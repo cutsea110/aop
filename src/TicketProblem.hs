@@ -2,6 +2,7 @@
 module TicketProblem where
 
 import Data.Char (ord)
+import Witherable (ordNub)
 
 type Rat = (Int, Int)
 data Term = Val Char | App Char Term Term
@@ -61,7 +62,7 @@ allterms ds = concat [ trees ns os | ns <- perm ds, os <- rperm ops4 (length ds 
 ops4 = "+-*/"
 
 perm [] = [[]]
-perm xs = concat [ pm hs ts | (hs, ts) <- splits xs ]
+perm xs = ordNub $ concat [ pm hs ts | (hs, ts) <- splits xs ]
   where pm _  []     = []
         pm hs (t:ts) = [ t:ys | ys <- perm (hs ++ ts) ]
 
