@@ -2,6 +2,7 @@
 module TicketProblem where
 
 import Data.Char (ord)
+import Data.List (intersperse)
 import Witherable (ordNub)
 
 type Rat = (Int, Int)
@@ -48,7 +49,9 @@ ctoo '*' (x, y) (z, w) = (x*z, y*w)
 ctoo '/' (x, y) (z, w) = if z == 0 then (0, 0) else (x*w, y*z)
 
 ticket :: Int -> [Char] -> Term
-ticket n ds = head (filter (same n) (allterms ds))
+ticket n ds = case filter (same n) (allterms ds) of
+  s:_ -> s
+  []  -> error ("Cannot make "++show n++" with "++intersperse ',' ds++".")
 
 same :: Int -> (Term -> Bool)
 same i t = i*d == n && d /= 0
