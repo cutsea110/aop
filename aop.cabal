@@ -23,6 +23,7 @@ library
                      , Approx
                      , Bernoulli
                      , BinaryTree
+                     , BinaryIndexedTree
                      , Box100
                      , CategoryTheory
                      , ChurchEncoding
