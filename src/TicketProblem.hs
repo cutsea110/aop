@@ -7,36 +7,23 @@ import Data.List (intersperse, nub, group, sort)
 type Rat = (Int, Int)
 data Term = Val Char | App Char Term Term
 
-trees :: [Char] -> [Char] -> [Term]
-trees ds os = [ t | (_, t) <- trees' ds os ] -- [ t | (_, t) <- [ otree os u | u <- dtrees ds ]]
+trees :: [Char] -> [Char] -> [(Rat, Term)]
+trees ds os = [ t | (_, t) <- vtrees ds os ]
 
-trees' :: [Char] -> [Char] -> [([Char], Term)]
-trees' [c] os = [(os, Val c)]
-trees' ds  os = concat [ odtree os xs ys | (xs, ys) <- splits1 ds ]
+vtrees :: [Char] -> [Char] -> [([Char], (Rat, Term))]
+vtrees [c] os = [(os, (ctor c, Val c))]
+vtrees ds  os = concat [ odtree os xs ys | (xs, ys) <- splits ds ]
 
-odtree :: [Char] -> [Char] -> [Char] -> [([Char], Term)]
+odtree :: [Char] -> [Char] -> [Char] -> [([Char], (Rat, Term))]
 odtree os ls rs
-  = [ (os'', App o l r) | (o:os', l) <- trees' ls os, (os'', r) <- trees' rs os' ]
-
-dtrees :: [Char] -> [Term]
-dtrees [x] = [Val x]
-dtrees ds = concat [ joins ls rs | (ls, rs) <- [ lrs xs ys | (xs, ys) <- splits1 ds ]]
+  = [ (os'', (ctoo o u v, App o l r))
+    | (o:os', (u, l)) <- vtrees ls os
+    , (os'' , (v, r)) <- vtrees rs os'
+    ]
 
 splits1 :: [Char] -> [([Char], [Char])]
 splits1 [x]    = []
 splits1 (x:xs) = ([x], xs) : [ (x:ys, zs) | (ys, zs) <- splits1 xs ]
-
-lrs :: [Char] -> [Char] -> ([Term], [Term])
-lrs xs ys = (dtrees xs, dtrees ys)
-
-joins :: [Term] -> [Term] -> [Term]
-joins ls rs = [ App '^' l r | l <- ls, r <- rs ]
-
-otree :: [Char] -> Term -> ([Char], Term)
-otree os (Val c)     = (os, Val c)
-otree os (App _ l r) = (os'', App o' l' r')
-  where (o':os', l') = otree os  l
-        (os''  , r') = otree os' r
 
 instance Show Term where
   show (Val c) = [c]
@@ -57,17 +44,14 @@ ctoo '/' (x, y) (z, w) = if z == 0 then (0, 0) else (x*w, y*z)
 
 ticket :: Int -> [Char] -> Term
 ticket n ds = case filter (same n) (allterms ds) of
-  s:_ -> s
+  (_, s):_ -> s
   []  -> error ("Cannot make "++show n++" with "++intersperse ',' ds++".")
 
-same :: Int -> (Term -> Bool)
-same i t = i*d == n && d /= 0
-  where (n, d) = eval t
+same :: Int -> ((Rat, Term) -> Bool)
+same i ((n, d), _) = i*d == n && d /= 0
 
-allterms :: [Char] -> [Term]
+allterms :: [Char] -> [(Rat, Term)]
 allterms ds = concat [ trees ns os | ns <- perm ds, os <- rperm ops4 (length ds - 1) ]
-  where pm _ [] = []
-        pm hs (t:ts) = [ t:ys | ys <- perm (hs ++ ts) ]
 
 ops4 = "+-*/"
 
