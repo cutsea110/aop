@@ -6,6 +6,7 @@ import qualified Data.Tree as T
 
 -- サンプルコードで必要なだけ
 import Control.Arrow (second)
+import Data.List ((\\))
 import Data.Monoid (Sum(..))
 
 data BIT a = BIT Int (Tree a) deriving (Show, Functor)
@@ -70,7 +71,7 @@ inverse9 xs = map (second getSum) $ go xs t []
   where
     t = new 4 -- 1-9 までなのでこれで十分
     go []     t acc = zip xs (reverse acc)
-    go (x:xs) t acc = let acc' = t ! x : acc
+    go (x:xs) t acc = let acc' = t ! (2^4-1) - t ! x : acc
                           t' = inc x (Sum 1) t -- Monoid は Sum
                       in go xs t' acc'
 
@@ -82,7 +83,7 @@ inverse9' xs = go xs t []
   where
     t = new 4 -- 1-9 までなのでこれで十分
     go []          t acc = zip xs (reverse acc)
-    go (x:xs) t acc = let acc' = t ! x : acc
+    go (x:xs) t acc = let acc' = (t ! (2^4-1) \\ t ! x) : acc
                           t' = inc x [x] t -- Monoid は [a]
                       in go xs t' acc'
 
@@ -93,8 +94,8 @@ inverse9'i :: [Int] -> [(Int, [Int])]
 inverse9'i xs = go (zip [0..] xs) t []
   where
     t = new 4 -- 1-9 までなのでこれで十分
-    go []          t acc = zip xs (reverse acc)
-    go ((i, x):xs) t acc = let acc' = t ! x : acc
-                               t' = inc x [i] t -- Monoid は [a]
-                           in go xs t' acc'
+    go []             t acc = zip xs (reverse acc)
+    go (ix@(i, x):xs) t acc = let acc' = (t ! (2^4-1) \\ t ! x) : acc
+                                  t' = inc x [i] t -- Monoid は [a]
+                              in go xs t' acc'
 
