@@ -48,8 +48,8 @@ new k = BIT k $ f k
 {- |
 construct BIT by maximum value n.
 -}
-new' :: Monoid a => Int -> BIT a
-new' n = new k
+newByMax :: Monoid a => Int -> BIT a
+newByMax n = new k
   where k = bitWidth n
 
 {- |
@@ -87,13 +87,17 @@ BIT k root ! i = f root (k-1) mempty
 
 {- | 転倒数
 1-9 までの数だけでできたリストの転倒数をもとの数と組にして返す.
+
+>>> inverse9 [4,1,5,2,6,3]
+[(4,0),(1,1),(5,0),(2,2),(6,0),(3,3)]
 -}
 inverse9 :: [Int] -> [(Int, Int)]
 inverse9 xs = map (second getSum) $ go xs t []
   where
-    t = new 4 -- 1-9 までなのでこれで十分
+    bw = bitWidth . maximum $ xs
+    t = new bw
     go []     t acc = zip xs (reverse acc)
-    go (x:xs) t acc = let acc' = t ! (2^4-1) - t ! x : acc
+    go (x:xs) t acc = let acc' = t ! (2^bw-1) - t ! x : acc
                           t' = inc x (Sum 1) t -- Monoid は Sum
                       in go xs t' acc'
 
@@ -103,9 +107,10 @@ inverse9 xs = map (second getSum) $ go xs t []
 inverse9' :: [Int] -> [(Int, [Int])]
 inverse9' xs = go xs t []
   where
-    t = new 4 -- 1-9 までなのでこれで十分
+    bw = bitWidth . maximum $ xs
+    t = new bw
     go []          t acc = zip xs (reverse acc)
-    go (x:xs) t acc = let acc' = (t ! (2^4-1) \\ t ! x) : acc
+    go (x:xs) t acc = let acc' = (t ! (2^bw-1) \\ t ! x) : acc
                           t' = inc x [x] t -- Monoid は [a]
                       in go xs t' acc'
 
@@ -115,8 +120,9 @@ inverse9' xs = go xs t []
 inverse9'i :: [Int] -> [(Int, [Int])]
 inverse9'i xs = go (zip [0..] xs) t []
   where
-    t = new 4 -- 1-9 までなのでこれで十分
+    bw = bitWidth . maximum $ xs
+    t = new bw
     go []             t acc = zip xs (reverse acc)
-    go (ix@(i, x):xs) t acc = let acc' = (t ! (2^4-1) \\ t ! x) : acc
+    go (ix@(i, x):xs) t acc = let acc' = (t ! (2^bw-1) \\ t ! x) : acc
                                   t' = inc x [i] t -- Monoid は [a]
                               in go xs t' acc'
