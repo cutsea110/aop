@@ -41,7 +41,8 @@ inc i x (BIT k root) = BIT k $ f root (k-1) 0
                   then  y'   `seq` Node y' l r
                   else  acc' `seq` Node y (f l j' acc') r
           | otherwise = y'   `seq` Node y' l (f r j' acc)
-          where y' = y `mappend` x
+          -- NOTE: If y `mappend` x for List Monoid, then we should reverse to return value at lookup by (!).
+          where y' = x `mappend` y
                 j' = j-1
                 acc' = acc `setBit` j
 
