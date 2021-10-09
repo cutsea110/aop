@@ -52,3 +52,17 @@ inc i x (BIT k root) = BIT k $ f root (k-1) 0
           where y' = x+y
                 j' = j-1
                 acc' = acc `setBit` j
+
+
+-----------------------------------------------
+{- | 転倒数
+1-9 までの数だけでできたリストの転倒数をもとの数と組にして返す.
+-}
+inverse9 :: [Int] -> [(Int, Int)]
+inverse9 xs = go xs t []
+  where
+    t = new 4 -- 1-9 までなのでこれで十分
+    go []     t acc = zip xs (reverse acc)
+    go (x:xs) t acc = let acc' = t ! x : acc
+                          t' = inc x 1 t
+                      in go xs t' acc'
