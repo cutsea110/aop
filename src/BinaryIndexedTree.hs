@@ -2,12 +2,27 @@
 module BinaryIndexedTree where
 
 import Data.Bits
+import Data.List (unfoldr)
 import qualified Data.Tree as T
 
 -- サンプルコードで必要なだけ
 import Control.Arrow (second)
 import Data.List ((\\))
 import Data.Monoid (Sum(..))
+
+-- UTILITY
+
+bitWidth :: Int -> Int
+bitWidth = length . toBit
+
+toBit :: Int -> [Int]
+toBit = reverse . unfoldr psi
+  where
+    psi n | n == 0 = Nothing
+          | otherwise = let (q, r) = n `divMod` 2
+                        in Just (r, q)
+
+-- Bibary Indexed Tree
 
 data BIT a = BIT Int (Tree a) deriving (Show, Functor)
 
@@ -29,6 +44,13 @@ new :: Monoid a => Int -> BIT a
 new k = BIT k $ f k
   where f 0 = Empty
         f k = Node mempty fk' fk' where fk' = f (k-1)
+
+{- |
+construct BIT by maximum value n.
+-}
+new' :: Monoid a => Int -> BIT a
+new' n = new k
+  where k = bitWidth n
 
 {- |
 Increment the value at index i(1-base) by amount x. O(log n)
@@ -98,4 +120,3 @@ inverse9'i xs = go (zip [0..] xs) t []
     go (ix@(i, x):xs) t acc = let acc' = (t ! (2^4-1) \\ t ! x) : acc
                                   t' = inc x [i] t -- Monoid は [a]
                               in go xs t' acc'
-
