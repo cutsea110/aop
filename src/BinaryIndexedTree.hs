@@ -17,6 +17,33 @@ drawBIT (BIT k t) = do
   putStrLn (show k ++ " bits")
   putStr . T.drawForest . fmap (fmap show) . toForest $ t
 
+gNew :: Num a => Int -> BIT [a]
+gNew k = BIT k $ f k
+  where f 0 = Empty
+        f k = Node [] fk' fk' where fk' = f (k-1)
+
+gInc :: Num a => Int -> a -> BIT [a] -> BIT [a]
+gInc i x (BIT k root) = BIT k $ f root (k-1) 0
+  where f Empty _ _ = error "invalid arguments"
+        f (Node y l r) j acc
+          | i `testBit` j =
+              if acc' == i
+                  then  y'   `seq` Node y' l r
+                  else  acc' `seq` Node y (f l j' acc') r
+          | otherwise = y'   `seq` Node y' l (f r j' acc)
+          where y' = x:y -- NOTE: reverse?
+                j' = j-1
+                acc' = acc `setBit` j
+
+gIndex :: Num a => BIT [a] -> Int -> [a]
+gIndex (BIT k root) i = f root (k-1) []
+  where f Empty _ acc = acc
+        f (Node x l r) j acc
+          | i `testBit` j = acc' `seq` f l j' acc'
+          | otherwise     = f r j' acc
+          where j'   = j-1
+                acc' = acc++x
+
 {- |
 construct BIT on k bits. O(n)
 -}
@@ -52,7 +79,6 @@ inc i x (BIT k root) = BIT k $ f root (k-1) 0
           where y' = x+y
                 j' = j-1
                 acc' = acc `setBit` j
-
 
 -----------------------------------------------
 {- | 転倒数
