@@ -38,6 +38,7 @@ library
                      , Dijkstra
                      , DrawMatrix
                      , ENat
+                     , ExtEuclid
                      , Fib
                      , Fiblike
                      , FibAsHisto
