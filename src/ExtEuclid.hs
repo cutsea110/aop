@@ -78,6 +78,18 @@ infixl 7 |*|
 (x1, y1) |+| (x2, y2) = (x1+x2, y1+y2)
 infixl 6 |+|
 
+{- | mod逆元
+-- x の逆元 1/x (mod p) は
+-- x * (1/x) == 1 (mod p)
+-- となるような 1/x なので求めた逆元に x を掛けると mod p で 1 になる。
+-- 5 * 8 == 40 == 1 (mod 13)
+>>> modInv 13 8
+5
+>>> modInv 13 7
+2
+>>> modInv 13 6
+11
+-}
 modInv :: Integral a => a -> a -> a
 modInv g p = if x < 0 then x + g else x
   where (_, (_, x)) = extEuclid g p
