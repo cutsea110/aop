@@ -67,16 +67,16 @@ div        2    2    4    5    2
 extEuclid :: Integral a => a -> a -> (a, (a, a))
 extEuclid x y = psi x y (1, 0) (0, 1)
   where psi x 0 p _ = (x, p)
-        psi x y p q = psi y m q (p |+| negate d |*| q)
+        psi x y p q = psi y m q (p |-| d |*| q)
           where (d, m) = x `divMod` y
 
 (|*|) :: Integral a => a -> (a, a) -> (a, a)
 s |*| (x, y) = (s*x, s*y)
 infixl 7 |*|
 
-(|+|) :: Integral a => (a, a) -> (a, a) -> (a, a)
-(x1, y1) |+| (x2, y2) = (x1+x2, y1+y2)
-infixl 6 |+|
+(|-|) :: Integral a => (a, a) -> (a, a) -> (a, a)
+(x1, y1) |-| (x2, y2) = (x1-x2, y1-y2)
+infixl 6 |-|
 
 {- | mod逆元
 -- x の逆元 1/x (mod p) は
