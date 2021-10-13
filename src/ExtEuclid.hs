@@ -77,3 +77,7 @@ infixl 7 |*|
 (|+|) :: Integral a => (a, a) -> (a, a) -> (a, a)
 (x1, y1) |+| (x2, y2) = (x1+x2, y1+y2)
 infixl 6 |+|
+
+modInv :: Integral a => a -> a -> a
+modInv g p = if x < 0 then x + g else x
+  where (_, (_, x)) = extEuclid g p
