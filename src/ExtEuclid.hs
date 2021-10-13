@@ -91,5 +91,5 @@ infixl 6 |+|
 11
 -}
 modInv :: Integral a => a -> a -> a
-modInv g p = if x < 0 then x + g else x
+modInv g p = (x+g) `mod` g
   where (_, (_, x)) = extEuclid g p
