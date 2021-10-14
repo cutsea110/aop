@@ -31,10 +31,10 @@ increment the value at index i(1-base) by amount w. O(log n)
 But this use immutable Vector.
 -}
 inc :: Monoid a => Int -> a -> BIT a -> BIT a
-inc i w b | 1 <= i && i <= n = b { vec = V.accum (<>) v $ zip xs (repeat w) }
+inc i w b | 1 <= i && i <= n = b { vec = V.accum (<>) v . zip xs . repeat $ w }
           | otherwise = error $ "index must be between 1 to " ++ show n
   where (n, v) = (getN b, vec b)
-        xs = takeWhile (<=n) $ iterate (\x -> x + x .&. (-x)) i
+        xs = takeWhile (<=n) . iterate (\x -> x + x .&. (-x)) $ i
 
 {- |
 increment the value at index i(1-base) by amount w. O(log n)
@@ -44,21 +44,21 @@ inc' :: Monoid a => Int -> a -> BIT a -> BIT a
 inc' i w b =
   BIT n $ V.create $ do
     mv <- V.thaw v
-    forM_ xs $ \i -> M.modify mv (<>w) i
+    forM_ xs $ M.modify mv (<>w)
     return mv
   where
     (n, v) = (getN b, vec b)
-    xs = takeWhile (<=n) $ iterate (\x -> x + x .&. (-x)) i
+    xs = takeWhile (<=n) . iterate (\x -> x + x .&. (-x)) $ i
 
 
 {- |
 lookup the sum of all values from index 1 to index i. O(log n)
 -}
 (!) :: Monoid a => BIT a -> Int -> a
-b ! i | 1 <= i && i <= n = foldr (\i acc -> acc <> (v V.! i)) mempty xs
+b ! i | 1 <= i && i <= n = foldr (\i acc -> acc <> v V.! i) mempty xs
       | otherwise = error $ "index must be between 1 to " ++ show n
   where (n, v) = (getN b, vec b)
-        xs = takeWhile (>0) $ iterate (\x -> x - x .&. (-x)) i
+        xs = takeWhile (>0) . iterate (\x -> x - x .&. (-x)) $ i
 
 --------------------------------------------------------------------------------
 
