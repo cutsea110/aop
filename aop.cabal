@@ -79,6 +79,7 @@ library
                      , SimPath
                      , SNMonad
                      , Sort
+                     , SortOverMorphism
                      , Subfactorial
                      , Take
                      , TakePrefix
