@@ -7,7 +7,7 @@ insertSort = foldr insert []
 
 insert :: Integer -> [Integer] -> [Integer]
 insert y ys = xs ++ [y] ++ zs
-  where (xs, zs) = id $? partition (<y) ys
+  where (xs, zs) = partition (<y) ys
   
 selectSort :: [Integer] -> [Integer]
 selectSort = unfoldr select
