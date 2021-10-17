@@ -1,4 +1,4 @@
-{-# LANGUAGE BangPatterns #-}
+{-# LANGUAGE BangPatterns, NPlusKPatterns #-}
 module ExtEuclid where
 
 {- | 拡張ユークリッドの仕組み
@@ -78,6 +78,27 @@ infixl 7 |*|
 (|-|) :: Integral a => (a, a) -> (a, a) -> (a, a)
 (x1, y1) |-| (x2, y2) = (x1-x2, y1-y2)
 infixl 6 |-|
+
+{- |
+         [z, s]
+   N <------------- 1 + N
+   |                  |
+ u |                  | id + u
+   |                  |
+   v                  v
+   A <------------- 1 + A
+         [c, f]
+-}
+foldn :: a -> (a -> a) -> Int -> a
+foldn c f = u
+  where u 0 = c
+        u (n+1) = f (u n)
+
+unfoldn :: (a -> Maybe a) -> a -> Int
+unfoldn psi = v
+  where v x = case psi x of
+          Nothing -> 0
+          Just x' -> 1 + v x'
 
 {- | mod逆元
 -- x の逆元 1/x (mod p) は
