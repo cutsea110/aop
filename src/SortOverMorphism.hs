@@ -20,7 +20,7 @@ select xs = Just (x, xs')
 
 ------------------------------------------------------------------------------------
 
-newtype Mu f = In { out :: f (Mu f) }
+newtype Mu f = In { in' :: f (Mu f) }
 
 data List list = Nil | Cons K list deriving Show
 
@@ -31,4 +31,12 @@ instance Functor List where
   fmap f (Cons k x) = Cons k (f x)
 
 fold :: (Functor f) => (f a -> a) -> Mu f -> a
-fold f = f . fmap (fold f) . out
+fold f = f . fmap (fold f) . in'
+
+newtype Nu f = Out' { out :: f (Nu f) }
+
+out' :: f (Nu f) -> Nu f
+out' = Out'
+
+unfold :: (Functor f) => (a -> f a) -> (a -> Nu f)
+unfold f = out' . fmap (unfold f) . f
