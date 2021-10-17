@@ -40,3 +40,17 @@ out' = Out'
 
 unfold :: (Functor f) => (a -> f a) -> (a -> Nu f)
 unfold f = out' . fmap (unfold f) . f
+
+------------------------------------------------------------------------------------
+
+downcast :: (Functor f) => Nu f -> Mu f
+downcast = In . fmap downcast . out
+
+upcast :: (Functor f) => Mu f -> Nu f
+upcast = fold (unfold (fmap out))
+upcast' :: (Functor f) => Mu f -> Nu f
+upcast' = fold out'
+upcast'' :: (Functor f) => Mu f -> Nu f
+upcast'' = unfold (fold (fmap In))
+upcast''' :: (Functor f) => Mu f -> Nu f
+upcast''' = unfold in'
