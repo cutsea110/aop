@@ -89,13 +89,13 @@ infixl 6 |-|
    A <------------- 1 + A
          [c, f]
 -}
-foldn :: a -> (a -> a) -> Int -> a
-foldn c f = u
+catan :: a -> (a -> a) -> Int -> a
+catan c f = u
   where u 0 = c
         u (n+1) = f (u n)
 
-unfoldn :: (a -> Maybe a) -> a -> Int
-unfoldn psi = v
+anan :: (a -> Maybe a) -> a -> Int
+anan psi = v
   where v x = case psi x of
           Nothing -> 0
           Just x' -> 1 + v x'
