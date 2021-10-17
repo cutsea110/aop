@@ -17,3 +17,18 @@ select [] = Nothing
 select xs = Just (x, xs')
   where x = minimum xs
         xs' = delete x xs
+
+------------------------------------------------------------------------------------
+
+newtype Mu f = In { out :: f (Mu f) }
+
+data List list = Nil | Cons K list deriving Show
+
+type K = Int
+
+instance Functor List where
+  fmap f Nil = Nil
+  fmap f (Cons k x) = Cons k (f x)
+
+fold :: (Functor f) => (f a -> a) -> Mu f -> a
+fold f = f . fmap (fold f) . out
