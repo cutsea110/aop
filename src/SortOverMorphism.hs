@@ -47,10 +47,6 @@ downcast :: (Functor f) => Nu f -> Mu f
 downcast = In . fmap downcast . out
 
 upcast :: (Functor f) => Mu f -> Nu f
-upcast = fold (unfold (fmap out))
+upcast = fold (unfold (fmap out)) -- == fold out'  -- これは fold In == id だから
 upcast' :: (Functor f) => Mu f -> Nu f
-upcast' = fold out'
-upcast'' :: (Functor f) => Mu f -> Nu f
-upcast'' = unfold (fold (fmap In))
-upcast''' :: (Functor f) => Mu f -> Nu f
-upcast''' = unfold in'
+upcast' = unfold (fold (fmap In)) -- == unfold in' -- これは unfold out == id だから
