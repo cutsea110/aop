@@ -22,14 +22,6 @@ select xs = Just (x, xs')
 
 newtype Mu f = In { in' :: f (Mu f) }
 
-data List list = Nil | Cons K list deriving Show
-
-type K = Int
-
-instance Functor List where
-  fmap f Nil = Nil
-  fmap f (Cons k x) = Cons k (f x)
-
 fold :: (Functor f) => (f a -> a) -> Mu f -> a
 fold f = f . fmap (fold f) . in'
 
@@ -50,3 +42,22 @@ upcast :: (Functor f) => Mu f -> Nu f
 upcast = fold (unfold (fmap out)) -- == fold out'  -- これは fold In == id だから
 upcast' :: (Functor f) => Mu f -> Nu f
 upcast' = unfold (fold (fmap In)) -- == unfold in' -- これは unfold out == id だから
+
+
+------------------------------------------------------------------------------------
+
+-- NOTE : instance of Ord
+type K = Int
+
+data List list = Nil | Cons K list deriving Show
+
+instance Functor List where
+  fmap f Nil = Nil
+  fmap f (Cons k x) = Cons k (f x)
+
+
+data SList list = SNil | SCons K list deriving Show
+
+instance Functor SList where
+  fmap f SNil = SNil
+  fmap f (SCons k x) = SCons k (f x)
