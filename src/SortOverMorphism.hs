@@ -73,3 +73,15 @@ bub (Cons a SNil) = SCons a (In Nil)
 bub (Cons a (SCons b x))
   | a <= b    = SCons a (In (Cons b x))
   | otherwise = SCons b (In (Cons a x))
+
+
+naiveInsertSort :: Mu List -> Nu SList
+naiveInsertSort = fold naiveInsert
+  where naiveInsert = unfold naiveIns
+
+naiveIns :: List (Nu SList) -> SList (List (Nu SList))
+naiveIns Nil = SNil
+naiveIns (Cons a (Out' SNil)) = SCons a Nil
+naiveIns (Cons a (Out' (SCons b x)))
+  | a <= b    = SCons a (Cons b x)
+  | otherwise = SCons b (Cons a x)
