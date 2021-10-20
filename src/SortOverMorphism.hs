@@ -61,3 +61,15 @@ data SList list = SNil | SCons K list deriving Show
 instance Functor SList where
   fmap f SNil = SNil
   fmap f (SCons k x) = SCons k (f x)
+
+
+bubbleSort :: Mu List -> Nu SList
+bubbleSort = unfold bubble
+  where bubble = fold bub
+
+bub :: List (SList (Mu List)) -> SList (Mu List)
+bub Nil = SNil
+bub (Cons a SNil) = SCons a (In Nil)
+bub (Cons a (SCons b x))
+  | a <= b    = SCons a (In (Cons b x))
+  | otherwise = SCons b (In (Cons a x))
