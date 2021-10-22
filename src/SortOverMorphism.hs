@@ -85,3 +85,18 @@ naiveIns (Cons a (Out' SNil)) = SCons a Nil
 naiveIns (Cons a (Out' (SCons b x)))
   | a <= b    = SCons a (Cons b x)
   | otherwise = SCons b (Cons a x)
+
+
+------------------------------------------------------------------------------------
+
+swap :: List (SList x) -> SList (List x)
+swap Nil = SNil
+swap (Cons a SNil) = SCons a Nil
+swap (Cons a (SCons b x))
+  | a <= b    = SCons a (Cons b x)
+  | otherwise = SCons b (Cons a x)
+
+bubbleSort' :: Mu List -> Nu SList
+bubbleSort' = unfold (fold (fmap In . swap))
+naiveInsertSort' :: Mu List -> Nu SList
+naiveInsertSort' = fold (unfold (swap . fmap out))
