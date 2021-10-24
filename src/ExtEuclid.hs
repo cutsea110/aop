@@ -19,8 +19,8 @@ euclid x y = euc psi (x, y)
         [id, id]
    N <------------- N + N
    ^                  ^
- v |                  | id + v
    |                  |
+ v |                  | id + v
    |                  |
  N x N -----------> N + N x N
           psi
