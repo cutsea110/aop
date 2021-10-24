@@ -7,8 +7,29 @@ module ExtEuclid where
 ---------------------------------------
    46   11   2   1   0
 -}
-euclid x 0 = x
-euclid x y = euclid y z where z = x `mod` y
+-- euclid x 0 = x
+-- euclid x y = euclid y z where z = x `mod` y
+euclid :: Integral a => a -> a -> a
+euclid x y = euc psi (x, y)
+  where psi (x, 0) = Left x
+        psi (x, y) = Right (y, z) where z = x `mod` y
+
+{- | Trial Eucmorphism : This is a trivial ;-(
+
+        [id, id]
+   N <------------- N + N
+   ^                  ^
+ v |                  | id + v
+   |                  |
+   |                  |
+ N x N -----------> N + N x N
+          psi
+-}
+euc :: ((a, b) -> Either c (a, b)) -> (a, b) -> c
+euc psi (x, y) = case psi (x, y) of
+  Left  x'       -> x'
+  Right (x', y') -> euc psi (x', y')
+
 
 {- | 拡張ユークリッドの仕組み
 
