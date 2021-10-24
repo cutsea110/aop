@@ -22,13 +22,13 @@ euclid x y = euc psi (x, y)
    |                  |
  v |                  | id + v
    |                  |
- A x B -----------> T + A x B
+   X -------------> T + X
           psi
 -}
-euc :: ((a, b) -> Either c (a, b)) -> (a, b) -> c
-euc psi (x, y) = case psi (x, y) of
-  Left  x'       -> x'
-  Right (x', y') -> euc psi (x', y')
+euc :: (a -> Either t a) -> a -> t
+euc psi x = case psi x of
+  Left  y -> y
+  Right z -> euc psi z
 
 
 {- | 拡張ユークリッドの仕組み
