@@ -2,10 +2,13 @@
 module ExtEuclid where
 
 {- | ユークリッドの互除法
+  252  103  46  11   2   1
+  103   46  11   2   1   0
+---------------------------------------
+   46   11   2   1   0
 -}
 euclid x 0 = x
 euclid x y = euclid y z where z = x `mod` y
-
 
 {- | 拡張ユークリッドの仕組み
 
