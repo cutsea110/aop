@@ -17,12 +17,12 @@ euclid x y = euc psi (x, y)
 {- | Trial Eucmorphism : This is a trivial ;-(
 
         [id, id]
-   N <------------- N + N
+   T <------------- T + T
    ^                  ^
    |                  |
  v |                  | id + v
    |                  |
- N x N -----------> N + N x N
+ A x B -----------> T + A x B
           psi
 -}
 euc :: ((a, b) -> Either c (a, b)) -> (a, b) -> c
