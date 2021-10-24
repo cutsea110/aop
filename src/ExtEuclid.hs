@@ -1,6 +1,12 @@
 {-# LANGUAGE BangPatterns, NPlusKPatterns #-}
 module ExtEuclid where
 
+{- | ユークリッドの互除法
+-}
+euclid x 0 = x
+euclid x y = euclid y z where z = x `mod` y
+
+
 {- | 拡張ユークリッドの仕組み
 
 STEP 0
