@@ -103,6 +103,21 @@ catan c f = u
   where u 0 = c
         u (n+1) = f (u n)
 
+{- |
+         [z, s]
+   N <------------- 1 + N
+   |                  |
+ u |                  | id + (u * id)
+   |                  |
+   v                  v
+   A <------------- 1 + (A x N)
+         [c, f]
+-}
+paran :: a -> (a -> Int -> a) -> Int -> a
+paran c f = u
+  where u 0 = c
+        u (n+1) = f (u n) n
+
 anan :: (a -> Maybe a) -> a -> Int
 anan psi = v
   where v x = case psi x of
