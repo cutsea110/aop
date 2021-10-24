@@ -11,8 +11,8 @@ module ExtEuclid where
 -- euclid x y = euclid y z where z = x `mod` y
 euclid :: Integral a => a -> a -> a
 euclid x y = euc psi (x, y)
-  where psi (x, 0) = Left x
-        psi (x, y) = Right (y, z) where z = x `mod` y
+  where psi (x, 0) = Right x
+        psi (x, y) = Left (y, z) where z = x `mod` y
 
 {- | Trial Eucmorphism : This is a trivial ;-(
 
@@ -24,12 +24,12 @@ euclid x y = euc psi (x, y)
    |                  |
    X -------------> T + X
           psi
--}
-euc :: (a -> Either t a) -> a -> t
-euc psi x = case psi x of
-  Left  y -> y
-  Right z -> euc psi z
 
+-}
+-- euc :: (a -> Either t a) -> a -> t
+euc psi x = case psi x of
+  Left z -> euc psi z
+  Right y -> y
 
 {- | 拡張ユークリッドの仕組み
 
@@ -97,8 +97,8 @@ div        2    2    4    5    2
 -}
 extEuclid :: Integral a => a -> a -> (a, (a, a))
 extEuclid x y = euc psi ((x, y), (1, 0), (0, 1))
-  where psi ((x, 0), p@(!p1, !p2), _)            = Left (x, p)
-        psi ((x, y), p@(!p1, !p2), q@(!q1, !q2)) = Right ((y, m), q, p |-| d |*| q)
+  where psi ((x, 0), p@(!p1, !p2), _)            = Right (x, p)
+        psi ((x, y), p@(!p1, !p2), q@(!q1, !q2)) = Left ((y, m), q, p |-| d |*| q)
           where (d, m) = x `divMod` y
 {-
 extEuclid x y = psi x y (1, 0) (0, 1)
