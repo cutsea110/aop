@@ -26,10 +26,15 @@ euclid x y = euc psi (x, y)
           psi
 
 -}
--- euc :: (a -> Either t a) -> a -> t
+euc :: (a -> Either a t) -> a -> t
 euc psi x = case psi x of
-  Left z -> euc psi z
   Right y -> y
+  Left z -> euc psi z
+
+newtype Free f a = Fr { unFr :: Either a (f (Free f a)) }
+inject = Fr . Left
+-- futu :: (a -> Either Int (Free (Either Int) a)) -> a -> Int
+futu psi = anan (uncurry either (psi, id) . unFr) . inject
 
 {- | 拡張ユークリッドの仕組み
 
