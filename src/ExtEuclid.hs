@@ -15,7 +15,7 @@ cross (f, g) (x, y) = (f x, g y)
 euclid :: Integral a => a -> a -> a
 euclid x y = euc psi (x, y)
   where psi (x, 0) = Right x
-        psi (x, y) = Left (y, z) where z = x `mod` y
+        psi (x, y) = Left (y, x `mod` y)
 
 {- | Trial Eucmorphism : This is a trivial ;-(
             In
