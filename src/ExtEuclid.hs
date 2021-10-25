@@ -1,6 +1,9 @@
 {-# LANGUAGE BangPatterns, NPlusKPatterns #-}
 module ExtEuclid where
 
+pair (f, g) x = (f x, g x)
+cross (f, g) (x, y) = (f x, g y)
+
 {- | ユークリッドの互除法
   252  103  46  11   2   1
   103   46  11   2   1   0
@@ -15,20 +18,28 @@ euclid x y = euc psi (x, y)
         psi (x, y) = Left (y, z) where z = x `mod` y
 
 {- | Trial Eucmorphism : This is a trivial ;-(
-
-整数を二つの整数の最大公約数(GCD)を計算するという方法で構成すると考える
-
-                 In      (x, 0) (x, y)
-     N <-------------------- N + N x N
-     |                         |
-   u = either                  | u = either
-     |                         |
-     v                         v
-     X <-------------------- X + X x X
-              [f, g]
+            In
+    T <---------------- T + T
+    ^                     ^
+  v |                     | v + id
+    |                     |
+    A ----------------> A + T
+            psi
 -}
 euc :: (a -> Either a t) -> a -> t
 euc psi = either (euc psi) id . psi
+
+{- | Trial Dual for Eucmorphism
+            In
+    T <---------------- T x T
+    |                     |
+  u |                     | u x id
+    v                     v
+    A <---------------- A x T
+            phi
+-}
+cue :: ((a, t) -> a) -> t -> a
+cue phi = phi . pair (cue phi, id)
 
 {- | 拡張ユークリッドの仕組み
 
