@@ -20,21 +20,17 @@ euclid x y = euc psi (x, y)
    T <------------- T + T
    ^                  ^
    |                  |
- v |                  | id + v
+ v |                  | v + id
    |                  |
-   X -------------> T + X
+   A -------------> A + T
           psi
 
 -}
 euc :: (a -> Either a t) -> a -> t
-euc psi x = case psi x of
-  Right y -> y
-  Left z -> euc psi z
-
-newtype Free f a = Fr { unFr :: Either a (f (Free f a)) }
-inject = Fr . Left
--- futu :: (a -> Either Int (Free (Either Int) a)) -> a -> Int
-futu psi = anan (uncurry either (psi, id) . unFr) . inject
+euc psi = v
+  where v x = case psi x of
+          Right y -> y
+          Left  z -> v z
 
 {- | 拡張ユークリッドの仕組み
 
@@ -154,7 +150,7 @@ anan :: (a -> Maybe a) -> a -> Int
 anan psi = v
   where v x = case psi x of
           Nothing -> 0
-          Just x' -> 1 + v x'
+          Just x' -> succ (v x')
 
 {- | mod逆元
 -- x の逆元 1/x (mod p) は
