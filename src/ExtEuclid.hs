@@ -16,21 +16,20 @@ euclid x y = euc psi (x, y)
 
 {- | Trial Eucmorphism : This is a trivial ;-(
 
-        [id, id]
-   T <------------- T + T
-   ^                  ^
-   |                  |
- v |                  | v + id
-   |                  |
-   A -------------> A + T
-          psi
+整数を二つの整数の最大公約数(GCD)を計算するという方法で構成すると考える
 
+                 In      (x, 0) (x, y)
+     N <-------------------- N + N x N
+     |                         |
+   u = either                  | u = either
+     |                         |
+     v                         v
+     X <-------------------- X + X x X
+              [f, g]
 -}
 euc :: (a -> Either a t) -> a -> t
 euc psi = v
-  where v x = case psi x of
-          Right y -> y
-          Left  z -> v z
+  where v = either v id . psi
 
 {- | 拡張ユークリッドの仕組み
 
