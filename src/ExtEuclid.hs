@@ -28,8 +28,7 @@ euclid x y = euc psi (x, y)
               [f, g]
 -}
 euc :: (a -> Either a t) -> a -> t
-euc psi = v
-  where v = either v id . psi
+euc psi = either (euc psi) id . psi
 
 {- | 拡張ユークリッドの仕組み
 
@@ -130,7 +129,13 @@ catan c f = u
   where u 0 = c
         u (n+1) = f (u n)
 
-{- |
+anan :: (a -> Maybe a) -> a -> Int
+anan psi = v
+  where v x = case psi x of
+          Nothing -> 0
+          Just x' -> succ (v x')
+
+{- | para
          [z, s]
    N <------------- 1 + N
    |                  |
@@ -145,11 +150,22 @@ paran c f = u
   where u 0 = c
         u (n+1) = f (u n) n
 
-anan :: (a -> Maybe a) -> a -> Int
-anan psi = v
+{- | apo
+         [z, s]
+   N <------------- 1 + N
+   ^                  ^
+   |                  |
+ u |                  | id + (u + id)
+   |                  |
+   A -------------> 1 + (A + N)
+         psi
+-}
+apon :: (a -> Maybe (Either a Int)) -> a -> Int
+apon psi = v
   where v x = case psi x of
           Nothing -> 0
-          Just x' -> succ (v x')
+          Just (Left  x) -> succ (v x)
+          Just (Right y) -> succ y
 
 {- | mod逆元
 -- x の逆元 1/x (mod p) は
