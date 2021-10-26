@@ -1,9 +1,68 @@
-{-# LANGUAGE BangPatterns, NPlusKPatterns #-}
+{-# LANGUAGE TemplateHaskell, TypeFamilies, KindSignatures #-}
+{-# LANGUAGE DeriveFunctor, DeriveFoldable, DeriveTraversable #-}
+{-# LANGUAGE LambdaCase, BangPatterns #-}
 module ExtEuclid where
 
-pair (f, g) x = (f x, g x)
-cross (f, g) (x, y) = (f x, g y)
+{- |
+my question and duplode's answer.
 
+ref.) https://stackoverflow.com/questions/69716451/is-this-some-kind-of-morphism-in-the-recursion-schemes
+-}
+
+import Data.Functor.Foldable
+import Data.Functor.Foldable.TH
+
+data Delayed a = Done a | Waiting (Delayed a) deriving Show
+makeBaseFunctor ''Delayed
+
+----------------------------------------------------------
+
+{- |
+>>> delayedGCD
+Waiting (Waiting (Done 7))
+-}
+delayedGCD :: Delayed Integer
+delayedGCD = ana psi (14, 35)
+
+{- | as same as the Either's either function
+>>> cata (delayed id id) delayedGCD
+-}
+delayed :: (a -> c) -> (b -> c) -> DelayedF a b -> c
+delayed f g = u
+  where u (DoneF n) = f n
+        u (WaitingF n) = g n
+
+psi :: Integral i => (i, i) -> DelayedF i (i, i)
+psi (x, y) = case x `mod` y of
+  0 -> DoneF y
+  m -> WaitingF (y, m)
+
+euc :: (a -> DelayedF b a) -> a -> b
+euc = hylo (delayed id id)
+
+euclid :: (Integer, Integer) -> Integer
+euclid = euc psi
+
+extEuclid :: Integral a => a -> a -> (a, (a, a))
+extEuclid x y = euc psi ((x, y), (1, 0), (0, 1))
+  where psi ((x, 0), p@(!p1, !p2), _)            = DoneF (x, p)
+        psi ((x, y), p@(!p1, !p2), q@(!q1, !q2)) = WaitingF ((y, m), q, p |-| d |*| q)
+          where (d, m) = x `divMod` y
+
+modInv :: Integral a => a -> a -> a
+modInv g p = (x+g) `mod` g
+  where (_, (_, x)) = extEuclid g p
+
+(|*|) :: Integral a => a -> (a, a) -> (a, a)
+s |*| (x, y) = (s*x, s*y)
+infixl 7 |*|
+
+(|-|) :: Integral a => (a, a) -> (a, a) -> (a, a)
+(x1, y1) |-| (x2, y2) = (x1-x2, y1-y2)
+infixl 6 |-|
+
+
+{--------------------------------------------------------------------
 {- | ユークリッドの互除法
   252  103  46  11   2   1
   103   46  11   2   1   0
@@ -14,7 +73,7 @@ cross (f, g) (x, y) = (f x, g y)
 -- euclid x y = euclid y z where z = x `mod` y
 euclid :: Integral a => a -> a -> a
 euclid x y = euc psi (x, y)
-  where psi (x, y) = if m == 0 then Right y else Left (y, m)
+  where psi (x, y) = if m == 0 then Left y else Right (y, m)
           where m = x `mod` y
 
 {- | Trial Eucmorphism : This is a trivial ;-(
@@ -26,8 +85,8 @@ euclid x y = euc psi (x, y)
     A ----------------> A + T
             psi
 -}
-euc :: (a -> Either a t) -> a -> t
-euc psi = either (euc psi) id . psi
+euc :: (a -> Either t a) -> a -> t
+euc = hylo $ either id id
 
 {- | Trial Dual for Eucmorphism
             In
@@ -107,8 +166,8 @@ div        2    2    4    5    2
 -}
 extEuclid :: Integral a => a -> a -> (a, (a, a))
 extEuclid x y = euc psi ((x, y), (1, 0), (0, 1))
-  where psi ((x, 0), p@(!p1, !p2), _)            = Right (x, p)
-        psi ((x, y), p@(!p1, !p2), q@(!q1, !q2)) = Left ((y, m), q, p |-| d |*| q)
+  where psi ((x, 0), p@(!p1, !p2), _)            = Left (x, p)
+        psi ((x, y), p@(!p1, !p2), q@(!q1, !q2)) = Right ((y, m), q, p |-| d |*| q)
           where (d, m) = x `divMod` y
 {-
 extEuclid x y = psi x y (1, 0) (0, 1)
@@ -193,3 +252,4 @@ apon psi = v
 modInv :: Integral a => a -> a -> a
 modInv g p = (x+g) `mod` g
   where (_, (_, x)) = extEuclid g p
+--------------------------------------------------------------------}
