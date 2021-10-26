@@ -29,7 +29,7 @@ delayedGCD = ana psi (14, 35)
 -}
 delayed :: (a -> c) -> (b -> c) -> DelayedF a b -> c
 delayed f g = u
-  where u (DoneF n) = f n
+  where u (DoneF n)    = f n
         u (WaitingF n) = g n
 
 psi :: Integral i => (i, i) -> DelayedF i (i, i)
