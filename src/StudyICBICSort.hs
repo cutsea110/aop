@@ -13,22 +13,25 @@ debug = True
 f $? x = if debug then trace (show x) (f x) else f x
 
 
--- | isomorphic to Either
-data Delayed a = Done a | Waiting (Delayed a) deriving Show
-makeBaseFunctor ''Delayed
--- | isomorphic to either
-delayed :: (a -> c) -> (b -> c) -> DelayedF a b -> c
-delayed f g = u
-  where u (DoneF n)    = f n
-        u (WaitingF n) = g n
+-- | recursion structure for Euclid's algorithm
+data Euclidian a = Triv a | Same (Euclidian a) deriving Show
+makeBaseFunctor ''Euclidian
+-- | isomorphic to either, euclidian is a base functor of Euclidian
+euclidian :: (a -> c) -> (b -> c) -> EuclidianF a b -> c
+euclidian f g = u
+  where u (TrivF n) = f n
+        u (SameF n) = g n
 
 sort :: (Show a, Ord a) => [a] -> [a]
-sort xs = hylo (delayed id id) (psi $?) ([], xs)
+sort xs = hylo phi (psi $?) ([], xs)
 
-psi :: Ord a => ([a], [a]) -> DelayedF [a] ([a], [a])
+phi :: EuclidianF a a -> a
+phi = euclidian id id
+
+psi :: Ord a => ([a], [a]) -> EuclidianF [a] ([a], [a])
 psi (xs, ys) = case ys of
-  []     -> DoneF xs
-  (y:ys) -> WaitingF (zs++[w], ws)
+  []     -> TrivF xs
+  (y:ys) -> SameF (zs++[w], ws)
     where (z, zs) = swap (y, xs)
           (w, ws) = swap (z, ys)
 
