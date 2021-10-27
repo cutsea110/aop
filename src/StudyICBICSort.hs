@@ -30,7 +30,7 @@ psi (xs, ys) = case ys of
 swap :: Ord a => (a, [a]) -> (a, [a])
 swap (x, xs) = case break (x<) xs of
   (xs',   []) -> (x, xs')
-  (xs', y:ys) -> f (x, xs') $ swap (y, ys)
-    where f (x, xs) (y, ys) = (y, xs++[x]++ys)
+  (xs', y:ys) -> (x, xs') <+> swap (y, ys)
+    where (x, xs) <+> (y, ys) = (y, xs++[x]++ys)
 
 sample = [1,3,2,5,4,7,6,0]
