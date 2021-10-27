@@ -1,4 +1,4 @@
-{-# LANGUAGE DeriveFunctor #-}
+{-# LANGUAGE DeriveFunctor, FlexibleInstances #-}
 module StudyICBICSort where
 
 import Debug.Trace (trace)
@@ -12,7 +12,8 @@ f $? x = if debug then trace (show x) (f x) else f x
 
 
 -- | recursion structure for Euclid's algorithm
-data Euclidian a = Triv a | Same (Euclidian a) deriving Show
+-- data Euclidian a = Triv a | Same (Euclidian a) deriving Show
+type Euclidian a = Fix (EuclidianF a)
 
 data EuclidianF a r = TrivF a | SameF r deriving (Show, Functor)
 
@@ -40,5 +41,12 @@ swap (x, xs) = case break (x<) xs of
 
 sample = [1,3,2,5,4,7,6,0]
 
-sort :: (Show a, Ord a) => [a] -> [a]
-sort xs = fst . hylo phi (psi $?) $ ([], xs)
+sort :: (Show a, Ord a) => [a] -> ([a], [a])
+sort xs = hylo phi (psi $?) ([], xs)
+
+sort' :: (Show a, Ord a) => [a] -> Euclidian ([a], [a])
+sort' xs = meta phi (psi $?) (In (TrivF ([], xs)))
+
+instance Show a => Show (Fix (EuclidianF a)) where
+  show (In x@(TrivF a)) = show x
+  show (In x@(SameF a)) = show x
