@@ -39,11 +39,6 @@ swap (x, xs) = case break (x<) xs of
     where (x, xs) <+> (y, ys) = (y, xs++[x]++ys)
 
 sample = [1,3,2,5,4,7,6,0]
-{--
+
 sort :: (Show a, Ord a) => [a] -> [a]
-sort xs = hylo phi (psi $?) ([], xs)
-
-
-
-
---}
+sort xs = fst . hylo phi (psi $?) $ ([], xs)
