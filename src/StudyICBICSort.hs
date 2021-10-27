@@ -11,8 +11,8 @@ ana :: Functor f => (a -> f a) -> a -> Fix f
 ana psi = In . fmap (ana psi) . psi
 hylo :: Functor f => (f b -> b) -> (a -> f a) -> a -> b
 hylo phi psi = {- cata phi . ana psi -} phi . fmap (hylo phi psi) . psi
-meta :: Functor f => (f a -> a) -> (a -> f a) -> Fix f -> Fix f
-meta phi psi = ana psi . cata phi -- In . fmap (meta phi psi) . out
+meta :: Functor f => (f a -> a) -> (a -> b) -> (b -> f b) -> Fix f -> Fix f
+meta phi e psi = ana psi . e . cata phi -- In . fmap (meta phi e psi) . out
 --------------------------------------------------------------------------------------
 debug = True
 
@@ -52,7 +52,7 @@ sort :: (Show a, Ord a) => [a] -> ([a], [a])
 sort xs = hylo phi (psi $?) ([], xs)
 
 sort' :: (Show a, Ord a) => [a] -> Euclidian ([a], [a])
-sort' xs = meta phi (psi $?) (In (TrivF ([], xs)))
+sort' xs = meta phi id (psi $?) (In (TrivF ([], xs)))
 
 instance Show a => Show (Fix (EuclidianF a)) where
   show (In x@(TrivF a)) = show x
