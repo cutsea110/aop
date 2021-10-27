@@ -19,7 +19,7 @@ pair f g x = (f x, g x)
 -- | recursion structure for Euclid's algorithm
 data Euclidian a = Triv a | Same (Euclidian a) deriving Show
 makeBaseFunctor ''Euclidian
--- | isomorphic to either, euclidian is a base functor of Euclidian
+-- | isomorphic to either, EuclidianF is a base functor of Euclidian
 euclidian :: (a -> c) -> (b -> c) -> EuclidianF a b -> c
 euclidian f g = u
   where u (TrivF n) = f n
