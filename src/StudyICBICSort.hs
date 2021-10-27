@@ -12,6 +12,9 @@ debug = True
 ($?) :: Show a => (a -> b) -> a -> b
 f $? x = if debug then trace (show x) (f x) else f x
 
+-- | dual for either (euclidian too)
+pair :: (c -> a) -> (c -> b) -> c -> (a, b)
+pair f g x = (f x, g x)
 
 -- | recursion structure for Euclid's algorithm
 data Euclidian a = Triv a | Same (Euclidian a) deriving Show
