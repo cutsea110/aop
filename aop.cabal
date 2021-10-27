@@ -80,6 +80,7 @@ library
                      , SNMonad
                      , Sort
                      , SortOverMorphism
+                     , StudyICBICSort
                      , Subfactorial
                      , Take
                      , TakePrefix
