@@ -1,12 +1,17 @@
 {-# LANGUAGE TemplateHaskell, TypeFamilies, KindSignatures #-}
 {-# LANGUAGE DeriveFunctor, DeriveFoldable, DeriveTraversable #-}
-{-# LANGUAGE LambdaCase, BangPatterns #-}
 module StudyICBICSort where
 
 import Debug.Trace (trace)
 
 import Data.Functor.Foldable
 import Data.Functor.Foldable.TH
+
+debug = True
+
+($?) :: Show a => (a -> b) -> a -> b
+f $? x = if debug then trace (show x) (f x) else f x
+
 
 -- | isomorphic to Either
 data Delayed a = Done a | Waiting (Delayed a) deriving Show
@@ -17,8 +22,8 @@ delayed f g = u
   where u (DoneF n)    = f n
         u (WaitingF n) = g n
 
-sort :: Ord a => [a] -> [a]
-sort xs = hylo (delayed id id) psi ([], xs)
+sort :: (Show a, Ord a) => [a] -> [a]
+sort xs = hylo (delayed id id) (psi $?) ([], xs)
 
 psi :: Ord a => ([a], [a]) -> DelayedF [a] ([a], [a])
 psi (xs, ys) = case ys of
