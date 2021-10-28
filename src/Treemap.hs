@@ -9,7 +9,7 @@ type Label = String
            [Leaf,Node] x [Nil,Cons]
    Ta x Fa <------------------ (A + Fa) x (1 + Ta x Fa)
     |   |                         |          |
-  u |   | v                       | 1+v      | 1 + u x v
+  u |   | v                       | 1 + v    | 1 + u x v
     |   |                         |          |
     v   v                         v          v
     X x Y  <------------------ (A + Y ) x (1 +  X x Y )
