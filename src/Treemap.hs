@@ -19,15 +19,15 @@ data Treemap a = Leaf a
                | Node Label (Forest a)
                deriving (Show, Functor)
 
-type Forest a = [Treemap a]
+newtype Forest a = Grows [Treemap a] deriving (Show, Functor)
 
 outt :: Treemap a -> Either a (Label, Forest a)
 outt (Leaf x) = Left x
 outt (Node l fs) = Right (l, fs)
 
 outf :: Forest a -> Maybe (Treemap a, Forest a)
-outf []     = Nothing
-outf (t:ts) = Just (t, ts)
+outf (Grows [])     = Nothing
+outf (Grows (t:ts)) = Just (t, Grows ts)
 
 foldt :: (a -> c) -> (Label -> b -> c) -> b -> (c -> b -> b) -> Treemap a -> c
 foldt f g c h = u
@@ -43,25 +43,35 @@ unfoldt psit psif t = case psit t of
 foldf :: (a -> c) -> (Label -> b -> c) -> b -> (c -> b -> b) -> Forest a -> b
 foldf f g c h = v
   where u = foldt f g c h
-        v []     = c
-        v (t:ts) = h (u t) (v ts)
+        v (Grows [])     = c
+        v (Grows (t:ts)) = h (u t) (v (Grows ts))
 
 unfoldf :: (b -> Either a (Label, c)) -> (c -> Maybe (b, c)) -> c -> Forest a
 unfoldf psit psif f = case psif f of
-  Nothing -> []
-  Just (t, ts) -> unfoldt psit psif t : unfoldf psit psif ts
+  Nothing -> Grows []
+  Just (t, ts) -> let Grows fs = unfoldf psit psif ts
+                  in Grows (unfoldt psit psif t : fs)
+
+sumt :: Treemap (Sum Integer) -> Sum Integer
+sumt = foldt id (const id) 0 (+)
+sumf :: Forest (Sum Integer) -> Sum Integer
+sumf = foldf id (const id) 0 (+)
 
 sample :: Treemap Integer
 sample = Node "cluster1"
-         [ Node "cluster2"
-           [ Node "cluster4"
-             [ Leaf 2
-             , Leaf 3
-             ]
-           , Leaf 5
-           ]
-         , Node "cluster3"
-           [ Leaf 10
-           , Leaf 5
-           ]
-         ]
+         (Grows
+           [ Node "cluster2"
+             (Grows
+               [ Node "cluster4"
+                 (Grows
+                   [ Leaf 2
+                   , Leaf 3
+                   ])
+               , Leaf 5
+               ])
+           , Node "cluster3"
+             (Grows
+               [ Leaf 10
+               , Leaf 5
+               ])
+           ])
