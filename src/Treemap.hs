@@ -1,4 +1,7 @@
+{-# LANGUAGE DeriveFunctor #-}
 module Treemap where
+
+import Data.Monoid
 
 type Label = String
 
@@ -14,23 +17,41 @@ type Label = String
 -}
 data Treemap a = Leaf a
                | Node Label (Forest a)
-               deriving Show
+               deriving (Show, Functor)
 
 type Forest a = [Treemap a]
 
-foldt :: (a -> c) -> (b -> c) -> b -> (c -> b -> b) -> Treemap a -> c
+outt :: Treemap a -> Either a (Label, Forest a)
+outt (Leaf x) = Left x
+outt (Node l fs) = Right (l, fs)
+
+outf :: Forest a -> Maybe (Treemap a, Forest a)
+outf []     = Nothing
+outf (t:ts) = Just (t, ts)
+
+foldt :: (a -> c) -> (Label -> b -> c) -> b -> (c -> b -> b) -> Treemap a -> c
 foldt f g c h = u
   where u (Leaf x)    = f x
-        u (Node l ts) = g (v ts)
+        u (Node l ts) = g l (v ts)
         v = foldf f g c h
 
-foldf :: (a -> c) -> (b -> c) -> b -> (c -> b -> b) -> Forest a -> b
+unfoldt :: (b -> Either a (Label, c)) -> (c -> Maybe (b, c)) -> b -> Treemap a
+unfoldt psit psif t = case psit t of
+  Left x        -> Leaf x
+  Right (l, fs) -> Node l (unfoldf psit psif fs)
+
+foldf :: (a -> c) -> (Label -> b -> c) -> b -> (c -> b -> b) -> Forest a -> b
 foldf f g c h = v
   where u = foldt f g c h
         v []     = c
         v (t:ts) = h (u t) (v ts)
 
-sample :: Treemap Int
+unfoldf :: (b -> Either a (Label, c)) -> (c -> Maybe (b, c)) -> c -> Forest a
+unfoldf psit psif f = case psif f of
+  Nothing -> []
+  Just (t, ts) -> unfoldt psit psif t : unfoldf psit psif ts
+
+sample :: Treemap Integer
 sample = Node "cluster1"
          [ Node "cluster2"
            [ Node "cluster4"
