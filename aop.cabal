@@ -87,6 +87,7 @@ library
                      , TicketProblem
                      , Traditional
                      , Tree
+                     , Treemap
                      , TutorialZygo
                      , TypeFunctor
                      , ZipUnzip
