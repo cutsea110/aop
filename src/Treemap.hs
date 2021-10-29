@@ -16,15 +16,20 @@ data Treemap a = Leaf a
 
 makeBaseFunctor ''Treemap
 
--- phi :: TreemapF a (Cofree (TreemapF a) b) -> b
-phi (LeafF x) = x
-phi (NodeF l ts) = sum (fmap extract ts)
-
 extract :: Cofree f a -> a
 extract (x :< _) = x
 
 sub :: Cofree f a -> f (Cofree f a)
 sub (_ :< xs) = xs
+
+type Total = Integer
+type GenTreemap = Integer -> Treemap Integer
+phi :: TreemapF Integer (Cofree (TreemapF Integer) (Total, GenTreemap)) -> (Total, GenTreemap)
+phi (LeafF a) = (a, Leaf)
+phi (NodeF l ts) = (ttl, genNode)
+  where genNode n = Node l (zipWith ($) gs ( fmap (\t -> n*t`div`ttl) ts'))
+        (ts', gs) = unzip $ fmap extract ts
+        ttl = sum ts'
 
 sample :: Treemap Integer
 sample = Node "cluster1"
