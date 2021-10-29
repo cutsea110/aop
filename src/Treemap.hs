@@ -22,6 +22,8 @@ extract (x :< _) = x
 sub :: Cofree f a -> f (Cofree f a)
 sub (_ :< xs) = xs
 
+type Total = Double
+type GenTreemap = Double -> Treemap Double
 
 phi :: Fractional a => TreemapF a (Cofree (TreemapF a) (a -> Treemap a, a)) -> (a -> Treemap a, a)
 phi (LeafF a) = (Leaf, a)
@@ -30,9 +32,10 @@ phi (NodeF l ts) = (genNode, ttl)
         (gs, ts') = unzip $ fmap extract ts
         ttl = sum ts'
 
-treemap tm = let (g, ttl) = histo phi tm in g ttl
+normalize :: Double -> Treemap Double -> Treemap Double
+normalize size tm = let (g, _ttl) = histo phi tm in g size
 
--- sample :: Treemap Integer
+sample :: Treemap Double
 sample = Node "cluster1"
          [ Node "cluster2"
            [ Node "cluster4"
