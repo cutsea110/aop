@@ -28,9 +28,10 @@ type GenTreemap = Double -> Treemap Double
 phi :: Fractional a => TreemapF a (Cofree (TreemapF a) (a -> Treemap a, a)) -> (a -> Treemap a, a)
 phi (LeafF a) = (Leaf, a)
 phi (NodeF l ts) = (genNode, ttl)
-  where genNode n = Node l (zipWith ($) gs (fmap (\t -> n*t/ttl) ts'))
-        (gs, ts') = unzip $ fmap extract ts
+  where (gs, ts') = unzip $ fmap extract ts
         ttl = sum ts'
+        genNode n = Node l (zipWith ($) gs rs)
+          where rs = fmap (\t -> n*t/ttl) ts'
 
 normalize :: Double -> Treemap Double -> Treemap Double
 normalize size tm = let (g, _ttl) = histo phi tm in g size
