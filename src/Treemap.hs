@@ -50,3 +50,32 @@ sample = Node "cluster1"
            , Leaf 5.0
            ]
          ]
+
+--------
+
+type Weight = Int
+class HasWeight a where
+  weight :: a -> Weight
+
+
+data Tile a = T Weight a deriving Show
+data Row a = Row Weight [Either (Tile a) (Col a)] deriving Show
+data Col a = Col Weight [Either (Tile a) (Row a)] deriving Show
+
+instance HasWeight (Tile a) where
+  weight (T w _) = w
+instance HasWeight (Row a) where
+  weight (Row w _) = w
+instance HasWeight (Col a) where
+  weight (Col w _) = w
+
+expected :: Row Double
+expected = Row 100 [ Right (Col 40 [ Right (Row 20 [ Left (T 8 2.0)
+                                                   , Left (T 12 3.0)
+                                                   ])
+                                   , Left (T 20 5.0)
+                                   ])
+                   , Right (Col 60 [ Left (T 40 10.0)
+                                   , Left (T 20 5.0)
+                                   ])
+                   ]
