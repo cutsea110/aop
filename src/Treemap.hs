@@ -22,26 +22,27 @@ extract (x :< _) = x
 sub :: Cofree f a -> f (Cofree f a)
 sub (_ :< xs) = xs
 
-type Total = Integer
-type GenTreemap = Integer -> Treemap Integer
-phi :: TreemapF Integer (Cofree (TreemapF Integer) (Total, GenTreemap)) -> (Total, GenTreemap)
-phi (LeafF a) = (a, Leaf)
-phi (NodeF l ts) = (ttl, genNode)
-  where genNode n = Node l (zipWith ($) gs ( fmap (\t -> n*t`div`ttl) ts'))
-        (ts', gs) = unzip $ fmap extract ts
+
+phi :: Fractional a => TreemapF a (Cofree (TreemapF a) (a -> Treemap a, a)) -> (a -> Treemap a, a)
+phi (LeafF a) = (Leaf, a)
+phi (NodeF l ts) = (genNode, ttl)
+  where genNode n = Node l (zipWith ($) gs (fmap (\t -> n*t/ttl) ts'))
+        (gs, ts') = unzip $ fmap extract ts
         ttl = sum ts'
 
-sample :: Treemap Integer
+treemap tm = let (g, ttl) = histo phi tm in g ttl
+
+-- sample :: Treemap Integer
 sample = Node "cluster1"
          [ Node "cluster2"
            [ Node "cluster4"
-             [ Leaf 2
-             , Leaf 3
+             [ Leaf 2.0
+             , Leaf 3.0
              ]
-           , Leaf 5
+           , Leaf 5.0
            ]
          , Node "cluster3"
-           [ Leaf 10
-           , Leaf 5
+           [ Leaf 10.0
+           , Leaf 5.0
            ]
          ]
