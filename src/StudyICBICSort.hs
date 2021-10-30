@@ -60,3 +60,16 @@ instance Show a => Show (Fix (EuclidianF a)) where
 
 sample :: [Integer]
 sample = [1,3,2,5,4,7,6,0]
+
+---------------------------
+
+pair :: (c -> a) -> (c -> b) -> c -> (a, b)
+pair f g x = (f x, g x)
+
+phi' :: a -> (a, a)
+phi' = pair id id
+
+psi' :: Ord a => (([a], [a]), ([a], [a])) -> ([a], [a])
+psi' = undefined
+
+sort'' xs = hylo psi' phi'
