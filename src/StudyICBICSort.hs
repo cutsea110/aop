@@ -20,6 +20,11 @@ debug = True
 f $? x = if debug then trace (show x) (f x) else f x
 --------------------------------------------------------------------------------------
 
+type SList a = Fix (SListF a)
+data SListF a r = SNilF | SConsF a r deriving (Show, Functor)
+type List a = Fix (ListF a)
+data ListF a r = NilF | ConsF a r deriving (Show, Functor)
+
 -- | recursion structure for Euclid's algorithm
 -- data Euclidian a = Triv a | Same (Euclidian a) deriving Show
 type Euclidian a = Fix (EuclidianF a)
