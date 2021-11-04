@@ -111,3 +111,20 @@ bubbleSort' :: Mu List -> Nu SList
 bubbleSort' = unfold (fold (fmap In . swap))
 naiveInsertSort' :: Mu List -> Nu SList
 naiveInsertSort' = fold (unfold (swap . fmap out))
+
+------------------------------------------------------------------------------------
+
+insertSort' :: Mu List -> Nu SList
+insertSort' = fold insert
+  where insert = apo (swop . fmap (pair id out))
+
+selectSort' :: Mu List -> Nu SList
+selectSort' = unfold select
+  where select = para (fmap (either id In) . swop)
+  
+swop :: List (x, SList x) -> SList (Either x (List x))
+swop Nil = SNil
+swop (Cons a (x, SNil)) = SCons a (Left x)
+swop (Cons a (x, SCons b x'))
+  | a <= b    = SCons a (Left x)
+  | otherwise = SCons b (Right (Cons a x'))
