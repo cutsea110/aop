@@ -41,6 +41,9 @@ unfold f = out' . fmap (unfold f) . f
 para :: Functor f => (f (Mu f, a) -> a) -> Mu f -> a
 para f = f . fmap (pair (id, para f)) . in'
 
+apo :: Functor f => (b -> f (Either (Nu f) b)) -> b -> Nu f
+apo f = Out' . fmap (either id (apo f)) . f
+
 ------------------------------------------------------------------------------------
 
 downcast :: (Functor f) => Nu f -> Mu f
