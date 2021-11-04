@@ -2,10 +2,10 @@ module SortOverMorphism where
 -- ref.) http://www.cs.ox.ac.uk/people/daniel.james/sorting/sorting.pdf
 import Data.List (partition, unfoldr, delete)
 
-pair :: (a -> b, a -> c) -> a -> (b, c)
-pair (f, g) x = (f x, g x)
-cross :: (a -> c, b -> d) -> (a, b) -> (c, d)
-cross (f, g) (x, y) = (f x, g y)
+pair :: (a -> b) -> (a -> c) -> a -> (b, c)
+pair f g x = (f x, g x)
+cross :: (a -> c) -> (b -> d) -> (a, b) -> (c, d)
+cross f g (x, y) = (f x, g y)
 
 insertSort :: [Integer] -> [Integer]
 insertSort = foldr insert []
@@ -39,7 +39,7 @@ unfold :: (Functor f) => (a -> f a) -> (a -> Nu f)
 unfold f = out' . fmap (unfold f) . f
 
 para :: Functor f => (f (Mu f, a) -> a) -> Mu f -> a
-para f = f . fmap (pair (id, para f)) . in'
+para f = f . fmap (pair id (para f)) . in'
 
 apo :: Functor f => (b -> f (Either (Nu f) b)) -> b -> Nu f
 apo f = Out' . fmap (either id (apo f)) . f
