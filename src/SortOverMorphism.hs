@@ -268,3 +268,6 @@ heapSort :: Mu List -> Nu SList
 heapSort = unfold deleteMin . downcast . fold heapInsert
   where deleteMin = para meld
         heapInsert = apo heapIns
+
+mingleSort :: Mu List -> Nu SList
+mingleSort = fold (apo (blend . fmap (pair id out))) . downcast . unfold (fold divvy)
