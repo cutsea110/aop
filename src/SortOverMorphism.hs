@@ -208,3 +208,9 @@ flatten :: Mu SearchTree -> Nu SList
 flatten = fold (apo (wither . fmap (pair id out)))
 flatten' :: Mu SearchTree -> Nu SList
 flatten' = unfold (para (fmap (either id In) . wither))
+
+quickSort :: Mu List -> Nu SList
+quickSort = flatten . downcast . grow
+
+treeSort :: Mu List -> Nu SList
+treeSort = flatten' . downcast . grow'
