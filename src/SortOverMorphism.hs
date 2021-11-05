@@ -186,3 +186,10 @@ grow :: Mu List -> Nu SearchTree
 grow = unfold (para (fmap (either id In) . sprout))
 grow' :: Mu List -> Nu SearchTree
 grow' = fold (apo (sprout . fmap (pair id out)))
+
+------------------------------------------------------------------------------------
+
+glue :: SearchTree (Nu SList) -> SList (Either (Nu SList) (SearchTree (Nu SList)))
+glue Empty = SNil
+glue (Node (Out' SNil) a r) = SCons a (Left r)
+glue (Node (Out' (SCons b l)) a r) = SCons b (Right (Node l a r))
