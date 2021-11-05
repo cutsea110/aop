@@ -247,3 +247,11 @@ sift (Node (l, _) a (r, SNil)) = SCons a (Left l)
 sift (Node (l, SCons b l') a (r, SCons c r'))
   | b <= c    = SCons a (Right (Node l' b r))
   | otherwise = SCons a (Right (Node l c r'))
+
+meld :: Heap (Mu Heap, SList (Mu Heap)) -> SList (Mu Heap)
+meld Empty = SNil
+meld (Node (l, SNil) a (r, _)) = SCons a r
+meld (Node (l, _) a (r, SNil)) = SCons a l
+meld (Node (l, SCons b l') a (r, SCons c r'))
+  | b <= c    = SCons a (In (Node l' b r))
+  | otherwise = SCons a (In (Node l c r'))
