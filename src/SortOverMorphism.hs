@@ -214,3 +214,14 @@ quickSort = flatten . downcast . grow
 
 treeSort :: Mu List -> Nu SList
 treeSort = flatten' . downcast . grow'
+
+------------------------------------------------------------------------------------
+
+type Heap = Tree
+
+pile :: List (x, Heap x) -> Heap (Either x (List x))
+pile Nil = Empty
+pile (Cons a (t, Empty)) = Node (Left t) a (Left t)
+pile (Cons a (t, Node l b r))
+  | a <= b    = Node (Right (Cons b r)) a (Left l)
+  | otherwise = Node (Right (Cons a r)) b (Left l)
