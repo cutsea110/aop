@@ -233,3 +233,9 @@ heapIns (Cons a (Out' (Node l b r)))
   | a <= b    = Node (Right (Cons b r)) a (Left l)
   | otherwise = Node (Right (Cons a r)) b (Left l)
 
+divvy :: List (Heap (Mu List)) -> Heap (Mu List)
+divvy Nil = Empty
+divvy (Cons a Empty) = Node (In Nil) a (In Nil)
+divvy (Cons a (Node l b r))
+  | a <= b    = Node (In (Cons b r)) a l
+  | otherwise = Node (In (Cons a r)) b l
