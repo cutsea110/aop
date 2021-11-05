@@ -239,3 +239,11 @@ divvy (Cons a Empty) = Node (In Nil) a (In Nil)
 divvy (Cons a (Node l b r))
   | a <= b    = Node (In (Cons b r)) a l
   | otherwise = Node (In (Cons a r)) b l
+
+sift :: Heap (x, SList x) -> SList (Either x (Heap x))
+sift Empty = SNil
+sift (Node (l, SNil) a (r, _)) = SCons a (Left r)
+sift (Node (l, _) a (r, SNil)) = SCons a (Left l)
+sift (Node (l, SCons b l') a (r, SCons c r'))
+  | b <= c    = SCons a (Right (Node l' b r))
+  | otherwise = SCons a (Right (Node l c r'))
