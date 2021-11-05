@@ -180,3 +180,9 @@ treeIns (Cons a (Out' Empty)) = Node (Left (Out' Empty)) a (Left (Out' Empty))
 treeIns (Cons a (Out' (Node l b r)))
   | a <= b    = Node (Right (Cons a l)) b (Left r)
   | otherwise = Node (Left l) b (Right (Cons a r))
+
+
+grow :: Mu List -> Nu SearchTree
+grow = unfold (para (fmap (either id In) . sprout))
+grow' :: Mu List -> Nu SearchTree
+grow' = fold (apo (sprout . fmap (pair id out)))
