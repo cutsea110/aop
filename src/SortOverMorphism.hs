@@ -193,3 +193,8 @@ glue :: SearchTree (Nu SList) -> SList (Either (Nu SList) (SearchTree (Nu SList)
 glue Empty = SNil
 glue (Node (Out' SNil) a r) = SCons a (Left r)
 glue (Node (Out' (SCons b l)) a r) = SCons b (Right (Node l a r))
+
+wither :: SearchTree (x, SList x) -> SList (Either x (SearchTree x))
+wither Empty = SNil
+wither (Node (l, SNil) a (r, _)) = SCons a (Left r)
+wither (Node (l, SCons b l') a (r, _)) = SCons b (Right (Node l' a r))
