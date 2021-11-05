@@ -128,3 +128,19 @@ swop (Cons a (x, SNil)) = SCons a (Left x)
 swop (Cons a (x, SCons b x'))
   | a <= b    = SCons a (Left x)
   | otherwise = SCons b (Right (Cons a x'))
+
+------------------------------------------------------------------------------------
+
+data Tree t = Empty | Node t K t deriving Show
+instance Functor Tree where
+  fmap f Empty = Empty
+  fmap f (Node l k r) = Node (f l) k (f r)
+
+type SearchTree = Tree
+
+pivot :: List (SearchTree (Mu List)) -> SearchTree (Mu List)
+pivot Nil = Empty
+pivot (Cons a Empty) = Node (In Nil) a (In Nil)
+pivot (Cons a (Node l b r))
+  | a <= b    = Node (In (Cons a l)) b r
+  | otherwise = Node l b (In (Cons a r))
