@@ -225,3 +225,11 @@ pile (Cons a (t, Empty)) = Node (Left t) a (Left t)
 pile (Cons a (t, Node l b r))
   | a <= b    = Node (Right (Cons b r)) a (Left l)
   | otherwise = Node (Right (Cons a r)) b (Left l)
+
+heapIns :: List (Nu Heap) -> Heap (Either (Nu Heap) (List (Nu Heap)))
+heapIns Nil = Empty
+heapIns (Cons a (Out' Empty)) = Node (Left (Out' Empty)) a (Left (Out' Empty))
+heapIns (Cons a (Out' (Node l b r)))
+  | a <= b    = Node (Right (Cons b r)) a (Left l)
+  | otherwise = Node (Right (Cons a r)) b (Left l)
+
