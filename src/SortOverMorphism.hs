@@ -203,3 +203,8 @@ shear :: SearchTree (Mu SearchTree, SList (Mu SearchTree)) -> SList (Mu SearchTr
 shear Empty = SNil
 shear (Node (l, SNil) a (r, _)) = SCons a r
 shear (Node (l, SCons b l') a (r, _)) = SCons b (In (Node l' a r))
+
+flatten :: Mu SearchTree -> Nu SList
+flatten = fold (apo (wither . fmap (pair id out)))
+flatten' :: Mu SearchTree -> Nu SList
+flatten' = unfold (para (fmap (either id In) . wither))
