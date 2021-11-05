@@ -1,3 +1,4 @@
+{-# LANGUAGE TypeOperators #-}
 module SortOverMorphism where
 -- ref.) http://www.cs.ox.ac.uk/people/daniel.james/sorting/sorting.pdf
 import Data.List (partition, unfoldr, delete)
@@ -116,6 +117,17 @@ naiveInsertSort' = fold (unfold (swap . fmap out))
 
 insertSort' :: Mu List -> Nu SList
 insertSort' = fold insert
+  where insert = apo ins
+
+ins :: List (Nu SList) -> SList (Either (Nu SList) (List (Nu SList)))
+ins Nil = SNil
+ins (Cons a (Out' SNil)) = SCons a (Left (Out' SNil))
+ins (Cons a (Out' (SCons b x')))
+  | a <= b    = SCons a (Left (Out' (SCons b x')))
+  | otherwise = SCons b (Right (Cons a x'))
+
+insertSort'' :: Mu List -> Nu SList
+insertSort'' = fold insert
   where insert = apo (swop . fmap (pair id out))
 
 selectSort' :: Mu List -> Nu SList
