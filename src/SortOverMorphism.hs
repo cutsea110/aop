@@ -166,3 +166,10 @@ pivot (Cons a Empty) = Node (In Nil) a (In Nil)
 pivot (Cons a (Node l b r))
   | a <= b    = Node (In (Cons a l)) b r
   | otherwise = Node l b (In (Cons a r))
+
+sprout :: List (x, SearchTree x) -> SearchTree (Either x (List x))
+sprout Nil = Empty
+sprout (Cons a (t, Empty)) = Node (Left t) a (Left t)
+sprout (Cons a (t, Node l b r))
+  | a <= b    = Node (Right (Cons a l)) b (Left r)
+  | otherwise = Node (Left l) b (Right (Cons a r))
