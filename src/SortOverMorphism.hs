@@ -198,3 +198,8 @@ wither :: SearchTree (x, SList x) -> SList (Either x (SearchTree x))
 wither Empty = SNil
 wither (Node (l, SNil) a (r, _)) = SCons a (Left r)
 wither (Node (l, SCons b l') a (r, _)) = SCons b (Right (Node l' a r))
+
+shear :: SearchTree (Mu SearchTree, SList (Mu SearchTree)) -> SList (Mu SearchTree)
+shear Empty = SNil
+shear (Node (l, SNil) a (r, _)) = SCons a r
+shear (Node (l, SCons b l') a (r, _)) = SCons b (In (Node l' a r))
