@@ -173,3 +173,10 @@ sprout (Cons a (t, Empty)) = Node (Left t) a (Left t)
 sprout (Cons a (t, Node l b r))
   | a <= b    = Node (Right (Cons a l)) b (Left r)
   | otherwise = Node (Left l) b (Right (Cons a r))
+
+treeIns :: List (Nu SearchTree) -> SearchTree (Either (Nu SearchTree) (List (Nu SearchTree)))
+treeIns Nil = Empty
+treeIns (Cons a (Out' Empty)) = Node (Left (Out' Empty)) a (Left (Out' Empty))
+treeIns (Cons a (Out' (Node l b r)))
+  | a <= b    = Node (Right (Cons a l)) b (Left r)
+  | otherwise = Node (Left l) b (Right (Cons a r))
