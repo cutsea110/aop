@@ -120,6 +120,16 @@ insertSort' = fold insert
 
 selectSort' :: Mu List -> Nu SList
 selectSort' = unfold select
+  where select = para sel
+sel :: List (Mu List, SList (Mu List)) -> SList (Mu List)
+sel Nil = SNil
+sel (Cons a (x, SNil)) = SCons a x
+sel (Cons a (x, SCons b x'))
+  | a <= b    = SCons a x
+  | otherwise = SCons b (In (Cons a x'))
+
+selectSort'' :: Mu List -> Nu SList
+selectSort'' = unfold select
   where select = para (fmap (either id In) . swop)
   
 swop :: List (x, SList x) -> SList (Either x (List x))
