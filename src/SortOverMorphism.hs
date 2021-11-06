@@ -1,5 +1,7 @@
 {-# LANGUAGE TypeOperators #-}
 module SortOverMorphism where
+
+import Prelude hiding ((<*>))
 -- ref.) http://www.cs.ox.ac.uk/people/daniel.james/sorting/sorting.pdf
 import Data.List (partition, unfoldr, delete)
 
@@ -39,11 +41,11 @@ out' = Out'
 unfold :: (Functor f) => (a -> f a) -> (a -> Nu f)
 unfold f = out' . fmap (unfold f) . f
 
-para :: Functor f => (f (Mu f, a) -> a) -> Mu f -> a
-para f = f . fmap (pair id (para f)) . in'
+para :: Functor f => (f (Mu f :*: a) -> a) -> Mu f -> a
+para f = f . fmap (id <*> para f) . in'
 
-apo :: Functor f => (b -> f (Either (Nu f) b)) -> b -> Nu f
-apo f = Out' . fmap (either id (apo f)) . f
+apo :: Functor f => (b -> f (Nu f :+: b)) -> b -> Nu f
+apo f = Out' . fmap (id <+> apo f) . f
 
 ------------------------------------------------------------------------------------
 
@@ -133,16 +135,16 @@ insertSort' :: Mu List -> Nu SList
 insertSort' = fold insert
   where insert = apo ins
 
-ins :: List (Nu SList) -> SList (Either (Nu SList) (List (Nu SList)))
+ins :: List (Nu SList) -> SList (Nu SList :+: List (Nu SList))
 ins Nil = SNil
-ins (Cons a (Out' SNil)) = SCons a (Left (Out' SNil))
+ins (Cons a (Out' SNil)) = SCons a (Stop (Out' SNil))
 ins (Cons a (Out' (SCons b x')))
-  | a <= b    = SCons a (Left (Out' (SCons b x')))
-  | otherwise = SCons b (Right (Cons a x'))
+  | a <= b    = SCons a (Stop (Out' (SCons b x')))
+  | otherwise = SCons b (Play (Cons a x'))
 
 insertSort'' :: Mu List -> Nu SList
 insertSort'' = fold insert
-  where insert = apo (swop . fmap (pair id out))
+  where insert = apo (swop . fmap (id <*> out))
 
 selectSort' :: Mu List -> Nu SList
 selectSort' = unfold select
@@ -156,14 +158,14 @@ sel (Cons a (x, SCons b x'))
 
 selectSort'' :: Mu List -> Nu SList
 selectSort'' = unfold select
-  where select = para (fmap (either id In) . swop)
+  where select = para (fmap (id <+> In) . swop)
   
-swop :: List (x, SList x) -> SList (Either x (List x))
+swop :: List (x :*: SList x) -> SList (x :+: List x)
 swop Nil = SNil
-swop (Cons a (x, SNil)) = SCons a (Left x)
+swop (Cons a (x, SNil)) = SCons a (Stop x)
 swop (Cons a (x, SCons b x'))
-  | a <= b    = SCons a (Left x)
-  | otherwise = SCons b (Right (Cons a x'))
+  | a <= b    = SCons a (Stop x)
+  | otherwise = SCons b (Play (Cons a x'))
 
 ------------------------------------------------------------------------------------
 
@@ -181,47 +183,47 @@ pivot (Cons a (Node l b r))
   | a <= b    = Node (In (Cons a l)) b r
   | otherwise = Node l b (In (Cons a r))
 
-sprout :: List (x, SearchTree x) -> SearchTree (Either x (List x))
+sprout :: List (x :*: SearchTree x) -> SearchTree (x :+: List x)
 sprout Nil = Empty
-sprout (Cons a (t, Empty)) = Node (Left t) a (Left t)
+sprout (Cons a (t, Empty)) = Node (Stop t) a (Stop t)
 sprout (Cons a (t, Node l b r))
-  | a <= b    = Node (Right (Cons a l)) b (Left r)
-  | otherwise = Node (Left l) b (Right (Cons a r))
+  | a <= b    = Node (Play (Cons a l)) b (Stop r)
+  | otherwise = Node (Stop l) b (Play (Cons a r))
 
-treeIns :: List (Nu SearchTree) -> SearchTree (Either (Nu SearchTree) (List (Nu SearchTree)))
+treeIns :: List (Nu SearchTree) -> SearchTree (Nu SearchTree :+: List (Nu SearchTree))
 treeIns Nil = Empty
-treeIns (Cons a (Out' Empty)) = Node (Left (Out' Empty)) a (Left (Out' Empty))
+treeIns (Cons a (Out' Empty)) = Node (Stop (Out' Empty)) a (Stop (Out' Empty))
 treeIns (Cons a (Out' (Node l b r)))
-  | a <= b    = Node (Right (Cons a l)) b (Left r)
-  | otherwise = Node (Left l) b (Right (Cons a r))
+  | a <= b    = Node (Play (Cons a l)) b (Stop r)
+  | otherwise = Node (Stop l) b (Play (Cons a r))
 
 
 grow :: Mu List -> Nu SearchTree
-grow = unfold (para (fmap (either id In) . sprout))
+grow = unfold (para (fmap (id <+> In) . sprout))
 grow' :: Mu List -> Nu SearchTree
-grow' = fold (apo (sprout . fmap (pair id out)))
+grow' = fold (apo (sprout . fmap (id <*> out)))
 
 ------------------------------------------------------------------------------------
 
-glue :: SearchTree (Nu SList) -> SList (Either (Nu SList) (SearchTree (Nu SList)))
+glue :: SearchTree (Nu SList) -> SList (Nu SList :+: SearchTree (Nu SList))
 glue Empty = SNil
-glue (Node (Out' SNil) a r) = SCons a (Left r)
-glue (Node (Out' (SCons b l)) a r) = SCons b (Right (Node l a r))
+glue (Node (Out' SNil) a r) = SCons a (Stop r)
+glue (Node (Out' (SCons b l)) a r) = SCons b (Play (Node l a r))
 
-wither :: SearchTree (x, SList x) -> SList (Either x (SearchTree x))
+wither :: SearchTree (x :*: SList x) -> SList (x :+: SearchTree x)
 wither Empty = SNil
-wither (Node (l, SNil) a (r, _)) = SCons a (Left r)
-wither (Node (l, SCons b l') a (r, _)) = SCons b (Right (Node l' a r))
+wither (Node (l, SNil) a (r, _)) = SCons a (Stop r)
+wither (Node (l, SCons b l') a (r, _)) = SCons b (Play (Node l' a r))
 
-shear :: SearchTree (Mu SearchTree, SList (Mu SearchTree)) -> SList (Mu SearchTree)
+shear :: SearchTree (Mu SearchTree :*: SList (Mu SearchTree)) -> SList (Mu SearchTree)
 shear Empty = SNil
 shear (Node (l, SNil) a (r, _)) = SCons a r
 shear (Node (l, SCons b l') a (r, _)) = SCons b (In (Node l' a r))
 
 flatten :: Mu SearchTree -> Nu SList
-flatten = fold (apo (wither . fmap (pair id out)))
+flatten = fold (apo (wither . fmap (id <*> out)))
 flatten' :: Mu SearchTree -> Nu SList
-flatten' = unfold (para (fmap (either id In) . wither))
+flatten' = unfold (para (fmap (id <+> In) . wither))
 
 quickSort :: Mu List -> Nu SList
 quickSort = flatten . downcast . grow
@@ -233,19 +235,19 @@ treeSort = flatten' . downcast . grow'
 
 type Heap = Tree
 
-pile :: List (x, Heap x) -> Heap (Either x (List x))
+pile :: List (x :*: Heap x) -> Heap (x :+: List x)
 pile Nil = Empty
-pile (Cons a (t, Empty)) = Node (Left t) a (Left t)
+pile (Cons a (t, Empty)) = Node (Stop t) a (Stop t)
 pile (Cons a (t, Node l b r))
-  | a <= b    = Node (Right (Cons b r)) a (Left l)
-  | otherwise = Node (Right (Cons a r)) b (Left l)
+  | a <= b    = Node (Play (Cons b r)) a (Stop l)
+  | otherwise = Node (Play (Cons a r)) b (Stop l)
 
-heapIns :: List (Nu Heap) -> Heap (Either (Nu Heap) (List (Nu Heap)))
+heapIns :: List (Nu Heap) -> Heap (Nu Heap :+: List (Nu Heap))
 heapIns Nil = Empty
-heapIns (Cons a (Out' Empty)) = Node (Left (Out' Empty)) a (Left (Out' Empty))
+heapIns (Cons a (Out' Empty)) = Node (Stop (Out' Empty)) a (Stop (Out' Empty))
 heapIns (Cons a (Out' (Node l b r)))
-  | a <= b    = Node (Right (Cons b r)) a (Left l)
-  | otherwise = Node (Right (Cons a r)) b (Left l)
+  | a <= b    = Node (Play (Cons b r)) a (Stop l)
+  | otherwise = Node (Play (Cons a r)) b (Stop l)
 
 divvy :: List (Heap (Mu List)) -> Heap (Mu List)
 divvy Nil = Empty
@@ -254,15 +256,15 @@ divvy (Cons a (Node l b r))
   | a <= b    = Node (In (Cons b r)) a l
   | otherwise = Node (In (Cons a r)) b l
 
-sift :: Heap (x, SList x) -> SList (Either x (Heap x))
+sift :: Heap (x :*: SList x) -> SList (x :+: Heap x)
 sift Empty = SNil
-sift (Node (l, SNil) a (r, _)) = SCons a (Left r)
-sift (Node (l, _) a (r, SNil)) = SCons a (Left l)
+sift (Node (l, SNil) a (r, _)) = SCons a (Stop r)
+sift (Node (l, _) a (r, SNil)) = SCons a (Stop l)
 sift (Node (l, SCons b l') a (r, SCons c r'))
-  | b <= c    = SCons a (Right (Node l' b r))
-  | otherwise = SCons a (Right (Node l c r'))
+  | b <= c    = SCons a (Play (Node l' b r))
+  | otherwise = SCons a (Play (Node l c r'))
 
-meld :: Heap (Mu Heap, SList (Mu Heap)) -> SList (Mu Heap)
+meld :: Heap (Mu Heap :*: SList (Mu Heap)) -> SList (Mu Heap)
 meld Empty = SNil
 meld (Node (l, SNil) a (r, _)) = SCons a r
 meld (Node (l, _) a (r, SNil)) = SCons a l
@@ -270,13 +272,13 @@ meld (Node (l, SCons b l') a (r, SCons c r'))
   | b <= c    = SCons a (In (Node l' b r))
   | otherwise = SCons a (In (Node l c r'))
 
-blend :: Heap (Nu SList, SList (Nu SList)) -> SList (Either (Nu SList) (Heap (Nu SList)))
+blend :: Heap (Nu SList :*: SList (Nu SList)) -> SList (Nu SList :+: Heap (Nu SList))
 blend Empty = SNil
-blend (Node (l, SNil) a (r, _)) = SCons a (Left r)
-blend (Node (l, _) a (r, SNil)) = SCons a (Left l)
+blend (Node (l, SNil) a (r, _)) = SCons a (Stop r)
+blend (Node (l, _) a (r, SNil)) = SCons a (Stop l)
 blend (Node (l, SCons b l') a (r, SCons c r'))
-  | b <= c    = SCons a (Right (Node l' b r))
-  | otherwise = SCons a (Right (Node l c r'))
+  | b <= c    = SCons a (Play (Node l' b r))
+  | otherwise = SCons a (Play (Node l c r'))
 
 heapSort :: Mu List -> Nu SList
 heapSort = unfold deleteMin . downcast . fold heapInsert
@@ -284,4 +286,4 @@ heapSort = unfold deleteMin . downcast . fold heapInsert
         heapInsert = apo heapIns
 
 mingleSort :: Mu List -> Nu SList
-mingleSort = fold (apo (blend . fmap (pair id out))) . downcast . unfold (fold divvy)
+mingleSort = fold (apo (blend . fmap (id <*> out))) . downcast . unfold (fold divvy)
