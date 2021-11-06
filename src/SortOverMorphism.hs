@@ -1,7 +1,5 @@
 {-# LANGUAGE TypeOperators #-}
 module SortOverMorphism where
-
-import Prelude hiding ((<*>))
 -- ref.) http://www.cs.ox.ac.uk/people/daniel.james/sorting/sorting.pdf
 import Data.List (partition, unfoldr, delete)
 
@@ -42,23 +40,21 @@ unfold :: (Functor f) => (a -> f a) -> (a -> Nu f)
 unfold f = out' . fmap (unfold f) . f
 
 para :: Functor f => (f (Mu f :*: a) -> a) -> Mu f -> a
-para f = f . fmap (id <*> para f) . in'
+para f = f . fmap (id `split` para f) . in'
 
 apo :: Functor f => (b -> f (Nu f :+: b)) -> b -> Nu f
-apo f = Out' . fmap (id <+> apo f) . f
+apo f = Out' . fmap (id `join` apo f) . f
 
 ------------------------------------------------------------------------------------
 
 type a :*: b = (a, b)
-(<*>) :: (a -> b) -> (a -> c) -> a -> b :*: c
-(<*>) = pair
-infixl 7 <*>
+split :: (a -> b) -> (a -> c) -> a -> b :*: c
+split = pair
   
 data a :+: b = Stop a | Play b deriving Show
-(<+>) :: (a -> c) -> (b -> c) -> a :+: b -> c
-(f <+> _) (Stop x) = f x
-(_ <+> g) (Play y) = g y
-infixl 6 <+>
+join :: (a -> c) -> (b -> c) -> a :+: b -> c
+(f `join` _) (Stop x) = f x
+(_ `join` g) (Play y) = g y
 
 ------------------------------------------------------------------------------------
 
@@ -144,7 +140,7 @@ ins (Cons a (Out' (SCons b x')))
 
 insertSort'' :: Mu List -> Nu SList
 insertSort'' = fold insert
-  where insert = apo (swop . fmap (id <*> out))
+  where insert = apo (swop . fmap (id `split` out))
 
 selectSort' :: Mu List -> Nu SList
 selectSort' = unfold select
@@ -158,7 +154,7 @@ sel (Cons a (x, SCons b x'))
 
 selectSort'' :: Mu List -> Nu SList
 selectSort'' = unfold select
-  where select = para (fmap (id <+> In) . swop)
+  where select = para (fmap (id `join` In) . swop)
   
 swop :: List (x :*: SList x) -> SList (x :+: List x)
 swop Nil = SNil
@@ -199,9 +195,9 @@ treeIns (Cons a (Out' (Node l b r)))
 
 
 grow :: Mu List -> Nu SearchTree
-grow = unfold (para (fmap (id <+> In) . sprout))
+grow = unfold (para (fmap (id `join` In) . sprout))
 grow' :: Mu List -> Nu SearchTree
-grow' = fold (apo (sprout . fmap (id <*> out)))
+grow' = fold (apo (sprout . fmap (id `split` out)))
 
 ------------------------------------------------------------------------------------
 
@@ -221,9 +217,9 @@ shear (Node (l, SNil) a (r, _)) = SCons a r
 shear (Node (l, SCons b l') a (r, _)) = SCons b (In (Node l' a r))
 
 flatten :: Mu SearchTree -> Nu SList
-flatten = fold (apo (wither . fmap (id <*> out)))
+flatten = fold (apo (wither . fmap (id `split` out)))
 flatten' :: Mu SearchTree -> Nu SList
-flatten' = unfold (para (fmap (id <+> In) . wither))
+flatten' = unfold (para (fmap (id `join` In) . wither))
 
 quickSort :: Mu List -> Nu SList
 quickSort = flatten . downcast . grow
@@ -286,4 +282,4 @@ heapSort = unfold deleteMin . downcast . fold heapInsert
         heapInsert = apo heapIns
 
 mingleSort :: Mu List -> Nu SList
-mingleSort = fold (apo (blend . fmap (id <*> out))) . downcast . unfold (fold divvy)
+mingleSort = fold (apo (blend . fmap (id `split` out))) . downcast . unfold (fold divvy)
