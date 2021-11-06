@@ -47,6 +47,20 @@ apo f = Out' . fmap (either id (apo f)) . f
 
 ------------------------------------------------------------------------------------
 
+type a :*: b = (a, b)
+(<*>) :: (a -> b) -> (a -> c) -> a -> b :*: c
+(<*>) = pair
+infixl 7 <*>
+  
+data a :+: b = Stop a | Play b deriving Show
+(<+>) :: (a -> c) -> (b -> c) -> a :+: b -> c
+(f <+> _) (Stop x) = f x
+(_ <+> g) (Play y) = g y
+infixl 6 <+>
+
+------------------------------------------------------------------------------------
+
+
 downcast :: (Functor f) => Nu f -> Mu f
 downcast = In . fmap downcast . out
 
