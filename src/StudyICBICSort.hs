@@ -29,21 +29,21 @@ data ListF a r = NilF | ConsF a r deriving (Show, Functor)
 -- data Euclidian a = Triv a | Same (Euclidian a) deriving Show
 type Euclidian a = Fix (EuclidianF a)
 
-data EuclidianF a r = TrivF a | SameF r deriving (Show, Functor)
+data EuclidianF a r = StopF a | PlayF r deriving (Show, Functor)
 
 -- | isomorphic to either, EuclidianF is a base functor of Euclidian
-euclidian :: (a -> c) -> (b -> c) -> EuclidianF a b -> c
-euclidian f g = u
-  where u (TrivF n) = f n
-        u (SameF n) = g n
+join :: (a -> c) -> (b -> c) -> EuclidianF a b -> c
+join f g = u
+  where u (StopF n) = f n
+        u (PlayF n) = g n
 
 phi :: EuclidianF a a -> a
-phi = euclidian id id
+phi = join id id
 
 psi :: Ord a => ([a], [a]) -> EuclidianF ([a], [a]) ([a], [a])
 psi (xs, ys) = case ys of
-  []     -> TrivF (xs, [])
-  (y:ys) -> SameF (zs++[w], ws)
+  []     -> StopF (xs, [])
+  (y:ys) -> PlayF (zs++[w], ws)
     where (z, zs) = swap (y, xs)
           (w, ws) = swap (z, ys)
 
@@ -57,22 +57,22 @@ sort :: (Show a, Ord a) => [a] -> ([a], [a])
 sort xs = hylo phi (psi $?) ([], xs)
 
 sort' :: (Show a, Ord a) => [a] -> Euclidian ([a], [a])
-sort' xs = meta phi id (psi $?) (In (TrivF ([], xs)))
+sort' xs = meta phi id (psi $?) (In (StopF ([], xs)))
 
 instance Show a => Show (Fix (EuclidianF a)) where
-  show (In x@(TrivF a)) = show x
-  show (In x@(SameF a)) = show x
+  show (In x@(StopF a)) = show x
+  show (In x@(PlayF a)) = show x
 
 sample :: [Integer]
 sample = [1,3,2,5,4,7,6,0]
 
 ---------------------------
 
-pair :: (c -> a) -> (c -> b) -> c -> (a, b)
-pair f g x = (f x, g x)
+split :: (c -> a) -> (c -> b) -> c -> (a, b)
+split f g x = (f x, g x)
 
 phi' :: a -> (a, a)
-phi' = pair id id
+phi' = split id id
 
 psi' :: Ord a => (([a], [a]), ([a], [a])) -> ([a], [a])
 psi' = undefined
