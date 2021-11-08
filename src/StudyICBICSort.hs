@@ -55,9 +55,8 @@ sort xs = hylo phi (psi $?) ([], xs)
 sort' :: (Show a, Ord a) => [a] -> Sum ([a], [a])
 sort' xs = meta phi id (psi $?) (In (StopF ([], xs)))
 
-instance Show a => Show (Fix (SumF a)) where
-  show (In x@(StopF a)) = show x
-  show (In x@(PlayF a)) = show x
+instance Show a => Show (Sum a) where
+  show (In x) = show x
 
 sample :: [Integer]
 sample = [1,3,2,5,4,7,6,0]
