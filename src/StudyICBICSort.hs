@@ -25,22 +25,19 @@ data SListF a r = SNilF | SConsF a r deriving (Show, Functor)
 type List a = Fix (ListF a)
 data ListF a r = NilF | ConsF a r deriving (Show, Functor)
 
--- | recursion structure for Euclid's algorithm
--- data Euclidian a = Triv a | Same (Euclidian a) deriving Show
-type Euclidian a = Fix (EuclidianF a)
+type Sum a = Fix (SumF a)
 
-data EuclidianF a r = StopF a | PlayF r deriving (Show, Functor)
+data SumF a r = StopF a | PlayF r deriving (Show, Functor)
 
--- | isomorphic to either, EuclidianF is a base functor of Euclidian
-join :: (a -> c) -> (b -> c) -> EuclidianF a b -> c
+join :: (a -> c) -> (b -> c) -> SumF a b -> c
 join f g = u
   where u (StopF n) = f n
         u (PlayF n) = g n
 
-phi :: EuclidianF a a -> a
+phi :: SumF a a -> a
 phi = join id id
 
-psi :: Ord a => ([a], [a]) -> EuclidianF ([a], [a]) ([a], [a])
+psi :: Ord a => ([a], [a]) -> SumF ([a], [a]) ([a], [a])
 psi (xs, ys) = case ys of
   []     -> StopF (xs, [])
   (y:ys) -> PlayF (zs++[w], ws)
@@ -56,10 +53,10 @@ swap (x, xs) = case break (x<) xs of
 sort :: (Show a, Ord a) => [a] -> ([a], [a])
 sort xs = hylo phi (psi $?) ([], xs)
 
-sort' :: (Show a, Ord a) => [a] -> Euclidian ([a], [a])
+sort' :: (Show a, Ord a) => [a] -> Sum ([a], [a])
 sort' xs = meta phi id (psi $?) (In (StopF ([], xs)))
 
-instance Show a => Show (Fix (EuclidianF a)) where
+instance Show a => Show (Fix (SumF a)) where
   show (In x@(StopF a)) = show x
   show (In x@(PlayF a)) = show x
 
