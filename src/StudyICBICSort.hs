@@ -26,7 +26,6 @@ type List a = Fix (ListF a)
 data ListF a r = NilF | ConsF a r deriving (Show, Functor)
 
 type Sum a = Fix (SumF a)
-
 data SumF a r = StopF a | PlayF r deriving (Show, Functor)
 
 join :: (a -> c) -> (b -> c) -> SumF a b -> c
