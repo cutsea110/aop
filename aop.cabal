@@ -37,6 +37,7 @@ library
                      , Defunctionalization
                      , Dijkstra
                      , DrawMatrix
+                     , DualityOfSorts
                      , ENat
                      , ExtEuclid
                      , Fib
