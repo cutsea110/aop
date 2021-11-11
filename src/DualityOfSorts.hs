@@ -56,3 +56,30 @@ data SList list = SNil | SCons Integer list deriving Show
 instance Functor SList where
   fmap f SNil = SNil
   fmap f (SCons k list) = SCons k (f list)
+
+nil :: Fix List
+nil = In Nil
+cons :: Integer -> Fix List -> Fix List
+cons x xs = In (Cons x xs)
+snil :: Fix SList
+snil = In SNil
+scons :: Integer -> Fix SList -> Fix SList
+scons x xs = In (SCons x xs)
+
+fromList :: Fix List -> [Integer]
+fromList (In Nil) = []
+fromList (In (Cons x xs)) = x:fromList xs
+
+fromSList :: Fix SList -> [Integer]
+fromSList (In SNil) = []
+fromSList (In (SCons x xs)) = x:fromSList xs
+
+
+naiveInsertSort :: Fix List -> Fix SList
+naiveInsertSort = fold (unfold naiveInsert)
+naiveInsert :: List (Fix SList) -> SList (List (Fix SList))
+naiveInsert Nil                = SNil
+naiveInsert (Cons a (In SNil)) = SCons a Nil
+naiveInsert (Cons a (In (SCons b x)))
+  | a <= b    = SCons a (Cons b x)
+  | otherwise = SCons b (Cons a x)
