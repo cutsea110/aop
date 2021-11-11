@@ -48,3 +48,11 @@ fold a = a . fmap (fold a) . out
 
 unfold :: Functor f => (a -> f a) -> a -> Fix f
 unfold c = In . fmap (unfold c) . c
+
+--------------------------------------------------------------------------------------
+-- Section 3
+
+data SList list = SNil | SCons Integer list deriving Show
+instance Functor SList where
+  fmap f SNil = SNil
+  fmap f (SCons k list) = SCons k (f list)
