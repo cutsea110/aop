@@ -12,14 +12,20 @@ f $? x = if debug then trace (show x) (f x) else f x
 --------------------------------------------------------------------------------------
 
 insertSort :: [Integer] -> [Integer]
-insertSort = foldr (curry (insert $?)) []
+insertSort = foldr phi []
+  where phi x xs = let v = insert (x, xs)
+                       msg = " {- " ++ show (x, xs) ++ " => " ++ show v ++ " -}"
+                   in trace msg v
 
 insert :: (Integer, [Integer]) -> [Integer]
 insert (y, ys) = xs ++ [y] ++ zs
   where (xs, zs) = span (<=y) ys
 
 selectSort :: [Integer] -> [Integer]
-selectSort = unfoldr (select $?)
+selectSort = unfoldr psi
+  where psi x = let v = select x
+                    msg = " {- " ++ show x ++ " => " ++ show v ++ " -}"
+                in trace msg v
 
 select :: [Integer] -> Maybe (Integer, [Integer])
 select [] = Nothing
