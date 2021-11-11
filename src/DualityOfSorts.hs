@@ -79,6 +79,8 @@ fromSList :: Fix SList -> [Integer]
 fromSList (In SNil) = []
 fromSList (In (SCons x xs)) = x:fromSList xs
 
+sample :: Fix List
+sample = cons 3 (cons 1 (cons 4 (cons 2 nil)))
 
 naiveInsertSort :: Fix List -> Fix SList
 naiveInsertSort = fold (unfold (naiveInsert $?))
