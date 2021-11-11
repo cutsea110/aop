@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances #-}
 module DualityOfSorts where
 -- ref.) Duality of Sorts by Rafl Hinze
 
@@ -38,6 +39,10 @@ select xs = Just (x, xs')
 
 data List list = Nil | Cons Integer list deriving Show
 newtype Fix f = In { out :: f (Fix f) }
+instance Show (Fix List) where
+  show x = show (fromList x)
+instance Show (Fix SList) where
+  show x = show (fromSList x)
 
 instance Functor List where
   fmap f Nil = Nil
@@ -76,7 +81,7 @@ fromSList (In (SCons x xs)) = x:fromSList xs
 
 
 naiveInsertSort :: Fix List -> Fix SList
-naiveInsertSort = fold (unfold naiveInsert)
+naiveInsertSort = fold (unfold (naiveInsert $?))
 naiveInsert :: List (Fix SList) -> SList (List (Fix SList))
 naiveInsert Nil                = SNil
 naiveInsert (Cons a (In SNil)) = SCons a Nil
