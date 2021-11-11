@@ -7,10 +7,13 @@ import Data.List (delete, unfoldr)
 --------------------------------------------------------------------------------------
 debug = True
 
+tracer :: String -> a -> a
+tracer = if debug then trace else const id
+
 ($?) :: (Show a, Show b) => (a -> b) -> a -> b
 f $? x = let v = f x
              msg = " {- " ++ show x ++ " => " ++ show v ++ " -}"
-         in if debug then trace msg v else v
+         in tracer msg v
 --------------------------------------------------------------------------------------
 
 insertSort :: [Integer] -> [Integer]
