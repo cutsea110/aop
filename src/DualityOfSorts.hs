@@ -90,3 +90,12 @@ naiveInsert (Cons a (In SNil)) = SCons a Nil
 naiveInsert (Cons a (In (SCons b x)))
   | a <= b    = SCons a (Cons b x)
   | otherwise = SCons b (Cons a x)
+
+bubbleSort :: Fix List -> Fix SList
+bubbleSort = unfold (fold (bubble $?))
+bubble :: List (SList (Fix List)) -> SList (Fix List)
+bubble Nil = SNil
+bubble (Cons a SNil) = SCons a (In Nil)
+bubble (Cons a (SCons b x))
+  | a <= b    = SCons a (In (Cons b x))
+  | otherwise = SCons b (In (Cons a x))
