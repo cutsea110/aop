@@ -99,3 +99,17 @@ bubble (Cons a SNil) = SCons a (In Nil)
 bubble (Cons a (SCons b x))
   | a <= b    = SCons a (In (Cons b x))
   | otherwise = SCons b (In (Cons a x))
+
+
+
+swap :: List (SList x) -> SList (List x)
+swap Nil = SNil
+swap (Cons a SNil) = SCons a Nil
+swap (Cons a (SCons b x))
+  | a <= b    = SCons a (Cons b x)
+  | otherwise = SCons b (Cons a x)
+
+naiveInsertSort' :: Fix List -> Fix SList
+naiveInsertSort' = fold (unfold ((swap . fmap out) $?))
+bubbleSort' :: Fix List -> Fix SList
+bubbleSort' = unfold (fold ((fmap In . swap) $?))
