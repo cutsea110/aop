@@ -128,5 +128,7 @@ join f g (Right b) = g b
 
 para :: Functor f => (f (Fix f :*: a) -> a) -> Fix f -> a
 para f = f . fmap (split id (para f)) . out
+para' :: Functor f => (f (Fix f :*: a) -> a) -> Fix f -> a
+para' f = snd . fold (split (In . fmap fst) f)
 apo :: Functor f => (a -> f (Fix f :+: a)) -> a -> Fix f
 apo f = In . fmap (join id (apo f)) . f
