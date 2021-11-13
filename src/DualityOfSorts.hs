@@ -132,3 +132,9 @@ para' :: Functor f => (f (Fix f :*: a) -> a) -> Fix f -> a
 para' f = snd . fold (split (In . fmap fst) f)
 apo :: Functor f => (a -> f (Fix f :+: a)) -> a -> Fix f
 apo f = In . fmap (join id (apo f)) . f
+
+suffixes :: Fix List -> [Fix List]
+suffixes = para suf
+suf :: List (Fix List :*: [Fix List]) -> [Fix List]
+suf Nil               = []
+suf (Cons _n (l, ls)) = l:ls
