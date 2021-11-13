@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE FlexibleInstances, TypeOperators #-}
 module DualityOfSorts where
 -- ref.) Duality of Sorts by Rafl Hinze
 
@@ -113,3 +113,20 @@ naiveInsertSort' :: Fix List -> Fix SList
 naiveInsertSort' = fold (unfold ((swap . fmap out) $?))
 bubbleSort' :: Fix List -> Fix SList
 bubbleSort' = unfold (fold ((fmap In . swap) $?))
+
+--------------------------------------------------------------------------------------
+-- Section 4
+
+type a :*: b = (a, b)
+type a :+: b = Either a b
+
+split :: (x -> a) -> (x -> b) -> x -> a :*: b
+split f g x = (f x, g x)
+join :: (a -> x) -> (b -> x) -> (a :+: b -> x)
+join f g (Left  a) = f a
+join f g (Right b) = g b
+
+para :: Functor f => (f (Fix f :*: a) -> a) -> Fix f -> a
+para f = f . fmap (split id (para f)) . out
+apo :: Functor f => (a -> f (Fix f :+: a)) -> a -> Fix f
+apo f = In . fmap (join id (apo f)) . f
