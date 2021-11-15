@@ -138,3 +138,18 @@ suffixes = para (suf $?)
 suf :: List (Fix List :*: [Fix List]) -> [Fix List]
 suf Nil               = []
 suf (Cons _n (l, ls)) = l:ls
+
+--------------------------------------------------------------------------------------
+-- Section 5
+
+type f $+$ a = a :+: f a
+type f $*$ a = a :*: f a
+
+insertSort' :: Fix List -> Fix SList
+insertSort' = fold (apo (insert' $?))
+insert' :: List (Fix SList) -> SList (List $+$ Fix SList)
+insert' Nil = SNil
+insert' (Cons a (In SNil)) = SCons a (Left (In SNil))
+insert' (Cons a (In (SCons b x')))
+  | a <= b    = SCons a (Left (In (SCons b x')))
+  | otherwise = SCons b (Right (Cons a x'))
