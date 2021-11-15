@@ -145,11 +145,23 @@ suf (Cons _n (l, ls)) = l:ls
 type f $+$ a = a :+: f a
 type f $*$ a = a :*: f a
 
-insertSort' :: Fix List -> Fix SList
-insertSort' = fold (apo (insert' $?))
-insert' :: List (Fix SList) -> SList (List $+$ Fix SList)
-insert' Nil = SNil
-insert' (Cons a (In SNil)) = SCons a (Stop (In SNil))
-insert' (Cons a (In (SCons b x')))
+insertSort'' :: Fix List -> Fix SList
+insertSort'' = fold (apo (insert'' $?))
+insert'' :: List (Fix SList) -> SList (List $+$ Fix SList)
+insert'' Nil = SNil
+insert'' (Cons a (In SNil)) = SCons a (Stop (In SNil))
+insert'' (Cons a (In (SCons b x')))
   | a <= b    = SCons a (Stop (In (SCons b x')))
   | otherwise = SCons b (Go (Cons a x'))
+
+swop :: List (SList $*$ x) -> SList (List $+$ x)
+swop Nil = SNil
+swop (Cons a (x, SNil)) = SCons a (Stop x)
+swop (Cons a (x, SCons b x'))
+  | a <= b    = SCons a (Stop x)
+  | otherwise = SCons b (Go (Cons a x'))
+
+insertSort' :: Fix List -> Fix SList
+insertSort' = fold (apo ((swop . fmap (split id out)) $?))
+selectSort' :: Fix List -> Fix SList
+selectSort' = unfold (para ((fmap (join id In) . swop) $?))
