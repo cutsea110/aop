@@ -118,13 +118,13 @@ bubbleSort' = unfold (fold ((fmap In . swap) $?))
 -- Section 4
 
 type a :*: b = (a, b)
-type a :+: b = Either a b
+data a :+: b = Stop a | Go b deriving Show
 
 split :: (x -> a) -> (x -> b) -> x -> a :*: b
 split f g x = (f x, g x)
 join :: (a -> x) -> (b -> x) -> (a :+: b -> x)
-join f g (Left  a) = f a
-join f g (Right b) = g b
+join f g (Stop  a) = f a
+join f g (Go b) = g b
 
 para :: Functor f => (f (Fix f :*: a) -> a) -> Fix f -> a
 para f = f . fmap (split id (para f)) . out
@@ -149,7 +149,7 @@ insertSort' :: Fix List -> Fix SList
 insertSort' = fold (apo (insert' $?))
 insert' :: List (Fix SList) -> SList (List $+$ Fix SList)
 insert' Nil = SNil
-insert' (Cons a (In SNil)) = SCons a (Left (In SNil))
+insert' (Cons a (In SNil)) = SCons a (Stop (In SNil))
 insert' (Cons a (In (SCons b x')))
-  | a <= b    = SCons a (Left (In (SCons b x')))
-  | otherwise = SCons b (Right (Cons a x'))
+  | a <= b    = SCons a (Stop (In (SCons b x')))
+  | otherwise = SCons b (Go (Cons a x'))
