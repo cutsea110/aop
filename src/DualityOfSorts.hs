@@ -120,16 +120,17 @@ bubbleSort' = unfold (fold ((fmap In . swap) $?))
 type a :*: b = (a, b)
 data a :+: b = Stop a | Go b deriving Show
 
-split :: (x -> a) -> (x -> b) -> x -> a :*: b
-split f g x = (f x, g x)
+-- | split in paper, but we use the name split for the other function
+pair :: (x -> a) -> (x -> b) -> x -> a :*: b
+pair f g x = (f x, g x)
 join :: (a -> x) -> (b -> x) -> (a :+: b -> x)
 join f g (Stop  a) = f a
 join f g (Go b) = g b
 
 para :: Functor f => (f (Fix f :*: a) -> a) -> Fix f -> a
-para f = f . fmap (split id (para f)) . out
+para f = f . fmap (pair id (para f)) . out
 para' :: Functor f => (f (Fix f :*: a) -> a) -> Fix f -> a
-para' f = snd . fold (split (In . fmap fst) f)
+para' f = snd . fold (pair (In . fmap fst) f)
 apo :: Functor f => (a -> f (Fix f :+: a)) -> a -> Fix f
 apo f = In . fmap (join id (apo f)) . f
 
@@ -162,6 +163,25 @@ swop (Cons a (x, SCons b x'))
   | otherwise = SCons b (Go (Cons a x'))
 
 insertSort' :: Fix List -> Fix SList
-insertSort' = fold (apo ((swop . fmap (split id out)) $?))
+insertSort' = fold (apo ((swop . fmap (pair id out)) $?))
 selectSort' :: Fix List -> Fix SList
 selectSort' = unfold (para ((fmap (join id In) . swop) $?))
+
+--------------------------------------------------------------------------------------
+-- Section 6
+
+mergeSort :: [Integer] -> [Integer]
+mergeSort as = merge (mergeSort bs) (mergeSort cs)
+  where (bs, cs) = split as
+split :: [Integer] -> ([Integer], [Integer])
+split []       = ([], [])
+split [a]      = ([a], [])
+split (a:b:cs) = (a:as, b:bs)
+  where (as, bs) = split cs
+
+merge :: [Integer] -> [Integer] -> [Integer]
+merge as     [] = as
+merge []     bs = bs
+merge (a:as) (b:bs)
+  | a <= b    = a:merge as (b:bs)
+  | otherwise = b:merge (a:as) bs
