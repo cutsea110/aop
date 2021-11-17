@@ -194,6 +194,11 @@ instance Functor Tree where
   fmap f (Leaf a) = Leaf a
   fmap f (Fork l r) = Fork (f l) (f r)
 
+instance Show (Fix Tree) where
+  show (In Tip) = "Tip"
+  show (In (Leaf x)) = "(Leaf " ++ show x ++ ")"
+  show (In (Fork l r)) = "(Fork " ++ show l ++ " " ++ show r ++ ")"
+
 --------------------------------------------------------------------------------------
 -- Section 6.1
 
@@ -245,9 +250,9 @@ merge' (Fork (l, SCons a l') (r, SCons b r'))
   | otherwise = SCons b (Go (Fork l r'))
 
 mergeTree :: Fix Tree -> Fix SList
-mergeTree = fold (apo (merge' . fmap (pair id out)))
+mergeTree = fold (apo ((merge' . fmap (pair id out)) $?))
 mergeTree' :: Fix Tree -> Fix SList
-mergeTree' = unfold (para (fmap (join id In) . merge'))
+mergeTree' = unfold (para ((fmap (join id In) . merge') $?))
 
 --------------------------------------------------------------------------------------
 -- Section 6.3
