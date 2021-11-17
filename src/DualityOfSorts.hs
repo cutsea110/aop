@@ -171,6 +171,8 @@ selectSort' = unfold (para ((fmap (join id In) . swop) $?))
 -- Section 6
 
 mergeSort :: [Integer] -> [Integer]
+mergeSort []  = []
+mergeSort [a] = [a]
 mergeSort as = merge (mergeSort bs) (mergeSort cs)
   where (bs, cs) = split as
 split :: [Integer] -> ([Integer], [Integer])
