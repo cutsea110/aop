@@ -208,6 +208,11 @@ instance Functor List' where
   fmap f (Single' a) = Single' a
   fmap f (Cons' a as) = Cons' a (f as)
 
+instance Show (Fix List') where
+  show (In Nil') = "Nil'"
+  show (In (Single' a)) = "(Single' " ++ show a ++ ")"
+  show (In (Cons' a as)) = "Cons' " ++ show a ++ show as ++ ")"
+
 nil' :: Fix List'
 nil' = In Nil'
 single' :: Integer -> Fix List'
@@ -232,9 +237,9 @@ grow (Cons' a (t, Leaf b)) = Fork (Go (Single' a)) (Stop t)
 grow (Cons' a (t, Fork l r)) = Fork (Go (Cons' a r)) (Stop l)
 
 makeTree :: Fix List' -> Fix Tree
-makeTree = fold (apo (grow . fmap (pair id out)))
+makeTree = fold (apo ((grow . fmap (pair id out)) $?))
 makeTree' :: Fix List' -> Fix Tree
-makeTree' = unfold (para (fmap (join id In) . grow))
+makeTree' = unfold (para ((fmap (join id In) . grow) $?))
 
 --------------------------------------------------------------------------------------
 -- Section 6.2
