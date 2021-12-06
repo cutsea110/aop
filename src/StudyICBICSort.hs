@@ -4,6 +4,8 @@ module StudyICBICSort where
 import Debug.Trace (trace)
 
 --------------------------------------------------------------------------------------
+-- Fix point and morphisms
+--------------------------------------------------------------------------------------
 newtype Fix f = In { out :: f (Fix f) }
 cata :: Functor f => (f a -> a) -> Fix f -> a
 cata phi = phi . fmap (cata phi) . out
@@ -14,10 +16,14 @@ hylo phi psi = {- cata phi . ana psi -} phi . fmap (hylo phi psi) . psi
 meta :: Functor f => (f a -> a) -> (a -> b) -> (b -> f b) -> Fix f -> Fix f
 meta phi e psi = ana psi . e . cata phi -- In . fmap (meta phi e psi) . out
 --------------------------------------------------------------------------------------
+-- Utility
+--------------------------------------------------------------------------------------
 debug = True
 
 ($?) :: Show a => (a -> b) -> a -> b
 f $? x = if debug then trace (show x) (f x) else f x
+--------------------------------------------------------------------------------------
+-- Sort
 --------------------------------------------------------------------------------------
 
 type SList a = Fix (SListF a)
