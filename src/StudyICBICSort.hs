@@ -31,31 +31,6 @@ data SListF a r = SNilF | SConsF a r deriving (Show, Functor)
 type List a = Fix (ListF a)
 data ListF a r = NilF | ConsF a r deriving (Show, Functor)
 
-type Mid a = Fix (MidF a)
-data MidF a r = StopF a | PlayF (a, r) deriving (Show, Functor)
-
-join :: (a -> c) -> (a -> b -> c) -> MidF a b -> c
-join f g = u
-  where u (StopF m)      = f m
-        u (PlayF (m, n)) = g m n
-
-phi :: Ord a => MidF (Fix (SListF a)) (Fix (SListF a)) -> Fix (SListF a)
-phi = undefined
-
-psi :: Ord a => Fix (ListF a) -> MidF (Fix (SListF a)) (Fix (ListF a))
-psi = undefined
-
-sort :: Ord a => Fix (ListF a) -> Fix (SListF a)
-sort = hylo phi psi
-
--- cata phi (ana psi xs) :: Fix List -> Fix SList
--- ana  :: (Fix List -> f (Fix List)) -> Fix List -> Fix f
--- cata :: (f (Fix SList) -> Fix SList) -> Fix f -> Fix SList
---
--- cata phi . ana psi :: (Fix List -> f (Fix List)) -> (f (Fix SList) -> Fix SList) -> Fix List -> Fix SList
---   :: (Fix List -> MidF (Fix SList) (Fix List)) -> (MidF (Fix SList) (Fix List) -> Fix SList) -> Fix List -> Fix SList
-
-{--
 type Sum a = Fix (SumF a)
 data SumF a r = StopF a | PlayF r deriving (Show, Functor)
 
@@ -104,4 +79,3 @@ psi' :: Ord a => (([a], [a]), ([a], [a])) -> ([a], [a])
 psi' = undefined
 
 sort'' xs = hylo psi' phi'
---}
