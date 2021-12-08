@@ -39,11 +39,14 @@ join f g = u
   where u (StopF m)      = f m
         u (PlayF (m, n)) = g m n
 
-phi :: Ord a => Fix (ListF a) -> MidF (Fix (SListF a)) (Fix (ListF a))
+phi :: Ord a => MidF (Fix (SListF a)) (Fix (SListF a)) -> Fix (SListF a)
 phi = undefined
 
-psi :: Ord a => MidF (Fix (SListF a)) (Fix (SListF a)) -> Fix (SListF a)
+psi :: Ord a => Fix (ListF a) -> MidF (Fix (SListF a)) (Fix (ListF a))
 psi = undefined
+
+sort :: Ord a => Fix (ListF a) -> Fix (SListF a)
+sort = hylo phi psi
 
 -- cata phi (ana psi xs) :: Fix List -> Fix SList
 -- ana  :: (Fix List -> f (Fix List)) -> Fix List -> Fix f
