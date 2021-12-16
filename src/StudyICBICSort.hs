@@ -60,24 +60,8 @@ swap (x, xs) = case break (x<) xs of
 sort :: (Show a, Ord a) => [a] -> ([a], [a])
 sort xs = hylo phi (psi $?) ([], xs)
 
-sort' :: (Show a, Ord a) => [a] -> Sum ([a], [a])
-sort' xs = meta phi id (psi $?) (In (StopF ([], xs)))
-
 instance Show a => Show (Sum a) where
   show (In x) = show x
 
 sample :: [Integer]
 sample = [1,3,2,5,4,7,6,0]
-
----------------------------
-
-split :: (c -> a) -> (c -> b) -> c -> (a, b)
-split f g x = (f x, g x)
-
-phi' :: a -> (a, a)
-phi' = split id id
-
-psi' :: Ord a => (([a], [a]), ([a], [a])) -> ([a], [a])
-psi' = undefined
-
-sort'' xs = hylo psi' phi'
