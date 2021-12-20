@@ -26,15 +26,8 @@ f $? x = if debug then trace (show x) (f x) else f x
 -- Sort
 --------------------------------------------------------------------------------------
 
-type SList a = Fix (SListF a)
-data SListF a r = SNilF | SConsF a r deriving (Show, Functor)
-type List a = Fix (ListF a)
-data ListF a r = NilF | ConsF a r deriving (Show, Functor)
-
 type Sum a = Fix (SumF a)
 data SumF a r = StopF a | PlayF r deriving (Show, Functor)
-
-type Mid a = (SList a, a, List a)
 
 join :: (a -> c) -> (b -> c) -> SumF a b -> c
 join f g = u
