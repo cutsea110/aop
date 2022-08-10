@@ -81,6 +81,7 @@ library
                      , SNMonad
                      , Sort
                      , SortOverMorphism
+                     , Square
                      , StudyICBICSort
                      , Subfactorial
                      , Take
