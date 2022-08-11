@@ -6,7 +6,9 @@ import Control.Monad.Fix
 import Data.Fix hiding (cata)
 
 data Square f a b = Square { higher :: f a -> f b
-                           , lower  :: a -> b
+                           --           |      |
+                           --           v      v
+                           , lower  ::  a  ->  b
                            }
 
 square :: forall f a b. Functor f => (a -> b) -> Square f a b
