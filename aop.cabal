@@ -60,6 +60,7 @@ library
                      , Leafy
                      , Lens
                      , List
+                     , MapAccumR
                      , Median
                      , Milewski
                      , Monadic
