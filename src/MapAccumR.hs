@@ -12,8 +12,8 @@ import Control.Arrow ((***), (&&&), first, second)
 --           X  <----------------- 1 + A x X
 --                   [c, f]
 --
-cata :: ((a, b) -> b) -> b -> [a] -> b
-cata f c = u
+cata :: (b, (a, b) -> b) -> [a] -> b
+cata (c, f) = u
   where u [] = c
         u (x:xs) = f (x, u xs)
 
@@ -29,15 +29,15 @@ cata f c = u
 --                                                                           *   x    u xs
 --
 --
-mapAccumR :: ((x, a) -> (x, b)) -> x -> [a] -> (x, [b])
-mapAccumR f s = cata (second (uncurry (:)) . assocr . first (f . swap) . assocl) (s,[])
+mapAccumR :: (x, (x, a) -> (x, b)) -> [a] -> (x, [b])
+mapAccumR (s, f) = cata ((s,[]), second cons . assocr . first (f . swap) . assocl)
 {--
 mapAccumR f s = u
   where u [] = (s, [])
         u (x:xs) = (second (uncurry (:)) . assocr . first (f . swap) . assocl) (x, u xs)
 --}
-
-
+cons :: (a, [a]) -> [a]
+cons (x, xs) = x:xs
 assocl ::  (a, (b, c)) -> ((a, b), c)
 assocl (a, (x, y)) = ((a, x), y)
 assocr :: ((a, b), c) -> (a, (b, c))
