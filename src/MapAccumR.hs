@@ -69,6 +69,7 @@ swap (x, y) = (y, x)
 
 -- | select?
 -- TODO: we can rewrite by using hylo because mapAccumR is cata and rev is ana
+-- https://twitter.com/nobsun/status/1575109145459535872
 select :: Ord a => (a, [a]) -> (a, [a])
 select (x, xs) = mapAccumR (x, f) (rev xs)
   where
