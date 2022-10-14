@@ -40,6 +40,7 @@ library
                      , DualityOfSorts
                      , ENat
                      , ExtEuclid
+                     , Fact
                      , Fib
                      , Fiblike
                      , FibAsHisto
