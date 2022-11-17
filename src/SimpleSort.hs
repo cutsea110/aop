@@ -1,95 +1,67 @@
 module SimpleSort where
 
 import Debug.Trace (trace)
-import Data.List (unfoldr)
 
-($?) :: Show a => (a -> a) -> a -> a
-f $? x = let v = f x in trace ("{-" ++ show x ++ " => " ++ show v ++ " -}") v
+f $? x = let v = f x in trace ("{- " ++ show x ++ " => " ++ show v ++ " -}") v
 
--- bubble sort
--- [] [3 7 1 9 6 2 5 8 4]
--- [] [3 7 1 9 6 2 5 4 8]
--- [] [3 7 1 9 6 2 4 5 8]
--- [] [3 7 1 9 6 2 4 5 8]
--- [] [3 7 1 9 2 6 4 5 8]
--- [] [3 7 1 2 9 6 4 5 8]
--- [] [3 7 1 2 9 6 4 5 8]
--- [] [3 1 7 2 9 6 4 5 8]
--- [] [1 3 7 2 9 6 4 5 8]
--- [1] [3 7 2 9 6 4 5 8]
--- :
--- [1 2] [3 7 4 9 6 5 8]
--- :
--- [1 2 3] [4 7 5 9 6 8]
+test :: [Int]
+test = [3, 7, 1, 9, 6, 2, 5, 8, 4]
 
--- 3:7:1:9:6:2:5:8:4:[]
--- 3:7:1:9:6:2:5:8:4:[]
--- 3:7:1:9:6:2:5:8:4:[]
--- 3:7:1:9:6:2:5:4:8:[]
-
--- :+: <= swapCons
--- 3 :+: 7 :+: 1 :+: 9 :+: 6 :+: 2 :+: 5 :+: 8 :+: 4 :+: []
-
---          [nil, cons]
---    [a] <------------ 1 + a * [a]
+--
+--           [nil, cons]
+--    [a] <------------- 1 + a * [a]
 --     |                   |
 --  u  |                   |  id + id_a * u
 --     v                   v
---     x  <------------ 1 + a * x
+--     X  <------------- 1 + a *  X
 --           [c, f]
+--
 
-test :: [Integer]
-test = [3, 7, 1, 9, 6, 2, 5, 8, 4]
+cata :: (b, (a, b) -> b) -> [a] -> b
+cata (c, f) = u
+  where u []     = c
+        u (x:xs) = f (x, u xs)
 
-bubble :: [Integer] -> [Integer]
-bubble = foldr swapCons []
-  where swapCons x [] = [x]
-        swapCons x (y:ys) | x <= y    = x:y:ys
-                          | otherwise = y:x:ys
+--
+--             out
+--    [a] -------------> 1 + a * [a]
+--     ^                   ^
+--  v  |                   |  id + id_a * v
+--     |                   |
+--     X  -------------> 1 + a *  X
+--            psi
+--
+ana :: (b -> Maybe (a, b)) -> b -> [a]
+ana psi = v
+  where v x = case psi x of
+          Nothing     -> []
+          Just (a, b) -> a:v b
 
-bubbleSort :: [Integer] -> [Integer]
-bubbleSort = unfoldr (out . (bubble $?))
-{-
-bubbleSort = unfoldr psi
-  where psi xs = case bubble xs of
-          [] -> Nothing
-          (x:xs) -> Just (x, xs)
--}
-out :: [Integer] -> Maybe (Integer, [Integer])
+bubble :: [Int] -> [Int]
+bubble = cata ([], swapCons)
+  where swapCons (x, [])     = [x]
+        swapCons (x, (y:ys)) | x <= y    = x:y:ys
+                             | otherwise = y:x:ys
+
+bubbleSort :: [Int] -> [Int]
+bubbleSort = ana psi
+  where psi = out . (bubble $?)
+
+out :: [a] -> Maybe (a, [a])
 out []     = Nothing
 out (x:xs) = Just (x, xs)
 
---------------------------------
+-----
 
--- naive insertion sort
--- [3 7 1 9 6 2 5 8 4] []
--- [3 7 1 9 6 2 5 8] [4]
--- [3 7 1 9 6 2 5] [8 4]
--- [3 7 1 9 6 2 5] [4 8]
--- [3 7 1 9 6 2] [5 4 8]
--- [3 7 1 9 6 2] [4 5 8]
--- [3 7 1 9 6 2] [4 5 8]
+insert :: [Int] -> [Int]
+insert = ana psi
+  where psi [] = Nothing
+        psi (x:[]) = Just (x, [])
+        psi (x:y:ys) | x <= y    = Just (x, y:ys)
+                     | otherwise = Just (y, x:ys)
 
--- [5 3 2 4 8]
--- [3 5 2 4 8]
--- [3 2 5 4 8]
--- [3 2 4 5 8]
--- [3 2 4 5 8]
+insertSort :: [Int] -> [Int]
+insertSort = cata ([], (insert $?) . in')
 
--- 5:3:2:4:8:[]
--- 3:5:2:4:8:[]
--- 3:2:5:4:8:[]
--- 3:2:4:5:8:[]
--- 3:2:4:5:8:[]
-
-insert :: [Integer] -> [Integer]
-insert = unfoldr swapUncons
-  where swapUncons []    = Nothing
-        swapUncons (x:[]) = Just (x, [])
-        swapUncons (x:y:ys)
-          | x <= y       = Just (x, y:ys)
-          | otherwise    = Just (y, x:ys)
-
-insertSort :: [Integer] -> [Integer]
-insertSort = foldr f []
-  where f x xs = insert $? (x:xs)
+in' :: (a, [a]) -> [a]
+in' (x, xs) = x:xs
