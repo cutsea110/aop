@@ -1,3 +1,4 @@
+{-# LANGUAGE LambdaCase #-}
 module SimpleSort where
 
 import Debug.Trace (trace)
@@ -56,8 +57,8 @@ swapUncons (x:[]) = Just (x, [])
 swapUncons (x:y:ys) | x <= y    = Just (x, y:ys)
                     | otherwise = Just (y, x:ys)
 
-insertSort :: [Int] -> [Int]
-insertSort = cata ([], (ana swapUncons $?) . in')
+naiveInsertSort :: [Int] -> [Int]
+naiveInsertSort = cata ([], (ana swapUncons $?) . in')
 
 in' :: (a, [a]) -> [a]
 in' (x, xs) = x:xs
@@ -102,3 +103,20 @@ tails' :: [Int] -> [[Int]]
 tails' = apo psi
   where psi []       = Just ([], Left [])
         psi s@(_:xs) = Just (s, Right xs)
+
+swop :: [Int] -> Maybe (Int, Either [Int] [Int])
+swop [] = Nothing
+swop (x:[]) = Just (x, Left [])
+swop (x:y:ys) | x <= y    = Just (x, Left (y:ys))
+              | otherwise = Just (y, Right (x:ys))
+
+insertSort :: [Int] -> [Int]
+insertSort = cata ([], (apo swop $?) . in')
+
+select :: (Int, ([Int], [Int])) -> [Int]
+select (x, (xs,  [])) = x:xs
+select (x, (xs, y:ys)) | x <= y    = x:xs
+                       | otherwise = y:x:ys
+
+selectSort :: [Int] -> [Int]
+selectSort = ana (out . (para ([], select) $?))
