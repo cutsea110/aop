@@ -80,6 +80,7 @@ library
                      , Rose
                      , ShortestPathSearch
                      , SimPath
+                     , SimpleSort
                      , SNMonad
                      , Sort
                      , SortOverMorphism
