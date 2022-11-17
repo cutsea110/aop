@@ -43,7 +43,7 @@ swapCons (x, (y:ys)) | x <= y    = x:y:ys
                      | otherwise = y:x:ys
 
 bubbleSort :: [Int] -> [Int]
-bubbleSort = ana (out . cata ([], swapCons))
+bubbleSort = ana (out . (cata ([], swapCons) $?))
 
 out :: [a] -> Maybe (a, [a])
 out []     = Nothing
@@ -57,7 +57,7 @@ swapUncons (x:y:ys) | x <= y    = Just (x, y:ys)
                     | otherwise = Just (y, x:ys)
 
 insertSort :: [Int] -> [Int]
-insertSort = cata ([], ana swapUncons . in')
+insertSort = cata ([], (ana swapUncons $?) . in')
 
 in' :: (a, [a]) -> [a]
 in' (x, xs) = x:xs
