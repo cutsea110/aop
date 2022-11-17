@@ -58,3 +58,38 @@ bubbleSort = unfoldr psi
 out :: [Integer] -> Maybe (Integer, [Integer])
 out []     = Nothing
 out (x:xs) = Just (x, xs)
+
+--------------------------------
+
+-- naive insertion sort
+-- [3 7 1 9 6 2 5 8 4] []
+-- [3 7 1 9 6 2 5 8] [4]
+-- [3 7 1 9 6 2 5] [8 4]
+-- [3 7 1 9 6 2 5] [4 8]
+-- [3 7 1 9 6 2] [5 4 8]
+-- [3 7 1 9 6 2] [4 5 8]
+-- [3 7 1 9 6 2] [4 5 8]
+
+-- [5 3 2 4 8]
+-- [3 5 2 4 8]
+-- [3 2 5 4 8]
+-- [3 2 4 5 8]
+-- [3 2 4 5 8]
+
+-- 5:3:2:4:8:[]
+-- 3:5:2:4:8:[]
+-- 3:2:5:4:8:[]
+-- 3:2:4:5:8:[]
+-- 3:2:4:5:8:[]
+
+insert :: [Integer] -> [Integer]
+insert = unfoldr swapUncons
+  where swapUncons []    = Nothing
+        swapUncons (x:[]) = Just (x, [])
+        swapUncons (x:y:ys)
+          | x <= y       = Just (x, y:ys)
+          | otherwise    = Just (y, x:ys)
+
+insertSort :: [Integer] -> [Integer]
+insertSort = foldr f []
+  where f x xs = insert $? (x:xs)
