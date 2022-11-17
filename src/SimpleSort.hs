@@ -61,3 +61,44 @@ insertSort = cata ([], (ana swapUncons $?) . in')
 
 in' :: (a, [a]) -> [a]
 in' (x, xs) = x:xs
+
+-------------------------------
+
+--
+--           [nil, cons]
+--    [a] <------------- 1 + a * [a]
+--     |                   |
+--  u  |                   |  id + id_a * (id * u)
+--     v                   v
+--     X  <------------- 1 + a * ([a] * X)
+--           [d, g]
+--
+para :: (b, (a, ([a], b)) -> b) -> [a] -> b
+para (d, g) = u
+  where u [] = d
+        u (x:xs) = g (x, (xs, u xs))
+
+dropWhile' :: (Int -> Bool) -> [Int] -> [Int]
+dropWhile' p = para ([], phi)
+  where phi (x, (xs, b)) = if p x then b else x:xs
+
+--
+--           out
+--    [a] -------------> 1 + a * [a]
+--     ^                   ^
+--  v  |                   |  id + id_a * (id + v)
+--     |                   |
+--     X  -------------> 1 + a * ([a] + X)
+--           psi
+--
+apo :: (b -> Maybe (a, (Either [a] b))) -> b -> [a]
+apo psi = v
+  where v xs = case psi xs of
+          Nothing -> []
+          Just (a, Left as) -> a:as
+          Just (a, Right b) -> a:v b
+
+tails' :: [Int] -> [[Int]]
+tails' = apo psi
+  where psi []       = Just ([], Left [])
+        psi s@(_:xs) = Just (s, Right xs)
