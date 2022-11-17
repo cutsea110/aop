@@ -17,28 +17,35 @@ f $? x = let v = f x in trace ("{-" ++ show x ++ " => " ++ show v ++ " -}") v
 -- [] [3 1 7 2 9 6 4 5 8]
 -- [] [1 3 7 2 9 6 4 5 8]
 -- [1] [3 7 2 9 6 4 5 8]
+-- :
+-- [1 2] [3 7 4 9 6 5 8]
+-- :
+-- [1 2 3] [4 7 5 9 6 8]
 
 -- 3:7:1:9:6:2:5:8:4:[]
 -- 3:7:1:9:6:2:5:8:4:[]
 -- 3:7:1:9:6:2:5:8:4:[]
 -- 3:7:1:9:6:2:5:4:8:[]
 
+-- :+: <= swapCons
+-- 3 :+: 7 :+: 1 :+: 9 :+: 6 :+: 2 :+: 5 :+: 8 :+: 4 :+: []
+
 --          [nil, cons]
 --    [a] <------------ 1 + a * [a]
 --     |                   |
 --  u  |                   |  id + id_a * u
 --     v                   v
---     x  <------------ 1 + a *  x
+--     x  <------------ 1 + a * x
 --           [c, f]
 
 test :: [Integer]
 test = [3, 7, 1, 9, 6, 2, 5, 8, 4]
 
 bubble :: [Integer] -> [Integer]
-bubble = foldr f []
-  where f x [] = [x]
-        f x (y:ys) | x <= y    = x:y:ys
-                   | otherwise = y:x:ys
+bubble = foldr swapCons []
+  where swapCons x [] = [x]
+        swapCons x (y:ys) | x <= y    = x:y:ys
+                          | otherwise = y:x:ys
 
 bubbleSort :: [Integer] -> [Integer]
 bubbleSort = unfoldr (out . (bubble $?))
