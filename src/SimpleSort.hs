@@ -44,8 +44,7 @@ bubble = cata ([], swapCons)
                              | otherwise = y:x:ys
 
 bubbleSort :: [Int] -> [Int]
-bubbleSort = ana psi
-  where psi = out . (bubble $?)
+bubbleSort = ana (out . (bubble $?))
 
 out :: [a] -> Maybe (a, [a])
 out []     = Nothing
@@ -54,11 +53,11 @@ out (x:xs) = Just (x, xs)
 -----
 
 insert :: [Int] -> [Int]
-insert = ana psi
-  where psi [] = Nothing
-        psi (x:[]) = Just (x, [])
-        psi (x:y:ys) | x <= y    = Just (x, y:ys)
-                     | otherwise = Just (y, x:ys)
+insert = ana swapUncons
+  where swapUncons [] = Nothing
+        swapUncons (x:[]) = Just (x, [])
+        swapUncons (x:y:ys) | x <= y    = Just (x, y:ys)
+                            | otherwise = Just (y, x:ys)
 
 insertSort :: [Int] -> [Int]
 insertSort = cata ([], (insert $?) . in')
