@@ -41,7 +41,13 @@ bubble = foldr f []
                    | otherwise = y:x:ys
 
 bubbleSort :: [Integer] -> [Integer]
+bubbleSort = unfoldr (out . (bubble $?))
+{-
 bubbleSort = unfoldr psi
-  where psi xs = case bubble $? xs of
+  where psi xs = case bubble xs of
           [] -> Nothing
           (x:xs) -> Just (x, xs)
+-}
+out :: [Integer] -> Maybe (Integer, [Integer])
+out []     = Nothing
+out (x:xs) = Just (x, xs)
