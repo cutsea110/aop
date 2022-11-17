@@ -37,30 +37,27 @@ ana psi = v
           Nothing     -> []
           Just (a, b) -> a:v b
 
-bubble :: [Int] -> [Int]
-bubble = cata ([], swapCons)
-  where swapCons (x, [])     = [x]
-        swapCons (x, (y:ys)) | x <= y    = x:y:ys
-                             | otherwise = y:x:ys
+swapCons :: Ord a => (a, [a]) -> [a]
+swapCons (x, [])     = [x]
+swapCons (x, (y:ys)) | x <= y    = x:y:ys
+                     | otherwise = y:x:ys
 
 bubbleSort :: [Int] -> [Int]
-bubbleSort = ana (out . (bubble $?))
+bubbleSort = ana (out . cata ([], swapCons))
 
 out :: [a] -> Maybe (a, [a])
 out []     = Nothing
 out (x:xs) = Just (x, xs)
 
 -----
-
-insert :: [Int] -> [Int]
-insert = ana swapUncons
-  where swapUncons [] = Nothing
-        swapUncons (x:[]) = Just (x, [])
-        swapUncons (x:y:ys) | x <= y    = Just (x, y:ys)
-                            | otherwise = Just (y, x:ys)
+swapUncons :: Ord a => [a] -> Maybe (a, [a])
+swapUncons [] = Nothing
+swapUncons (x:[]) = Just (x, [])
+swapUncons (x:y:ys) | x <= y    = Just (x, y:ys)
+                    | otherwise = Just (y, x:ys)
 
 insertSort :: [Int] -> [Int]
-insertSort = cata ([], (insert $?) . in')
+insertSort = cata ([], ana swapUncons . in')
 
 in' :: (a, [a]) -> [a]
 in' (x, xs) = x:xs
