@@ -1,4 +1,3 @@
-{-# LANGUAGE LambdaCase #-}
 module SimpleSort where
 
 import Debug.Trace (trace)
