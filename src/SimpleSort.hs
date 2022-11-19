@@ -1,4 +1,3 @@
-{-# LANGUAGE LambdaCase #-}
 module SimpleSort where
 
 import Debug.Trace (trace)
@@ -107,7 +106,7 @@ tails' = apo psi
 swapUncons' :: [Int] -> Maybe (Int, Either [Int] [Int])
 swapUncons' []                   = Nothing
 swapUncons' (x:[])               = Just (x, Left [])
-swapUncons' (x:y:ys) | x <= y    = Just (x, Left (y:ys))
+swapUncons' (x:y:ys) | x <= y    = Just (x, Left  (y:ys))
                      | otherwise = Just (y, Right (x:ys))
 
 insertSort :: [Int] -> [Int]
