@@ -104,14 +104,14 @@ tails' = apo psi
   where psi []       = Just ([], Left [])
         psi s@(_:xs) = Just (s, Right xs)
 
-swop :: [Int] -> Maybe (Int, Either [Int] [Int])
-swop [] = Nothing
-swop (x:[]) = Just (x, Left [])
-swop (x:y:ys) | x <= y    = Just (x, Left (y:ys))
-              | otherwise = Just (y, Right (x:ys))
+swapUncons' :: [Int] -> Maybe (Int, Either [Int] [Int])
+swapUncons' []                   = Nothing
+swapUncons' (x:[])               = Just (x, Left [])
+swapUncons' (x:y:ys) | x <= y    = Just (x, Left (y:ys))
+                     | otherwise = Just (y, Right (x:ys))
 
 insertSort :: [Int] -> [Int]
-insertSort = cata ([], (apo swop $?) . in')
+insertSort = cata ([], (apo swapUncons' $?) . in')
 
 select :: (Int, ([Int], [Int])) -> [Int]
 select (x, (xs,  [])) = x:xs
