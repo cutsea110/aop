@@ -67,11 +67,6 @@ para (d, g) = u
   where u [] = d
         u (x:xs) = g (x, (xs, u xs))
 
-
-dropWhile' p = para ([], g)
-  where g (x, (xs, ys)) = if p x then ys else x:xs
-
-
 --              out
 --    [a] -------------------> 1 + a * [a]
 --     A                         A
@@ -86,10 +81,6 @@ apo psi = v
           Just (x, Left  xs) -> x:xs
           Just (x, Right xs) -> x:v xs
 
-tails' = apo psi
-  where psi []     = Just ([], Left [])
-        psi (x:xs) = Just (x:xs, Right xs)
-
 ---------------------------------------------------------------------
 --  [2,3,1]
 --  2 : (3 : (1 : []))
@@ -100,7 +91,6 @@ swapCons :: (Int, [Int]) -> [Int]
 swapCons (x, []) = [x]
 swapCons (x, y:ys) | x <= y    = x:y:ys
                    | otherwise = y:x:ys
-
 bubbleSort = ana (out . (bubble $?))
 
 out :: [a] -> Maybe (a, [a])
@@ -135,22 +125,22 @@ in' :: (a, [a]) -> [a]
 in' (x, xs) = x:xs
 
 
-insert' = apo (swapUncons' $?)
+insert' = apo swapUncons'
 
 swapUncons' :: [Int] -> Maybe (Int, Either [Int] [Int])
 swapUncons' [] = Nothing
 swapUncons' (x:[]) = Just (x, Left [])
-swapUncons' (x:y:ys) | x <= y    = Just (x, Left (y:ys))
+swapUncons' (x:y:ys) | x <= y    = Just (x, Left  (y:ys))
                      | otherwise = Just (y, Right (x:ys))
 
-insertSort' = cata ([], insert' . in')
+insertSort' = cata ([], (insert' $?) . in')
 
 
-select = para ([], (swapCons' $?))
+select = para ([], swapCons')
 
 swapCons' :: (Int, ([Int], [Int])) -> [Int]
 swapCons' (x, (_, [])) = [x]
 swapCons' (x, (xs, y:ys)) | x <= y    = x:xs
                           | otherwise = y:x:ys
 
-selectSort = ana (out . select)
+selectSort = ana (out . (select $?))
