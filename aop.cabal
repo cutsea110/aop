@@ -55,6 +55,7 @@ library
                      , Hangman
                      , Histo
                      , Hylo
+                     , ICBICSort
                      , Infinity
                      , Kaprekar
                      , KnapSack
