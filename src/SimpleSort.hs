@@ -10,21 +10,21 @@ test = [3,7,1,5,6,8,4,9,2]
 
 -- sorted     sorting
 -- []  [3,7,1,5,6,8,4,9,2]
--- []                 ^ ^
+--                    ^ ^
 -- []  [3,7,1,5,6,8,4,2,9]
--- []               ^ ^
+--                  ^ ^
 -- []  [3,7,1,5,6,8,2,4,9]
--- []             ^ ^
+--                ^ ^
 -- []  [3,7,1,5,6,2,8,4,9]
--- []           ^ ^
+--              ^ ^
 -- []  [3,7,1,5,2,6,8,4,9]
--- []         ^ ^
+--            ^ ^
 -- []  [3,7,1,2,5,6,8,4,9]
--- []       ^ ^
+--          ^ ^
 -- []  [3,7,1,2,5,6,8,4,9]
--- []     ^ ^
+--        ^ ^
 -- []  [3,1,7,2,5,6,8,4,9]
--- []   ^ ^
+--      ^ ^
 -- []  [1,3,7,2,5,6,8,4,9]
 --
 -- [1] [3,7,2,5,6,8,4,9]
@@ -125,7 +125,7 @@ in' :: (a, [a]) -> [a]
 in' (x, xs) = x:xs
 
 
-insert' = apo (swapUncons' $?)
+insert' = apo swapUncons'
 
 swapUncons' :: [Int] -> Maybe (Int, Either [Int] [Int])
 swapUncons' [] = Nothing
@@ -133,14 +133,14 @@ swapUncons' (x:[]) = Just (x, Left [])
 swapUncons' (x:y:ys) | x <= y    = Just (x, Left  (y:ys))
                      | otherwise = Just (y, Right (x:ys))
 
-insertSort' = cata ([], insert' . in')
+insertSort' = cata ([], (insert' $?) . in')
 
 
-select = para ([], (swapCons' $?))
+select = para ([], swapCons')
 
 swapCons' :: (Int, ([Int], [Int])) -> [Int]
 swapCons' (x, (_, [])) = [x]
 swapCons' (x, (xs, y:ys)) | x <= y    = x:xs
                           | otherwise = y:x:ys
 
-selectSort = ana (out . select)
+selectSort = ana (out . (select $?))
