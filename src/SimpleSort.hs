@@ -77,11 +77,6 @@ para :: (b, (a, ([a], b)) -> b) -> [a] -> b
 para (d, g) = u
   where u [] = d
         u (x:xs) = g (x, (xs, u xs))
-
-dropWhile' :: (Int -> Bool) -> [Int] -> [Int]
-dropWhile' p = para ([], phi)
-  where phi (x, (xs, b)) = if p x then b else x:xs
-
 --
 --           out
 --    [a] -------------> 1 + a * [a]
@@ -93,22 +88,17 @@ dropWhile' p = para ([], phi)
 --
 apo :: (b -> Maybe (a, (Either [a] b))) -> b -> [a]
 apo psi = v
-  where v xs = case psi xs of
+  where v b = case psi b of
           Nothing -> []
-          Just (a, Left as) -> a:as
-          Just (a, Right b) -> a:v b
-
-tails' :: [Int] -> [[Int]]
-tails' = apo psi
-  where psi []       = Just ([], Left [])
-        psi s@(_:xs) = Just (s, Right xs)
+          Just (x, Left  xs) -> x:xs
+          Just (x, Right xs) -> x:v xs
 
 insert :: [Int] -> Maybe (Int, Either [Int] [Int])
 insert [] = Nothing
 insert (x:[]) = Just (x, Left [])
 insert (x:y:ys) | x <= y    = Just (x, Left (y:ys))
-              | otherwise = Just (y, Right (x:ys))
-
+                | otherwise = Just (y, Right (x:ys))
+                
 insertSort :: [Int] -> [Int]
 insertSort = cata ([], (apo insert $?) . in')
 
