@@ -57,3 +57,42 @@ module ICBICSort where
 -- [1 2 3 4 5 6 8 9 7]            ([1 2 3 4 5 6 8 9], 7, [], [])
 -- [1 2 3 4 5 6 7 9 8]            ([1 2 3 4 5 6 7 9], 8, [], [])
 -- [1 2 3 4 5 6 7 8 9]            ([1 2 3 4 5 6 7 8], 9, [], [])
+
+--           [nil, snoc]
+--   [a] <---------------- 1 + [a] * a
+--    |                      |
+--  u |                      | id + u * id_a
+--    V                      V
+--    b  <---------------- 1 + b *  a
+--           [c, f]
+data SList a = SNil
+             | SCons (SList a) a
+             deriving Show
+
+fold :: (b, (b, a) -> b) -> SList a -> b
+fold (c, f) = u
+  where u SNil = c
+        u (SCons xs x) = f (u xs, x)
+
+
+--           out
+--   [a] ----------------> 1 + [a] * a
+--    A                      A
+--  v |                      | id + v * id_a
+--    |                      |
+--    b  ----------------> 1 + b *  a
+--           psi
+unfold :: (b -> Maybe (b, a)) -> b -> SList a
+unfold psi = v
+  where v x = case psi x of
+          Nothing -> SNil
+          Just (b, a) -> SCons (v b) a
+
+insert :: Ord a => a -> SList a -> SList a
+insert x xs = fold (SCons SNil x, swapSnoc) xs
+
+swapSnoc :: Ord a => (SList a, a) -> SList a
+swapSnoc (SNil, x) = SCons SNil x
+swapSnoc (SCons xs x, y) | x <= y    = SCons (SCons xs x) y
+                         | otherwise = SCons (SCons xs y) x
+
