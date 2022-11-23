@@ -127,3 +127,35 @@ unsnoc = cata (c, f, g, h)
         f x = Just (Nil, x)
         g (x, y) = Just (Single x, y)
         h (x, y, z) = Just (cons x y, z)
+
+bubble :: Ord a => List a -> List a
+bubble = cata (c, f, g, h)
+  where
+    c = Nil
+    f x = Single x
+    g (x, y) | x <= y    = Pair x y
+             | otherwise = Pair y x
+    h (x, Nil, z) | x <= z    = Pair x z
+                  | otherwise = Pair z x
+    h (x, Single y, z) | x <= y    = Node x (Single y) z
+                       | otherwise = Node y (Single x) z
+    h (x, Pair y z, v) | x <= y    = Node x (Pair y z) v
+                       | otherwise = Node y (Pair x z) v
+    h (x, Node y z v, w) | x <= y    = Node x (snoc v (cons y z)) w
+                         | otherwise = Node y (snoc v (cons x z)) w
+
+insert :: Ord a => List a -> List a
+insert = ana swapUncons
+  where swapUncons :: Ord a => List a -> Maybe (Tri a (a, a) (a, List a, a))
+        swapUncons Nil = Nothing
+        swapUncons (Single x) = Just (L x)
+        swapUncons (Pair x y) | x <= y    = Just (C (x, y))
+                              | otherwise = Just (C (y, x))
+        swapUncons (Node x Nil z) | x <= z    = Just (C (x, z))
+                                  | otherwise = Just (C (z, x))
+        swapUncons (Node x (Single y) z) | x <= y    = Just (R (x, Single y, z))
+                                         | otherwise = Just (R (y, Single x, z))
+        swapUncons (Node x (Pair y z) w) | x <= y    = Just (R (x, Pair y z, w))
+                                         | otherwise = Just (R (y, Pair x z, w))
+        swapUncons (Node x (Node y z v) w) | x <= y    = Just (R (x, Node y z v, w))
+                                           | otherwise = Just (R (y, Node x z v, w))
