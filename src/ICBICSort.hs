@@ -58,80 +58,57 @@ module ICBICSort where
 -- [1 2 3 4 5 6 7 9 8]            ([1 2 3 4 5 6 7 9], 8, [], [])
 -- [1 2 3 4 5 6 7 8 9]            ([1 2 3 4 5 6 7 8], 9, [], [])
 
---           [nil, snoc]
---   [a] <---------------- 1 + [a] * a
+--         [nil, s, p, t]
+--   [a] <---------------- 1 + a + a * a + a * [a] * a
 --    |                      |
---  u |                      | id + u * id_a
+--  u |                      | id + id + id * id + id * u * id
 --    V                      V
---    b  <---------------- 1 + b *  a
---           [c, f]
-data SList a = SNil
-             | SCons (SList a) a
-             deriving Show
+--    b  <---------------- 1 + a + a * a + a * b * a
+--           [c, f, g, h]
 
-fold :: (b, (b, a) -> b) -> SList a -> b
-fold (c, f) = u
-  where u SNil = c
-        u (SCons xs x) = f (u xs, x)
+data List a = Nil
+            | Single a
+            | Pair a a
+            | Node a (List a) a
+            deriving Show
 
+cata :: (b, a -> b, (a, a) -> b, (a, List a, a) -> b) -> List a -> b
+cata (c, f, g, h) = u
+  where u Nil          = c
+        u (Single e)   = f e
+        u (Pair x y)   = g (x, y)
+        u (Node x y z) = h (x, y, z)
 
---           out
---   [a] ----------------> 1 + [a] * a
+--            out
+--   [a] ----------------> 1 + a + a * a + a * [a] * a
 --    A                      A
---  v |                      | id + v * id_a
+--  u |                      | id + id + id * id + id * u * id
 --    |                      |
---    b  ----------------> 1 + b *  a
---           psi
-unfold :: (b -> Maybe (b, a)) -> b -> SList a
-unfold psi = v
+--    b  ----------------> 1 + a + a * a + a * b * a
+--            psi
+data Tri a b c = L a | C b | R c deriving Show
+
+ana :: (b -> Maybe (Tri a (a, a) (a, b, a))) -> b -> List a
+ana psi = v
   where v x = case psi x of
-          Nothing -> SNil
-          Just (b, a) -> SCons (v b) a
+          Nothing            -> Nil
+          Just (L x)         -> Single x
+          Just (C (x, y))    -> Pair x y
+          Just (R (x, y, z)) -> Node x (v y) z
 
-insert :: Ord a => a -> SList a -> SList a
-insert x xs = fold (SCons SNil x, swapSnoc) xs
+nil :: List a
+nil = Nil
 
-swapSnoc :: Ord a => (SList a, a) -> SList a
-swapSnoc (SNil, x) = SCons SNil x
-swapSnoc (SCons xs x, y) | x <= y    = SCons (SCons xs x) y
-                         | otherwise = SCons (SCons xs y) x
+cons :: a -> List a -> List a
+cons w = cata (c, f, g, h)
+  where c = Single w
+        f x = Pair w x
+        g (x, y) = Node w (Single x) y
+        h (x, y, z) = Node w (cons x y) z
 
-
---           [nil, snoc]
---   [a] <---------------- 1 + [a] * a
---    |                      |
---  u |                      | id + (id * u) * id_a
---    V                      V
---    b  <---------------- 1 + ([a] * b) *  a
---           [d, g]
-para :: (b, ((SList a, b), a) -> b) -> SList a -> b
-para (d, g) = u
-  where u SNil = d
-        u (SCons xs x) = g ((xs, u xs), x)
-
---           out
---   [a] ----------------> 1 + [a] * a
---    A                      A
---  v |                      | id + (id + v) * id_a
---    |                      |
---    b  ----------------> 1 + ([a] + b) *  a
---           psi
-apo :: (b -> Maybe (Either (SList a) b, a)) -> b -> SList a
-apo psi = v
-  where v b = case psi b of
-          Nothing -> SNil
-          Just (Left  xs, x) -> SCons xs x
-          Just (Right xs, x) -> SCons (v xs) x
-
-sHead :: SList a -> Maybe a
-sHead = fold (Nothing, g)
-  where g (Nothing, x) = Just x
-        g (b,       _) = b
-
-sTail :: SList a -> SList a
-sTail = apo psi
-  where psi :: SList a -> Maybe (Either (SList a) (SList a), a)
-        psi SNil = Nothing
-        psi (SCons SNil x) = Nothing
-        psi (SCons (SCons SNil y) x) = Just (Left SNil, x)
-        psi (SCons ys x) = Just (Right ys, x)
+snoc :: a -> List a -> List a
+snoc w = cata (c, f, g, h)
+  where c = Single w
+        f x = Pair x w
+        g (x, y) = Node x (Single y) w
+        h (x, y, z) = Node x (snoc z y) w
