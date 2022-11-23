@@ -96,3 +96,42 @@ swapSnoc (SNil, x) = SCons SNil x
 swapSnoc (SCons xs x, y) | x <= y    = SCons (SCons xs x) y
                          | otherwise = SCons (SCons xs y) x
 
+
+--           [nil, snoc]
+--   [a] <---------------- 1 + [a] * a
+--    |                      |
+--  u |                      | id + (id * u) * id_a
+--    V                      V
+--    b  <---------------- 1 + ([a] * b) *  a
+--           [d, g]
+para :: (b, ((SList a, b), a) -> b) -> SList a -> b
+para (d, g) = u
+  where u SNil = d
+        u (SCons xs x) = g ((xs, u xs), x)
+
+--           out
+--   [a] ----------------> 1 + [a] * a
+--    A                      A
+--  v |                      | id + (id + v) * id_a
+--    |                      |
+--    b  ----------------> 1 + ([a] + b) *  a
+--           psi
+apo :: (b -> Maybe (Either (SList a) b, a)) -> b -> SList a
+apo psi = v
+  where v b = case psi b of
+          Nothing -> SNil
+          Just (Left  xs, x) -> SCons xs x
+          Just (Right xs, x) -> SCons (v xs) x
+
+sHead :: SList a -> Maybe a
+sHead = fold (Nothing, g)
+  where g (Nothing, x) = Just x
+        g (b,       _) = b
+
+sTail :: SList a -> SList a
+sTail = apo psi
+  where psi :: SList a -> Maybe (Either (SList a) (SList a), a)
+        psi SNil = Nothing
+        psi (SCons SNil x) = Nothing
+        psi (SCons (SCons SNil y) x) = Just (Left SNil, x)
+        psi (SCons ys x) = Just (Right ys, x)
