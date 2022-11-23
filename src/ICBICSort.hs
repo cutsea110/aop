@@ -112,3 +112,18 @@ snoc w = cata (c, f, g, h)
         f x = Pair x w
         g (x, y) = Node x (Single y) w
         h (x, y, z) = Node x (snoc z y) w
+
+
+uncons :: List a -> Maybe (a, List a)
+uncons = cata (c, f, g, h)
+  where c = Nothing
+        f x = Just (x, Nil)
+        g (x, y) = Just (x, Single y)
+        h (x, y, z) = Just (x, snoc z y)
+
+unsnoc :: List a -> Maybe (List a, a)
+unsnoc = cata (c, f, g, h)
+  where c = Nothing
+        f x = Just (Nil, x)
+        g (x, y) = Just (Single x, y)
+        h (x, y, z) = Just (cons x y, z)
