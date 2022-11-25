@@ -91,10 +91,10 @@ apo psi = v
           Just (x, Left  xs) -> x:xs
           Just (x, Right xs) -> x:v xs
 
-euclid = apo psi
-  where psi (n, m) | l == 0    = Just ((n, m), Left [(m, l)])
-                   | otherwise = Just ((n, m), Right (m, l))
-          where l = n `mod` m
+abss = apo (psi $?)
+  where psi [] = Nothing
+        psi (x:xs) | x < 0     = Just (negate x, Right xs)
+                   | otherwise = Just (x, Left xs)
 
 --------------------------------
 
