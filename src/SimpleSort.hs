@@ -91,6 +91,7 @@ apo psi = v
           Just (x, Left  xs) -> x:xs
           Just (x, Right xs) -> x:v xs
 
+abss :: [Int] -> [Int]
 abss = apo (psi $?)
   where psi [] = Nothing
         psi (x:xs) | x < 0     = Just (negate x, Right xs)
