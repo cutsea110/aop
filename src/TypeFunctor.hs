@@ -95,5 +95,5 @@ instance Applicative BTree where
   Bin l r <*> x = bin (l <*> x, r <*> x)
 
 instance Monad BTree where
-  return = eta
+  return = pure
   m >>= f = mu (fmap f m)

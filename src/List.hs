@@ -89,7 +89,7 @@ instance Applicative Cons where
   Nil <*> _ = Nil
 
 instance Monad Cons where
-  return = eta
+  return = pure
   m >>= f = mu (fmap f m)
 
 -- bad implementation

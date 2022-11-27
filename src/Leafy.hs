@@ -29,7 +29,7 @@ instance Applicative Leafy where
     fs <*> ts = foldt ((<$> ts), bin) fs
 
 instance Monad Leafy where
-    return = etat
+    return = pure
     m >>= f = mut (f <$> m)
 
 (<**>) :: Monad m => m (a -> b) -> m a -> m b
