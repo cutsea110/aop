@@ -79,9 +79,9 @@ instance Applicative Forest where
   _ <*> _ = nil
 
 instance Monad Tree where
-  return = etat
+  return = pure
   m >>= f = mut (fmap f m)
 
 instance Monad Forest where
-  return = etaf
+  return = pure
   m >>= f = muf (fmap f m)

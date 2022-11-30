@@ -60,7 +60,7 @@ instance Applicative Tree where
 -- | ref.) https://stackoverflow.com/questions/6798699/monad-instance-for-binary-tree
 -- and answered by Edward Kmett
 instance Monad Tree where
-  return = eta
+  return = pure
   m >>= f = mu (fmap f m)
 --  Tip a >>= f  = f a
 --  Bin l r >>= f = Bin (l >>= f) (r >>= f)

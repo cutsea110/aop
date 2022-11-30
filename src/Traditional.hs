@@ -27,5 +27,5 @@ instance Applicative Tree where
     Node f l r <*> x@(Node a _ _) = node (f a, l <*> x, r <*> x)
 
 instance Monad Tree where
-    return = eta
+    return = pure
     m >>= f = mu (fmap f m)
