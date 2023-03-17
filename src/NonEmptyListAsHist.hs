@@ -96,9 +96,8 @@ histo :: (Maybe (NonEmptyList a) -> a) -> Nat -> a
 histo phi = v
   where
     v = phi . fmap u . out
-    u Zero     = Unit (v Zero)
-    u (Succ n) = Cons (v (Succ n)) (u n)
-
+    u x = maybe (Unit a) (Cons a) b
+      where (a, b) = (v x, fmap u (out x))
 extract :: NonEmptyList a -> a
 extract x = case out' x of
   Left  a      -> a
