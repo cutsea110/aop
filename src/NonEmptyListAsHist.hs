@@ -3,6 +3,9 @@ module NonEmptyListAsHist where
 
 import Prelude hiding (foldr, subtract)
 
+pair :: (a -> b, a -> c) -> a -> (b, c)
+pair (f, g) x = (f x, g x)
+
 --           [zero, succ]
 --   N <--------------------- 1 + N
 --   |                          |
@@ -95,6 +98,16 @@ histo phi = v
     u x = maybe (Unit a) (Cons a) b
       where (a, b) = (v x, fmap u (out x))
 
+-- | more efficient
+histo' :: (Maybe (NonEmptyList a) -> a) -> Nat -> a
+histo' phi = v
+  where v = extract . u
+          where
+            u n = maybe (Unit val) (Cons val) m
+              where
+                m = fmap u (out n)
+                val = phi m
+
 extract :: NonEmptyList a -> a
 extract (Unit x)   = x
 extract (Cons x _) = x
@@ -103,7 +116,7 @@ subtract :: NonEmptyList a -> Maybe (NonEmptyList a)
 subtract = either (const Nothing) (Just . snd) . out'
 
 fib :: Nat -> Int
-fib = histo phi
+fib = histo' phi
   where
     phi Nothing = 0
     phi (Just x) = f1 x + f2 x
