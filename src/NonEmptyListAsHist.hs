@@ -89,10 +89,6 @@ unfoldr psi = v
           Right (a, b) -> Cons a (v b)
 
 histo :: (Maybe (NonEmptyList a) -> a) -> Nat -> a
--- out :: (Nat -> Maybe Nat)
--- u :: Nat -> NonEmptyList a
--- fmap u :: Maybe Nat -> Maybe (NonemptyList a)
--- phi :: Maybe (NonemptyList a) -> b(==a)
 histo phi = v
   where
     v = phi . fmap u . out
