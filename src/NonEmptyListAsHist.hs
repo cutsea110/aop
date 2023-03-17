@@ -94,6 +94,7 @@ histo phi = v
     v = phi . fmap u . out
     u x = maybe (Unit a) (Cons a) b
       where (a, b) = (v x, fmap u (out x))
+
 extract :: NonEmptyList a -> a
 extract x = case out' x of
   Left  a      -> a
@@ -104,6 +105,7 @@ subtract x = case out' x of
   Left a       -> Nothing
   Right (_, b) -> Just b
 
+fib :: Nat -> Int
 fib = histo phi
   where
     phi Nothing = 0
