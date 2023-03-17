@@ -1,9 +1,7 @@
+{-# LANGUAGE  DeriveFunctor #-}
 module NonEmptyListAsHist where
 
-import Prelude hiding (foldr)
-
-pair :: (t -> a, t -> b) -> t -> (a, b)
-pair (f, g) x = (f x, g x)
+import Prelude hiding (foldr, subtract)
 
 --           [zero, succ]
 --   N <--------------------- 1 + N
@@ -54,7 +52,12 @@ out (Succ n) = Just n
 
 data NonEmptyList a = Unit a
                     | Cons a (NonEmptyList a)
-                    deriving Show
+                    deriving (Show, Functor)
+
+out' :: NonEmptyList a -> Either a (a, NonEmptyList a)
+out' (Unit x)    = Left x
+out' (Cons x xs) = Right (x, xs)
+
 --
 --           [unit, cons]
 --   Ta <--------------------- a + a * Ta
@@ -93,7 +96,26 @@ histo :: (Maybe (NonEmptyList a) -> a) -> Nat -> a
 histo phi = v
   where
     v = phi . fmap u . out
-    u = unfoldr f
-      where
-        f Zero     = Left  (v Zero)
-        f (Succ n) = Right (v n, n)
+    u Zero     = Unit (v Zero)
+    u (Succ n) = Cons (v (Succ n)) (u n)
+
+extract :: NonEmptyList a -> a
+extract x = case out' x of
+  Left  a      -> a
+  Right (a, _) -> a
+
+subtract :: NonEmptyList a -> Maybe (NonEmptyList a)
+subtract x = case out' x of
+  Left a       -> Nothing
+  Right (_, b) -> Just b
+
+fib = histo phi
+  where
+    phi Nothing = 0
+    phi (Just x) = f1 x + f2 x
+    f1 :: NonEmptyList Int -> Int
+    f1 x = extract x
+    f2 :: NonEmptyList Int -> Int
+    f2 x = case subtract x of
+      Nothing -> 1
+      Just y  -> extract y
