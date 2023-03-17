@@ -71,6 +71,7 @@ library
                      , MutualRecursiveTreeForest
                      , Nat
                      , NonEmptyList
+                     , NonEmptyListAsHist
                      , Num8
                      , OpenSet
                      , Prepro
