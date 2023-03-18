@@ -43,17 +43,6 @@ unfoldn psi = v
           Nothing -> Zero
           Just y  -> Succ (v y)
 
---
---                         F = Maybe
---         outF           uF = Nat    <histo phi, out>
---   uF ---------> F(uF)      uF  ----------------------> A * F(uF) == F*(uF)
---   |               |        |                             |
---   | histo phi     | Fu     | v                           | id * Fv
---   |               |        |                             |
---   v               v        v                             v
---   A  ---------> F(vF*)     vF* ----------------------> A * F(vF*) == F*(vF*)
---         phi                           outF*
---
 out :: Nat -> Maybe Nat
 out Zero     = Nothing
 out (Succ n) = Just n
@@ -96,6 +85,17 @@ unfoldr psi = v
           Left a       -> Unit a
           Right (a, b) -> Cons a (v b)
 
+--
+--                         F = Maybe
+--         outF           uF = Nat    <histo phi, out>
+--   uF ---------> F(uF)      uF  ----------------------> A * F(uF) == F*(uF)
+--   |               |        |                             |
+--   | histo phi     | Fu     | v                           | id * Fv
+--   |               |        |                             |
+--   v               v        v                             v
+--   A  ---------> F(vF*)     vF* ----------------------> A * F(vF*) == F*(vF*)
+--         phi                           outF*
+--
 histo :: Show a => (Maybe (NonEmptyList a) -> a) -> Nat -> a
 histo phi = v
   where
@@ -104,6 +104,17 @@ histo phi = v
       where (a, b) = (v x, fmap u (out x))
 
 -- | more efficient
+--                             inF
+--          uF <--------------------------------------------- F(uF)
+--          /|                                                  |
+--         / |                                                  |
+--  histo /  | u = cata (inF* . <phi, id>)                      | Fu
+--       /   |                                                  |
+--      /    |                                                  |
+--     v     v                                                  v
+--    A <--- vF* <-------- F*(vF*) == A * F(uF*) <----------- F(vF*)
+--        e         inF*                             <phi, id>
+--
 histo' :: Show a => (Maybe (NonEmptyList a) -> a) -> Nat -> a
 histo' phi = extract . u
   where
@@ -119,20 +130,26 @@ extract (Cons x _) = x
 subtract :: NonEmptyList a -> Maybe (NonEmptyList a)
 subtract = either (const Nothing) (Just . snd) . out'
 
-genFib :: ((Maybe (NonEmptyList Int) -> Int) -> t) -> t
-genFib h = h phi
+dyna :: Show a => (Maybe (NonEmptyList a) -> a) -> (b -> Maybe b) -> b -> a
+dyna f g = histo f . unfoldn g
+
+dyna' :: Show a => (Maybe (NonEmptyList a) -> a) -> (b -> Maybe b) -> b -> a
+dyna' f g = histo' f . unfoldn g
+
+phi :: Maybe (NonEmptyList Int) -> Int
+phi Nothing = 0
+phi (Just x) = f1 x + f2 x
   where
-    phi Nothing = 0
-    phi (Just x) = f1 x + f2 x
-    f1 :: NonEmptyList Int -> Int
     f1 x = extract x
-    f2 :: NonEmptyList Int -> Int
     f2 x = case subtract x of
       Nothing -> 1
       Just y  -> extract y
 
-fib :: Nat -> Int
-fib = genFib histo
+psi :: Int -> Maybe Int
+psi n = if n == 0 then Nothing else Just (n-1)
 
-fib' :: Nat -> Int
-fib' = genFib histo'
+fib :: Int -> Int
+fib = dyna phi psi
+
+fib' :: Int -> Int
+fib' = dyna' phi psi
