@@ -138,10 +138,7 @@ dyna' f g = histo' f . unfoldn g
 
 phi :: Maybe (NonEmptyList Int) -> Int
 phi Nothing = 0
-phi (Just x) = f1 x + f2 x
-  where
-    f1 x = extract x
-    f2 x = maybe 1 extract (subtract x)
+phi (Just x) = extract x + maybe 1 extract (subtract x)
 
 psi :: Int -> Maybe Int
 psi n = if n == 0 then Nothing else Just (n-1)
