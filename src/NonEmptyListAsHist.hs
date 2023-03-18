@@ -2,6 +2,11 @@
 module NonEmptyListAsHist where
 
 import Prelude hiding (foldr, subtract)
+import Debug.Trace (trace)
+
+f $? x = let v = f x
+             msg = "{- " ++ show x ++ " => " ++ show v ++ " -}"
+         in trace msg v
 
 pair :: (a -> b, a -> c) -> a -> (b, c)
 pair (f, g) x = (f x, g x)
@@ -91,22 +96,21 @@ unfoldr psi = v
           Left a       -> Unit a
           Right (a, b) -> Cons a (v b)
 
-histo :: (Maybe (NonEmptyList a) -> a) -> Nat -> a
+histo :: Show a => (Maybe (NonEmptyList a) -> a) -> Nat -> a
 histo phi = v
   where
-    v = phi . fmap u . out
+    v = (phi $?) . fmap u . out
     u x = maybe (Unit a) (Cons a) b
       where (a, b) = (v x, fmap u (out x))
 
 -- | more efficient
-histo' :: (Maybe (NonEmptyList a) -> a) -> Nat -> a
-histo' phi = v
-  where v = extract . u
-          where
-            u n = maybe (Unit val) (Cons val) m
-              where
-                m = fmap u (out n)
-                val = phi m
+histo' :: Show a => (Maybe (NonEmptyList a) -> a) -> Nat -> a
+histo' phi = extract . u
+  where
+    u n = maybe (Unit val) (Cons val) m
+      where
+        m = fmap u (out n)
+        val = phi $? m
 
 extract :: NonEmptyList a -> a
 extract (Unit x)   = x
@@ -115,8 +119,8 @@ extract (Cons x _) = x
 subtract :: NonEmptyList a -> Maybe (NonEmptyList a)
 subtract = either (const Nothing) (Just . snd) . out'
 
-fib :: Nat -> Int
-fib = histo' phi
+genFib :: ((Maybe (NonEmptyList Int) -> Int) -> t) -> t
+genFib h = h phi
   where
     phi Nothing = 0
     phi (Just x) = f1 x + f2 x
@@ -126,3 +130,9 @@ fib = histo' phi
     f2 x = case subtract x of
       Nothing -> 1
       Just y  -> extract y
+
+fib :: Nat -> Int
+fib = genFib histo
+
+fib' :: Nat -> Int
+fib' = genFib histo'
