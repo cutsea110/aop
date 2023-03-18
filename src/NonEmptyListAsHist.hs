@@ -85,7 +85,7 @@ unfoldr psi = v
           Left a       -> Unit a
           Right (a, b) -> Cons a (v b)
 
---
+-- | Histomoriphism
 --                         F = Maybe
 --         outF           uF = Nat    <histo phi, out>
 --   uF ---------> F(uF)      uF  ----------------------> A * F(uF) == F*(uF)
@@ -103,7 +103,7 @@ histo phi = v
     u x = maybe (Unit a) (Cons a) b
       where (a, b) = (v x, fmap u (out x))
 
--- | more efficient
+-- | Histomorphism
 --                             inF
 --          uF <--------------------------------------------- F(uF)
 --          /|                                                  |
