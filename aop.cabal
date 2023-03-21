@@ -96,6 +96,7 @@ library
                      , Tree
                      , Treemap
                      , TutorialZygo
+                     , TuplingAsHist
                      , TypeFunctor
                      , ZipUnzip
 
