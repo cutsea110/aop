@@ -8,9 +8,6 @@ f $? x = let v = f x
              msg = "{- " ++ show x ++ " => " ++ show v ++ " -}"
          in trace msg v
 
-pair :: (a -> b, a -> c) -> a -> (b, c)
-pair (f, g) x = (f x, g x)
-
 --           [zero, succ]
 --   N <--------------------- 1 + N
 --   |                          |
