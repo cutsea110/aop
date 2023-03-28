@@ -48,7 +48,7 @@ out' (Cons x xs) = Right (x, xs)
 --       /   |                                                  |
 --      /    |                                                  |
 --     v     v                                                  v
---    A <--- vF* <-------- F*(vF*) == A * F(uF*) <----------- F(vF*)
+--    A <--- vF* <-------- F*(vF*) == A * F(vF*) <----------- F(vF*)
 --        e         inF*                             <phi, id>
 --
 histo :: Show a => (Maybe (NonEmptyList a) -> a) -> Nat -> a
