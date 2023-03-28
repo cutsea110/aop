@@ -38,6 +38,7 @@ library
                      , Dijkstra
                      , DrawMatrix
                      , DualityOfSorts
+                     , Dyna
                      , ENat
                      , ExtEuclid
                      , Fact
