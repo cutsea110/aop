@@ -60,3 +60,65 @@ unfold psi = v
   where v x = case psi x of
           Nothing -> Nil
           Just (a, x) -> Cons a (v x)
+
+--
+-- Histomorphism
+--
+
+-- F(X) = 1 + X  <= F == Maybe
+--
+-- A * F(X) = A * (1 + X) = A + A * X
+--
+-- F*(X) = A + A * X
+--
+data NonEmptyList a = Unit a | Node a (NonEmptyList a) deriving Show
+-- data F a x = Unit a | Node a x
+--
+--        [unit, node]
+--   Ta <--------------- a + a * Ta
+--    |                    |
+--  u |                    | id + u
+--    v                    v
+--    X <--------------- a + a * X
+--           [c, f]
+--
+
+out :: Nat -> Maybe Nat
+out Z     = Nothing
+out (S n) = Just n
+
+--                     out
+--         N ------------------------> 1 + N
+--       / |                             |
+--    h /  | u                           | id + u
+--     /   |                             |
+--    v    v                             v
+--   A <-- L(A) <--- A + A * L(A) <--- 1 + L(A)
+--       e
+hist :: (Maybe (NonEmptyList a) -> a) -> Nat -> a
+hist phi = hd . u
+  where u n = maybe (Unit v) (Node v) m
+          where
+            m = fmap u $ out n
+            v = phi m
+
+hd :: NonEmptyList a -> a
+hd (Unit x)   = x
+hd (Node x _) = x
+
+tl :: NonEmptyList a -> Maybe (NonEmptyList a)
+tl (Unit _)   = Nothing
+tl (Node _ x) = Just x
+
+phi :: Maybe (NonEmptyList Int) -> Int
+phi Nothing  = 0
+phi (Just x) = hd x + maybe 1 hd (tl x)
+
+psi :: Int -> Maybe Int
+psi n | n == 0    = Nothing
+      | otherwise = Just (n-1)
+
+dyna f g = hist f . unfoldn g
+
+fib :: Int -> Int
+fib = dyna phi psi
