@@ -59,9 +59,12 @@ histo phi = extract . u
         m = fmap u (out n)
         val = phi $? m
 
+hd :: NonEmptyList a -> a
+hd (Unit x)   = x
+hd (Cons x _) = x
+
 extract :: NonEmptyList a -> a
-extract (Unit x)   = x
-extract (Cons x _) = x
+extract = hd
 
 sub :: NonEmptyList a -> Maybe (NonEmptyList a)
 sub = either (const Nothing) (Just . snd) . out'
