@@ -116,10 +116,13 @@ hist phi = hd . u
 dyna :: (Maybe (NEList c) -> c) -> (a -> Maybe a) -> a -> c
 dyna f g = hist f . unfoldn g
 
-
 fib = dyna phi psi
   where
-    phi = maybe 0 f
-      where f x = maybe 1 (\xs -> hd x + hd xs) (tl x)
+    phi :: Maybe (NEList Int) -> Int
+    phi mayxs = case mayxs of
+      Nothing -> 0
+      Just xs  -> case tl xs of
+        Nothing -> 1
+        Just ys -> hd xs + hd ys
 
     psi n = if n == 0 then Nothing else Just (n-1)
