@@ -1,4 +1,11 @@
+{-# LANGUAGE NPlusKPatterns #-}
 module Dyna where
+
+import Debug.Trace (trace)
+
+f $? x = let v = f x
+             msg = "{- " ++ show x ++ " => " ++ show v ++ " -}"
+         in trace msg v
 
 --             a = In
 --     uF <-------------- F(uF)
@@ -116,13 +123,14 @@ hist phi = hd . u
 dyna :: (Maybe (NEList c) -> c) -> (a -> Maybe a) -> a -> c
 dyna f g = hist f . unfoldn g
 
-fib = dyna phi psi
+fib :: Integer -> Integer
+fib = dyna (phi $?) psi
   where
-    phi :: Maybe (NEList Int) -> Int
+    psi 0     = Nothing
+    psi (n+1) = Just n
+    phi :: Maybe (NEList Integer) -> Integer
     phi mayxs = case mayxs of
       Nothing -> 0
       Just xs  -> case tl xs of
         Nothing -> 1
         Just ys -> hd xs + hd ys
-
-    psi n = if n == 0 then Nothing else Just (n-1)
