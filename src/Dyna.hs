@@ -89,8 +89,8 @@ out :: Nat -> Maybe Nat
 out Z     = Nothing
 out (S n) = Just n
 
-pair :: (a -> b) -> (a -> c) -> a -> (b, c)
-pair f g x = (f x, g x)
+pair :: (a -> b, a -> c) -> a -> (b, c)
+pair (f, g) x = (f x, g x)
 
 hd :: NEList a -> a
 hd (Unit x) = x
@@ -135,9 +135,26 @@ fib = dyna (phi $?) psi
         Nothing -> 1
         Just ys -> hd xs + hd ys
 
-fib' :: Integer -> Integer
-fib' = fst . foldn (c, f) . unfoldn psi
-  where c = (0, 1)
-        f (x, y) = (y, x + y)
-        psi 0     = Nothing
-        psi (n+1) = Just n
+--                    [z, s]
+--          Nat <---------------------- 1 + Nat
+--          / |            A  <-----+    |
+-- hist phi/  | u          ^   phi   \   | id + u == fmap u
+--        /   v            |          \  v
+--       A <- Int*Int <- A*(1+Int*Int) <- 1 + Int*Int
+--          e     In*      | <phi,id> /
+--                         v         /
+--                 1 + Int*Int <----+
+--                               id
+--
+fib' = snd . u
+  where u :: Nat -> (Integer, Integer)
+        u n = in' (pair (phi, id) m)
+          where
+            m :: Maybe (Integer, Integer)
+            m = fmap u (out n)
+            phi :: Maybe (Integer, Integer) -> Integer
+            phi Nothing = 0
+            phi (Just (x, y)) = x + y
+            in' :: (Integer, Maybe (Integer, Integer)) -> (Integer, Integer)
+            in' (0, Nothing)     = (1, 0)
+            in' (x, Just (y, _)) = (x, y)
