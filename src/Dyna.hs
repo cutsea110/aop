@@ -134,3 +134,10 @@ fib = dyna (phi $?) psi
       Just xs  -> case tl xs of
         Nothing -> 1
         Just ys -> hd xs + hd ys
+
+fib' :: Integer -> Integer
+fib' = fst . foldn (c, f) . unfoldn psi
+  where c = (0, 1)
+        f (x, y) = (y, x + y)
+        psi 0     = Nothing
+        psi (n+1) = Just n
