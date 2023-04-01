@@ -86,3 +86,8 @@ hist phi = hd . u
                 v = phi m
 
 ------
+fib = hist phi
+  where phi :: Maybe (NEList Int) -> Int
+        phi Nothing = 0
+        phi (Just (Unit _)) = 1
+        phi (Just (Cons x xs)) = x + hd xs
