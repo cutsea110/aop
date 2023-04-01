@@ -85,9 +85,12 @@ hist phi = hd . u
           where m = fmap u (out n)
                 v = phi m
 
+dyna f g = hist f . unfoldn g
+
 ------
-fib = hist phi
+fib = dyna phi psi
   where phi :: Maybe (NEList Int) -> Int
         phi Nothing = 0
         phi (Just (Unit _)) = 1
         phi (Just (Cons x xs)) = x + hd xs
+        psi i = if i <= 0 then Nothing else Just (i-1)
