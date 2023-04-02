@@ -94,3 +94,7 @@ fib = dyna phi psi
         phi (Just (Unit _)) = 1
         phi (Just (Cons x xs)) = x + hd xs
         psi i = if i <= 0 then Nothing else Just (i-1)
+
+fib' = hist phi . fromInt
+  where phi :: Maybe (NEList Int) -> Int
+        phi = maybe 0 (\xs -> hd xs + maybe 1 hd (tl xs))
