@@ -88,13 +88,15 @@ hist phi = hd . u
 dyna f g = hist f . unfoldn g
 
 ------
+fib :: Integer -> Integer
 fib = dyna phi psi
-  where phi :: Maybe (NEList Int) -> Int
+  where phi :: Maybe (NEList Integer) -> Integer
         phi Nothing = 0
         phi (Just (Unit _)) = 1
         phi (Just (Cons x xs)) = x + hd xs
         psi i = if i <= 0 then Nothing else Just (i-1)
 
+fib' :: Integer -> Integer
 fib' = hist phi . fromInt
-  where phi :: Maybe (NEList Int) -> Int
+  where phi :: Maybe (NEList Integer) -> Integer
         phi = maybe 0 (\xs -> hd xs + maybe 1 hd (tl xs))
