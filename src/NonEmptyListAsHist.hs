@@ -52,7 +52,7 @@ out' (Cons x xs) = Right (x, xs)
 --        e         inF*                             <phi, id>
 --
 histo :: Show a => (Maybe (NonEmptyList a) -> a) -> Nat -> a
-histo phi = extract . u
+histo phi = hd . u
   where
     u n = maybe (Unit val) (Cons val) m
       where
@@ -63,21 +63,14 @@ hd :: NonEmptyList a -> a
 hd (Unit x)   = x
 hd (Cons x _) = x
 
-extract :: NonEmptyList a -> a
-extract = hd
-
-sub :: NonEmptyList a -> Maybe (NonEmptyList a)
-sub = either (const Nothing) (Just . snd) . out'
+tl :: NonEmptyList a -> Maybe (NonEmptyList a)
+tl = either (const Nothing) (Just . snd) . out'
 
 dyna :: Show a => (Maybe (NonEmptyList a) -> a) -> (b -> Maybe b) -> b -> a
 dyna f g = histo f . unfoldn g
 
-phi :: Maybe (NonEmptyList Int) -> Int
-phi Nothing = 0
-phi (Just x) = extract x + maybe 1 extract (sub x)
-
-psi :: Int -> Maybe Int
-psi n = if n == 0 then Nothing else Just (n-1)
-
 fib :: Int -> Int
 fib = dyna phi psi
+  where phi Nothing = 0
+        phi (Just x) = hd x + maybe 1 hd (tl x)
+        psi n = if n == 0 then Nothing else Just (n-1)
