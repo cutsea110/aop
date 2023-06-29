@@ -61,3 +61,26 @@ pMunch1 p = pThen (:) p (pMunch p)
 
 pMunch :: Parser a -> Parser [a]
 pMunch p = pMunch1 p `pAltL` pEmpty []
+
+pAp :: Parser (a -> b) -> Parser a -> Parser b
+pAp pf px = Parser (\toks -> [ (f x, toks'')
+                             | (f, toks') <- runParser pf toks
+                             , (x, toks'') <- runParser px toks'
+                             ])
+
+pBind :: Parser a -> (a -> Parser b) -> Parser b
+px `pBind` f = Parser (\toks -> [ (y, toks'')
+                                | (x, toks') <- runParser px toks
+                                , (y, toks'') <- runParser (f x) toks'
+                                ])
+
+instance Functor Parser where
+  fmap = flip pApply
+
+instance Applicative Parser where
+  pure = pEmpty
+  (<*>) = pAp
+
+instance Monad Parser where
+  (>>=) = pBind
+  return = pure
