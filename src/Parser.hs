@@ -1,6 +1,7 @@
 module Parser where
 
 import Data.Char (isDigit, isSpace)
+import Data.List (unfoldr)
 
 type Location = Int
 type Token = (Location, String)
@@ -92,10 +93,18 @@ sep :: Parser ()
 sep = () <$ (pLit ":" *> pMunch (pSat (all isSpace)))
 line :: Parser (String, String)
 line = (,) <$> fileName <* sep <*> mimeType
+content :: Parser [(String, String)]
 content = pMunch1WithSep (pLit "\n") line <* pMunch (pSat (all isSpace))
+
+tokenize :: String -> [Token]
+tokenize s = unfoldr psi (1, s)
+  where
+    psi :: (Location, String) -> Maybe (Token, (Location, String))
+    psi (_, []) = Nothing
+    psi (n, (c:cs)) | c == '\n' = Just ((n, [c]), (n+1, cs))
+                    | otherwise = Just ((n, [c]), (n, cs))
 
 main :: IO [(String, String)]
 main = do
   inp <- readFile "mime.txt"
-  let toks = concatMap (\c -> [(1, [c])]) inp
-  return . fst . head . runParser content $ toks
+  return . fst . head . runParser content . tokenize $ inp
