@@ -2,6 +2,7 @@ module Parser where
 
 import Data.Char (isDigit, isSpace)
 import Data.List (unfoldr)
+import Data.Map as Map
 
 type Location = Int
 type Token = (Location, String)
@@ -104,7 +105,15 @@ tokenize s = unfoldr psi (1, s)
     psi (n, (c:cs)) | c == '\n' = Just ((n, [c]), (n+1, cs))
                     | otherwise = Just ((n, [c]), (n, cs))
 
-main :: IO [(String, String)]
+takeFirst :: [(a, b)] -> a
+takeFirst = fst . head 
+
+main :: IO (Map.Map String String)
 main = do
   inp <- readFile "mime.txt"
-  return . fst . head . runParser content . tokenize $ inp
+  return
+    . Map.fromList
+    . takeFirst
+    . runParser content
+    . tokenize
+    $ inp
