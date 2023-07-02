@@ -1,4 +1,17 @@
+{-# LANGUAGE NPlusKPatterns #-}
 module Dyna where
+
+import Debug.Trace (trace)
+
+f $? x = let v = f x
+             msg = "{- " ++ show x ++ " => " ++ show v ++ " -}"
+         in trace msg v
+
+-- dyna == histo . ana
+
+fib 0 = 0
+fib 1 = 1
+fib n = fib (n-1) + fib (n-2)
 
 data Nat = Z | S Nat deriving Show
 
@@ -6,97 +19,83 @@ out :: Nat -> Maybe Nat
 out Z     = Nothing
 out (S n) = Just n
 
---
--- Cata
---
---
---         [z, s]
--- Nat <----------- 1 + Nat
---   |               |
--- u |               |  id + u
---   v               v
---   X <----------- 1 + X
---         [c, f]
---
-foldn (c, f) = u
-  where u Z = c
-        u (S n) = f (u n)
+--        [Z, S]
+--  Nat <----------- 1 + Nat
+--    |               |
+--   u|               | id + u
+--    V               V
+--    X <----------- 1 + X
+--        [c, f]
 
-plus x = foldn (x, S)
-times x = foldn (Z, plus x)
-exp x = foldn (S Z, times x)
-toInt = foldn (0, (1+))
-
---
--- Ana
---
---
---         out
--- Nat -----------> 1 + Nat
---   ^               ^
--- v |               |  id + v
---   |               |
---   X <----------- 1 + X
---          psi
---
-unfoldn psi = v
-  where v x = case psi x of
-          Nothing -> Z
-          Just x' -> S (v x')
-
-fromInt = unfoldn (\x -> if x <= 0 then Nothing else Just (x-1))
-
---
--- Hist
---
 -- F(X) = 1 + X
--- uF == F(uF) = 1 + uF
--- F*(X) = A * F(X) = A * 1 + X = A + A * X
--- vF* == A + A * vF*
-data NEList a = Unit a | Cons a (NEList a) deriving Show
+-- uF = Nat
+foldn (c, f) = u
+  where
+    u Z = c
+    u (S n) = f (u n)
 
-in' :: (a, Maybe (NEList a)) -> NEList a
-in' (x, Nothing) = Unit x
-in' (x, Just xs) = Cons x xs
+toInt :: Nat -> Int
+toInt = foldn (0, (+1))
 
-hd :: NEList a -> a
+--        out
+--  Nat -----------> 1 + Nat
+--    A               A
+--   v|               | id + v
+--    |               |
+--    X -----------> 1 + X
+--        psi
+unfoldn psi = v
+  where
+    v x = case psi x of
+      Nothing -> Z
+      Just x' -> S (v x')
+
+fromInt :: Int -> Nat
+fromInt = unfoldn psi
+  where psi 0     = Nothing
+        psi (n+1) = Just n
+
+
+--    ....  3  2  1  0
+--          S  S  S  Z
+--          |  |  |  |
+--          A  A  A  A
+
+
+--       Nat <------------------------ F(Nat)
+--       / |                            |
+--    h / u|                            |Fu
+--     v   V                            V
+--   A <- vF* <---- A * F(vF*) <------ F(vF*)
+--      e     inF*             <phi, id>
+--
+-- F*(X) = A * F(X)  == A * (1 + X) = A + A * X
+-- vF* : fixed point of F* ==> NoEmptyList
+
+-- ListF(X) = 1 + A * X
+-- List A = 1 + A * List A
+data NEL a = Unit a | Cons a (NEL a) deriving Show
+
+hd :: NEL a -> a
 hd (Unit x)   = x
 hd (Cons x _) = x
 
-tl :: NEList a -> Maybe (NEList a)
+tl :: NEL a -> Maybe (NEL a)
 tl (Unit _)    = Nothing
 tl (Cons _ xs) = Just xs
 
---
---                          [z, s]
---          N  <----------------------------- 1 + N
---         /|                                   |
---        / |                                   |
---  hist /  | u              A <----+           | id + u
---      /   |                |       \  phi     |
---     /    v                v        +------ , v
---    A <-- [A]+ <---- A * (1 + [A]+) <------ 1 + [A]+
---       e         In*       ^        +-------'
---                           |       /
---                       1 + [A]+ <-+
---
-hist phi = hd . u
-  where u n = in' (v, m)
-          where m = fmap u (out n)
-                v = phi m
+histo :: Show a => (Maybe (NEL a) -> a) -> Nat -> a
+histo phi = hd . u
+  where u n = maybe (Unit val) (Cons val) n'
+          where n' = fmap u (out n)
+                val = phi $? n'
 
-dyna f g = hist f . unfoldn g
+dyna phi psi = histo phi . unfoldn psi
 
-------
-fib :: Integer -> Integer
-fib = dyna phi psi
-  where phi :: Maybe (NEList Integer) -> Integer
-        phi Nothing = 0
-        phi (Just (Unit _)) = 1
-        phi (Just (Cons x xs)) = x + hd xs
-        psi i = if i <= 0 then Nothing else Just (i-1)
+fib' = dyna phi psi
+  where
+    phi Nothing = 0
+    phi (Just x) = hd x + maybe 1 hd (tl x)
 
-fib' :: Integer -> Integer
-fib' = hist phi . fromInt
-  where phi :: Maybe (NEList Integer) -> Integer
-        phi = maybe 0 (\xs -> hd xs + maybe 1 hd (tl xs))
+    psi 0 = Nothing
+    psi (n+1) = Just n
