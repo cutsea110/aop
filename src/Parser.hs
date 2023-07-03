@@ -2,7 +2,7 @@ module Parser where
 
 import Data.Char (isDigit, isSpace)
 import Data.List (unfoldr)
-import Data.Map as Map
+import qualified Data.Map as Map
 
 type Location = Int
 type Token = (Location, String)
@@ -85,7 +85,16 @@ instance Monad Parser where
   (>>=) = pBind
 
 -------
+parseContent :: String -> Map.Map String String
+parseContent = Map.fromList . map parseLine . lines
 
+parseLine :: String -> (String, String)
+parseLine s = (fileName, mimeType)
+  where
+    (fileName, rest) = break (==':') s
+    mimeType = dropWhile (\ch -> ch == ':' || isSpace ch) rest
+
+{--
 fileName :: Parser String
 fileName = concat <$> pMunch1 (pSat (/=":"))
 mimeType :: Parser String
@@ -117,3 +126,4 @@ main = do
     . runParser content
     . tokenize
     $ inp
+--}
