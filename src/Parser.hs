@@ -94,6 +94,10 @@ parseLine s = (fileName, mimeType)
     (fileName, rest) = break (==':') s
     mimeType = dropWhile (\ch -> ch == ':' || isSpace ch) rest
 
+main = do
+  inp <- readFile "mime.txt"
+  return $ parseContent inp
+
 {--
 fileName :: Parser String
 fileName = concat <$> pMunch1 (pSat (/=":"))
