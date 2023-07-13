@@ -94,6 +94,7 @@ parseLine s = (fileName, mimeType)
     (fileName, rest) = break (==':') s
     mimeType = dropWhile (\ch -> ch == ':' || isSpace ch) rest
 
+main :: IO (Map.Map String String)
 main = do
   inp <- readFile "mime.txt"
   return $ parseContent inp
