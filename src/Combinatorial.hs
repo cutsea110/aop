@@ -4,18 +4,31 @@ module Combinatorial where
 import Data.List ((\\), intersect, union)
 import Prelude hiding (concat,elem)
 
+cata :: (b, (a, b) -> b) -> [a] -> b
 cata (c, f) = foldr (curry f) c
+outl :: (a, b) -> a
 outl (x, _) = x
+outr :: (a, b) -> b
 outr (_, y) = y
+cpp :: ([a], [b]) -> [(a, b)]
 cpp (x, y) = [(a, b) | a <- x, b <- y]
+cpl :: ([a], b) -> [(a, b)]
 cpl (x, b) = [(a, b) | a <- x]
+cpr :: (a, [b]) -> [(a, b)]
 cpr (a, x) = [(a, b) | b <- x]
+wrap :: a -> [a]
 wrap x = [x]
+nil :: [a]
 nil = []
+cat :: ([a], [a]) -> [a]
 cat (x, y) = x ++ y
+pair :: (a -> b, a -> c) -> a -> (b, c)
 pair (f, g) x = (f x, g x)
+cross :: (a -> c, b -> d) -> (a, b) -> (c, d)
 cross (f, g) (x, y) = (f x, g y)
+cons :: (a, [a]) -> [a]
 cons (x, xs) = x : xs
+list :: (a -> b) -> [a] -> [b]
 list = map
 
 subseqs :: [a] -> [[a]]
@@ -46,8 +59,11 @@ tails = cata (e, f)
         f :: (a, [[a]]) -> [[a]] 
         f (a, x:xs) = (a:x):x:xs
 
+concat :: [[a]] -> [a]
 concat = cata (nil, cat)
+new :: (a, [[a]]) -> [[a]]
 new = cons . cross (wrap, id)
+glues :: (a, [[a]]) -> [[[a]]]
 glues (a, []) = []
 glues (a, x:xs) = [(a:x):xs]
 
@@ -57,8 +73,10 @@ partitions = cata (e, f)
         e = wrap nil
         f = concat . list (cons . pair (new, glues)) . cpr
 
+splits :: [a] -> [([a], [a])]
 splits = uncurry zip . pair (inits, tails)
 
+adds :: (a, [a]) -> [[a]]
 adds (a, x) = [y ++ [a] ++ z | (y, z) <- splits x]
 
 perms :: [a] -> [[a]]
@@ -67,8 +85,11 @@ perms = cata (e, f)
         e = wrap nil
         f = concat . list adds . cpr
 
+consl :: (a, ([a], b)) -> ([a], b)
 consl (a, (x, y)) = (a:x, y)
+consr :: (a, (b, [a])) -> (b, [a])
 consr (a, (x, y)) = (x, a:y)
+conv :: (a, a) -> [a]
 conv (l, r) = [l, r]
 
 interleave :: [a] -> [([a],[a])]
