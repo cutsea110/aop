@@ -4,14 +4,6 @@ module Combinatorial where
 import Data.List ((\\), intersect, union)
 import Prelude hiding (concat,elem)
 
-{--
-subseqs :: [a] -> [[a]]
-subseqs = foldr f e
-    where
-        e = [[]]
-        f a xs = [a:x | x <- xs] ++ xs
---}
-
 cata (c, f) = foldr (curry f) c
 outl (x, _) = x
 outr (_, y) = y
@@ -57,7 +49,7 @@ tails = cata (e, f)
 concat = cata (nil, cat)
 new = cons . cross (wrap, id)
 glues (a, []) = []
-glues (a, x:xs) = [[[a] ++ x] ++ xs]
+glues (a, x:xs) = [(a:x):xs]
 
 partitions :: [a] -> [[[a]]]
 partitions = cata (e, f)
