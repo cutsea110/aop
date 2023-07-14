@@ -44,7 +44,7 @@ tails = cata (e, f)
     where
         e = wrap nil
         f :: (a, [[a]]) -> [[a]] 
-        f (a, (x:xs)) = [[a] ++ x] ++ [x] ++ xs
+        f (a, x:xs) = (a:x):x:xs
 
 concat = cata (nil, cat)
 new = cons . cross (wrap, id)
