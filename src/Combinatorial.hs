@@ -89,14 +89,17 @@ consl :: (a, ([a], b)) -> ([a], b)
 consl (a, (x, y)) = (a:x, y)
 consr :: (a, (b, [a])) -> (b, [a])
 consr (a, (x, y)) = (x, a:y)
-conv :: (a, a) -> [a]
-conv (l, r) = [l, r]
+cup :: ([a], [a]) -> [a]
+cup = uncurry (++)
 
+-- exercise 5.29
+-- interleave の逆関数
 interleave :: [a] -> [([a],[a])]
 interleave = cata (e, f)
     where
-        e = wrap (nil, nil)
-        f = concat . list (conv . pair (consl, consr)) . cpr
+        e = wrap nilp
+        f = cup . pair (list consl, list consr) . cpr
+        nilp = (nil, nil)
 
 isEqual :: Eq a => [a] -> [a] -> Bool
 xs `isEqual` ys = null (xs \\ ys) && null (ys \\ xs)
@@ -106,8 +109,6 @@ elem x = cata (e, f)
     where
         e = False
         f (y,b) = b || y `isEqual` x
-
-
 
 openSets :: Eq a => [a] -> [[[a]]]
 openSets u = filter isOpen $ candidates u
