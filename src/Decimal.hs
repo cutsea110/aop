@@ -1,7 +1,9 @@
+{-# LANGUAGE NPlusKPatterns #-}
 module Decimal where
 
 import Prelude hiding (exp)
 import Data.Char (chr, ord)
+import ExtEuclid (psi)
 
 val :: Int -> [Int] -> Int
 val b = foldl phi 0
@@ -37,6 +39,19 @@ data Nat = Z | S Nat deriving (Show, Eq)
 foldn c f = u
   where u Z = c
         u (S n) = f (u n)
+
+toInt :: Nat -> Int
+toInt = foldn 0 (1+)
+
+unfoldn psi = v
+  where v x = case psi x of
+          Nothing -> Z
+          Just x' -> S (v x')
+
+fromInt :: Int -> Nat
+fromInt = unfoldn psi
+  where psi 0     = Nothing
+        psi (n+1) = Just n
 
 add a b = foldn b S a
 mult a = foldn Z (add a)
