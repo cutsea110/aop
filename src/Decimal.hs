@@ -1,5 +1,6 @@
 module Decimal where
 
+import Prelude hiding (exp)
 import Data.Char (chr, ord)
 
 val :: Int -> [Int] -> Int
@@ -30,3 +31,24 @@ toChar :: Int -> Char
 toChar n
   | 0 <= n && n <= 9 = chr (ord '0' + n)
   | 10 <= n && n <= 15 = chr (ord 'a' + n - 10)
+
+
+data Nat = Z | S Nat deriving (Show, Eq)
+foldn c f = u
+  where u Z = c
+        u (S n) = f (u n)
+
+add a b = foldn b S a
+mult a = foldn Z (add a)
+exp a = foldn (S Z) (mult a)
+modulo b = foldn Z (succ b)
+  where
+    succ b a
+      | S a == b  = Z
+      | otherwise = S a
+
+data Bit = O | I deriving (Eq, Show)
+data Bin = Nil | Snoc Bin Bit deriving (Eq, Show)
+foldbin c f = u
+  where u Nil = c
+        u (Snoc b x) = f (u b) x
