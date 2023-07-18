@@ -117,3 +117,11 @@ exp' base = foldbin one (op base) . convert'
         op a n d
           | d == O    = n `mult` n
           | otherwise = a `mult` (n `mult` n)
+
+exp'' :: Int -> Int -> Int
+exp'' a b
+  | b == 0    = 1
+  | otherwise = op a (exp'' a (b `div` 2), b `mod` 2)
+    where op a (n, d)
+            | d == 0    = n * n
+            | otherwise = a * (n * n)
