@@ -1,7 +1,7 @@
 {-# LANGUAGE NPlusKPatterns #-}
 module Decimal where
 
-import Prelude hiding (exp, pred)
+import Prelude hiding (exp, pred, divMod)
 import Data.Char (chr, ord)
 import ExtEuclid (psi)
 
@@ -65,6 +65,14 @@ a `divide` b = f Z a b
           | a < b     = d
           | otherwise = f (S d) (a `sub` b) b
 
+-- | return values is (div, mod)
+divMod :: Nat -> Nat -> (Nat, Nat)
+a `divMod` b = f Z a b
+  where
+    f d a b
+      | a < b     = (d, a)
+      | otherwise = f (S d) (a `sub` b) b
+
 add a b = foldn b S a
 mult a = foldn Z (add a)
 exp a = foldn (S Z) (mult a)
@@ -80,6 +88,11 @@ foldbin c f = u
   where u Nil = c
         u (Snoc b x) = f (u b) x
 
+unfoldbin psi = v
+  where v x = case psi x of
+          Nothing -> Nil
+          Just (x', y) -> Snoc (v x') y
+
 convert :: Bin -> Nat
 convert = foldbin zero shift
   where zero = Z
@@ -88,7 +101,14 @@ convert = foldbin zero shift
           I -> S Z
 
 convert' :: Nat -> Bin
-convert' = undefined
+convert' = unfoldbin psi
+  where
+    psi :: Nat -> Maybe (Nat, Bit)
+    psi n = case n `divMod` S (S Z) of
+      (Z,  Z)   -> Nothing
+      (Z,  S Z) -> Just (Z, I)
+      (n', Z)   -> Just (n', O)
+      (n', S Z) -> Just (n', I)
 
 -- | high speed exponentiation
 exp' :: Nat -> Nat -> Nat
