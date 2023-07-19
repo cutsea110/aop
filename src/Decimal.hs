@@ -125,3 +125,13 @@ exp'' a b
     where op a (n, d)
             | d == 0    = n * n
             | otherwise = a * (n * n)
+
+modulo'' :: Int -> Int -> Int
+modulo'' b a
+  | a == 0 = 0
+  | even a = op b (modulo'' b (a `div` 2), 0)
+  | odd  a = op b (modulo'' b (a `div` 2), 1)
+  where op b (r, d)
+          | n >= b    = n - b
+          | otherwise = n
+          where n = 2 * r + d
