@@ -59,28 +59,28 @@ pred (S n) = n
 
 sub :: Nat -> Nat -> Nat
 sub a = foldn a pred
-divide :: Nat -> Nat -> Nat
-a `divide` b = f Z a b
-  where f d a b
-          | a < b     = d
-          | otherwise = f (S d) (a `sub` b) b
 
 -- | return values is (div, mod)
 divMod :: Nat -> Nat -> (Nat, Nat)
-a `divMod` b = f Z a b
+divMod b = foldn (Z, Z) (succ b)
   where
-    f d a b
-      | a < b     = (d, a)
-      | otherwise = f (S d) (a `sub` b) b
+    -- this is the essence of divMod
+    succ b (q, r)
+      | S r == b  = (S q, Z)
+      | otherwise = (q, S r)
 
-add a b = foldn b S a
+add a  = foldn a S
 mult a = foldn Z (add a)
-exp a = foldn (S Z) (mult a)
-modulo b = foldn Z (succ b)
-  where
-    succ b a
-      | S a == b  = Z
-      | otherwise = S a
+exp a  = foldn (S Z) (mult a)
+
+divide b = fst . divMod b
+modulo b = snd . divMod b
+
+even' :: Nat -> Bool
+even' = foldn True not
+
+odd' :: Nat -> Bool
+odd' = foldn False not
 
 data Bit = O | I deriving (Eq, Show)
 data Bin = Nil | Snoc Bin Bit deriving (Eq, Show)
