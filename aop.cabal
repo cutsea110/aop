@@ -95,6 +95,7 @@ library
                      , TakePrefix
                      , TicketProblem
                      , Traditional
+                     , Transaction
                      , Tree
                      , Treemap
                      , TutorialZygo
