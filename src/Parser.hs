@@ -12,7 +12,7 @@ pSat :: (String -> Bool) -> Parser String
 pSat p = Parser f
   where
     f [] = []
-    f ((_, tok):toks) = if p tok then [(tok, toks)] else []
+    f ((_, tok):toks) = [(tok, toks) | p tok]
 
 pLit :: String -> Parser String
 pLit s = pSat (== s)
