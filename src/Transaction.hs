@@ -1,6 +1,33 @@
 module Transaction where
 
 import Control.Arrow (first)
+import Control.Monad.Trans.Class (MonadTrans(..))
+import Control.Monad.IO.Class (MonadIO(..))
+
+newtype TransactionT ctx m a = TxT { runT :: ctx -> m (a, ctx) }
+instance MonadTrans (TransactionT ctx) where
+  lift m = TxT (\ctx -> do
+                   x <- m
+                   return (x, ctx))
+instance Monad m => Monad (TransactionT cxt m) where
+  return = pure
+  tx >>= f = TxT (\ctx -> do
+                      (x, ctx') <- runT tx ctx
+                      runT (f x) ctx')
+instance Monad m => Functor (TransactionT ctx m) where
+  fmap f tx = TxT (\ctx -> do
+                      (x, ctx') <- runT tx ctx
+                      return (f x, ctx'))
+
+instance Monad m => Applicative (TransactionT ctx m) where
+  pure x = TxT (\ctx -> return (x, ctx))
+  f <*> tx = TxT (\ctx -> do
+                       (f', ctx') <- runT f ctx
+                       (x, ctx'') <- runT tx ctx'
+                       return (f' x, ctx''))
+
+instance MonadIO m => MonadIO (TransactionT ctx m) where
+  liftIO = lift . liftIO
 
 newtype Transaction ctx e a = Tx { run :: ctx -> Either e (a, ctx) }
 
