@@ -42,6 +42,10 @@ instance MonadFail m => MonadFail (TransactionT ctx m) where
     fail $ "TransactionT: failed\n" ++ msg
 
 class Monad m => MonadTransaction ctx m | m -> ctx where
+  begin :: ctx -> m a
+  commit :: m a -> Either e a
+  rollback :: m a -> Either e a
+
   txEmpty :: a -> m a
   txEmpty = return
   txBind :: m a -> (a -> m b) -> m b
@@ -56,4 +60,7 @@ class Monad m => MonadTransaction ctx m | m -> ctx where
   txAp :: m (a -> b) -> m a -> m b
   txAp = (<*>)
 
-instance Monad m => MonadTransaction ctx (TransactionT ctx m)
+instance Monad m => MonadTransaction ctx (TransactionT ctx m) where
+  begin ctx = undefined
+  commit tx = undefined
+  rollback tx = undefined
