@@ -1,3 +1,6 @@
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE FunctionalDependencies #-}
+{-# LANGUAGE FlexibleInstances #-}
 module Transaction where
 
 import Control.Arrow (first)
@@ -10,7 +13,6 @@ instance MonadTrans (TransactionT ctx) where
                    x <- m
                    return (x, ctx))
 instance Monad m => Monad (TransactionT cxt m) where
-  return = pure
   tx >>= f = TxT (\ctx -> do
                       (x, ctx') <- runT tx ctx
                       runT (f x) ctx')
@@ -29,6 +31,17 @@ instance Monad m => Applicative (TransactionT ctx m) where
 instance MonadIO m => MonadIO (TransactionT ctx m) where
   liftIO = lift . liftIO
 
+instance MonadFail m => MonadFail (TransactionT ctx m) where
+  fail msg = TxT (\ctx -> fail $ "TransactionT: failed\n" ++ msg)
+
+class Monad m => MonadTransaction ctx m | m -> ctx where
+  begin :: m ctx
+  commit :: ctx -> m ()
+  rollback :: ctx -> m ()
+
+type Transaction ctx a = TransactionT ctx IO a
+
+{-
 newtype Transaction ctx e a = Tx { run :: ctx -> Either e (a, ctx) }
 
 -- return
@@ -59,3 +72,4 @@ tx1 `txAlt` tx2 = Tx g
   where g ctx = case run tx1 ctx of
           Left _ -> run tx2 ctx
           r      -> r
+-}
