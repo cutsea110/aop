@@ -35,9 +35,9 @@ instance MonadFail m => MonadFail (TransactionT ctx m) where
   fail msg = TxT (\ctx -> fail $ "TransactionT: failed\n" ++ msg)
 
 class Monad m => MonadTransaction ctx m | m -> ctx where
-  begin :: m ctx
-  commit :: ctx -> m ()
-  rollback :: ctx -> m ()
+  begin :: ctx -> m a
+  commit :: m a -> m ()
+  rollback :: m a -> m ()
 
 type Transaction ctx a = TransactionT ctx IO a
 
