@@ -82,6 +82,7 @@ library
                      , Promorphism
                      , Puzzle8
                      , Rose
+                     , Search
                      , ShortestPathSearch
                      , SimPath
                      , SimpleSort
