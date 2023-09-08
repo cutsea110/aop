@@ -3,6 +3,9 @@ module Search where
 import Data.Maybe (listToMaybe, mapMaybe)
 import Data.List (find)
 
+-- | ref.) https://malv.in/posts/2021-01-09-depth-first-and-breadth-first-search-in-haskell.html
+--
+
 data Prob a = Prob { start :: a
                    , expand :: a -> [a]
                    , isDone :: a -> Bool
