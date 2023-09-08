@@ -30,7 +30,7 @@ bfs (Prob s e d) = loop [s]
 slightlyBetterBfs :: Eq a => Algo a
 slightlyBetterBfs (Prob s e d) = loop [s]
   where
-    loop xs | any d xs = find d xs
+    loop xs | any d xs  = find d xs
             | otherwise = loop (nub $ concatMap e xs)
 
 ------------------------------------------------------------
