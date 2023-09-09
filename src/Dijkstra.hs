@@ -1,6 +1,7 @@
 module Dijkstra where
 
 import Prelude hiding (map, foldr)
+import Data.List (nub, delete)
 
 -- | グラフアルゴリズムの構成的定義と変換に関する研究 by 篠埜 功
 -- ref.) https://www.cs.ise.shibaura-it.ac.jp/~sasano/pub/master.pdf
@@ -74,7 +75,7 @@ depthfold f u vs = fst . depthfold' f u vs
 depthfold' :: (Context -> a -> a -> a) -> a -> [Vertex] -> Graph -> (a, Graph)
 depthfold' f u []     g = (u, g)
 depthfold' f u (v:vs) g
-  | gmember v g = let ((p,n,s), g') = apm v g
+  | gmember v g = let ((p,n,s), g') = apm v g -- (p,n,s) :&: g' = apm v g
                       (r1,g1) = depthfold' f u s g'
                       (r2,g2) = depthfold' f u vs g1
                   in (f (p,n,s) r1 r2, g2)
@@ -91,7 +92,7 @@ breadthfold f u vs = fst . breadthfold' f u vs
 breadthfold' :: (Context -> a -> a -> a) -> a -> [Vertex] -> Graph -> (a, Graph)
 breadthfold' f u []     g = (u, g)
 breadthfold' f u (v:vs) g
-  | gmember v g = let ((p,n,s), g') = apm v g
+  | gmember v g = let ((p,n,s), g') = apm v g -- (p,n,s) :&: g' = apm v g
                       (r1,g1) = breadthfold' f u vs g'
                       (r2,g2) = breadthfold' f u s g1
                   in (f (p,n,s) r1 r2, g2)
@@ -104,4 +105,10 @@ bfs = breadthfold f []
 -- | apm: Active Pattern Matching
 --   指定された頂点およびその頂点に付随する枝と、それらを除いたグラフとに分割する
 apm :: Vertex -> Graph -> (Context, Graph)
-apm = undefined
+apm v g = sub g ([],[])
+  where sub Empty (p,s) = ((p,v,s), Empty)
+        sub ((p1,v1,s1) :&: g1) (p,s)
+          | v == v1   = sub g1 (p1++p, s1++s)
+          | otherwise = let (c', g') = sub g1 (p,s)
+                        in (c', (delete v p1,v1,delete v s1) :&: g')
+
