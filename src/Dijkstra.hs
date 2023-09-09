@@ -67,3 +67,41 @@ gmember :: Vertex -> Graph -> Bool
 gmember u = ufold (\(p,v,s) r -> u == v || r) False
 
 g28 = (["d"],"a",["b"]) :&: ([],"b",["c","d"]) :&: ([],"c",[]) :&: ([],"d",[]) :&: Empty
+
+depthfold :: (Context -> a -> a -> a) -> a -> [Vertex] -> Graph -> a
+depthfold f u vs = fst . depthfold' f u vs
+
+depthfold' :: (Context -> a -> a -> a) -> a -> [Vertex] -> Graph -> (a, Graph)
+depthfold' f u []     g = (u, g)
+depthfold' f u (v:vs) g
+  | gmember v g = let ((p,n,s), g') = apm v g
+                      (r1,g1) = depthfold' f u s g'
+                      (r2,g2) = depthfold' f u vs g1
+                  in (f (p,n,s) r1 r2, g2)
+  | otherwise   = depthfold' f u vs g
+
+data Tree' a = Node a [Tree' a] deriving Show
+dfs :: [Vertex] -> Graph -> [Tree' Vertex]
+dfs = depthfold f []
+  where f (p,n,s) r1 r2 = Node n r1 : r2
+
+breadthfold :: (Context -> a -> a -> a) -> a -> [Vertex] -> Graph -> a
+breadthfold f u vs = fst . breadthfold' f u vs
+
+breadthfold' :: (Context -> a -> a -> a) -> a -> [Vertex] -> Graph -> (a, Graph)
+breadthfold' f u []     g = (u, g)
+breadthfold' f u (v:vs) g
+  | gmember v g = let ((p,n,s), g') = apm v g
+                      (r1,g1) = breadthfold' f u vs g'
+                      (r2,g2) = breadthfold' f u s g1
+                  in (f (p,n,s) r1 r2, g2)
+  | otherwise   = breadthfold' f u vs g
+
+bfs :: [Vertex] -> Graph -> [Tree' Vertex]
+bfs = breadthfold f []
+  where f (p,n,s) r1 r2 = Node n r2 : r1
+
+-- | apm: Active Pattern Matching
+--   指定された頂点およびその頂点に付随する枝と、それらを除いたグラフとに分割する
+apm :: Vertex -> Graph -> (Context, Graph)
+apm = undefined
