@@ -68,6 +68,7 @@ gmember :: Vertex -> Graph -> Bool
 gmember u = ufold (\(p,v,s) r -> u == v || r) False
 
 g28 = (["d"],"a",["b"]) :&: ([],"b",["c","d"]) :&: ([],"c",[]) :&: ([],"d",[]) :&: Empty
+g32 = (["4","5"],"6",["2"]) :&: (["2","3"],"5",[]) :&: (["2"],"4",["1"]) :&: (["1"],"3",["2"]) :&: (["1"],"2",[]) :&: ([],"1",[]) :&: Empty
 
 depthfold :: (Context -> a -> a -> a) -> a -> [Vertex] -> Graph -> a
 depthfold f u vs = fst . depthfold' f u vs
