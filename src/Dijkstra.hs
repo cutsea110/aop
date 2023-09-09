@@ -110,6 +110,12 @@ apm v g = sub g ([],[])
   where sub Empty (p,s) = ((p,v,s), Empty)
         sub ((p1,v1,s1) :&: g1) (p,s)
           | v == v1   = sub g1 (p1++p, s1++s)
-          | otherwise = let (c', g') = sub g1 (p,s)
-                        in (c', (delete v p1,v1,delete v s1) :&: g')
+          | otherwise = let ((p2,_,s2), g2) = sub g1 (p,s)
+                            (p3,s2') = if v `elem` p1
+                                       then (delete v p1, nub $ v1:s2)
+                                       else (p1,s2)
+                            (s3,p2') = if v `elem` s1
+                                       then (delete v s1, nub $ v1:p2)
+                                       else (s1,p2)
+                        in ((p2',v,s2'), (p3,v1,s3) :&: g2)
 
