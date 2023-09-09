@@ -38,11 +38,32 @@ size  = foldt (const 1, uncurry (+))
 depth = foldt (const 1, \(l, r) -> 1 + max l r)
 
 
--- | Graph
-data GraphCstr1 = Empty
+{-- | Graph
+data Graph = Empty
            | Edge
            | Vert Int Int -- In / Out
            | Swap Int Int -- FirstHalf / SecondHalf
-           | Pack GraphCstr1 GraphCstr1
-           | Join GraphCstr1 GraphCstr1
+           | Pack Graph Graph
+           | Join Graph Graph
            deriving Show
+-}
+
+-- | Graph
+data Graph = Empty | Context :&: Graph deriving Show
+type Context = ([Vertex], Vertex, [Vertex])
+type Vertex = String
+infixr 5 :&:
+
+
+ufold :: (Context -> a -> a) -> a -> Graph -> a
+ufold f g = u
+  where u Empty = g
+        u (c :&: h) = f c (u h)
+
+greverse :: Graph -> Graph
+greverse = ufold (\(p,v,s) r -> (s,v,p) :&: r) Empty
+
+gmember :: Vertex -> Graph -> Bool
+gmember u = ufold (\(p,v,s) r -> u == v || r) False
+
+g28 = (["d"],"a",["b"]) :&: ([],"b",["c","d"]) :&: ([],"c",[]) :&: ([],"d",[]) :&: Empty
