@@ -50,7 +50,7 @@ data Graph = Empty
 -}
 
 -- | Graph
-data Graph = Empty | Context :&: Graph deriving Show
+data Graph = Empty | Context :&: Graph deriving (Show, Eq)
 type Context = ([Vertex], Vertex, [Vertex])
 type Vertex = String
 infixr 5 :&:
@@ -114,6 +114,29 @@ apm v g = sub g ([],[])
                                        then (delete v s1, nub $ v1:p2)
                                        else (s1,p2)
                         in ((p2',v,s2'), (p3,v1,s3) :&: g2)
+
+apm' :: Vertex -> Graph -> (Context, Graph)
+apm' v g = sub g ([],[])
+  where sub Empty (p,s) = ((p,v,s), Empty)
+        sub ((p1,v1,s1) :&: g1) (p,s)
+          | v == v1   = sub g1 (p1++p, s1++s)
+          | otherwise = let ((p2,_,s2), g2) = sub g1 (p,s)
+                            (p3,s2') = delCons (v, v1) (p1, s2)
+                            (s3,p2') = delCons (v, v1) (s1, p2)
+                        in ((p2',v,s2'), (p3,v1,s3) :&: g2)
+
+del :: Eq a => a -> [a] -> Maybe [a]
+del _ [] = Nothing
+del v (x:xs)
+  | v == x    = Just xs
+  | otherwise = fmap (x:) $ del v xs
+
+delCons :: Eq a => (a, b) -> ([a],[b]) -> ([a],[b])
+delCons (x, y) (xs, ys) = maybe (xs, ys) (\xs' -> (xs', y:ys)) $ del x xs
+
+-- | for apm refactor
+test28 = all (\v -> apm v g28 == apm' v g28) ["a","b","c","d","e"]
+test32 = all (\v -> apm v g32 == apm' v g32) ["1","2","3","4","5","6","7"]
 
 
 -- | Graph examples
