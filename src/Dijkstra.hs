@@ -1,3 +1,4 @@
+{-# LANGUAGE TupleSections #-}
 module Dijkstra where
 
 import Prelude hiding (map, foldr)
@@ -118,7 +119,7 @@ del v (x:xs)
   | otherwise = fmap (x:) $ del v xs
 
 delCons :: Eq a => (a, b) -> ([a],[b]) -> ([a],[b])
-delCons (x, y) (xs, ys) = maybe (xs, ys) (\xs' -> (xs', y:ys)) $ del x xs
+delCons (x, y) p@(xs, ys) = maybe p (,y:ys) $ del x xs
 
 -- | Graph examples
 g28 = (["d"],"a",["b"]) :&: ([],"b",["c","d"]) :&: ([],"c",[]) :&: ([],"d",[]) :&: Empty
