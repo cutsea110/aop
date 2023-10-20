@@ -91,7 +91,7 @@ ccat :: [a] -> [a] -> [a]
 ccat = foldr (id, compose . cross (ccons, id))
 
 phi :: (Either () (a, [a]), [a]) -> Either ((), [a]) (a, ([a], [a]))
-phi = either Left (Right . assocr) . distl
+phi = fmap assocr . distl
 
 -- B == [a]
 -- B^B == [a] -> [a]
