@@ -145,7 +145,7 @@ tips' :: Tree a -> [a]
 tips' t = foldt (curry cons, compose) t []
 
 phi' :: (Either a (Tree a, Tree a), [a]) -> Either (a, [a]) (Tree a, (Tree a, [a]))
-phi' = either Left (Right . assocr) . distl
+phi' = fmap assocr . distl
 
 h :: Either a (Tree a, Tree a) -> [a] -> Either [a] [a]
 h = curry $ either (Left . cons) (Right . tipcat . cross (id, tipcat)) . phi'
