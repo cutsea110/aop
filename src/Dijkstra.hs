@@ -108,9 +108,9 @@ apm v g = sub g ([],[])
         sub ((p1,v1,s1) :&: g1) (p,s)
           | v == v1   = sub g1 (p1++p, s1++s)
           | otherwise = let ((p2,_,s2), g2) = sub g1 (p,s)
-                            (p3,s2') = delCons (v, v1) (p1, s2)
-                            (s3,p2') = delCons (v, v1) (s1, p2)
-                        in ((p2',v,s2'), (p3,v1,s3) :&: g2)
+                            (p',s2') = delCons (v, v1) (p1, s2)
+                            (s',p2') = delCons (v, v1) (s1, p2)
+                        in ((p2',v,s2'), (p',v1,s') :&: g2)
 
 del :: Eq a => a -> [a] -> Maybe [a]
 del _ [] = Nothing
@@ -124,4 +124,3 @@ delCons (x, y) p@(xs, ys) = maybe p (,y:ys) $ del x xs
 -- | Graph examples
 g28 = (["d"],"a",["b"]) :&: ([],"b",["c","d"]) :&: ([],"c",[]) :&: ([],"d",[]) :&: Empty
 g32 = (["4","5"],"6",["2"]) :&: (["2","3"],"5",[]) :&: (["2"],"4",["1"]) :&: (["1"],"3",["2"]) :&: (["1"],"2",[]) :&: ([],"1",[]) :&: Empty
-
