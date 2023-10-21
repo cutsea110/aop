@@ -3,7 +3,7 @@
 module Curry where
 
 import Prelude hiding (null, pred, const, foldr, lines)
-import Data.Void
+import Data.Void (Void, absurd)
 import Data.List (unfoldr)
 
 type Boolean = Either () ()
