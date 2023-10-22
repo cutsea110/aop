@@ -7,6 +7,7 @@ import Data.Void (Void, absurd)
 import Data.List (unfoldr)
 
 type Boolean = Either () ()
+true, false :: Boolean
 true  = Right ()
 false = Left ()
 
