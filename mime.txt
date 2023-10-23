@@ -1,0 +1,9 @@
+ChangeLog.md:       text/plain
+LICENSE:            text/plain
+README.md:          text/plain
+Setup.hs:           text/plain
+aop.cabal:          text/plain
+dist-newstyle:      inode/directory
+mime.txt:           inode/x-empty
+src:                inode/directory
+test test test.txt: text/plain
