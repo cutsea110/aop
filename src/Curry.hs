@@ -55,8 +55,10 @@ cross (f, g) (x, y) = (f x, g y)
 bool :: (a -> Boolean) -> a -> Either a a
 bool p = either (Left . unit) (Right . unit) . distr . pair (id, p)
 
+pred_test :: [Either Integer Integer]
 pred_test = map (bool isEven) [1..10]
-  where isEven x = if even x then true else false
+  where isEven :: Integer -> Boolean
+        isEven x = if even x then true else false
 
 conditional :: (a -> Boolean) -> (a -> b) -> (a -> b) -> a -> b
 conditional p f g = either f g . bool p
