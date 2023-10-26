@@ -33,8 +33,27 @@ apply :: S4Op -> [Int] -> [Int]
 apply name is = map (\i -> op name !! pred i) is
 
 table :: IO ()
-table = forM_ s4Names $ \l -> do
-  forM_ s4Names $ \r -> do
-    let o = apply l $ apply r [1,2,3,4]
-    printf "%4s" (opNameOf o)
-  putStrLn ""
+table = do
+  -- header
+  putHeader
+  -- separator
+  putSeparator
+  -- lines
+  forM_ s4Names $ \l -> do
+    printf "%4s |" l
+    forM_ s4Names $ \r -> do
+      let o = apply l $ apply r [1,2,3,4]
+      printf "%4s" (opNameOf o)
+    putStrLn ""
+  where
+    putNewline = putStrLn ""
+    
+    putHeader = do
+      printf "     |"
+      forM_ s4Names $ printf "%4s"
+      putNewline
+      
+    putSeparator = do
+      putStr "-----+"
+      forM_ s4Names $ \_ -> putStr "----"
+      putNewline
