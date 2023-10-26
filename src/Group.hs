@@ -1,5 +1,8 @@
 module Group where
 
+import Control.Monad (forM_)
+import Text.Printf (printf)
+
 import Combinatorial (perms)
 
 type S4Op = String
@@ -29,6 +32,9 @@ opNameOf xs = case lookup xs dict of
 apply :: S4Op -> [Int] -> [Int]
 apply name is = map (\i -> op name !! pred i) is
 
-table :: [(S4Op, S4Op, S4Op)]
-table = [(l, r, opNameOf o)| l <- s4Names, r <- s4Names, let o = apply l $ apply r [1,2,3,4]]
-
+table :: IO ()
+table = forM_ s4Names $ \l -> do
+  forM_ s4Names $ \r -> do
+    let o = apply l $ apply r [1,2,3,4]
+    printf "%4s" (opNameOf o)
+  putStrLn ""
