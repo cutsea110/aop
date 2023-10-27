@@ -1,6 +1,7 @@
 module Group where
 
 import Control.Monad (forM_)
+import Data.List (sortOn)
 import Text.Printf (printf)
 
 import Combinatorial (perms)
@@ -20,6 +21,14 @@ op :: S4Op -> [Int]
 op name = case lookup name s4 of
   Just xs -> xs
   Nothing -> error $ "op: " ++ name ++ " not found"
+
+complement :: S4Op -> S4Op
+complement name = opNameOf $ map fst $ sortOn snd $ zip [1..] (op name)
+
+covariantOver :: S4Op -> S4Op -> [Int] -> [Int]
+f `covariantOver` g = apply g . apply f . apply g'
+  where
+    g' = complement g
 
 opNameOf :: [Int] -> S4Op
 opNameOf xs = case lookup xs dict of
