@@ -30,7 +30,7 @@ opNameOf xs = case lookup xs dict of
     swap (x,y) = (y,x)
 
 apply :: S4Op -> [Int] -> [Int]
-apply name is = map (\i -> op name !! pred i) is
+apply name = map (\i -> op name !! pred i)
 
 table :: IO ()
 table = do
