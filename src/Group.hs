@@ -14,6 +14,12 @@ toName n = "s" ++ show n
 s4 :: [(S4Op, [Int])]
 s4 = zip s4Names (perms [1..4])
 
+g :: [[Int]]
+g = [[1,2,3,4],[2,1,4,3],[3,4,1,2],[4,3,2,1]]
+
+compose :: S4Op -> S4Op -> S4Op
+compose op1 op2 = opNameOf . apply op1 . apply op2 $ [1,2,3,4]
+
 s4Names :: [S4Op]
 s4Names = fmap toName [0..23]
 
@@ -23,8 +29,9 @@ op name = case lookup name s4 of
   Nothing -> error $ "op: " ++ name ++ " not found"
 
 complement :: S4Op -> S4Op
-complement name = opNameOf $ map fst $ sortOn snd $ zip [1..] (op name)
+complement = opNameOf . map fst . sortOn snd . zip [1..] . op
 
+-- | g . f . g'
 covariantOver :: S4Op -> S4Op -> [Int] -> [Int]
 f `covariantOver` g = apply g . apply f . apply g'
   where
@@ -51,8 +58,7 @@ table = do
   forM_ s4Names $ \l -> do
     printf "%4s |" l
     forM_ s4Names $ \r -> do
-      let o = apply l $ apply r [1,2,3,4]
-      printf "%4s" (opNameOf o)
+      printf "%4s" (compose l r)
     putStrLn ""
   where
     putNewline = putStrLn ""
