@@ -1,7 +1,7 @@
 module Group where
 
 import Control.Monad (forM_)
-import Data.List (sortOn)
+import Data.List (sortOn, nub, sort)
 import Text.Printf (printf)
 
 import Combinatorial (perms)
@@ -16,6 +16,14 @@ s4 = zip s4Names (perms [1..4])
 
 g :: [[Int]]
 g = [[1,2,3,4],[2,1,4,3],[3,4,1,2],[4,3,2,1]]
+
+leftCosets, rightCosets :: [[S4Op]]
+leftCosets  = nub $ map (\op -> sort $ map (flip compose op . opNameOf) g) s4Names
+rightCosets = nub $ map (\op -> sort $ map (compose op . opNameOf) g) s4Names
+leftEqualRight op = l == r
+  where l = map (\op' -> apply (compose op  op') [1,2,3,4]) gNames
+        r = map (\op' -> apply (compose op' op ) [1,2,3,4]) gNames
+        gNames = map opNameOf g
 
 compose :: S4Op -> S4Op -> S4Op
 compose op1 op2 = opNameOf . apply op1 . apply op2 $ [1,2,3,4]
