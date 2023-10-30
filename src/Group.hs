@@ -22,11 +22,11 @@ leftCosets  = nub $ map lCoset s4Names
 rightCosets = nub $ map rCoset s4Names
 
 lCoset, rCoset :: S4Op -> [S4Op]
-lCoset op = sort $ map (opNameOf . (\op' -> apply (compose op  op') [1,2,3,4]) . opNameOf) g
-rCoset op = sort $ map (opNameOf . (\op' -> apply (compose op'  op) [1,2,3,4]) . opNameOf) g
+lCoset op = map (opNameOf . (\op' -> apply (compose op  op') [1,2,3,4]) . opNameOf) g
+rCoset op = map (opNameOf . (\op' -> apply (compose op'  op) [1,2,3,4]) . opNameOf) g
 
 leftEqualRight :: S4Op -> Bool
-leftEqualRight op = lCoset op == rCoset op
+leftEqualRight op = sort (lCoset op) == sort (rCoset op)
 
 compose :: S4Op -> S4Op -> S4Op
 compose op1 op2 = opNameOf . apply op1 . apply op2 $ [1,2,3,4]
