@@ -9,7 +9,7 @@ import Combinatorial (perms)
 type S4Op = String
 
 toName :: Int -> S4Op
-toName n = "s" ++ show n
+toName n = printf "s%02d" n
 
 s4 :: [(S4Op, [Int])]
 s4 = zip s4Names (perms [1..4])
@@ -18,12 +18,15 @@ g :: [[Int]]
 g = [[1,2,3,4],[2,1,4,3],[3,4,1,2],[4,3,2,1]]
 
 leftCosets, rightCosets :: [[S4Op]]
-leftCosets  = nub $ map (\op -> sort $ map (flip compose op . opNameOf) g) s4Names
-rightCosets = nub $ map (\op -> sort $ map (compose op . opNameOf) g) s4Names
-leftEqualRight op = l == r
-  where l = map (\op' -> apply (compose op  op') [1,2,3,4]) gNames
-        r = map (\op' -> apply (compose op' op ) [1,2,3,4]) gNames
-        gNames = map opNameOf g
+leftCosets  = nub $ map lCoset s4Names
+rightCosets = nub $ map rCoset s4Names
+
+lCoset, rCoset :: S4Op -> [S4Op]
+lCoset op = sort $ map (opNameOf . (\op' -> apply (compose op  op') [1,2,3,4]) . opNameOf) g
+rCoset op = sort $ map (opNameOf . (\op' -> apply (compose op  op') [1,2,3,4]) . opNameOf) g
+
+leftEqualRight :: S4Op -> Bool
+leftEqualRight op = lCoset op == rCoset op
 
 compose :: S4Op -> S4Op -> S4Op
 compose op1 op2 = opNameOf . apply op1 . apply op2 $ [1,2,3,4]
