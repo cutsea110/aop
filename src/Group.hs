@@ -9,7 +9,7 @@ import Combinatorial (perms)
 type S4Op = String
 
 toName :: Int -> S4Op
-toName n = printf "s%02d" n
+toName = printf "s%02d"
 
 s4 :: [(S4Op, [Int])]
 s4 = zip s4Names (perms [1..4])
