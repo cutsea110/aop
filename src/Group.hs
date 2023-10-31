@@ -8,9 +8,6 @@ import Combinatorial (perms)
 
 type S4Op = String
 
-toName :: Int -> S4Op
-toName = printf "s%02d"
-
 s4 :: [(S4Op, [Int])]
 s4 = zip s4Names (perms [1..4])
 
@@ -32,7 +29,7 @@ compose :: S4Op -> S4Op -> S4Op
 compose op1 op2 = opNameOf . apply op1 . apply op2 $ [1,2,3,4]
 
 s4Names :: [S4Op]
-s4Names = fmap toName [0..23]
+s4Names = fmap (printf "s%02d") ([0..23] :: [Int])
 
 op :: S4Op -> [Int]
 op name = case lookup name s4 of
