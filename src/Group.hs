@@ -2,10 +2,31 @@ module Group where
 
 import Control.Monad (forM_)
 import Data.List (sortOn, nub, sort)
+import Data.Monoid
 import Text.Printf (printf)
 
 import Combinatorial (perms)
 
+type DIM = Int
+-- | Symmetric group of degree n
+data Sym = Sym DIM [Int] deriving (Eq, Show)
+
+syms :: DIM -> [Sym]
+syms n = Sym n <$> perms [1..n]
+
+apply :: Sym -> Sym -> Sym
+apply (Sym n xs) (Sym n' ys)
+  | n == n'   = Sym n $ map ((xs!!) . pred) ys
+  | otherwise = error "apply: dimensions do not match" 
+
+test :: [Endo Sym]
+test = map (Endo . apply) (syms 3)
+test_ :: Sym
+test_ = appEndo (test!!3 <> test!!2) $ Sym 3 [1,2,3]
+
+---------------
+
+{--
 type S4Op = String
 
 s4 :: [(S4Op, [Int])]
@@ -80,3 +101,4 @@ table = do
       putStr "-----+"
       forM_ s4Names $ \_ -> putStr "----"
       putNewline
+--}
