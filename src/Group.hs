@@ -19,11 +19,14 @@ apply (Sym n xs) (Sym n' ys)
   | n == n'   = Sym n $ map ((xs!!) . pred) ys
   | otherwise = error "apply: dimensions do not match" 
 
+toEndo :: Sym -> Endo Sym
+toEndo = Endo . apply
+
 test :: Sym
 test = appEndo (xs!!3 <> xs!!2) $ Sym 3 [1,2,3]
   where
     xs :: [Endo Sym]
-    xs = map (Endo . apply) (syms 3)
+    xs = map toEndo (syms 3)
 
 ---------------
 
