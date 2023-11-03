@@ -29,6 +29,9 @@ complement (Sym n xs) = Sym n xs'
 covariantOver :: Sym -> Sym -> Sym -> Sym
 f `covariantOver` g = apply g . apply f . apply (complement g)
 
+g3 :: [Sym]
+g3 = map (Sym 3) [[1,2,3],[2,3,1],[3,1,2]]
+
 g4 :: [Sym]
 g4 = map (Sym 4) [[1,2,3,4],[2,1,4,3],[3,4,1,2],[4,3,2,1]]
 
