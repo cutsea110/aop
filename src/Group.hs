@@ -29,6 +29,13 @@ complement (Sym n xs) = Sym n xs'
 covariantOver :: Sym -> Sym -> Sym -> Sym
 f `covariantOver` g = apply g . apply f . apply (complement g)
 
+g4 :: [Sym]
+g4 = map (Sym 4) [[1,2,3,4],[2,1,4,3],[3,4,1,2],[4,3,2,1]]
+
+lCoset, rCoset :: Sym -> [Sym]
+lCoset f = map (f `apply`) g4
+rCoset f = map (`apply` f) g4
+
 test :: Sym
 test = appEndo (xs!!3 <> xs!!2) $ Sym 3 [1,2,3]
   where
