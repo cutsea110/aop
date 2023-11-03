@@ -22,6 +22,13 @@ apply (Sym n xs) (Sym n' ys)
 toEndo :: Sym -> Endo Sym
 toEndo = Endo . apply
 
+complement :: Sym -> Sym
+complement (Sym n xs) = Sym n xs'
+  where xs' = map fst . sortOn snd . zip [1..] $ xs
+
+covariantOver :: Sym -> Sym -> Sym -> Sym
+f `covariantOver` g = apply g . apply f . apply (complement g)
+
 test :: Sym
 test = appEndo (xs!!3 <> xs!!2) $ Sym 3 [1,2,3]
   where
