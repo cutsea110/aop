@@ -24,26 +24,32 @@ apply (Sym n xs) (Sym n' ys)
 toEndo :: Sym -> Endo Sym
 toEndo = Endo . apply
 
+-- | 逆元
 complement :: Sym -> Sym
 complement (Sym n xs) = Sym n xs'
   where xs' = map fst . sortOn snd . zip [1..] $ xs
 
+-- | f の g による共役元
 covariantOver :: Sym -> Sym -> Sym -> Sym
 f `covariantOver` g = apply g . apply f . apply g'
   where g' = complement g
 
+-- | 3次対称群の正規部分群
 g3 :: [Sym]
 g3 = map (Sym 3) [[1,2,3],[2,3,1],[3,1,2]]
 
+-- | 4次対称群の正規部分群
 g4 :: [Sym]
 g4 = map (Sym 4) [[1,2,3,4],[2,1,4,3],[3,4,1,2],[4,3,2,1]]
 
+-- | 左剰余類での分解
 leftExtractBy :: [Sym] -> [Sym] -> [[Sym]]
 xs `leftExtractBy` ys = map (fst <$>) $ groupBy ((==) `on` snd) $ sortOn snd xs'
   where
     xs' :: [(Sym, Set.Set Sym)]
     xs' = zipWith (\x x' -> (x, Set.fromList $ x' >+ ys)) xs xs
 
+-- | 右剰余類での分解
 rightExtractBy :: [Sym] -> [Sym] -> [[Sym]]
 xs `rightExtractBy` ys = map (fst <$>) $ groupBy ((==) `on` snd) $ sortOn snd xs'
   where
