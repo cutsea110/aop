@@ -1,8 +1,10 @@
 module Group where
 
 import Control.Monad (forM_)
-import Data.List (sortOn, nub, sort)
+import Data.Function (on)
+import Data.List (sortOn, nub, sort, groupBy)
 import Data.Monoid (Endo(..))
+import qualified Data.Set as Set
 import Text.Printf (printf)
 
 import Combinatorial (perms)
@@ -27,13 +29,27 @@ complement (Sym n xs) = Sym n xs'
   where xs' = map fst . sortOn snd . zip [1..] $ xs
 
 covariantOver :: Sym -> Sym -> Sym -> Sym
-f `covariantOver` g = apply g . apply f . apply (complement g)
+f `covariantOver` g = apply g . apply f . apply g'
+  where g' = complement g
 
 g3 :: [Sym]
 g3 = map (Sym 3) [[1,2,3],[2,3,1],[3,1,2]]
 
 g4 :: [Sym]
 g4 = map (Sym 4) [[1,2,3,4],[2,1,4,3],[3,4,1,2],[4,3,2,1]]
+
+leftExtractBy :: [Sym] -> [Sym] -> [[Sym]]
+xs `leftExtractBy` ys = map (fst <$>) $ groupBy ((==) `on` snd) $ sortOn snd xs'
+  where
+    xs' :: [(Sym, Set.Set Sym)]
+    xs' = zipWith (\x x' -> (x, Set.fromList $ x' >+ ys)) xs xs
+
+rightExtractBy :: [Sym] -> [Sym] -> [[Sym]]
+xs `rightExtractBy` ys = map (fst <$>) $ groupBy ((==) `on` snd) $ sortOn snd xs'
+  where
+    xs' :: [(Sym, Set.Set Sym)]
+    xs' = zipWith (\x x' -> (x, Set.fromList $ ys +< x')) xs xs
+
 
 (>+) :: Sym -> [Sym] -> [Sym]
 f >+ xs = map (f `apply`) xs
