@@ -45,17 +45,17 @@ leftExtractBy :: [Sym] -> [Sym] -> [[Sym]]
 xs `leftExtractBy` ys = map (fst <$>) $ groupBy ((==) `on` snd) $ sortOn snd xs'
   where
     xs' :: [(Sym, Set.Set Sym)]
-    xs' = zipWith (\x x' -> (x, Set.fromList $ x' >* ys)) xs xs
+    xs' = zipWith (\x x' -> (x, Set.fromList $ x' -*< ys)) xs xs
 
 -- | 右剰余類での分解
 rightExtractBy :: [Sym] -> [Sym] -> [[Sym]]
 xs `rightExtractBy` ys = map (fst <$>) $ groupBy ((==) `on` snd) $ sortOn snd xs'
   where
     xs' :: [(Sym, Set.Set Sym)]
-    xs' = zipWith (\x x' -> (x, Set.fromList $ ys *< x')) xs xs
+    xs' = zipWith (\x x' -> (x, Set.fromList $ ys >*- x')) xs xs
 
 
-(>*) :: Sym -> [Sym] -> [Sym]
-f >* xs = map (f `apply`) xs
-(*<) :: [Sym] -> Sym -> [Sym]
-xs *< f = map (`apply` f) xs
+(-*<) :: Sym -> [Sym] -> [Sym]
+x -*< xs = map (x `apply`) xs
+(>*-) :: [Sym] -> Sym -> [Sym]
+xs >*- x = map (`apply` x) xs
