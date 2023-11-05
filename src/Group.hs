@@ -1,11 +1,9 @@
 module Group where
 
-import Control.Monad (forM_)
 import Data.Function (on)
-import Data.List (sortOn, nub, sort, groupBy)
+import Data.List (sortOn, groupBy)
 import Data.Monoid (Endo(..))
 import qualified Data.Set as Set
-import Text.Printf (printf)
 
 import Combinatorial (perms)
 
