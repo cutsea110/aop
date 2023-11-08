@@ -54,12 +54,12 @@ xs `rightExtractBy` ys = map (fst <$>) $ groupBy ((==) `on` snd) $ sortOn snd xs
     xs' :: [(Sym, Set.Set Sym)]
     xs' = zipWith (\x x' -> (x, Set.fromList $ ys >*- x')) xs xs
 
-choice :: Eq a => a -> [(a, b)] -> ((a, b), [(a, b)])
+choice :: Eq a => a -> [(a, b)] -> Maybe ((a, b), [(a, b)])
 choice k = go []
   where
-    go acc [] = error "choice: not found"
+    go acc [] = Nothing
     go acc (x@(k', v):xs)
-      | k == k'   = (x, reverse acc ++ xs)
+      | k == k'   = Just (x, reverse acc ++ xs)
       | otherwise = go (x:acc) xs
 
 
