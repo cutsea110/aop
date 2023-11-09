@@ -54,6 +54,21 @@ xs `rightExtractBy` ys = map (fst <$>) $ groupBy ((==) `on` snd) $ sortOn snd xs
     xs' :: [(Sym, Set.Set Sym)]
     xs' = zipWith (\x x' -> (x, Set.fromList $ ys >*- x')) xs xs
 
+munch :: Eq a =>  [(a, a)] -> [[(a, a)]]
+munch [] = []
+munch xs@((k,v):_) = let (found, rest) = munch1 k xs
+                     in found : munch rest
+
+munch1 :: Eq a => a -> [(a, a)] -> ([(a, a)], [(a, a)])
+munch1 s xs = go [] s xs
+  where
+    go acc n xs = case choice n xs of
+      Nothing -> error "munch failed"
+      Just (found@(_, v), xs') ->
+        if s == v
+        then (reverse (found:acc), xs')
+        else go (found:acc) v xs'
+
 choice :: Eq a => a -> [(a, b)] -> Maybe ((a, b), [(a, b)])
 choice k = go []
   where
