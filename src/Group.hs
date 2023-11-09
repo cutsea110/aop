@@ -54,6 +54,9 @@ xs `rightExtractBy` ys = map (fst <$>) $ groupBy ((==) `on` snd) $ sortOn snd xs
     xs' :: [(Sym, Set.Set Sym)]
     xs' = zipWith (\x x' -> (x, Set.fromList $ ys >*- x')) xs xs
 
+repr :: Sym -> [[Int]]
+repr (Sym n xs) = map (map fst) $ munch $ zip [1..n] xs
+
 munch :: Eq a =>  [(a, a)] -> [[(a, a)]]
 munch [] = []
 munch xs@((k,v):_) = let (found, rest) = munch1 k xs
