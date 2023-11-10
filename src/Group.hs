@@ -61,18 +61,20 @@ typeOf :: Sym -> [Int]
 typeOf = map length . repr
 
 repr :: Sym -> [[Int]]
-repr (Sym n xs) = map (map fst) $ sortBy (flip compare `on` length) $ munch $ zip [1..n] xs
+repr (Sym n xs) = f xs
+  where f = map (fst <$>) . sortBy (compareDesc `on` length) . follows . zip [1..n]
+        compareDesc = flip compare
 
-munch :: (Eq a, Show a) =>  [(a, a)] -> [[(a, a)]]
-munch [] = []
-munch xs@((k,v):_) = found : munch rest
-  where (found, rest) = munch1 k xs
+follows :: (Eq a, Show a) =>  [(a, a)] -> [[(a, a)]]
+follows [] = []
+follows xs@((k,v):_) = found : follows rest
+  where (found, rest) = follow k xs
 
-munch1 :: (Eq a, Show a) => a -> [(a, a)] -> ([(a, a)], [(a, a)])
-munch1 s xs = go [] s xs
+follow :: (Eq a, Show a) => a -> [(a, a)] -> ([(a, a)], [(a, a)])
+follow s xs = go [] s xs
   where
     go acc n xs = case choice n xs of
-      Nothing -> error $ "munch1 failed: " ++ show n ++ " not found in keys of " ++ show xs
+      Nothing -> error $ "follow failed: " ++ show n ++ " not found in keys of " ++ show xs
       Just (found@(_, v), xs') ->
         if s == v
         then (reverse (found:acc), xs')
