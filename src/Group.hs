@@ -1,7 +1,7 @@
 module Group where
 
 import Data.Function (on)
-import Data.List (sortOn, groupBy)
+import Data.List (sortBy, sortOn, groupBy)
 import Data.Monoid (Endo(..))
 import qualified Data.Set as Set
 
@@ -54,13 +54,19 @@ xs `rightExtractBy` ys = map (fst <$>) $ groupBy ((==) `on` snd) $ sortOn snd xs
     xs' :: [(Sym, Set.Set Sym)]
     xs' = zipWith (\x x' -> (x, Set.fromList $ ys >*- x')) xs xs
 
+simpleRepr :: Sym -> [[Int]]
+simpleRepr s = filter (\xs -> length xs > 1) $ repr s
+
+typeOf :: Sym -> [Int]
+typeOf = map length . repr
+
 repr :: Sym -> [[Int]]
-repr (Sym n xs) = map (map fst) $ munch $ zip [1..n] xs
+repr (Sym n xs) = map (map fst) $ sortBy (flip compare `on` length) $ munch $ zip [1..n] xs
 
 munch :: Eq a =>  [(a, a)] -> [[(a, a)]]
 munch [] = []
-munch xs@((k,v):_) = let (found, rest) = munch1 k xs
-                     in found : munch rest
+munch xs@((k,v):_) = found : munch rest
+  where (found, rest) = munch1 k xs
 
 munch1 :: Eq a => a -> [(a, a)] -> ([(a, a)], [(a, a)])
 munch1 s xs = go [] s xs
