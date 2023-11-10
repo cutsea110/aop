@@ -63,16 +63,16 @@ typeOf = map length . repr
 repr :: Sym -> [[Int]]
 repr (Sym n xs) = map (map fst) $ sortBy (flip compare `on` length) $ munch $ zip [1..n] xs
 
-munch :: Eq a =>  [(a, a)] -> [[(a, a)]]
+munch :: (Eq a, Show a) =>  [(a, a)] -> [[(a, a)]]
 munch [] = []
 munch xs@((k,v):_) = found : munch rest
   where (found, rest) = munch1 k xs
 
-munch1 :: Eq a => a -> [(a, a)] -> ([(a, a)], [(a, a)])
+munch1 :: (Eq a, Show a) => a -> [(a, a)] -> ([(a, a)], [(a, a)])
 munch1 s xs = go [] s xs
   where
     go acc n xs = case choice n xs of
-      Nothing -> error "munch failed"
+      Nothing -> error $ "munch1 failed: " ++ show n ++ " not found in keys of " ++ show xs
       Just (found@(_, v), xs') ->
         if s == v
         then (reverse (found:acc), xs')
