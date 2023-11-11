@@ -88,6 +88,11 @@ choice k = go []
       | k == k'   = Just (x, reverse acc ++ xs)
       | otherwise = go (x:acc) xs
 
+fromRepr :: Ord a => [[a]] -> [a]
+fromRepr = map snd . sortOn fst . concatMap fromCycle
+
+fromCycle :: [a] -> [(a, a)]
+fromCycle xs = zip xs (tail xs ++ [head xs])
 
 (-*<) :: Sym -> [Sym] -> [Sym]
 x -*< xs = map (x `apply`) xs
