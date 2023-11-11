@@ -11,6 +11,9 @@ type DIM = Int
 -- | Symmetric group of degree n
 data Sym = Sym DIM [Int] deriving (Eq, Ord, Show)
 
+type TYP = [Int]
+data Repr = Repr TYP [[Int]] deriving (Eq, Ord, Show)
+
 syms :: DIM -> [Sym]
 syms n = Sym n <$> perms [1..n]
 
@@ -54,14 +57,8 @@ xs `rightExtractBy` ys = map (fst <$>) $ groupBy ((==) `on` snd) $ sortOn snd xs
     xs' :: [(Sym, Set.Set Sym)]
     xs' = zipWith (\x x' -> (x, Set.fromList $ ys >*- x')) xs xs
 
-simpleRepr :: Sym -> [[Int]]
-simpleRepr s = filter (\xs -> length xs > 1) $ repr s
-
-typeOf :: Sym -> [Int]
-typeOf = map length . repr
-
-repr :: Sym -> [[Int]]
-repr (Sym n xs) = f xs
+toRepr :: Sym -> Repr
+toRepr (Sym n xs) = let xs' = f xs in Repr (map length xs') xs'
   where f = map (fst <$>) . sortBy (compareDesc `on` length) . follows . zip [1..n]
         compareDesc = flip compare
 
@@ -88,8 +85,10 @@ choice k = go []
       | k == k'   = Just (x, reverse acc ++ xs)
       | otherwise = go (x:acc) xs
 
-fromRepr :: Ord a => [[a]] -> [a]
-fromRepr = map snd . sortOn fst . concatMap fromCycle
+fromRepr :: Repr -> Sym
+fromRepr (Repr t xs) = Sym (sum t) xs'
+  where f = map snd . sortOn fst . concatMap fromCycle
+        xs' = f xs
 
 fromCycle :: [a] -> [(a, a)]
 fromCycle xs = zip xs (tail xs ++ [head xs])
