@@ -95,9 +95,8 @@ choice k = go []
       | otherwise = go (x:acc) xs
 
 fromRepr :: Repr -> Sym
-fromRepr (Repr t xs) = Sym (sum t) xs'
+fromRepr (Repr t xs) = Sym (sum t) (f xs)
   where f = map snd . sortOn fst . concatMap fromCycle
-        xs' = f xs
 
 fromCycle :: [a] -> [(a, a)]
 fromCycle xs = zip xs (tail xs ++ [head xs])
