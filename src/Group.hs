@@ -14,6 +14,9 @@ data Sym = Sym DIM [Int] deriving (Eq, Ord, Show)
 type TYP = [Int]
 data Repr = Repr TYP [[Int]] deriving (Eq, Ord, Show)
 
+typeOf :: Repr -> TYP
+typeOf (Repr t _) = t
+
 syms :: DIM -> [Sym]
 syms n = Sym n <$> perms [1..n]
 
@@ -43,6 +46,12 @@ g3 = map (Sym 3) [[1,2,3],[2,3,1],[3,1,2]]
 g4 :: [Sym]
 g4 = map (Sym 4) [[1,2,3,4],[2,1,4,3],[3,4,1,2],[4,3,2,1]]
 
+-- | 5次対称群の正規部分群
+g5 :: [Sym]
+g5 = map (Sym 5) [[1,2,3,4,5],[2,3,1,4,5],[3,1,2,4,5],[2,4,3,1,5]
+                 ,[4,1,3,2,5],[3,2,4,1,5],[4,2,1,3,5],[1,3,4,2,5]
+                 ,[1,4,2,3,5],[2,1,4,3,5],[3,4,1,2,5],[4,3,2,1,5]]
+
 -- | 左剰余類での分解
 leftExtractBy :: [Sym] -> [Sym] -> [[Sym]]
 xs `leftExtractBy` ys = map (fst <$>) $ groupBy ((==) `on` snd) $ sortOn snd xs'
@@ -59,19 +68,19 @@ xs `rightExtractBy` ys = map (fst <$>) $ groupBy ((==) `on` snd) $ sortOn snd xs
 
 toRepr :: Sym -> Repr
 toRepr (Sym n xs) = let xs' = f xs in Repr (map length xs') xs'
-  where f = map (fst <$>) . sortBy (compareDesc `on` length) . follows . zip [1..n]
+  where f = map (fst <$>) . sortBy (compareDesc `on` length) . walk . zip [1..n]
         compareDesc = flip compare
 
-follows :: (Eq a, Show a) =>  [(a, a)] -> [[(a, a)]]
-follows [] = []
-follows xs@((k,v):_) = found : follows rest
-  where (found, rest) = follow k xs
+walk :: (Eq a, Show a) =>  [(a, a)] -> [[(a, a)]]
+walk [] = []
+walk xs@((k,v):_) = found : walk rest
+  where (found, rest) = step k xs
 
-follow :: (Eq a, Show a) => a -> [(a, a)] -> ([(a, a)], [(a, a)])
-follow s xs = go [] s xs
+step :: (Eq a, Show a) => a -> [(a, a)] -> ([(a, a)], [(a, a)])
+step s xs = go [] s xs
   where
     go acc n xs = case choice n xs of
-      Nothing -> error $ "follow failed: " ++ show n ++ " not found in keys of " ++ show xs
+      Nothing -> error $ "step failed: " ++ show n ++ " not found in keys of " ++ show xs
       Just (found@(_, v), xs') ->
         if s == v
         then (reverse (found:acc), xs')
