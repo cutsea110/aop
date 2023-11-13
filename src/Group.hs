@@ -66,11 +66,6 @@ xs `rightExtractBy` ys = map (fst <$>) $ groupBy ((==) `on` snd) $ sortOn snd xs
     xs' :: [(Sym, Set.Set Sym)]
     xs' = zipWith (\x x' -> (x, Set.fromList $ ys >*- x')) xs xs
 
-toRepr :: Sym -> Repr
-toRepr (Sym n xs) = let xs' = f xs in Repr (map length xs') xs'
-  where f = map (fst <$>) . sortBy (compareDesc `on` length) . walk . zip [1..n]
-        compareDesc = flip compare
-
 walk :: (Eq a, Show a) =>  [(a, a)] -> [[(a, a)]]
 walk [] = []
 walk xs@((k,v):_) = found : walk rest
@@ -93,6 +88,11 @@ choice k = go []
     go acc (x@(k', v):xs)
       | k == k'   = Just (x, reverse acc ++ xs)
       | otherwise = go (x:acc) xs
+
+toRepr :: Sym -> Repr
+toRepr (Sym n xs) = let xs' = f xs in Repr (map length xs') xs'
+  where f = map (fst <$>) . sortBy (compareDesc `on` length) . walk . zip [1..n]
+        compareDesc = flip compare
 
 fromRepr :: Repr -> Sym
 fromRepr (Repr t xs) = Sym (sum t) (f xs)
