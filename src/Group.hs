@@ -54,15 +54,19 @@ g5 = map (Sym 5) [[1,2,3,4,5],[2,3,1,4,5],[3,1,2,4,5],[2,4,3,1,5]
 
 -- | 左剰余類での分解
 leftExtractBy :: [Sym] -> [Sym] -> [[Sym]]
-xs `leftExtractBy` ys = map (fst <$>) $ groupBy ((==) `on` snd) $ sortOn snd xs'
+xs `leftExtractBy` ys = f xs'
   where
+    f :: [(Sym, Set.Set Sym)] -> [[Sym]]
+    f = map (fst <$>) . groupBy ((==) `on` snd) . sortOn snd
     xs' :: [(Sym, Set.Set Sym)]
     xs' = zipWith (\x x' -> (x, Set.fromList $ x' -*< ys)) xs xs
 
 -- | 右剰余類での分解
 rightExtractBy :: [Sym] -> [Sym] -> [[Sym]]
-xs `rightExtractBy` ys = map (fst <$>) $ groupBy ((==) `on` snd) $ sortOn snd xs'
+xs `rightExtractBy` ys = f xs'
   where
+    f :: [(Sym, Set.Set Sym)] -> [[Sym]]
+    f = map (fst <$>) . groupBy ((==) `on` snd) . sortOn snd
     xs' :: [(Sym, Set.Set Sym)]
     xs' = zipWith (\x x' -> (x, Set.fromList $ ys >*- x')) xs xs
 
