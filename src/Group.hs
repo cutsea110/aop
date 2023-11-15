@@ -19,6 +19,8 @@ data Repr = Repr TYP [[Int]] deriving (Eq, Ord, Show)
 
 typeOf :: Repr -> TYP
 typeOf (Repr t _) = t
+reprOf :: Repr -> [[Int]]
+reprOf (Repr _ xs) = xs
 
 syms :: DIM -> [Sym]
 syms n = Sym n <$> perms [1..n]
@@ -100,7 +102,7 @@ toRepr (Sym n xs) = let xs' = f xs in Repr (map length xs') xs'
         compareDesc = flip compare
 
 fromRepr :: Repr -> Sym
-fromRepr (Repr t xs) = Sym (sum t) (f xs)
+fromRepr = Sym <$> sum . typeOf <*> f . reprOf
   where f = map snd . sortOn fst . concatMap fromCycle
 
 fromCycle :: [a] -> [(a, a)]
