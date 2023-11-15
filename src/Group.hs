@@ -7,11 +7,14 @@ import qualified Data.Set as Set
 
 import Combinatorial (perms)
 
+-- | 次元
 type DIM = Int
--- | Symmetric group of degree n
+-- | 次元 n の対称群
 data Sym = Sym DIM [Int] deriving (Eq, Ord, Show)
 
+-- | 対称群の元の型
 type TYP = [Int]
+-- | 対称群の元の表現
 data Repr = Repr TYP [[Int]] deriving (Eq, Ord, Show)
 
 typeOf :: Repr -> TYP
