@@ -103,10 +103,11 @@ toRepr (Sym n xs) = let xs' = f xs in Repr (map length xs') xs'
 
 fromRepr :: Repr -> Sym
 fromRepr = Sym <$> sum . typeOf <*> f . reprOf
-  where f = map snd . sortOn fst . concatMap fromCycle
-
-fromCycle :: [a] -> [(a, a)]
-fromCycle xs = zip xs (tail xs ++ [head xs])
+  where
+    f :: [[Int]] -> [Int]
+    f = map snd . sortOn fst . concatMap fromCycle
+    fromCycle :: [a] -> [(a, a)]
+    fromCycle xs = zip xs (tail xs ++ [head xs])
 
 (-*<) :: Sym -> [Sym] -> [Sym]
 x -*< xs = map (x `apply`) xs
