@@ -107,7 +107,7 @@ fromRepr = Sym <$> sum . typeOf <*> f . reprOf
     f :: [[Int]] -> [Int]
     f = map snd . sortOn fst . concatMap fromCycle
     fromCycle :: [a] -> [(a, a)]
-    fromCycle xs = zip xs (tail xs ++ [head xs])
+    fromCycle = zip <$> id <*> tail . cycle
 
 (-*<) :: Sym -> [Sym] -> [Sym]
 x -*< xs = map (x `apply`) xs
