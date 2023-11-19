@@ -33,14 +33,23 @@ apply (Sym n xs) (Sym n' ys)
 toEndo :: Sym -> Endo Sym
 toEndo = Endo . apply
 
+-- | 合成 (左から右へ合成する)
+compose :: Sym -> Sym -> Sym
+(Sym n2 xs2) `compose` (Sym n1 xs1)
+  | n2 == n1   = Sym n2 ys2
+  | otherwise = error "compose: dimensions do not match"
+  where
+    ys1 = map fst $ sortOn snd $ zip [1..n1] xs1
+    ys2 = map snd $ sortOn fst $ zip ys1 xs2
+
 -- | 逆元
 complement :: Sym -> Sym
 complement (Sym n xs) = Sym n xs'
   where xs' = map fst . sortOn snd . zip [1..] $ xs
 
 -- | f の g による共役元
-covariantOver :: Sym -> Sym -> Sym -> Sym
-f `covariantOver` g = apply g . apply f . apply g'
+covariantOver :: Sym -> Sym -> Sym
+f `covariantOver` g = g `compose` f `compose` g'
   where g' = complement g
 
 -- | 3次対称群の正規部分群
