@@ -25,13 +25,8 @@ reprOf (Repr _ xs) = xs
 syms :: DIM -> [Sym]
 syms n = Sym n <$> perms [1..n]
 
-apply :: Sym -> Sym -> Sym
-apply (Sym n xs) (Sym n' ys)
-  | n == n'   = Sym n $ map ((xs!!) . pred) ys
-  | otherwise = error "apply: dimensions do not match" 
-
 toEndo :: Sym -> Endo Sym
-toEndo = Endo . apply
+toEndo = Endo . compose
 
 -- | 合成 (左から右へ合成する)
 compose :: Sym -> Sym -> Sym
@@ -119,6 +114,6 @@ fromRepr = Sym <$> sum . typeOf <*> f . reprOf
     fromCycle = zip <$> id <*> tail . cycle
 
 (-*<) :: Sym -> [Sym] -> [Sym]
-x -*< xs = map (x `apply`) xs
+x -*< xs = map (x `compose`) xs
 (>*-) :: [Sym] -> Sym -> [Sym]
-xs >*- x = map (`apply` x) xs
+xs >*- x = map (`compose` x) xs
