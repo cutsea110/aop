@@ -12,6 +12,9 @@ type DIM = Int
 -- | 次元 n の対称群
 data Sym = Sym DIM [Int] deriving (Eq, Ord, Show)
 
+instance Semigroup Sym where
+  (<>) = compose
+
 -- | 対称群の元の型
 type TYP = [Int]
 -- | 対称群の元の表現
