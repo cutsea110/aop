@@ -28,7 +28,7 @@ syms n = Sym n <$> perms [1..n]
 toEndo :: Sym -> Endo Sym
 toEndo = Endo . compose
 
--- | 合成 (左から右へ合成する)
+-- | 合成 (右から左へ合成する)
 compose :: Sym -> Sym -> Sym
 (Sym n2 xs2) `compose` (Sym n1 xs1)
   | n2 == n1   = Sym n2 ys2
