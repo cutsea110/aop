@@ -50,6 +50,10 @@ covariantOver :: Sym -> Sym -> Sym
 f `covariantOver` g = g `compose` f `compose` g'
   where g' = complement g
 
+-- | g による自己同型写像
+auto :: Sym -> Sym -> Sym
+auto g = (`covariantOver` g)
+
 -- | 3次対称群の正規部分群
 g3 :: [Sym]
 g3 = map (Sym 3) [[1,2,3],[2,3,1],[3,1,2]]
