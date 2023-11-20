@@ -52,7 +52,7 @@ f `covariantOver` g = g `compose` f `compose` g'
 
 -- | g による自己同型写像
 auto :: Sym -> Sym -> Sym
-auto g = (`covariantOver` g)
+auto g = (`covariantOver` g) -- auto == flip covariantOver
 
 -- | 3次対称群の正規部分群
 g3 :: [Sym]
