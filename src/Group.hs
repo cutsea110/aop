@@ -1,7 +1,7 @@
 module Group where
 
 import Data.Function (on)
-import Data.List (sortBy, sortOn, groupBy)
+import Data.List (sortBy, sortOn, groupBy, inits)
 import Data.Monoid (Endo(..))
 import qualified Data.Set as Set
 
@@ -124,3 +124,17 @@ fromRepr = Sym <$> sum . typeOf <*> f . reprOf
 x -*< xs = map (x `compose`) xs
 (>*-) :: [Sym] -> Sym -> [Sym]
 xs >*- x = map (`compose` x) xs
+
+
+-- | 隣接互換(elementary transposition)
+elemTrans :: [Int] -> [(Int,Int)]
+elemTrans xs = concatMap (map f. reverse) zs
+  where f i = (i, i+1)
+        ys = zipWith (\i s -> i - (s+1)) xs (leftSmallCount xs)
+        zs = zipWith (\len s -> [s..s+len-1]) ys [1..]
+
+-- リストの各要素より小さい要素が左側にいくつあるか数え上げる
+leftSmallCount :: [Int] -> [Int]
+leftSmallCount xs = zipWith smaller xs (inits xs)
+  where smaller y = length . filter (y>)
+
