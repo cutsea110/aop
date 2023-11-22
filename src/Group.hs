@@ -134,11 +134,34 @@ elemTrans xs = concatMap (map f. reverse) zs
         ys = zipWith (\i s -> i-(s+1)) xs (countSmallL xs)
         zs = zipWith (\l s -> [s..s+l-1]) ys [1..]
 
--- countSmallL :: [Int] -> [Int]
--- countSmallL xs = zipWith countSmall xs (inits xs)
---   where countSmall y = length . filter (y>)
 
------
+-- リストの各要素より小さい要素が左側にいくつあるか数え上げる
+countSmallL :: [Int] -> [Int]
+countSmallL xs = reverse $ go (initBIT n) xs []
+  where n = length xs
+        go _   []     acc = acc
+        go bit (x:xs) acc = go (update bit x 1) xs (query bit (x-1):acc)
+
+------
+
+putRow :: Int -> Int -> String
+putRow n i = concatMap f [1..n]
+  where f j | j == i    = kei !! 1
+            | j == n    = kei !! 0
+            | otherwise = kei !! 2
+        kei = [ "|", "|---", "|   " ]
+putNum :: Int -> String
+putNum n = concatMap f [1..n]
+  where f i = show i ++ "   "
+
+putAmida :: [Int] -> IO ()
+putAmida xs = do
+  putStrLn $ putNum n
+  mapM_ (putStrLn . putRow n . fst) $ reverse $ elemTrans xs
+  putStrLn $ putNum n
+  where n = length xs
+
+------
 
 -- Binary Indexed Tree
 data BIT = BIT Int (Array Int Int)
@@ -154,10 +177,3 @@ update (BIT n arr) i val = BIT n (arr // [(i, (arr ! i) + val)])
 -- 累積和
 query :: BIT -> Int -> Int
 query (BIT _ arr) i = sum $ map (arr !) [1..i]
-
--- リストの各要素より小さい要素が左側にいくつあるか数え上げる
-countSmallL :: [Int] -> [Int]
-countSmallL xs = reverse $ go (initBIT n) xs []
-  where n = length xs
-        go _   []     acc = acc
-        go bit (x:xs) acc = go (update bit x 1) xs (query bit (x-1):acc)
