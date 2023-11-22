@@ -5,6 +5,7 @@ import Data.Function (on)
 import Data.List (sortBy, sortOn, groupBy, inits)
 import Data.Monoid (Endo(..))
 import qualified Data.Set as Set
+import Text.Printf (printf)
 
 import Combinatorial (perms)
 
@@ -152,15 +153,15 @@ showRow n i = concatMap f [1..n]
         bars = [ "|", "|---", "|   " ]
 
 showNums :: Int -> String
-showNums n = concatMap f [1..n]
-  where f i = show i ++ "   "
+showNums n = concatMap (printf "%4d") [1..n]
 
 drawAmida :: [Int] -> IO ()
 drawAmida xs = do
   putStrLn $ showNums n
-  mapM_ (putStrLn . showRow n . fst) $ reverse $ elemTrans xs
+  mapM_ (putStrLn . offset . showRow n . fst) $ reverse $ elemTrans xs
   putStrLn $ showNums n
   where n = length xs
+        offset = ("   "++)
 
 ------
 
