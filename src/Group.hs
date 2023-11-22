@@ -144,22 +144,22 @@ countSmallL xs = reverse $ go (initBIT n) xs []
 
 ------
 
-putRow :: Int -> Int -> String
-putRow n i = concatMap f [1..n]
+showRow :: Int -> Int -> String
+showRow n i = concatMap f [1..n]
   where f j | j == i    = bars !! 1
             | j == n    = bars !! 0
             | otherwise = bars !! 2
         bars = [ "|", "|---", "|   " ]
 
-putNum :: Int -> String
-putNum n = concatMap f [1..n]
+showNums :: Int -> String
+showNums n = concatMap f [1..n]
   where f i = show i ++ "   "
 
 drawAmida :: [Int] -> IO ()
 drawAmida xs = do
-  putStrLn $ putNum n
-  mapM_ (putStrLn . putRow n . fst) $ reverse $ elemTrans xs
-  putStrLn $ putNum n
+  putStrLn $ showNums n
+  mapM_ (putStrLn . showRow n . fst) $ reverse $ elemTrans xs
+  putStrLn $ showNums n
   where n = length xs
 
 ------
