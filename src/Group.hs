@@ -1,5 +1,6 @@
 module Group where
 
+import Data.Array
 import Data.Function (on)
 import Data.List (sortBy, sortOn, groupBy, inits)
 import Data.Monoid (Endo(..))
@@ -130,11 +131,33 @@ xs >*- x = map (`compose` x) xs
 elemTrans :: [Int] -> [(Int,Int)]
 elemTrans xs = concatMap (map f. reverse) zs
   where f i = (i, i+1)
-        ys = zipWith (\i s -> i - (s+1)) xs (leftSmallCount xs)
-        zs = zipWith (\len s -> [s..s+len-1]) ys [1..]
+        ys = zipWith (\i s -> i-(s+1)) xs (countSmallL xs)
+        zs = zipWith (\l s -> [s..s+l-1]) ys [1..]
+
+-- countSmallL :: [Int] -> [Int]
+-- countSmallL xs = zipWith countSmall xs (inits xs)
+--   where countSmall y = length . filter (y>)
+
+-----
+
+-- Binary Indexed Tree
+data BIT = BIT Int (Array Int Int)
+
+-- 初期化
+initBIT :: Int -> BIT
+initBIT n = BIT n (listArray (1, n) (replicate n 0))
+
+-- 更新
+update :: BIT -> Int -> Int -> BIT
+update (BIT n arr) i val = BIT n (arr // [(i, (arr ! i) + val)])
+
+-- 累積和
+query :: BIT -> Int -> Int
+query (BIT _ arr) i = sum $ map (arr !) [1..i]
 
 -- リストの各要素より小さい要素が左側にいくつあるか数え上げる
-leftSmallCount :: [Int] -> [Int]
-leftSmallCount xs = zipWith smaller xs (inits xs)
-  where smaller y = length . filter (y>)
-
+countSmallL :: [Int] -> [Int]
+countSmallL xs = reverse $ go (initBIT n) xs []
+  where n = length xs
+        go _   []     acc = acc
+        go bit (x:xs) acc = go (update bit x 1) xs (query bit (x-1):acc)
