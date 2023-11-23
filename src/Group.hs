@@ -144,17 +144,7 @@ countSmallL xs = reverse $ go (initBIT n) xs []
         go bit (x:xs) acc = go (update bit x 1) xs (query bit (x-1):acc)
 
 ------
-
-showRow :: Int -> Int -> String
-showRow n i = concatMap f [1..n]
-  where f j | j == n    = bars !! 0
-            | j == i    = bars !! 1
-            | otherwise = bars !! 2
-        bars = [ "|", "|---", "|   " ]
-
-showNums :: Int -> String
-showNums n = concatMap (printf "%4d") [1..n]
-
+-- | あみだくじを AA で描画する
 drawAmida :: [Int] -> IO ()
 drawAmida xs = do
   putStrLn $ showNums n
@@ -163,19 +153,31 @@ drawAmida xs = do
   where n = length xs
         offset = ("   "++)
 
+-- | あみだくじの一行を AA で描画する
+showRow :: Int -> Int -> String
+showRow n i = concatMap f [1..n]
+  where f j | j == n    = bars !! 0
+            | j == i    = bars !! 1
+            | otherwise = bars !! 2
+        bars = [ "|", "|---", "|   " ]
+
+-- | あみだくじのヘッダ/フッタを描画する
+showNums :: Int -> String
+showNums n = concatMap (printf "%4d") [1..n]
+
 ------
 
--- Binary Indexed Tree
+-- | Binary Indexed Tree
 data BIT = BIT Int (Array Int Int)
 
--- 初期化
+-- | 初期化
 initBIT :: Int -> BIT
 initBIT n = BIT n (listArray (1, n) (replicate n 0))
 
--- 更新
+-- | 更新
 update :: BIT -> Int -> Int -> BIT
 update (BIT n arr) i val = BIT n (arr // [(i, (arr ! i) + val)])
 
--- 累積和
+-- | 累積和
 query :: BIT -> Int -> Int
 query (BIT _ arr) i = sum $ map (arr !) [1..i]
