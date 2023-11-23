@@ -147,8 +147,8 @@ countSmallL xs = reverse $ go (initBIT n) xs []
 
 showRow :: Int -> Int -> String
 showRow n i = concatMap f [1..n]
-  where f j | j == i    = bars !! 1
-            | j == n    = bars !! 0
+  where f j | j == n    = bars !! 0
+            | j == i    = bars !! 1
             | otherwise = bars !! 2
         bars = [ "|", "|---", "|   " ]
 
