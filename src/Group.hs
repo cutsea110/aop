@@ -11,81 +11,81 @@ import Combinatorial (perms)
 
 -- | 次元
 type DIM = Int
--- | 次元 n の対称群
-data Sym = Sym DIM [Int] deriving (Eq, Ord, Show)
+-- | 対称群の元の置換表現
+data Replace = Replace DIM [Int] deriving (Eq, Ord, Show)
 
-instance Semigroup Sym where
+instance Semigroup Replace where
   (<>) = compose
 
 -- | 対称群の元の型
 type TYP = [Int]
--- | 対称群の元の表現
-data Repr = Repr TYP [[Int]] deriving (Eq, Ord, Show)
+-- | 対称群の元の軌道表現
+data Orbit = Orbit TYP [[Int]] deriving (Eq, Ord, Show)
 
-typeOf :: Repr -> TYP
-typeOf (Repr t _) = t
-reprOf :: Repr -> [[Int]]
-reprOf (Repr _ xs) = xs
+typeOf :: Orbit -> TYP
+typeOf (Orbit t _) = t
+reprOf :: Orbit -> [[Int]]
+reprOf (Orbit _ xs) = xs
 
-syms :: DIM -> [Sym]
-syms n = Sym n <$> perms [1..n]
+syms :: DIM -> [Replace]
+syms n = Replace n <$> perms [1..n]
 
-toEndo :: Sym -> Endo Sym
+toEndo :: Replace -> Endo Replace
 toEndo = Endo . compose
 
 -- | 合成 (右から左へ合成する)
-compose :: Sym -> Sym -> Sym
-(Sym n2 xs2) `compose` (Sym n1 xs1)
-  | n2 == n1   = Sym n2 ys2
+compose :: Replace -> Replace -> Replace
+(Replace n2 xs2) `compose` (Replace n1 xs1)
+  | n2 == n1   = Replace n2 ys2
   | otherwise = error "compose: dimensions do not match"
   where
     ys1 = map fst $ sortOn snd $ zip [1..n1] xs1
     ys2 = map snd $ sortOn fst $ zip ys1 xs2
 
 -- | 逆元
-complement :: Sym -> Sym
-complement (Sym n xs) = Sym n xs'
+complement :: Replace -> Replace
+complement (Replace n xs) = Replace n xs'
   where xs' = map fst . sortOn snd . zip [1..] $ xs
 
 -- | f の g による共役元
-covariantOver :: Sym -> Sym -> Sym
+covariantOver :: Replace -> Replace -> Replace
 f `covariantOver` g = g `compose` f `compose` g'
   where g' = complement g
 
 -- | g による自己同型写像
-auto :: Sym -> Sym -> Sym
+auto :: Replace -> Replace -> Replace
 auto g = (`covariantOver` g) -- auto == flip covariantOver
 
 -- | 3次対称群の正規部分群
-g3 :: [Sym]
-g3 = map (Sym 3) [[1,2,3],[2,3,1],[3,1,2]]
+g3 :: [Replace]
+g3 = map (Replace 3) [[1,2,3],[2,3,1],[3,1,2]]
 
 -- | 4次対称群の正規部分群
-g4 :: [Sym]
-g4 = map (Sym 4) [[1,2,3,4],[2,1,4,3],[3,4,1,2],[4,3,2,1]]
+g4 :: [Replace]
+g4 = map (Replace 4) [[1,2,3,4],[2,1,4,3],[3,4,1,2],[4,3,2,1]]
 
 -- | 5次対称群の正規部分群
-g5 :: [Sym]
-g5 = map (Sym 5) [[1,2,3,4,5],[2,3,1,4,5],[3,1,2,4,5],[2,4,3,1,5]
+g5 :: [Replace]
+g5 = map (Replace 5) [[1,2,3,4,5],[2,3,1,4,5],[3,1,2,4,5],[2,4,3,1,5]
                  ,[4,1,3,2,5],[3,2,4,1,5],[4,2,1,3,5],[1,3,4,2,5]
                  ,[1,4,2,3,5],[2,1,4,3,5],[3,4,1,2,5],[4,3,2,1,5]]
 
 -- | 左剰余類での分解
-leftExtractBy :: [Sym] -> [Sym] -> [[Sym]]
+leftExtractBy :: [Replace] -> [Replace] -> [[Replace]]
 xs `leftExtractBy` ys = f xs'
   where
-    f :: [(Sym, Set.Set Sym)] -> [[Sym]]
+    f :: [(Replace, Set.Set Replace)] -> [[Replace]]
     f = map (fst <$>) . groupBy ((==) `on` snd) . sortOn snd
-    xs' :: [(Sym, Set.Set Sym)]
+    xs' :: [(Replace, Set.Set Replace)]
     xs' = zipWith (\x x' -> (x, Set.fromList $ x' -*< ys)) xs xs
 
 -- | 右剰余類での分解
-rightExtractBy :: [Sym] -> [Sym] -> [[Sym]]
+rightExtractBy :: [Replace] -> [Replace] -> [[Replace]]
 xs `rightExtractBy` ys = f xs'
   where
-    f :: [(Sym, Set.Set Sym)] -> [[Sym]]
+    f :: [(Replace, Set.Set Replace)] -> [[Replace]]
     f = map (fst <$>) . groupBy ((==) `on` snd) . sortOn snd
-    xs' :: [(Sym, Set.Set Sym)]
+    xs' :: [(Replace, Set.Set Replace)]
     xs' = zipWith (\x x' -> (x, Set.fromList $ ys >*- x')) xs xs
 
 walk :: (Eq a, Show a) =>  [(a, a)] -> [[(a, a)]]
@@ -109,22 +109,22 @@ choice k = go []
       | k == k'   = Just (x, reverse acc ++ xs)
       | otherwise = go (x:acc) xs
 
-toRepr :: Sym -> Repr
-toRepr (Sym n xs) = let xs' = f xs in Repr (map length xs') xs'
+toOrbit :: Replace -> Orbit
+toOrbit (Replace n xs) = let xs' = f xs in Orbit (map length xs') xs'
   where f = map (fst <$>) . sortBy (compareDesc `on` length) . walk . zip [1..n]
         compareDesc = flip compare
 
-fromRepr :: Repr -> Sym
-fromRepr = Sym <$> sum . typeOf <*> f . reprOf
+fromOrbit :: Orbit -> Replace
+fromOrbit = Replace <$> sum . typeOf <*> f . reprOf
   where
     f :: [[Int]] -> [Int]
     f = map snd . sortOn fst . concatMap fromCycle
     fromCycle :: [a] -> [(a, a)]
     fromCycle = zip <$> id <*> tail . cycle
 
-(-*<) :: Sym -> [Sym] -> [Sym]
+(-*<) :: Replace -> [Replace] -> [Replace]
 x -*< xs = map (x `compose`) xs
-(>*-) :: [Sym] -> Sym -> [Sym]
+(>*-) :: [Replace] -> Replace -> [Replace]
 xs >*- x = map (`compose` x) xs
 
 
