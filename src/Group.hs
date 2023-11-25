@@ -1,12 +1,13 @@
 module Group where
 
-import Data.Array
+import Control.Arrow (second)
 import Data.Function (on)
 import Data.List (sortBy, sortOn, groupBy, inits)
-import Data.Monoid (Endo(..))
+import Data.Monoid (Endo(..), Sum(..))
 import qualified Data.Set as Set
 import Text.Printf (printf)
 
+import BinaryIndexedTree (BIT, new, inc', (!))
 import Combinatorial (perms)
 
 -- | 次元
@@ -138,10 +139,17 @@ elemTrans xs = concatMap (map f. reverse) zs
 
 -- リストの各要素より小さい要素が左側にいくつあるか数え上げる
 countSmallL :: [Int] -> [Int]
-countSmallL xs = reverse $ go (initBIT n) xs []
-  where n = length xs
-        go _   []     acc = acc
-        go bit (x:xs) acc = go (update bit x 1) xs (query bit (x-1):acc)
+countSmallL = map snd . nonInverted
+
+nonInverted :: [Int] -> [(Int, Int)]
+nonInverted xs = map (second getSum) $ go xs b []
+  where n = maximum xs
+        b = new n :: BIT (Sum Int)
+        go []     b acc = zip xs (reverse acc)
+        go (x:xs) b acc = let acc' = b ! x : acc
+                              b' = inc' x 1 b
+                          in go xs b' acc'
+
 
 ------
 -- | あみだくじを AA で描画する
@@ -164,20 +172,3 @@ showRow n i = concatMap f [1..n]
 -- | あみだくじのヘッダ/フッタを描画する
 showNums :: Int -> String
 showNums n = concatMap (printf "%4d") [1..n]
-
-------
-
--- | Binary Indexed Tree
-data BIT = BIT Int (Array Int Int)
-
--- | 初期化
-initBIT :: Int -> BIT
-initBIT n = BIT n (listArray (1, n) (replicate n 0))
-
--- | 更新
-update :: BIT -> Int -> Int -> BIT
-update (BIT n arr) i val = BIT n (arr // [(i, (arr ! i) + val)])
-
--- | 累積和
-query :: BIT -> Int -> Int
-query (BIT _ arr) i = sum $ map (arr !) [1..i]
