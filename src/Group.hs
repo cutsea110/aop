@@ -139,10 +139,7 @@ elemTrans xs = concatMap (map f. reverse) zs
 
 -- リストの各要素より小さい要素が左側にいくつあるか数え上げる
 countSmallL :: [Int] -> [Int]
-countSmallL = map snd . nonInverted
-
-nonInverted :: [Int] -> [(Int, Int)]
-nonInverted xs = map (second getSum) $ go xs b []
+countSmallL xs = map (snd . second getSum) $ go xs b []
   where n = maximum xs
         b = new n :: BIT (Sum Int)
         go []     b acc = zip xs (reverse acc)
