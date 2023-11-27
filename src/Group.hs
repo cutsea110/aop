@@ -147,7 +147,7 @@ countSmallL xs = map (snd . second getSum) $ go xs b []
   where n = maximum xs
         b = new n :: BIT (Sum Int)
         go []     b acc = zip xs (reverse acc)
-        go (x:xs) b acc = let acc' = b ! x : acc
+        go (x:xs) b acc = let acc' = b ! x : acc -- x 登場時点で、x より小さい要素の出現を数える
                               b' = inc' x 1 b
                           in go xs b' acc'
 
