@@ -68,8 +68,8 @@ g4 = map (Replace 4) [[1,2,3,4],[2,1,4,3],[3,4,1,2],[4,3,2,1]]
 -- | 5次対称群の正規部分群
 g5 :: [Replace]
 g5 = map (Replace 5) [[1,2,3,4,5],[2,3,1,4,5],[3,1,2,4,5],[2,4,3,1,5]
-                 ,[4,1,3,2,5],[3,2,4,1,5],[4,2,1,3,5],[1,3,4,2,5]
-                 ,[1,4,2,3,5],[2,1,4,3,5],[3,4,1,2,5],[4,3,2,1,5]]
+                     ,[4,1,3,2,5],[3,2,4,1,5],[4,2,1,3,5],[1,3,4,2,5]
+                     ,[1,4,2,3,5],[2,1,4,3,5],[3,4,1,2,5],[4,3,2,1,5]]
 
 -- | 左剰余類での分解
 leftExtractBy :: [Replace] -> [Replace] -> [[Replace]]
@@ -122,6 +122,10 @@ fromOrbit = Replace <$> sum . typeOf <*> f . reprOf
     f = map snd . sortOn fst . concatMap fromCycle
     fromCycle :: [a] -> [(a, a)]
     fromCycle = zip <$> id <*> tail . cycle
+
+toSimpleOrbit :: Replace -> [[Int]]
+toSimpleOrbit = filter pred . reprOf . toOrbit
+  where pred = (>1) . length
 
 (-*<) :: Replace -> [Replace] -> [Replace]
 x -*< xs = map (x `compose`) xs
