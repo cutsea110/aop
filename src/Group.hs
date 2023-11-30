@@ -40,8 +40,9 @@ compose :: Replace -> Replace -> Replace
   | n2 == n1   = Replace n2 ys2
   | otherwise = error "compose: dimensions do not match"
   where
-    ys1 = map fst $ sortOn snd $ zip [1..n1] xs1
-    ys2 = map snd $ sortOn fst $ zip ys1 xs2
+    f = map snd . sortOn fst
+    ys1 = f $ zip xs1 [1..n1]
+    ys2 = f $ zip ys1 xs2
 
 -- | 逆元
 complement :: Replace -> Replace
