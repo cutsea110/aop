@@ -170,10 +170,9 @@ drawAmida xs = do
 -- | あみだくじの一行を AA で描画する
 showRow :: Int -> Int -> String
 showRow n i = concatMap f [1..n]
-  where f j | j == n    = bars !! 0
-            | j == i    = bars !! 1
-            | otherwise = bars !! 2
-        bars = [ "|", "|---", "|   " ]
+  where f j | j == n    = "|"
+            | j == i    = "|---"
+            | otherwise = "|   "
 
 -- | あみだくじのヘッダ/フッタを描画する
 showNums :: Int -> String
