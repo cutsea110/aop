@@ -101,7 +101,8 @@ step s xs = go [] s xs
     go acc n xs = case choice n xs of
       Nothing -> error $ "step failed: " ++ show n ++ " not found in keys of " ++ show xs
       Just (found@(_, v), xs')
-        -> if s == v then (reverse (found:acc), xs') else go (found:acc) v xs'
+        | v == s    -> (reverse (found:acc), xs')
+        | otherwise -> go (found:acc) v xs'
 
 choice :: Eq a => a -> [(a, b)] -> Maybe ((a, b), [(a, b)])
 choice k = go []
