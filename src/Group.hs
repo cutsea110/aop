@@ -11,9 +11,12 @@ import BinaryIndexedTree (BIT, new, inc', (!))
 import Combinatorial (perms)
 
 -- | 次元
-type DIM = Int
+type Dimension = Int
 -- | 対称群の元の置換表現
-data Replace = Replace DIM [Int] deriving (Eq, Ord, Show)
+data Replace = Replace { dimension :: Dimension
+                       , mapTo     :: [Int]
+                       }
+             deriving (Eq, Ord, Show)
 
 instance Semigroup Replace where
   (<>) = compose
@@ -21,14 +24,12 @@ instance Semigroup Replace where
 -- | 対称群の元の型
 type TYP = [Int]
 -- | 対称群の元の軌道表現
-data Orbit = Orbit TYP [[Int]] deriving (Eq, Ord, Show)
+data Orbit = Orbit { typeOf :: TYP
+                   , reprOf ::  [[Int]]
+                   }
+           deriving (Eq, Ord, Show)
 
-typeOf :: Orbit -> TYP
-typeOf (Orbit t _) = t
-reprOf :: Orbit -> [[Int]]
-reprOf (Orbit _ xs) = xs
-
-syms :: DIM -> [Replace]
+syms :: Dimension -> [Replace]
 syms n = Replace n <$> perms [1..n]
 
 toEndo :: Replace -> Endo Replace
