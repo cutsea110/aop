@@ -59,6 +59,10 @@ f `covariantOver` g = g `compose` f `compose` g'
 auto :: Replace -> Replace -> Replace
 auto g = (`covariantOver` g) -- auto == flip covariantOver
 
+-- | 共役類
+conjugates :: Replace -> [Replace] -> [Replace]
+conjugates a = map (a `covariantOver`)
+
 -- | 3次対称群の正規部分群
 g3 :: [Replace]
 g3 = map (Replace 3) [[1,2,3],[2,3,1],[3,1,2]]
