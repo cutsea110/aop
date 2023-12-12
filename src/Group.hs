@@ -167,11 +167,12 @@ drawAmida xs = do
   putStrLn q
   putStrLn $ replicate (length q) '-'
   putStrLn $ showNums n
-  mapM_ (putStrLn . offset . showRow n . fst) $ reverse $ elemTrans xs
+  mapM_ (putStrLn . offset . showRow n . fst) ets
   putStrLn $ showNums n
   putStr "\n"
   where n = length xs
         offset = ("   "++)
+        ets = reverse $ elemTrans xs
 
 -- | あみだくじの一行を AA で描画する
 showRow :: Int -> Int -> String
