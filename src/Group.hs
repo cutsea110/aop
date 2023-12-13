@@ -165,16 +165,20 @@ countSmallL xs = map (snd . second getSum) $ go xs b []
 -- | あみだくじを AA で描画する
 drawAmida :: [Int] -> IO ()
 drawAmida xs = do
-  let q = show xs
-  putStrLn q
-  putStrLn $ replicate (length q) '-'
-  putStrLn $ showNums n
-  mapM_ (putStrLn . offset . showRow n . fst) ets
-  putStrLn $ showNums n
-  putStr "\n"
-  where n = length xs
-        offset = ("   "++)
-        ets = reverse $ elemTrans xs
+  putTitle xs
+  putAmida xs
+  where putTitle nums = do
+          let q = show nums
+          putStrLn q
+          putStrLn $ replicate (length q) '-'
+        putAmida nums = do
+          let n = length nums
+          let offset = ("   "++)
+          let ets = reverse $ elemTrans nums
+          putStrLn $ showNums n
+          mapM_ (putStrLn . offset . showRow n . fst) ets
+          putStrLn $ showNums n
+          putStr "\n"
 
 -- | あみだくじの一行を AA で描画する
 showRow :: Int -> Int -> String
