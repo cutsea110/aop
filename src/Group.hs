@@ -134,8 +134,10 @@ toSimpleOrbit :: Replace -> [[Int]]
 toSimpleOrbit = filter pred . reprOf . toOrbit
   where pred = (>1) . length
 
+-- | 標準的射影(左コセット)
 (-*<) :: Replace -> [Replace] -> [Replace]
 x -*< xs = map (x `compose`) xs
+-- | 標準的射影(右コセット)
 (>*-) :: [Replace] -> Replace -> [Replace]
 xs >*- x = map (`compose` x) xs
 
