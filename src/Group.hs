@@ -25,7 +25,7 @@ instance Semigroup Replace where
 type TYP = [Int]
 -- | 対称群の元の軌道表現
 data Orbit = Orbit { typeOf :: TYP
-                   , reprOf ::  [[Int]]
+                   , reprOf :: [[Int]]
                    }
            deriving (Eq, Ord, Show)
 
