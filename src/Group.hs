@@ -2,7 +2,7 @@ module Group where
 
 import Control.Arrow (second)
 import Data.Function (on)
-import Data.List (sortBy, sortOn, groupBy, inits)
+import Data.List (sortBy, sortOn, groupBy, inits, (\\))
 import Data.Monoid (Endo(..), Sum(..))
 import qualified Data.Set as Set
 import Text.Printf (printf)
@@ -44,6 +44,15 @@ compose :: Replace -> Replace -> Replace
     f = map snd . sortOn fst
     ys1 = f $ zip xs1 [1..n1]
     ys2 = f $ zip ys1 xs2
+
+-- | n が異なる対称群の元の合成
+-- 大きい位数の方に合わせる
+compose' :: Replace -> Replace -> Replace
+(Replace n2 xs2) `compose'` (Replace n1 xs1) = Replace n xs1' `compose` Replace n xs2'
+  where
+    n = max n1 n2
+    xs1' = xs1 ++ [n1+1..n]
+    xs2' = xs2 ++ [n2+1..n]
 
 -- | 逆元
 complement :: Replace -> Replace
