@@ -38,7 +38,7 @@ toEndo = Endo . compose
 -- | 合成 (右から左へ合成する)
 compose :: Replace -> Replace -> Replace
 (Replace n2 xs2) `compose` (Replace n1 xs1)
-  | n2 == n1   = Replace n2 ys2
+  | n2 == n1  = Replace n2 ys2
   | otherwise = error "compose: dimensions do not match"
   where
     f = map snd . sortOn fst
