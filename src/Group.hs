@@ -55,14 +55,14 @@ compose' :: Replace -> Replace -> Replace
     xs2' = xs2 ++ [n2+1..n]
 
 -- | 逆元
-complement :: Replace -> Replace
-complement (Replace n xs) = Replace n xs'
+inverse :: Replace -> Replace
+inverse (Replace n xs) = Replace n xs'
   where xs' = map fst . sortOn snd . zip [1..] $ xs
 
 -- | f の g による共役元
 covariantOver :: Replace -> Replace -> Replace
 f `covariantOver` g = g `compose` f `compose` g'
-  where g' = complement g
+  where g' = inverse g
 
 -- | g による自己同型写像
 auto :: Replace -> Replace -> Replace
