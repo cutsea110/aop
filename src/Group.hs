@@ -180,22 +180,20 @@ drawAmida xs = do
           let q = show nums
           putStrLn q
           putStrLn $ replicate (length q) '-'
+        -- | あみだくじのヘッダ/フッタを描画する
+        putNums n = do
+          putStrLn $ concatMap (printf "%4d") [1..n]
+        -- | あみだくじの一行を AA で描画する
+        showRow :: Int -> Int -> String
+        showRow n i = concatMap f [1..n]
+          where f j | j == n    = "|"
+                    | j == i    = "|---"
+                    | otherwise = "|   "
         putAmida nums = do
           let n = length nums
           let offset = ("   "++)
           let ets = reverse $ elemTrans nums
-          putStrLn $ showNums n
+          putNums n
           mapM_ (putStrLn . offset . showRow n . fst) ets
-          putStrLn $ showNums n
+          putNums n
           putStr "\n"
-
--- | あみだくじの一行を AA で描画する
-showRow :: Int -> Int -> String
-showRow n i = concatMap f [1..n]
-  where f j | j == n    = "|"
-            | j == i    = "|---"
-            | otherwise = "|   "
-
--- | あみだくじのヘッダ/フッタを描画する
-showNums :: Int -> String
-showNums n = concatMap (printf "%4d") [1..n]
