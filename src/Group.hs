@@ -29,8 +29,20 @@ data Orbit = Orbit { typeOf :: TYP
                    }
            deriving (Eq, Ord, Show)
 
+sign :: Replace -> Int
+sign (Replace n x) = product [signum (x_j - x_i) -- i < j なので注意
+                             | i <- [0..n-1]
+                             , j <- [i+1..n-1]
+                             , let (x_i, x_j) = (x !! i, x !! j)
+                             ]
+
+-- | n 次対称群
 syms :: Dimension -> [Replace]
 syms n = Replace n <$> perms [1..n]
+
+-- | n 次交代群
+alts :: Dimension -> [Replace]
+alts n = filter ((== 1) . sign) $ syms n
 
 toEndo :: Replace -> Endo Replace
 toEndo = Endo . compose
