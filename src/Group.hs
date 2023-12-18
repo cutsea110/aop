@@ -30,7 +30,7 @@ data Orbit = Orbit { typeOf :: TYP
            deriving (Eq, Ord, Show)
 
 sign :: Replace -> Int
-sign (Replace n x) = product [signum (x !! j - x !! i) -- i < j なので注意
+sign (Replace n x) = product [ signum (x !! j - x !! i) -- i < j なので注意
                              | i <- [0..n-1]
                              , j <- [i+1..n-1]
                              ]
