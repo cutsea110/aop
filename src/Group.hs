@@ -177,7 +177,7 @@ countSmallL xs = map (snd . second getSum) $ go xs b []
         b = new n :: BIT (Sum Int)
         go []     b acc = zip xs (reverse acc)
         go (x:xs) b acc = let acc' = b ! x : acc -- x 登場時点で、x より小さい要素の出現を数える
-                              b' = inc' x 1 b
+                              b'   = inc' x 1 b
                           in go xs b' acc'
 
 
@@ -194,12 +194,6 @@ drawAmida xs = do
         -- | あみだくじのヘッダ/フッタを描画する
         putNums n = do
           putStrLn $ concatMap (printf "%4d") [1..n]
-        -- | あみだくじの一行を AA で描画する
-        showRow :: Int -> Int -> String
-        showRow n i = concatMap f [1..n]
-          where f j | j == n    = "|"
-                    | j == i    = "|---"
-                    | otherwise = "|   "
         putAmida nums = do
           let n = length nums
           let offset = ("   "++)
@@ -208,3 +202,10 @@ drawAmida xs = do
           mapM_ (putStrLn . offset . showRow n . fst) ets
           putNums n
           putStr "\n"
+          where
+            -- | あみだくじの一行を AA で描画する
+            showRow :: Int -> Int -> String
+            showRow n i = concatMap f [1..n]
+              where f j | j == n    = "|"
+                        | j == i    = "|---"
+                        | otherwise = "|   "
