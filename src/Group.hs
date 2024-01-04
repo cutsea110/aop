@@ -2,7 +2,7 @@ module Group where
 
 import Control.Arrow (second)
 import Data.Function (on)
-import Data.List (sortBy, sortOn, groupBy, inits, (\\))
+import Data.List (sortBy, sortOn, groupBy, inits, (\\), unfoldr)
 import Data.Monoid (Endo(..), Sum(..))
 import qualified Data.Set as Set
 import Text.Printf (printf)
@@ -209,3 +209,17 @@ drawAmida xs = do
               where f j | j == n    = "|"
                         | j == i    = "|---"
                         | otherwise = "|   "
+
+-- | utility
+int2Replace :: Int -> Replace
+int2Replace n = Replace d xs
+  where xs = reverse $ unfoldr psi n
+          where psi i | i > 0     = Just . swap $ i `divMod` 10
+                      | otherwise = Nothing
+                swap (x, y) = (y, x)
+        d = maximum xs
+
+-- | 簡単にあみだくじを AA で描画
+drawAmidaLite :: Int -> IO ()
+drawAmidaLite = drawAmida . mapTo . int2Replace
+
