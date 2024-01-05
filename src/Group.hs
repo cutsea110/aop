@@ -180,7 +180,7 @@ countSmallL xs = map (snd . second getSum) $ go xs b []
                               b'   = inc' x 1 b
                           in go xs b' acc'
 
-
+-- | 離接互換(with squash)
 elemTransSquash :: [Int] -> [[(Int,Int)]]
 elemTransSquash xs = map (map f . reverse) ws
   where f i = (i, i+1)
@@ -205,37 +205,9 @@ neighbor :: Int -> [Int] -> Bool
 neighbor i js = i-1 `elem` js || i+1 `elem` js
 
 ------
--- | あみだくじを AA で描画する
-drawAmida :: [Int] -> IO ()
-drawAmida xs = do
-  putTitle xs
-  putAmida xs
-  where putTitle nums = do
-          let q = show nums
-          putStrLn q
-          putStrLn $ replicate (length q) '-'
-        -- | あみだくじのヘッダ/フッタを描画する
-        putNums n = do
-          putStrLn $ concatMap (printf "%4d") [1..n]
-        putAmida nums = do
-          let n = length nums
-          let offset = ("   "++)
-          let ets = reverse $ elemTrans nums
-          putNums n
-          mapM_ (putStrLn . offset . showRow n . fst) ets
-          putNums n
-          putStr "\n"
-          where
-            -- | あみだくじの一行を AA で描画する
-            showRow :: Int -> Int -> String
-            showRow n i = concatMap f [1..n]
-              where f j | j == n    = "|"
-                        | j == i    = "|---"
-                        | otherwise = "|   "
 
--- | squash したあみだくじを AA で描画する
-drawAmida' :: [Int] -> IO ()
-drawAmida' xs = do
+drawAmida :: Bool -> [Int] -> IO ()
+drawAmida squash xs = do
   putTitle xs
   putAmida xs
   where putTitle nums = do
@@ -248,12 +220,13 @@ drawAmida' xs = do
         putAmida nums = do
           let n = length nums
           let offset = ("   "++)
-          let ets = reverse $ elemTransSquash nums
+          let ets = reverse $ trans nums
           putNums n
           mapM_ (putStrLn . offset . showRow n . map fst) ets
           putNums n
           putStr "\n"
           where
+            trans = if squash then elemTransSquash else map (:[]) . elemTrans
             -- | あみだくじの一行を AA で描画する
             showRow :: Int -> [Int] -> String
             showRow n is = concatMap f [1..n]
@@ -270,6 +243,6 @@ int2Replace n = Replace d xs
         d = maximum xs
 
 -- | 簡単にあみだくじを AA で描画
-drawAmidaLite :: Int -> IO ()
-drawAmidaLite = drawAmida . mapTo . int2Replace
+drawAmidaLite :: Bool -> Int -> IO ()
+drawAmidaLite squash = drawAmida squash . mapTo . int2Replace
 
