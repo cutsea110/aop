@@ -181,6 +181,29 @@ countSmallL xs = map (snd . second getSum) $ go xs b []
                           in go xs b' acc'
 
 
+elemTransSquash :: [Int] -> [[(Int,Int)]]
+elemTransSquash xs = map (map f . reverse) ws
+  where f i = (i, i+1)
+        ys = zipWith (\i s -> i-(s+1)) xs (countSmallL xs)
+        zs = zipWith (\l s -> [s..s+l-1]) ys [1..]
+        ws = foldl squash [] zs
+
+squash :: [[Int]] -> [Int] -> [[Int]]
+squash = foldr ins
+
+ins :: Int -> [[Int]] -> [[Int]]
+ins x [] = [[x]]
+ins x yss@[y]
+  | neighbor x y = [x]:yss
+  | otherwise    = [x:y]
+ins x yss@(y:zss@(z:zs))
+  | neighbor x y = [x]:yss
+  | neighbor x z = (x:y):zss
+  | otherwise    = y:ins x zss
+
+neighbor :: Int -> [Int] -> Bool
+neighbor i js = i-1 `elem` js || i+1 `elem` js
+
 ------
 -- | あみだくじを AA で描画する
 drawAmida :: [Int] -> IO ()
