@@ -233,6 +233,32 @@ drawAmida xs = do
                         | j == i    = "|---"
                         | otherwise = "|   "
 
+drawAmida' :: [Int] -> IO ()
+drawAmida' xs = do
+  putTitle xs
+  putAmida xs
+  where putTitle nums = do
+          let q = show nums
+          putStrLn q
+          putStrLn $ replicate (length q) '-'
+        -- | あみだくじのヘッダ/フッタを描画する
+        putNums n = do
+          putStrLn $ concatMap (printf "%4d") [1..n]
+        putAmida nums = do
+          let n = length nums
+          let offset = ("   "++)
+          let ets = reverse $ elemTransSquash nums
+          putNums n
+          mapM_ (putStrLn . offset . showRow n . map fst) ets
+          putNums n
+          putStr "\n"
+          where
+            -- | あみだくじの一行を AA で描画する
+            showRow :: Int -> [Int] -> String
+            showRow n is = concatMap f [1..n]
+              where f j | j == n      = "|"
+                        | j `elem` is = "|---"
+                        | otherwise   = "|   "
 -- | utility
 int2Replace :: Int -> Replace
 int2Replace n = Replace d xs
