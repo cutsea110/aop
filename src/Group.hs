@@ -226,7 +226,8 @@ drawAmida squash xs = do
           putNums n
           putStr "\n"
           where
-            trans = if squash then elemTransSquash else map (:[]) . elemTrans
+            trans | squash    = elemTransSquash
+                  | otherwise = map (:[]) . elemTrans -- I/F を elemTransSquash に合わせる
             -- | あみだくじの一行を AA で描画する
             showRow :: Int -> [Int] -> String
             showRow n is = concatMap f [1..n]
