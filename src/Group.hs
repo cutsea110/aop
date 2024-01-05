@@ -186,7 +186,7 @@ elemTransSquash xs = map (map f . reverse) ws
   where f i = (i, i+1)
         ys = zipWith (\i s -> i-(s+1)) xs (countSmallL xs)
         zs = zipWith (\l s -> [s..s+l-1]) ys [1..]
-        ws = foldl squash [] zs
+        ws = reverse $ foldl squash [] zs
 
 squash :: [[Int]] -> [Int] -> [[Int]]
 squash = foldr ins
@@ -233,6 +233,7 @@ drawAmida xs = do
                         | j == i    = "|---"
                         | otherwise = "|   "
 
+-- | squash したあみだくじを AA で描画する
 drawAmida' :: [Int] -> IO ()
 drawAmida' xs = do
   putTitle xs
