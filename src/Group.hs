@@ -181,8 +181,8 @@ countSmallL xs = map (snd . second getSum) $ go xs b []
                           in go xs b' acc'
 
 -- | 離接互換(with squash)
-elemTransSquash :: [Int] -> [[(Int,Int)]]
-elemTransSquash xs = map (map f . reverse) ws
+elemTransSquashed :: [Int] -> [[(Int,Int)]]
+elemTransSquashed xs = map (map f . reverse) ws
   where f i = (i, i+1)
         ys = zipWith (\i s -> i-(s+1)) xs (countSmallL xs)
         zs = zipWith (\l s -> [s..s+l-1]) ys [1..]
@@ -226,7 +226,7 @@ drawAmida squash xs = do
           putNums n
           putStr "\n"
           where
-            trans | squash    = elemTransSquash
+            trans | squash    = elemTransSquashed
                   | otherwise = map (:[]) . elemTrans -- I/F を elemTransSquash に合わせる
             -- | あみだくじの一行を AA で描画する
             showRow :: Int -> [Int] -> String
