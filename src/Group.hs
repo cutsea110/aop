@@ -202,7 +202,7 @@ ins x yss@(y:zss@(z:zs))
   | otherwise    = y:ins x zss
 
 neighbor :: Int -> [Int] -> Bool
-neighbor i js = i-1 `elem` js || i+1 `elem` js
+neighbor i = any (\j -> i-1 == j || i+1 == j)
 
 ------
 
