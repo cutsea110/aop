@@ -11,10 +11,10 @@ import BinaryIndexedTree (BIT, new, inc', (!))
 import Combinatorial (perms)
 
 -- | 次元
-type Dimension = Int
+type DIM = Int
 -- | 対称群の元の置換表現
-data Replace = Replace { dimension :: Dimension
-                       , mapTo     :: [Int]
+data Replace = Replace { dim   :: DIM
+                       , mapTo :: [Int]
                        }
              deriving (Eq, Ord, Show)
 
@@ -36,11 +36,11 @@ sign (Replace n x) = product [ signum (x !! j - x !! i) -- i < j なので注意
                              ]
 
 -- | n 次対称群
-syms :: Dimension -> [Replace]
+syms :: DIM -> [Replace]
 syms n = Replace n <$> perms [1..n]
 
 -- | n 次交代群
-alts :: Dimension -> [Replace]
+alts :: DIM -> [Replace]
 alts n = filter ((== 1) . sign) $ syms n
 
 toEndo :: Replace -> Endo Replace
