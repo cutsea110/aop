@@ -2,7 +2,7 @@ module Group where
 
 import Control.Arrow (second)
 import Data.Function (on)
-import Data.List (sortBy, sortOn, groupBy, inits, (\\), unfoldr)
+import Data.List (sortBy, sortOn, groupBy, inits, unfoldr, (\\))
 import Data.Monoid (Endo(..), Sum(..))
 import qualified Data.Set as Set
 import Text.Printf (printf)
