@@ -48,7 +48,7 @@ toEndo = Endo . compose
 
 -- | 合成 (右から左へ合成する)
 compose :: Replace -> Replace -> Replace
-(Replace n2 xs2) `compose` (Replace n1 xs1)
+Replace n2 xs2 `compose` Replace n1 xs1
   | n2 == n1  = Replace n2 ys2
   | otherwise = error "compose: dimensions do not match"
   where
@@ -59,7 +59,7 @@ compose :: Replace -> Replace -> Replace
 -- | n が異なる対称群の元の合成
 -- 大きい位数の方に合わせる
 compose' :: Replace -> Replace -> Replace
-(Replace n2 xs2) `compose'` (Replace n1 xs1) = Replace n xs1' `compose` Replace n xs2'
+Replace n2 xs2 `compose'` Replace n1 xs1 = Replace n xs1' `compose` Replace n xs2'
   where
     n = max n1 n2
     xs1' = xs1 ++ [n1+1..n]
@@ -234,6 +234,7 @@ drawAmida squash xs = do
               where f j | j == n      = "|"
                         | j `elem` is = "|---"
                         | otherwise   = "|   "
+
 -- | utility
 int2Replace :: Int -> Replace
 int2Replace n = Replace d xs
