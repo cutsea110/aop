@@ -182,11 +182,12 @@ countSmallL xs = map (snd . second getSum) $ go xs b []
 
 -- | 離接互換(with squash)
 elemTransSquashed :: [Int] -> [[(Int,Int)]]
-elemTransSquashed xs = map (map f . reverse) ws
+elemTransSquashed xs = rev f ws
   where f i = (i, i+1)
         ys = zipWith (\i s -> i-(s+1)) xs (countSmallL xs)
         zs = zipWith (\l s -> [s..s+l-1]) ys [1..]
-        ws = reverse $ foldl squash [] zs
+        rev g = map (map g . reverse) . reverse
+        ws = foldl squash [] zs
 
 squash :: [[Int]] -> [Int] -> [[Int]]
 squash = foldr ins
