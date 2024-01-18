@@ -186,8 +186,11 @@ elemTransSquashed xs = rev f ws
   where f i = (i, i+1)
         ys = zipWith (\i s -> i-(s+1)) xs (countSmallL xs)
         zs = zipWith (\l s -> [s..s+l-1]) ys [1..]
-        rev g = map (map g . reverse) . reverse
         ws = foldl squash [] zs
+        -- rev f == map (map f . reverse) . reverse
+        rev = revMap . revMap
+        -- revMap f == map f . reverse
+        revMap f xs = foldr (\x acc -> acc.(f x:)) id xs []
 
 squash :: [[Int]] -> [Int] -> [[Int]]
 squash = foldr ins
