@@ -226,7 +226,8 @@ drawAmida squash xs = do
           let offset = ("   "++)
           let ets = reverse $ trans nums
           putNums n
-          mapM_ (putStrLn . offset . showRow n . map fst) ets
+          let ets' = if null ets then [[]] else ets
+          mapM_ (putStrLn . offset . showRow n . map fst) ets'
           putNums n
           putStr "\n"
           where
