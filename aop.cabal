@@ -36,6 +36,7 @@ library
                      , Decimal
                      , Defunctionalization
                      , Dijkstra
+                     , Diophantus
                      , DrawMatrix
                      , DualityOfSorts
                      , Dyna
