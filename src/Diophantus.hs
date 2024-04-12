@@ -22,3 +22,8 @@ step (a, b) = (b', -a')
   where
     d = gcd a b
     (a', b') = (a `div` d, b `div` d)
+
+diophantus' :: (Integral a) => (a, a, a) -> Maybe ((a, a), (a, a))
+diophantus' (a, b, c) = do
+  xy@(x, y) <- diophantus (a, b, c)
+  return (xy, step (a, b))
