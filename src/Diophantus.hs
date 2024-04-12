@@ -16,3 +16,9 @@ diophantus (a, b, c)
   where
     (d, x', y') = euclid (a, b)
     (c', m') = c `divMod` d
+
+step :: (Integral a) => (a, a) -> (a, a)
+step (a, b) = (b', -a')
+  where
+    d = gcd a b
+    (a', b') = (a `div` d, b `div` d)
