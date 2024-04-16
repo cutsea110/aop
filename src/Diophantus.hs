@@ -1,11 +1,11 @@
 module Diophantus where
 
 euclid :: (Integral a) => (a, a) -> (a, a, a)
-euclid (a, b) = _euclid (a, 1, 0) (b, 0, 1)
+euclid (a, b) = go (a, 1, 0) (b, 0, 1)
   where
-    _euclid (a, x1, y1) (b, x2, y2)
-      | b == 0    = (a, x1, y1)
-      | otherwise = _euclid (b, x2, y2) (a - d * b, x1 - d * x2, y1 - d * y2)
+    go v@(a, x1, y1) w@(b, x2, y2)
+      | b == 0    = v
+      | otherwise = go w (a - d * b, x1 - d * x2, y1 - d * y2)
       where
         d = a `div` b
 
