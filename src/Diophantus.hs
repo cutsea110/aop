@@ -3,11 +3,14 @@ module Diophantus where
 euclid :: (Integral a) => (a, a) -> (a, a, a)
 euclid (a, b) = go (a, 1, 0) (b, 0, 1)
   where
-    go v@(a, x1, y1) w@(b, x2, y2)
-      | b == 0    = v
-      | otherwise = go w (a - d * b, x1 - d * x2, y1 - d * y2)
+    go u@(a, x1, y1) v@(b, x2, y2)
+      | b == 0    = u
+      | otherwise = go v (a', x1', y1')
       where
         d = a `div` b
+        a' = a - d * b
+        x1' = x1 - d * x2
+        y1' = y1 - d * y2
 
 diophantus :: (Integral a) => (a, a, a) -> Maybe (a, a)
 diophantus (a, b, c)
