@@ -20,13 +20,12 @@ diophantus (a, b, c)
     (d, x', y') = euclid (a, b)
     (c', m') = c `divMod` d
 
-step :: (Integral a) => (a, a) -> (a, a)
-step (a, b) = (b', -a')
-  where
-    d = gcd a b
-    (a', b') = (a `div` d, b `div` d)
-
 diophantus' :: (Integral a) => (a, a, a) -> Maybe ((a, a), (a, a))
 diophantus' (a, b, c) = do
   xy <- diophantus (a, b, c)
   return (xy, step (a, b))
+  where
+    step (a, b) = (b', -a')
+      where
+        d = gcd a b
+        (a', b') = (a `div` d, b `div` d)
