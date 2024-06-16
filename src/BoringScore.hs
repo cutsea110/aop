@@ -1,21 +1,44 @@
 module BoringScore where
 
-scores :: [Int] -> [Int]
-scores ts = take 10 $ go ts []
-  where
-    go :: [Int] -> [Int] -> [Int]
-    go []       acc = reverse acc
-    go (10:ts)  acc = go ts (ttl acc + 10 + sum (take 2 ts) : acc)
-    go (x:y:ts) acc
-      | x + y == 10 = go ts (ttl acc + 10 + head ts : acc)
-      | otherwise   = go ts (ttl acc + x + y : acc)
-    go (x:[])   acc = go [] (ttl acc + x : acc)
+import Data.List (foldl', unfoldr)
 
-    ttl [] = 0
+type Throw = Int
+type Bonus = Int
+type Score = Int
+
+data Frame = Strike [Bonus]
+           | Spare [Throw] [Bonus]
+           | Pair [Throw]
+           deriving (Show)
+
+frames :: [Throw] -> [Frame]
+frames ts = unfoldr psi ts
+  where
+    psi :: [Throw] -> Maybe (Frame, [Throw])
+    psi [] = Nothing
+    psi (10:ts) = Just (Strike (take 2 ts), ts)
+    psi (x:y:ts)
+      | x + y == 10 = Just (Spare [x, y] (take 1 ts), ts)
+      | otherwise   = Just (Pair [x, y], ts)
+    psi ts = Just (Pair (take 2 ts), drop 2 ts)
+
+scores :: [Frame] -> [Score]
+scores = take 10 . reverse . foldl' g []
+  where
+    g :: [Score] -> Frame -> [Score]
+    g acc (Strike   bs) = (ttl acc + 10 + sum bs) : acc
+    g acc (Spare ts bs) = (ttl acc + 10 + sum bs) : acc
+    g acc (Pair  ts   ) = (ttl acc + sum ts) : acc
+
+    ttl []    = 0
     ttl (x:_) = x
+
+-------------------------
 
 test:: [Int]
 test = [1, 4, 4, 5, 6, 4, 5, 5, 10, 0, 1, 7, 3, 6, 4, 10, 2, 8, 6]
 
 perfect:: [Int]
 perfect = [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
+
+
