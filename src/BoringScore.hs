@@ -38,3 +38,29 @@ throws ps = go ps 0 []
         | x + y == 10 -> go ys (n+1) (Spare x:acc)
         | otherwise   -> go ys (n+1) (Pair x y:acc)
       x:[] -> go [] (n+1) (Open x:acc)
+
+score' :: [Throws] -> [Int]
+score' ts = take 10 $ go ts []
+  where
+    go :: [Throws] -> [Int] -> [Int]
+    go []       acc = reverse acc
+    go (Strike:ts)  acc = go ts (ttl acc + 10 + nextTwo ts : acc)
+    go (Spare x:ts) acc = go ts (ttl acc + 10 + nextOne ts : acc)
+    go (Pair x y:ts) acc = go ts (ttl acc + x + y : acc)
+    go (Open x:ts) acc = go ts (ttl acc + x : acc)
+
+    ttl [] = 0
+    ttl (x:_) = x
+
+    nextOne (Strike:_) = 10
+    nextOne (Spare x:_) = x
+    nextOne (Pair x y:_) = x
+    nextOne (Open x:_) = x
+
+    nextTwo (Strike:Strike:_) = 10
+    nextTwo (Strike:Spare x:_) = 10 + x
+    nextTwo (Strike:Pair x y:_) = 10 + x
+    nextTwo (Strike:Open x:_) = 10 + x
+    nextTwo (Spare x:_) = 10
+    nextTwo (Pair x y:_) = x + y
+    nextTwo (Open x:_) = x
