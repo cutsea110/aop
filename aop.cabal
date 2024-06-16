@@ -24,6 +24,7 @@ library
                      , Bernoulli
                      , BinaryTree
                      , BinaryIndexedTree
+                     , BoringScore
                      , Box100
                      , CategoryTheory
                      , ChurchEncoding
