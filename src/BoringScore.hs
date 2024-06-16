@@ -23,7 +23,7 @@ frames ts = unfoldr psi ts
     psi ts = Just (Pair (take 2 ts), drop 2 ts)
 
 scores :: [Frame] -> [Score]
-scores = take 10 . reverse . foldl' g []
+scores = reverse . foldl' g []
   where
     g :: [Score] -> Frame -> [Score]
     g acc (Strike   bs) = (ttl acc + 10 + sum bs) : acc
@@ -33,12 +33,15 @@ scores = take 10 . reverse . foldl' g []
     ttl []    = 0
     ttl (x:_) = x
 
+scoreBoard :: [Throw] -> [(Frame, Score)]
+scoreBoard = take 10 . uncurry zip . pair id scores . frames
+  where
+    pair f g x = (f x, g x)
+
 -------------------------
 
-test:: [Int]
+test:: [Throw]
 test = [1, 4, 4, 5, 6, 4, 5, 5, 10, 0, 1, 7, 3, 6, 4, 10, 2, 8, 6]
 
-perfect:: [Int]
+perfect:: [Throw]
 perfect = [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
-
-
