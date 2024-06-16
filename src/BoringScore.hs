@@ -19,3 +19,22 @@ test = [1, 4, 4, 5, 6, 4, 5, 5, 10, 0, 1, 7, 3, 6, 4, 10, 2, 8, 6]
 
 perfect:: [Int]
 perfect = [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
+
+data Throws = Strike
+            | Spare Int
+            | Pair Int Int
+            | Open Int
+            deriving (Show)
+
+type Frame = Int
+
+throws :: [Int] -> (Frame, [Throws])
+throws ps = go ps 0 []
+  where
+    go [] n acc = (n, reverse acc)
+    go xs n acc = case xs of
+      10:zs -> go zs (n+1) (Strike:acc)
+      x:y:ys
+        | x + y == 10 -> go ys (n+1) (Spare x:acc)
+        | otherwise   -> go ys (n+1) (Pair x y:acc)
+      x:[] -> go [] (n+1) (Open x:acc)
