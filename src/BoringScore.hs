@@ -33,10 +33,8 @@ scores = reverse . foldl' g []
     ttl []    = 0
     ttl (x:_) = x
 
-scoreBoard :: [Throw] -> [(Frame, Score)]
-scoreBoard = take 10 . uncurry zip . pair id scores . frames
-  where
-    pair f g x = (f x, g x)
+game :: [Throw] -> [(Frame, Score)]
+game = take 10 . (zip <$> id <*> scores) . frames
 
 -------------------------
 
