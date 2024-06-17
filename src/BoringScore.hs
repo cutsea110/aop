@@ -11,10 +11,10 @@ data Frame = Strike [Bonus]
            | Pair [Throw]
            deriving (Show)
 
-points :: Frame -> Score
-points (Strike   bs) = 10 + sum bs
-points (Spare _  bs) = 10 + sum bs
-points (Pair  ts   ) = sum ts
+point :: Frame -> Score
+point (Strike   bs) = 10 + sum bs
+point (Spare _  bs) = 10 + sum bs
+point (Pair  ts   ) = sum ts
 
 frames :: [Throw] -> [Frame]
 frames ts = unfoldr psi ts
@@ -30,7 +30,7 @@ frames ts = unfoldr psi ts
 scores :: [Frame] -> [Score]
 scores = snd . mapAccumL psi 0
   where
-    psi ttl f = let ttl' = ttl + points f in dup ttl'
+    psi ttl f = let ttl' = ttl + point f in dup ttl'
     dup x = (x, x)
 
 game :: [Throw] -> [(Frame, Score)]
