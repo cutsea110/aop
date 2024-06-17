@@ -1,6 +1,6 @@
 module BoringScore where
 
-import Data.List (foldl', unfoldr)
+import Data.List (unfoldr)
 
 type Throw = Int
 type Bonus = Int
@@ -11,6 +11,11 @@ data Frame = Strike [Bonus]
            | Pair [Throw]
            deriving (Show)
 
+points :: Frame -> Score
+points (Strike   bs) = 10 + sum bs
+points (Spare _  bs) = 10 + sum bs
+points (Pair  ts   ) = sum ts
+
 frames :: [Throw] -> [Frame]
 frames ts = unfoldr psi ts
   where
@@ -20,18 +25,14 @@ frames ts = unfoldr psi ts
     psi (x:y:ts)
       | x + y == 10 = Just (Spare [x, y] (take 1 ts), ts)
       | otherwise   = Just (Pair [x, y], ts)
-    psi ts = Just (Pair (take 2 ts), drop 2 ts)
+    psi ts = Just (Pair t, d) where (t, d) = splitAt 2 ts
 
 scores :: [Frame] -> [Score]
 scores fs = unfoldr psi (0, fs)
   where
     psi :: (Score, [Frame]) -> Maybe (Score, (Score, [Frame]))
-    psi (ttl, []) = Nothing
-    psi (ttl, f@(Strike   bs):fs) = Just (ttl', (ttl', fs)) where ttl' = ttl + 10 + sum bs
-    psi (ttl, f@(Spare ts bs):fs) = Just (ttl', (ttl', fs)) where ttl' = ttl + 10 + sum bs
-    psi (ttl, f@(Pair  ts   ):fs) = Just (ttl', (ttl', fs)) where ttl' = ttl + sum ts
-
-
+    psi (_,   [])   = Nothing
+    psi (ttl, f:fs) = Just (ttl', (ttl', fs)) where ttl' = ttl + points f
 
 game :: [Throw] -> [(Frame, Score)]
 game = take 10 . (zip <$> id <*> scores) . frames
