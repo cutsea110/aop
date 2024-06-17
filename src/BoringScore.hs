@@ -23,15 +23,15 @@ frames ts = unfoldr psi ts
     psi ts = Just (Pair (take 2 ts), drop 2 ts)
 
 scores :: [Frame] -> [Score]
-scores = reverse . foldl' g []
+scores fs = unfoldr psi (0, fs)
   where
-    g :: [Score] -> Frame -> [Score]
-    g acc (Strike   bs) = (ttl acc + 10 + sum bs) : acc
-    g acc (Spare ts bs) = (ttl acc + 10 + sum bs) : acc
-    g acc (Pair  ts   ) = (ttl acc + sum ts) : acc
+    psi :: (Score, [Frame]) -> Maybe (Score, (Score, [Frame]))
+    psi (ttl, []) = Nothing
+    psi (ttl, f@(Strike   bs):fs) = Just (ttl', (ttl', fs)) where ttl' = ttl + 10 + sum bs
+    psi (ttl, f@(Spare ts bs):fs) = Just (ttl', (ttl', fs)) where ttl' = ttl + 10 + sum bs
+    psi (ttl, f@(Pair  ts   ):fs) = Just (ttl', (ttl', fs)) where ttl' = ttl + sum ts
 
-    ttl []    = 0
-    ttl (x:_) = x
+
 
 game :: [Throw] -> [(Frame, Score)]
 game = take 10 . (zip <$> id <*> scores) . frames
