@@ -1,4 +1,4 @@
-module BoringScore where
+module BowlingScore where
 
 import Data.List (unfoldr, mapAccumL)
 
