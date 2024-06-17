@@ -36,15 +36,13 @@ scores = snd . mapAccumL psi 0
 data FrameState = Pending | Fixed deriving (Show)
 
 state :: Frame -> FrameState
-state (Strike bs)
-  | length bs < 2 = Pending
-  | otherwise     = Fixed
-state (Spare _ bs)
-  | null bs   = Pending
-  | otherwise = Fixed
-state (Pair ts)
-  | length ts < 2 = Pending
-  | otherwise     = Fixed
+state f | onGoing f = Pending
+        | otherwise = Fixed
+  where
+    onGoing :: Frame -> Bool
+    onGoing (Strike  bs) = length bs < 2
+    onGoing (Spare _ bs) = null bs
+    onGoing (Pair    ts) = length ts < 2
 
 states :: [Frame] -> [FrameState]
 states = map state
@@ -57,7 +55,7 @@ data Frame' = Frame' { getFrame :: Frame
 game :: [Throw] -> [Frame']
 game = take 10 . (zipWith3 Frame' <$> id <*> scores <*> states) . frames
 
--------------------------
+-- | Test data
 
 test:: [Throw]
 test = [1, 4, 4, 5, 6, 4, 5, 5, 10, 0, 1, 7, 3, 6, 4, 10, 2, 8, 6]
