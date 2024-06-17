@@ -33,7 +33,6 @@ scores = snd . mapAccumL psi 0
     psi ttl f = let ttl' = ttl + point f in dup ttl'
     dup x = (x, x)
 
-
 data FrameState = Pending | Fixed deriving (Show)
 
 state :: Frame -> FrameState
@@ -55,8 +54,8 @@ data Frame' = Frame' { getFrame :: Frame
                      , getState :: FrameState
                      } deriving (Show)
 
-bowling :: [Throw] -> [Frame']
-bowling = take 10 . (zipWith3 Frame' <$> id <*> scores <*> states) . frames
+game :: [Throw] -> [Frame']
+game = take 10 . (zipWith3 Frame' <$> id <*> scores <*> states) . frames
 
 -------------------------
 
