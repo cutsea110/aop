@@ -1,6 +1,9 @@
 module BoringScore where
 
-import Data.List (unfoldr)
+import Data.List (unfoldr, mapAccumL)
+
+dup :: a -> (a, a)
+dup x = (x, x)
 
 type Throw = Int
 type Bonus = Int
@@ -28,11 +31,10 @@ frames ts = unfoldr psi ts
     psi ts = Just (Pair t, d) where (t, d) = splitAt 2 ts
 
 scores :: [Frame] -> [Score]
-scores fs = unfoldr psi (0, fs)
+scores = snd . mapAccumL psi 0
   where
-    psi :: (Score, [Frame]) -> Maybe (Score, (Score, [Frame]))
-    psi (_,   [])   = Nothing
-    psi (ttl, f:fs) = Just (ttl', (ttl', fs)) where ttl' = ttl + points f
+    psi :: Score -> Frame -> (Score, Score)
+    psi ttl f = let ttl' = ttl + points f in dup ttl'
 
 game :: [Throw] -> [(Frame, Score)]
 game = take 10 . (zip <$> id <*> scores) . frames
