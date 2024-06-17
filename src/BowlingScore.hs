@@ -50,8 +50,13 @@ state (Pair ts)
 states :: [Frame] -> [FrameState]
 states = map state
 
-game :: [Throw] -> [(Frame, Score, FrameState)]
-game = take 10 . (zip3 <$> id <*> scores <*> states) . frames
+data Frame' = Frame' { getFrame :: Frame
+                     , getScore :: Score
+                     , getState :: FrameState
+                     } deriving (Show)
+
+bowling :: [Throw] -> [Frame']
+bowling = take 10 . (zipWith3 Frame' <$> id <*> scores <*> states) . frames
 
 -------------------------
 
