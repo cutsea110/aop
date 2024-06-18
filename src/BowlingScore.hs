@@ -1,6 +1,6 @@
 module BowlingScore where
 
-import Data.List (transpose, unfoldr, mapAccumL)
+import Data.List (transpose, unfoldr, mapAccumL, zipWith4)
 
 type Throw = Int
 type Bonus = Int
@@ -47,18 +47,19 @@ state f | onGoing f = Pending
 states :: [Frame] -> [FrameState]
 states = map state
 
-data Frame' = Frame' { getFrame :: Frame
+data Frame' = Frame' { getIdx   :: FrameIdx
+                     , getFrame :: Frame
                      , getScore :: Score
                      , getState :: FrameState
                      } deriving (Show)
 
 game :: [Throw] -> [Frame']
-game = take 10 . (zipWith3 Frame' <$> id <*> scores <*> states) . frames
+game = take 10 . (zipWith4 Frame' <$> const [1..] <*> id <*> scores <*> states) . frames
 
 type FrameIdx = Int
 
-drawFrame :: (FrameIdx, Frame') -> [String]
-drawFrame (n, Frame' f s _) = case n of
+drawFrame :: Frame' -> [String]
+drawFrame (Frame' i f s _) = case i of
   10 -> [ "+-----+"
         , "|  10 |"
         , "+-+-+-+"
@@ -84,7 +85,7 @@ drawFrame (n, Frame' f s _) = case n of
               pad = replicate (5 - len) ' '
 
   _ -> [ "+---"
-       , "| " ++ show n ++ " "
+       , "| " ++ show i ++ " "
        , "+-+-"
        , drawPoint f
        , "| +-"
@@ -107,7 +108,7 @@ drawFrame (n, Frame' f s _) = case n of
 
 
 drawGame :: [Frame'] -> IO ()
-drawGame = putStr . unlines . map concat . transpose  . zipWith (curry drawFrame) [1..]
+drawGame = putStr . unlines . map concat . transpose  . map drawFrame
 
 -- | Test data
 
