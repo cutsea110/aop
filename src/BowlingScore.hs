@@ -1,6 +1,6 @@
 module BowlingScore where
 
-import Data.List (unfoldr, mapAccumL)
+import Data.List (transpose, unfoldr, mapAccumL)
 
 type Throw = Int
 type Bonus = Int
@@ -54,6 +54,60 @@ data Frame' = Frame' { getFrame :: Frame
 
 game :: [Throw] -> [Frame']
 game = take 10 . (zipWith3 Frame' <$> id <*> scores <*> states) . frames
+
+type FrameIdx = Int
+
+drawFrame :: (FrameIdx, Frame') -> [String]
+drawFrame (n, Frame' f s _) = case n of
+  10 -> [ "+-----+"
+        , "|  10 |"
+        , "+-+-+-+"
+        , drawPoint f
+        , "| +-+-+"
+        , drawScore s
+        , "+-----+"
+        ]
+    where
+      drawPoint :: Frame -> String
+      drawPoint (Strike      [b1,b2]) = "|X|" ++ show' b1 ++ "|" ++ show' b2 ++ "|"
+       where show' 10 = "X"
+             show' n  = show n
+      drawPoint (Spare [x,_] [b]) = "|" ++ show x ++ "|/|" ++ show b ++ "|"
+      drawPoint (Spare [x,_] []) = "|" ++ show x ++ "|/| |"
+      drawPoint (Pair  [x, y])  = "|" ++ show x ++ "|" ++ show y ++ "| |"
+      drawPoint (Pair  [x])     = "|" ++ show x ++ "| | |"
+  
+      drawScore :: Score -> String
+      drawScore s = "|" ++ pad ++ scoreStr ++ "|"
+        where scoreStr = show s
+              len = length scoreStr
+              pad = replicate (5 - len) ' '
+
+  _ -> [ "+---"
+       , "| " ++ show n ++ " "
+       , "+-+-"
+       , drawPoint f
+       , "| +-"
+       , drawScore s
+       , "+---"
+       ]
+    where
+      drawPoint :: Frame -> String
+      drawPoint (Strike      _) = "| |X"
+      drawPoint (Spare [x,_] _) = "|" ++ show x ++ "|/"
+      drawPoint (Pair  [x, y])  = "|" ++ show x ++ "|" ++ show y
+      drawPoint (Pair  [x])     = "|" ++ show x ++ "| "
+
+      drawScore :: Score -> String
+      drawScore s = "|" ++ pad ++ scoreStr
+        where scoreStr = show s
+              len = length scoreStr
+              pad = replicate (3 - len) ' '
+    
+
+
+drawGame :: [Frame'] -> IO ()
+drawGame = putStr . unlines . map concat . transpose  . zipWith (curry drawFrame) [1..]
 
 -- | Test data
 
