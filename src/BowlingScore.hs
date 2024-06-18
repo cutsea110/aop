@@ -60,26 +60,26 @@ type FrameIdx = Int
 
 drawFrame :: Frame' -> [String]
 drawFrame (Frame' i f s _) = case i of
-  10 -> [ "+-----+"
-        , "|  10 |"
-        , "+-+-+-+"
+  10 -> [ "+-----"
+        , "|  10 "
+        , "+-+-+-"
         , drawPoint f
-        , "| +-+-+"
+        , "| +-+-"
         , drawScore s
-        , "+-----+"
+        , "+-----"
         ]
     where
       drawPoint :: Frame -> String
-      drawPoint (Strike      [b1,b2]) = "|X|" ++ show' b1 ++ "|" ++ show' b2 ++ "|"
+      drawPoint (Strike      [b1,b2]) = "|X|" ++ show' b1 ++ "|" ++ show' b2
        where show' 10 = "X"
              show' n  = show n
-      drawPoint (Spare [x,_] [b]) = "|" ++ show x ++ "|/|" ++ show b ++ "|"
-      drawPoint (Spare [x,_] []) = "|" ++ show x ++ "|/| |"
-      drawPoint (Pair  [x, y])  = "|" ++ show x ++ "|" ++ show y ++ "| |"
-      drawPoint (Pair  [x])     = "|" ++ show x ++ "| | |"
+      drawPoint (Spare [x,_] [b]) = "|" ++ show x ++ "|/|" ++ show b
+      drawPoint (Spare [x,_] []) = "|" ++ show x ++ "|/| "
+      drawPoint (Pair  [x, y])  = "|" ++ show x ++ "|" ++ show y ++ "| "
+      drawPoint (Pair  [x])     = "|" ++ show x ++ "| | "
   
       drawScore :: Score -> String
-      drawScore s = "|" ++ pad ++ scoreStr ++ "|"
+      drawScore s = "|" ++ pad ++ scoreStr
         where scoreStr = show s
               len = length scoreStr
               pad = replicate (5 - len) ' '
@@ -108,7 +108,16 @@ drawFrame (Frame' i f s _) = case i of
 
 
 drawGame :: [Frame'] -> IO ()
-drawGame = putStr . unlines . map concat . transpose  . map drawFrame
+drawGame = putStr . unlines . map concat . transpose . (++ [close]) . map drawFrame
+  where
+    close = [ "+"
+            , "|"
+            , "+"
+            , "|"
+            , "+"
+            , "|"
+            , "+"
+            ]
 
 -- | Test data
 
