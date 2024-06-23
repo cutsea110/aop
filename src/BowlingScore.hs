@@ -106,11 +106,12 @@ showFrame (Frame' i f s _) = case i of
         where scoreStr = show s
               len = length scoreStr
               pad = replicate (3 - len) ' '
-    
 
 showGame :: Game -> [String]
-showGame = map concat . transpose . (++ [close]) . map showFrame
+showGame = foldr phi close
   where
+    phi :: Frame' -> [String] -> [String]
+    phi f = zipWith (++) (showFrame f)
     close = [ "+"
             , "|"
             , "+"
