@@ -53,13 +53,15 @@ data Frame' = Frame' { getIdx   :: FrameIdx
                      , getState :: FrameState
                      } deriving (Show)
 
-game :: [Throw] -> [Frame']
+type Game = [Frame']
+
+game :: [Throw] -> Game
 game = take 10 . (zipWith4 Frame' <$> const [1..] <*> id <*> scores <*> states) . frames
 
 type FrameIdx = Int
 
-drawFrame :: Frame' -> [String]
-drawFrame (Frame' i f s _) = case i of
+showFrame :: Frame' -> [String]
+showFrame (Frame' i f s _) = case i of
   10 -> [ "+-----"
         , "|  10 "
         , "+-+-+-"
@@ -106,9 +108,8 @@ drawFrame (Frame' i f s _) = case i of
               pad = replicate (3 - len) ' '
     
 
-
-drawGame :: [Frame'] -> IO ()
-drawGame = putStr . unlines . map concat . transpose . (++ [close]) . map drawFrame
+showGame :: Game -> [String]
+showGame = map concat . transpose . (++ [close]) . map showFrame
   where
     close = [ "+"
             , "|"
@@ -118,6 +119,9 @@ drawGame = putStr . unlines . map concat . transpose . (++ [close]) . map drawFr
             , "|"
             , "+"
             ]
+
+drawGame :: Game -> IO ()
+drawGame = putStr . unlines . showGame
 
 -- | Test data
 
