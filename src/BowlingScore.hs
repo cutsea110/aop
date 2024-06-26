@@ -75,10 +75,10 @@ showFrame (Frame' i f s _) = case i of
       drawPoint (Strike      [b1,b2]) = "|X|" ++ show' b1 ++ "|" ++ show' b2
        where show' 10 = "X"
              show' n  = show n
-      drawPoint (Spare [x,_] [b]) = "|" ++ show x ++ "|/|" ++ show b
-      drawPoint (Spare [x,_] []) = "|" ++ show x ++ "|/| "
-      drawPoint (Pair  [x, y])  = "|" ++ show x ++ "|" ++ show y ++ "| "
-      drawPoint (Pair  [x])     = "|" ++ show x ++ "| | "
+      drawPoint (Spare [x,_] [b])     = "|" ++ show x ++ "|/|" ++ show b
+      drawPoint (Spare [x,_] [])      = "|" ++ show x ++ "|/| "
+      drawPoint (Pair  [x, y])        = "|" ++ show x ++ "|" ++ show y ++ "| "
+      drawPoint (Pair  [x])           = "|" ++ show x ++ "| | "
   
       drawScore :: Score -> String
       drawScore s = "|" ++ pad ++ scoreStr
