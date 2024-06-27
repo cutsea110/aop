@@ -28,10 +28,11 @@ frames ts = unfoldr psi ts
     psi ts = Just (Pair t, d) where (t, d) = splitAt 2 ts
 
 scores :: [Frame] -> [Score]
-scores = snd . mapAccumL psi 0
+scores fs = unfoldr psi (0, fs)
   where
-    psi ttl f = let ttl' = ttl + point f in dup ttl'
-    dup x = (x, x)
+    psi :: (Score, [Frame]) -> Maybe (Score, (Score, [Frame]))
+    psi (_,   [])   = Nothing
+    psi (ttl, f:fs) = Just (ttl', (ttl', fs)) where ttl' = ttl + point f
 
 data FrameState = Pending | Fixed deriving (Show)
 
