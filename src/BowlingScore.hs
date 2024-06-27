@@ -77,7 +77,7 @@ showFrame (Frame' i f s _) = case i of
              show' n  = show n
       drawPoint (Spare [x,_] [b])     = "|" ++ show x ++ "|/|" ++ show b
       drawPoint (Spare [x,_] [])      = "|" ++ show x ++ "|/| "
-      drawPoint (Pair  [x, y])        = "|" ++ show x ++ "|" ++ show y ++ "| "
+      drawPoint (Pair  [x,y])         = "|" ++ show x ++ "|" ++ show y ++ "| "
       drawPoint (Pair  [x])           = "|" ++ show x ++ "| | "
   
       drawScore :: Score -> String
@@ -98,7 +98,7 @@ showFrame (Frame' i f s _) = case i of
       drawPoint :: Frame -> String
       drawPoint (Strike      _) = "| |X"
       drawPoint (Spare [x,_] _) = "|" ++ show x ++ "|/"
-      drawPoint (Pair  [x, y])  = "|" ++ show x ++ "|" ++ show y
+      drawPoint (Pair  [x,y])   = "|" ++ show x ++ "|" ++ show y
       drawPoint (Pair  [x])     = "|" ++ show x ++ "| "
 
       drawScore :: Score -> String
