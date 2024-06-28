@@ -1,4 +1,3 @@
-{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE TypeFamilies #-}
 -- ref: https://jtobin.io/time-traveling-recursion
 module Futu where
