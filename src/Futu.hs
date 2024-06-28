@@ -47,7 +47,7 @@ evenIndices' = futu (psi $?) where
       Cons h t -> Cons h $ return t
 
 average :: (Show a, Fractional a) => [a] -> a
-average xs = sum xs / fromIntegral (length xs)
+average = uncurry (/) . foldr phi (0, 0) where phi x (s, l) = (s + x, l + 1)
 
 movingAverage :: (Show a, Fractional a) => Int -> [a] -> [a]
 movingAverage n = futu psi where
