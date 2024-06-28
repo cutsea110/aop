@@ -57,8 +57,7 @@ movingAverage n = futu psi where
     Nil -> Nil
     Cons x s -> Cons (average $ take n (x:s)) $ return s
 
-data Frame = Strike [Int] | Spare Int [Int] | Open [Int]
-  deriving (Show)
+data Frame = Strike [Int] | Spare [Int] [Int] | Open [Int] deriving (Show)
 
 frames :: [Int] -> [Frame]
 frames = futu psi where
@@ -68,8 +67,8 @@ frames = futu psi where
     Cons 10 s -> Cons (Strike (take 2 s)) $ return s
     Cons  x s -> case project s of
       Nil -> Cons (Open [x]) $ return s
-      Cons y t | x + y == 10 -> Cons (Spare x (take 1 t)) $ return t
-               | otherwise   -> Cons (Open [x,y]) $ return t
+      Cons y t | x + y == 10 -> Cons (Spare [x,y] (take 1 t)) $ return t
+               | otherwise   -> Cons (Open  [x,y]) $ return t
 
 test :: [Int]
 test = [1, 4, 4, 5, 6, 4, 5, 5, 10, 0, 1, 7, 3, 6, 4, 10, 2, 8, 6]
