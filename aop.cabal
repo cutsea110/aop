@@ -53,6 +53,7 @@ library
                      , FixTest
                      , Free
                      , Frog
+                     , Futu
                      , GCD
                      , Group
                      , Hamming
