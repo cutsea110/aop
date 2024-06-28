@@ -55,9 +55,9 @@ movingAverage n = futu psi where
   psi :: (Show a, Fractional a) => [a] -> ListF a (Free (ListF a) [a])
   psi xs = case project xs of
     Nil -> Nil
-    Cons x s -> Cons (x + sum s) $ return $? s
+    Cons x s -> Cons (average $ take n (x:s)) $ return s
 
-data Frame = Strike | Spare Int | Open [Int]
+data Frame = Strike [Int] | Spare Int [Int] | Open [Int]
   deriving (Show)
 
 frames :: [Int] -> [Frame]
@@ -65,12 +65,11 @@ frames = futu psi where
   psi :: [Int] -> ListF Frame (Free (ListF Frame) [Int])
   psi xs = case project xs of
     Nil -> Nil
-    Cons 10 s -> Cons Strike $ return s
+    Cons 10 s -> Cons (Strike (take 2 s)) $ return s
     Cons  x s -> case project s of
-      Nil -> Nil
-      Cons y t -> if x + y == 10
-                  then Cons (Spare x) $ return t
-                  else Cons (Open [x,y]) $ return t
+      Nil -> Cons (Open [x]) $ return s
+      Cons y t | x + y == 10 -> Cons (Spare x (take 1 t)) $ return t
+               | otherwise   -> Cons (Open [x,y]) $ return t
 
 test :: [Int]
 test = [1, 4, 4, 5, 6, 4, 5, 5, 10, 0, 1, 7, 3, 6, 4, 10, 2, 8, 6]
