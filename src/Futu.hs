@@ -80,11 +80,11 @@ nil = liftF Nil
 cons :: a -> b -> Free (ListF a) b
 cons h t = liftF (Cons h t)
 
-twiddle :: [a] -> [a]
-twiddle = futu psi where
-  psi :: [a] -> ListF a (Free (ListF a) [a])
+twiddle :: Show a => [a] -> [a]
+twiddle = futu (psi $?) where
+  psi :: Show a => [a] -> ListF a (Free (ListF a) [a])
   psi r = case project r of
-    Nil -> Nil
+    Nil      -> Nil
     Cons x l -> case project l of
-      Nil -> Cons x nil
-      Cons h t -> Cons h $ cons x t
+      Nil      -> Cons x $? nil
+      Cons h t -> Cons h $? cons x t
