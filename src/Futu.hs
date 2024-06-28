@@ -72,3 +72,20 @@ frames = futu psi where
 
 test :: [Int]
 test = [1, 4, 4, 5, 6, 4, 5, 5, 10, 0, 1, 7, 3, 6, 4, 10, 2, 8, 6]
+
+
+
+nil :: Free (ListF a) b
+nil = liftF Nil
+
+cons :: a -> b -> Free (ListF a) b
+cons h t = liftF (Cons h t)
+
+twiddle :: [a] -> [a]
+twiddle = futu psi where
+  psi :: [a] -> ListF a (Free (ListF a) [a])
+  psi r = case project r of
+    Nil -> Nil
+    Cons x l -> case project l of
+      Nil -> Cons x nil
+      Cons h t -> Cons h $ cons x t
