@@ -16,18 +16,21 @@ f $? x = let v = f x
 
 oddIndices :: Show a => [a] -> [a]
 oddIndices = histo (phi $?) where
+  phi :: Show a => ListF a (Cofree (ListF a) [a]) -> [a]
   phi Nil                             = []
   phi (Cons h (_ :< Nil))             = [h]
   phi (Cons h (_ :< Cons _ (t :< _))) = h:t
 
 evenIndices :: Show a => [a] -> [a]
 evenIndices = histo (phi $?) where
+  phi :: Show a => ListF a (Cofree (ListF a) [a]) -> [a]
   phi Nil                             = []
   phi (Cons _ (_ :< Nil))             = []
   phi (Cons _ (_ :< Cons h (t :< _))) = h:t
 
 oddIndices' :: Show a => [a] -> [a]
 oddIndices' = futu (psi $?) where
+  psi :: Show a => [a] -> ListF a (Free (ListF a) [a])
   psi xs = case project xs of
     Nil      -> Nil
     Cons x s -> Cons x $ do
@@ -37,6 +40,7 @@ oddIndices' = futu (psi $?) where
 
 evenIndices' :: Show a => [a] -> [a]
 evenIndices' = futu (psi $?) where
+  psi :: Show a => [a] -> ListF a (Free (ListF a) [a])
   psi xs = case project xs of
     Nil -> Nil
     Cons _ s -> case project s of
