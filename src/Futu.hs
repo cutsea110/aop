@@ -47,9 +47,12 @@ evenIndices' = futu (psi $?) where
       Nil -> Nil
       Cons h t -> Cons h $ return t
 
-accum :: (Show a, Num a) => [a] -> [a]
-accum = futu psi where
-  psi :: (Show a, Num a) => [a] -> ListF a (Free (ListF a) [a])
+average :: (Show a, Fractional a) => [a] -> a
+average xs = sum xs / fromIntegral (length xs)
+
+movingAverage :: (Show a, Fractional a) => Int -> [a] -> [a]
+movingAverage n = futu psi where
+  psi :: (Show a, Fractional a) => [a] -> ListF a (Free (ListF a) [a])
   psi xs = case project xs of
     Nil -> Nil
     Cons x s -> Cons (x + sum s) $ return $? s
