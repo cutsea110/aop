@@ -47,6 +47,12 @@ evenIndices' = futu (psi $?) where
       Nil -> Nil
       Cons h t -> Cons h $ return t
 
+accum :: (Show a, Num a) => [a] -> [a]
+accum = futu psi where
+  psi :: (Show a, Num a) => [a] -> ListF a (Free (ListF a) [a])
+  psi xs = case project xs of
+    Nil -> Nil
+    Cons x s -> Cons (x + sum s) $ return $? s
 
 data Frame = Strike | Spare Int | Open [Int]
   deriving (Show)
