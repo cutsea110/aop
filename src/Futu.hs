@@ -46,3 +46,22 @@ evenIndices' = futu (psi $?) where
     Cons _ s -> case project s of
       Nil -> Nil
       Cons h t -> Cons h $ return t
+
+
+data Frame = Strike | Spare Int | Open [Int]
+  deriving (Show)
+
+frames :: [Int] -> [Frame]
+frames = futu psi where
+  psi :: [Int] -> ListF Frame (Free (ListF Frame) [Int])
+  psi xs = case project xs of
+    Nil -> Nil
+    Cons 10 s -> Cons Strike $ return s
+    Cons  x s -> case project s of
+      Nil -> Nil
+      Cons y t -> if x + y == 10
+                  then Cons (Spare x) $ return t
+                  else Cons (Open [x,y]) $ return t
+
+test :: [Int]
+test = [1, 4, 4, 5, 6, 4, 5, 5, 10, 0, 1, 7, 3, 6, 4, 10, 2, 8, 6]
