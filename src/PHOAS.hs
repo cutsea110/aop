@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleContexts #-}
 module PHOAS where
 
 -- Keiigo Imai's article 2008-12-26
@@ -47,3 +48,49 @@ testHOAS = AppH (LamH $ \f -> AppH f (ConH 1)) (LamH $ \x -> x)
 
 
 -- HOAS その2
+data VarE = VarE Char
+data TermH2 = LamH2 (VarE -> TermH2)
+            | AppH2 TermH2 TermH2
+            | ConH2 Int
+            | VarH2 VarE
+
+-- HOAS の項を表示 (関数の中身もわかる)
+instance Show TermH2 where
+  show t = runReader (showR t) 'a'
+    where
+      showR :: TermH2 -> Reader Char String
+      showR (LamH2 f) = do
+        fresh <- ask
+        body <- local succ (showR (f (VarE fresh)))
+        return $ "(\\" ++ [fresh] ++ " -> " ++ body ++ ")"
+
+      showR (AppH2 t1 t2) = do
+        t1' <- showR t1
+        t2' <- showR t2
+        return $ t1' ++ " " ++ t2'
+
+      showR (ConH2 n) = return $ show n
+
+      showR (VarH2 (VarE c)) = return [c]
+
+-- エバってみる。変数のルックアップが必要。非現実的
+evalH2 :: TermH2 -> TermH2
+evalH2 t = runReader (evalH2R t) ([], 'a')
+  where
+    evalH2R (AppH2 t1 t2) = do
+      t1' <- evalH2R t1
+      t2' <- evalH2R t2
+      (_, fresh) <- ask
+      case t1' of
+        LamH2 f ->
+          local (\(env, var) -> ((fresh, t2'):env, succ var))
+          $ evalH2R (f (VarE fresh))
+        _ -> error "not function"
+
+    evalH2R (VarH2 (VarE name)) = do
+      (env, _) <- ask
+      return $ fromJust $ lookup name env
+      
+    evalH2R x@(ConH2 _) = return x
+    
+    evalH2R x@(LamH2 _) = return x
