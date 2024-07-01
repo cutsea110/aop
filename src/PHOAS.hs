@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE FlexibleContexts, FlexibleInstances #-}
 module PHOAS where
 
 -- Keiigo Imai's article 2008-12-26
@@ -94,3 +94,52 @@ evalH2 t = runReader (evalH2R t) ([], 'a')
     evalH2R x@(ConH2 _) = return x
     
     evalH2R x@(LamH2 _) = return x
+
+testHOAS2 :: TermH2
+testHOAS2 = AppH2 (LamH2 $ \f -> AppH2 (VarH2 f) (ConH2 1)) (LamH2 $ \x -> VarH2 x)
+
+-- PHOAS -- HOAS2 の VarE を型変数 v でパラメタ化
+data TermP v = VarP v
+             | LamP (v -> TermP v)
+             | AppP (TermP v) (TermP v)
+             | ConP Int
+
+instance Show (TermP VarE) where
+  show t = runReader (showP t) 'a'
+    where
+      showP :: TermP VarE -> Reader Char String
+      showP (VarP (VarE name)) = return [name]
+
+      showP (LamP f) = do
+        fresh <- ask
+        let body = f (VarE fresh)
+        bodystr <- local succ (showP body)
+        return $ "(\\" ++ [fresh] ++ " -> " ++ bodystr ++ ")"
+
+      showP (AppP t1 t2) = do
+        t1s <- showP t1
+        t2s <- showP t2
+        return $ t1s ++ " " ++ t2s
+
+      showP (ConP n) = return $ show n
+
+newtype Id = Id (TermP Id)
+evalP :: TermP Id -> Int
+evalP t = case evalP' t of
+  ConP n -> n
+  _ -> error "not a number"
+  where
+    evalP' :: TermP Id -> TermP Id
+    evalP' x@(LamP _) = x
+    -- エバるときは項をそのままぶち込む
+    evalP' (AppP t1 t2) = case evalP' t1 of
+      LamP f -> evalP' (f (Id $ evalP' t2))
+      ConP _ -> error "not a function"
+    evalP' x@(ConP _) = x
+    -- VarP (Id t) の t に項がそのまま入っているので変数ルックアップは必要なし
+    evalP' x@(VarP (Id t)) = t
+
+-- PHOASのテスト (\f -> f 1) (\x -> x) 相当
+testPHOAS :: TermP Id
+testPHOAS = AppP (LamP $ \f -> AppP (VarP f) (ConP 1)) (LamP $ \x -> VarP x)
+  
