@@ -86,6 +86,7 @@ library
                      , Promorphism
                      , Puzzle8
                      , PHOAS
+                     , PhoasRyan
                      , Rose
                      , Search
                      , ShortestPathSearch
