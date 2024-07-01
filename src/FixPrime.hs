@@ -9,6 +9,7 @@ module FixPrime where
 import Prelude hiding (Functor(..), map, succ, either, subtract)
 import qualified Control.Monad as M
 import qualified Control.Comonad as C
+import Data.Kind (Type)
 
 dup f = (f, f)
 tupply f = cross (dup f)
@@ -27,13 +28,13 @@ outr (x, y) = y
 assocl (a, (b, c)) = ((a, b), c)
 assocr ((a, b), c) = (a, (b, c))
 
-class Bifunctor (f :: * -> * -> *) where
+class Bifunctor (f :: Type -> Type -> Type) where
   bimap :: (a -> c, b -> d) -> f a b -> f c d
 
-class Bifunctor (f :: * -> * -> *) => ApplicativeBifunctor f where
+class Bifunctor (f :: Type -> Type -> Type) => ApplicativeBifunctor f where
   biap :: f (a -> c) (b -> d) -> f a b  -> f c d
 
-class Functor (f :: * -> *) where
+class Functor (f :: Type -> Type) where
   fmap :: (a -> b) -> f a -> f b
 
 newtype Fix f = In { out :: f (Fix f) }
