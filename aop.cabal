@@ -59,6 +59,7 @@ library
                      , Hamming
                      , Hangman
                      , Histo
+                     , Hoas
                      , Hylo
                      , ICBICSort
                      , Infinity
