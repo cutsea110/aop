@@ -5,7 +5,8 @@ module Num8 where
 
 import Data.List (foldl')
 import Control.Arrow ((***))
-import Control.Monad.State (StateT, evalStateT, get, put, forM_, when, liftIO)
+import Control.Monad (forM_, when)
+import Control.Monad.State (StateT, evalStateT, get, put, liftIO)
 
 select :: [Int] -> [(Int, [Int])]
 select [x] = [(x, [])]
