@@ -1,4 +1,4 @@
-module Hoas where
+module PHOAS where
 
 -- Keiigo Imai's article 2008-12-26
 -- ref) https://keigoi.hatenadiary.org/entry/20081226/p1

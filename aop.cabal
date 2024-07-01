@@ -59,7 +59,6 @@ library
                      , Hamming
                      , Hangman
                      , Histo
-                     , Hoas
                      , Hylo
                      , ICBICSort
                      , Infinity
@@ -86,6 +85,7 @@ library
                      , Prime
                      , Promorphism
                      , Puzzle8
+                     , PHOAS
                      , Rose
                      , Search
                      , ShortestPathSearch
