@@ -1,4 +1,7 @@
-{-# LANGUAGE FlexibleContexts, FlexibleInstances #-}
+{-# LANGUAGE FlexibleContexts,
+             FlexibleInstances,
+             StrictData
+#-}
 module PHOAS where
 
 -- Keiigo Imai's article 2008-12-26
@@ -39,16 +42,28 @@ instance Show TermH where
   show (AppH t1 t2) = show t1 ++ " " ++ show t2
   show (ConH n) = show n
 
--- HOAS なid関数
+{-- | HOAS なid関数
+>>> idH
+<fun>
+--}
 idH :: TermH
 idH = LamH (\x -> x)
 
+{-- | HOAS のテスト (\f -> f 1) (\x -> x) 相当
+-- 中身は不明
+>>> testHOAS
+<fun> <fun>
+
+-- エバるのは簡単
+>>> evalH testHOAS
+1
+--}
 testHOAS :: TermH
 testHOAS = AppH (LamH $ \f -> AppH f (ConH 1)) (LamH $ \x -> x)
 
 
 -- HOAS その2
-data VarE = VarE Char
+newtype VarE = VarE Char
 data TermH2 = LamH2 (VarE -> TermH2)
             | AppH2 TermH2 TermH2
             | ConH2 Int
@@ -95,6 +110,14 @@ evalH2 t = runReader (evalH2R t) ([], 'a')
     
     evalH2R x@(LamH2 _) = return x
 
+{-- | HOAS2 のテスト (\f -> f 1) (\x -> x) 相当
+-- 関数の中身が分かる
+>>> testHOAS2
+(\a -> a 1) (\a -> a)
+
+>>> evalH2 testHOAS2
+1
+--}
 testHOAS2 :: TermH2
 testHOAS2 = AppH2 (LamH2 $ \f -> AppH2 (VarH2 f) (ConH2 1)) (LamH2 $ \x -> VarH2 x)
 
@@ -127,7 +150,7 @@ newtype Id = Id (TermP Id)
 evalP :: TermP Id -> Int
 evalP t = case evalP' t of
   ConP n -> n
-  _ -> error "not a number"
+  _      -> error "not a number"
   where
     evalP' :: TermP Id -> TermP Id
     evalP' x@(LamP _) = x
@@ -139,7 +162,13 @@ evalP t = case evalP' t of
     -- VarP (Id t) の t に項がそのまま入っているので変数ルックアップは必要なし
     evalP' x@(VarP (Id t)) = t
 
--- PHOASのテスト (\f -> f 1) (\x -> x) 相当
-testPHOAS :: TermP Id
+{-- | PHOASのテスト (\f -> f 1) (\x -> x) 相当
+-- 関数の中身が分かる (VarE の方は Show のインスタンス宣言があるので
+>>> testPHOAS :: TermP VarE
+(\a -> a 1) (\a -> a)
+-- 評価もできるが、こっちは TermP Id で使える evalP を実装しているから
+>>> evalP testPHOAS
+1
+--}
 testPHOAS = AppP (LamP $ \f -> AppP (VarP f) (ConP 1)) (LamP $ \x -> VarP x)
   
