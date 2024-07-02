@@ -16,8 +16,9 @@ newtype Exp t = Exp (forall v. ExpP v t)
 eval :: Exp t -> t
 eval (Exp e) = evalP e
 
+-- PHOAS 項の評価
 newtype Prim a = Prim a
-
+-- 単に剥いてホスト言語の関数適用を利用
 evalP :: ExpP Prim t -> t
 evalP (VarP (Prim a)) = a
 evalP (AppP e1 e2) = evalP e1 $ evalP e2
@@ -27,7 +28,6 @@ evalP (LamP f) = evalP . f . Prim
 -- PHOAS 項の表示
 -- 簡単に de Bruijn indices で表現
 newtype Var a = Var Int
-
 -- reader モナドを使って fresh な変数を供給
 showExp :: ExpP Var a -> ShowS
 showExp t = runReader (showExpR t) 0
@@ -45,6 +45,8 @@ showExp t = runReader (showExpR t) 0
 3
 >>> putStrLn $ showExp test ""
 \0-> \1-> 0 1
+>>> eval (Exp test) (+1) 2
+3
 -}
 test :: ExpP v ((a -> b) -> a -> b)
 test = LamP $ \x -> LamP $ \y -> AppP (VarP x) (VarP y) 
