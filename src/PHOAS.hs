@@ -4,7 +4,7 @@
 #-}
 module PHOAS where
 
--- Keiigo Imai's article 2008-12-26
+-- Keigo Imai's article 2008-12-26
 -- ref) https://keigoi.hatenadiary.org/entry/20081226/p1
 --
 import Control.Monad.Reader
