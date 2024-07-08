@@ -170,5 +170,5 @@ evalP t = case evalP' t of
 >>> evalP testPHOAS
 1
 --}
+testPHOAS :: TermP v
 testPHOAS = AppP (LamP $ \f -> AppP (VarP f) (ConP 1)) (LamP $ \x -> VarP x)
-  
