@@ -62,6 +62,7 @@ library
                      , Hylo
                      , ICBICSort
                      , Infinity
+                     , Interp
                      , Kaprekar
                      , KnapSack
                      , Leafy
