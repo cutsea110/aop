@@ -208,3 +208,80 @@ term0P = AppP (LamP "x" (AddP (VarP "x") (VarP "x"))) (AddP (ConP 10) (ConP 11))
 term1P :: TermP -- Error: should be function: 1
 term1P = AtP 0 (AppP (AtP 1 (LamP "x" (AtP 3 (AddP (AtP 4 (VarP "x")) (AtP 5 (VarP "x"))))))
                  (AtP 2 (AppP (AtP 6 (ConP 10)) (AtP 7 (ConP 11)))))
+
+{- | Variation 3: State -}
+data TermS = VarS Name
+           | ConS Int
+           | AddS TermS TermS
+           | LamS Name TermS
+           | AppS TermS TermS
+           | CountS
+
+data ValueS = WrongS
+            | NumS Int
+            | FunS (ValueS -> S ValueS)
+
+type EnvironmentS = [(Name, ValueS)]
+
+lookupS :: Name -> EnvironmentS -> S ValueS
+lookupS x [] = unitS WrongS
+lookupS x ((y, b) : e)
+  | x == y    = unitS b
+  | otherwise = lookupS x e
+
+interpS :: TermS -> EnvironmentS -> S ValueS
+interpS (VarS x) e = lookupS x e
+interpS (ConS i) _ = unitS (NumS i)
+interpS (AddS u v) e = interpS u e `bindS` (\a ->
+                       interpS v e `bindS` (\b ->
+                       addS a b))
+interpS (LamS x v) e = unitS (FunS (\a -> interpS v ((x, a):e)))
+interpS (AppS t u) e = interpS t e `bindS` (\f ->
+                       interpS u e `bindS` (\a ->
+                       applyS f a))
+interpS CountS e = fetchS `bindS` (\i -> unitS (NumS i))
+
+addS :: ValueS -> ValueS -> S ValueS
+addS (NumS i) (NumS j) = tickS `bindS` (\() -> unitS (NumS (i+j)))
+addS a        b        = unitS WrongS
+
+applyS :: ValueS -> ValueS -> S ValueS
+applyS (FunS k) a = tickS `bindS` (\() -> k a)
+applyS f        _ = unitS WrongS
+
+type S a = State -> (a, State)
+type State = Int
+
+unitS :: a -> S a
+unitS a = \s0 -> (a, s0)
+
+bindS :: S a -> (a -> S b) -> S b
+m `bindS` k = \s0 -> let (a, s1) = m s0
+                         (b, s2) = k a s1
+                     in (b, s2)
+
+tickS :: S ()
+tickS = \s -> ((), s+1)
+
+fetchS :: S State
+fetchS = \s -> (s, s)
+
+showS :: S ValueS -> String
+showS m = let (a, s1) = m 0
+          in "Value: " ++ showvalS a ++ "; " ++ "Count: " ++ showint s1
+
+showvalS :: ValueS -> String
+showvalS WrongS = "<wrong>"
+showvalS (NumS i) = show i
+showvalS (FunS _) = "<function>"
+
+showint :: Int -> String
+showint i = show i
+
+testS :: TermS -> String
+testS t = showS (interpS t [])
+
+term0S :: TermS
+term0S = AppS (LamS "x" (AddS (VarS "x") (VarS "x"))) (AddS (ConS 10) (ConS 11))
+term1S :: TermS
+term1S = AddS (AddS (ConS 1) (ConS 2)) CountS
