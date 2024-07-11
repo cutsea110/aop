@@ -548,3 +548,49 @@ term0I' :: TermI
 term0I' = AppI (LamI "x" (AddI (VarI "x") (VarI "x"))) (AddI (ConI 10) (ConI 11))
 
 
+{- | Variation 3: State Call-by-Name -}
+data ValueS' = WrongS'
+             | NumS' Int
+             | FunS' (S ValueS' -> S ValueS')
+
+type EnvironmentS' = [(Name, S ValueS')]
+
+lookupS' :: Name -> EnvironmentS' -> S ValueS'
+lookupS' x [] = unitS WrongS'
+lookupS' x ((y, b) : e)
+  | x == y    = b
+  | otherwise = lookupS' x e
+
+interpS' :: TermS -> EnvironmentS' -> S ValueS'
+interpS' (VarS x) e = lookupS' x e
+interpS' (ConS i) _ = unitS (NumS' i)
+interpS' (AddS u v) e = interpS' u e `bindS` (\a ->
+                        interpS' v e `bindS` (\b ->
+                        addS' a b))
+interpS' (LamS x v) e = unitS (FunS' (\a -> interpS' v ((x, a):e)))
+interpS' (AppS t u) e = interpS' t e `bindS` (\f ->
+                        applyS' f (interpS' u e))
+interpS' CountS e = fetchS `bindS` (\i -> unitS (NumS' i))
+
+addS' :: ValueS' -> ValueS' -> S ValueS'
+addS' (NumS' i) (NumS' j) = tickS `bindS` (\() -> unitS (NumS' (i+j)))
+addS' a        b          = unitS WrongS'
+
+applyS' :: ValueS' -> S ValueS' -> S ValueS'
+applyS' (FunS' k) a = tickS `bindS` (\() -> k a)
+applyS' f         _ = unitS WrongS'
+
+showS' :: S ValueS' -> String
+showS' m = let (a, s1) = m 0
+           in "Value: " ++ showvalS' a ++ "; " ++ "Count: " ++ showint s1
+
+showvalS' :: ValueS' -> String
+showvalS' WrongS' = "<wrong>"
+showvalS' (NumS' i) = show i
+showvalS' (FunS' _) = "<function>"
+
+testS' :: TermS -> String
+testS' t = showS' (interpS' t [])
+
+term0S' :: TermS
+term0S' = AppS (LamS "x" (AddS (VarS "x") (VarS "x"))) (AddS (ConS 10) (ConS 11))
