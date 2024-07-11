@@ -1,7 +1,7 @@
 {-# LANGUAGE Haskell2010 #-}
 module Interp where
 
-import Prelude hiding (lookup)
+import Data.List (intercalate)
 
 type Name = String
 
@@ -359,3 +359,74 @@ term0O :: TermO
 term0O = AppO (LamO "x" (AddO (VarO "x") (VarO "x"))) (AddO (ConO 10) (ConO 11))
 term1O :: TermO
 term1O = AddO (OutO (ConO 41)) (OutO (ConO 1))
+
+{- | Variation 5: Non-deterministic choice -}
+data TermL = VarL Name
+           | ConL Int
+           | AddL TermL TermL
+           | LamL Name TermL
+           | AppL TermL TermL
+           | AmbL TermL TermL
+           | FailL
+
+data ValueL = WrongL
+            | NumL Int
+            | FunL (ValueL -> L ValueL)
+
+type EnvironmentL = [(Name, ValueL)]
+
+lookupL :: Name -> EnvironmentL -> L ValueL
+lookupL x [] = unitL WrongL
+lookupL x ((y, b) : e)
+  | x == y    = unitL b
+  | otherwise = lookupL x e
+
+interpL :: TermL -> EnvironmentL -> L ValueL
+interpL (VarL x) e = lookupL x e
+interpL (ConL i) _ = unitL (NumL i)
+interpL (AddL u v) e = interpL u e `bindL` (\a ->
+                       interpL v e `bindL` (\b ->
+                       addL a b))
+interpL (LamL x v) e = unitL (FunL (\a -> interpL v ((x, a):e)))
+interpL (AppL t u) e = interpL t e `bindL` (\f ->
+                       interpL u e `bindL` (\a ->
+                       applyL f a))
+interpL (AmbL u v) e = interpL u e `plusL` interpL v e
+interpL FailL _ = zeroL
+
+addL :: ValueL -> ValueL -> L ValueL
+addL (NumL i) (NumL j) = unitL (NumL (i+j))
+addL a        b        = unitL WrongL
+
+applyL :: ValueL -> ValueL -> L ValueL
+applyL (FunL k) a = k a
+applyL f        _ = unitL WrongL
+
+
+type L a = [a]
+
+unitL :: a -> L a
+unitL a = [a]
+
+bindL :: L a -> (a -> L b) -> L b
+m `bindL` k = [b | a <- m, b <- k a]
+
+zeroL :: L a
+zeroL = []
+plusL :: L a -> L a -> L a
+l `plusL` m = l ++ m
+showL m = showlist [ showvalL a | a <- m ]
+
+showvalL :: ValueL -> String
+showvalL WrongL = "<wrong>"
+showvalL (NumL i) = show i
+showvalL (FunL _) = "<function>"
+
+showlist :: [String] -> String
+showlist ss = "[" ++ intercalate ", " ss ++ "]"
+
+testL :: TermL -> String
+testL t = showL (interpL t [])
+
+term0L :: TermL
+term0L = AppL (LamL "x" (AddL (VarL "x") (VarL "x"))) (AmbL (ConL 1) (ConL 2))
