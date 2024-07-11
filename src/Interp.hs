@@ -594,3 +594,50 @@ testS' t = showS' (interpS' t [])
 
 term0S' :: TermS
 term0S' = AppS (LamS "x" (AddS (VarS "x") (VarS "x"))) (AddS (ConS 10) (ConS 11))
+
+{- | Variation 5: Non-deterministic choice Call-by-Name -}
+data ValueL' = WrongL'
+             | NumL' Int
+             | FunL' (L ValueL' -> L ValueL')
+
+type EnvironmentL' = [(Name, L ValueL')]
+
+lookupL' :: Name -> EnvironmentL' -> L ValueL'
+lookupL' x [] = unitL WrongL'
+lookupL' x ((y, b) : e)
+  | x == y    = b
+  | otherwise = lookupL' x e
+
+interpL' :: TermL -> EnvironmentL' -> L ValueL'
+interpL' (VarL x) e = lookupL' x e
+interpL' (ConL i) _ = unitL (NumL' i)
+interpL' (AddL u v) e = interpL' u e `bindL` (\a ->
+                        interpL' v e `bindL` (\b ->
+                        addL' a b))
+interpL' (LamL x v) e = unitL (FunL' (\a -> interpL' v ((x, a):e)))
+interpL' (AppL t u) e = interpL' t e `bindL` (\f ->
+                        applyL' f (interpL' u e))
+interpL' (AmbL u v) e = interpL' u e `plusL` interpL' v e
+interpL' FailL _ = zeroL
+
+addL' :: ValueL' -> ValueL' -> L ValueL'
+addL' (NumL' i) (NumL' j) = unitL (NumL' (i+j))
+addL' a        b          = unitL WrongL'
+
+applyL' :: ValueL' -> L ValueL' -> L ValueL'
+applyL' (FunL' k) a = k a
+applyL' f         _ = unitL WrongL'
+
+showL' :: L ValueL' -> String
+showL' m = showlist [ showvalL' a | a <- m ]
+
+showvalL' :: ValueL' -> String
+showvalL' WrongL' = "<wrong>"
+showvalL' (NumL' i) = show i
+showvalL' (FunL' _) = "<function>"
+
+testL' :: TermL -> String
+testL' t = showL' (interpL' t [])
+
+term0L' :: TermL
+term0L' = AppL (LamL "x" (AddL (VarL "x") (VarL "x"))) (AmbL (ConL 1) (ConL 2))
