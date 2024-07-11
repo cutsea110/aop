@@ -285,3 +285,77 @@ term0S :: TermS
 term0S = AppS (LamS "x" (AddS (VarS "x") (VarS "x"))) (AddS (ConS 10) (ConS 11))
 term1S :: TermS
 term1S = AddS (AddS (ConS 1) (ConS 2)) CountS
+
+
+{- | Variation 4: Output -}
+data TermO = VarO Name
+           | ConO Int
+           | AddO TermO TermO
+           | LamO Name TermO
+           | AppO TermO TermO
+           | OutO TermO
+
+data ValueO = WrongO
+            | NumO Int
+            | FunO (ValueO -> O ValueO)
+
+type EnvironmentO = [(Name, ValueO)]
+
+
+lookupO :: Name -> EnvironmentO -> O ValueO
+lookupO x [] = unitO WrongO
+lookupO x ((y, b) : e)
+  | x == y    = unitO b
+  | otherwise = lookupO x e
+  
+
+interpO :: TermO -> EnvironmentO -> O ValueO
+interpO (VarO x) e = lookupO x e
+interpO (ConO i) _ = unitO (NumO i)
+interpO (AddO u v) e = interpO u e `bindO` (\a ->
+                       interpO v e `bindO` (\b ->
+                       addO a b))
+interpO (LamO x v) e = unitO (FunO (\a -> interpO v ((x, a):e)))
+interpO (AppO t u) e = interpO t e `bindO` (\f ->
+                       interpO u e `bindO` (\a ->
+                       applyO f a))
+interpO (OutO u) e = interpO u e `bindO` (\a ->
+                     outO a      `bindO` (\() ->
+                     unitO a))
+addO :: ValueO -> ValueO -> O ValueO
+addO (NumO i) (NumO j) = unitO (NumO (i+j))
+addO a        b        = unitO WrongO
+
+applyO :: ValueO -> ValueO -> O ValueO
+applyO (FunO k) a = k a
+applyO f        _ = unitO WrongO
+
+
+type Output = String
+type O a = (Output, a)
+
+unitO :: a -> O a
+unitO a = ("", a)
+
+bindO :: O a -> (a -> O b) -> O b
+m `bindO` k = let (r, a) = m
+                  (s, b) = k a
+              in (r++s, b)
+
+outO :: ValueO -> O ()
+outO a = (showvalO a ++ "; ", ())
+                 
+showO (s, a) = "Output: " ++ s ++ "Value: " ++ showvalO a
+
+showvalO :: ValueO -> String
+showvalO WrongO = "<wrong>"
+showvalO (NumO i) = show i
+showvalO (FunO _) = "<function>"
+
+testO :: TermO -> String
+testO t = showO (interpO t [])
+
+term0O :: TermO
+term0O = AppO (LamO "x" (AddO (VarO "x") (VarO "x"))) (AddO (ConO 10) (ConO 11))
+term1O :: TermO
+term1O = AddO (OutO (ConO 41)) (OutO (ConO 1))
