@@ -430,3 +430,76 @@ testL t = showL (interpL t [])
 
 term0L :: TermL
 term0L = AppL (LamL "x" (AddL (VarL "x") (VarL "x"))) (AmbL (ConL 1) (ConL 2))
+
+{- | Variation 6: Backwards state -}
+data TermB = VarB Name
+           | ConB Int
+           | AddB TermB TermB
+           | LamB Name TermB
+           | AppB TermB TermB
+           | CountB
+
+data ValueB = WrongB
+            | NumB Int
+            | FunB (ValueB -> B ValueB)
+
+type EnvironmentB = [(Name, ValueB)]
+
+lookupB :: Name -> EnvironmentB -> B ValueB
+lookupB x [] = unitB WrongB
+lookupB x ((y, b) : e)
+  | x == y    = unitB b
+  | otherwise = lookupB x e
+
+interpB :: TermB -> EnvironmentB -> B ValueB
+interpB (VarB x) e = lookupB x e
+interpB (ConB i) _ = unitB (NumB i)
+interpB (AddB u v) e = interpB u e `bindB` (\a ->
+                       interpB v e `bindB` (\b ->
+                       addB a b))
+interpB (LamB x v) e = unitB (FunB (\a -> interpB v ((x, a):e)))
+interpB (AppB t u) e = interpB t e `bindB` (\f ->
+                       interpB u e `bindB` (\a ->
+                       applyB f a))
+interpB CountB e = fetchB `bindB` (\i -> unitB (NumB i))
+
+addB :: ValueB -> ValueB -> B ValueB
+addB (NumB i) (NumB j) = tickB `bindB` (\() -> unitB (NumB (i+j)))
+addB a        b        = unitB WrongB
+
+applyB :: ValueB -> ValueB -> B ValueB
+applyB (FunB k) a = tickB `bindB` (\() -> k a)
+applyB f        _ = unitB WrongB
+
+type B a = State -> (a, State)
+
+unitB :: a -> B a
+unitB a = \s0 -> (a, s0)
+
+bindB :: B a -> (a -> B b) -> B b
+m `bindB` k = \s2 -> let (a, s0) = m s1
+                         (b, s1) = k a s2
+                     in (b, s0)
+
+tickB :: B ()
+tickB = \s -> ((), s+1)
+
+fetchB :: B State
+fetchB = \s -> (s, s)
+
+showB :: B ValueB -> String
+showB m = let (a, s1) = m 0
+          in "Value: " ++ showvalB a ++ "; " ++ "Count: " ++ showint s1
+
+showvalB :: ValueB -> String
+showvalB WrongB = "<wrong>"
+showvalB (NumB i) = show i
+showvalB (FunB _) = "<function>"
+
+testB :: TermB -> String
+testB t = showB (interpB t [])
+
+term0B :: TermB
+term0B = AppB (LamB "x" (AddB (VarB "x") (VarB "x"))) (AddB (ConB 10) (ConB 11))
+term1B :: TermB
+term1B = AddB (AddB (ConB 1) (ConB 2)) CountB
