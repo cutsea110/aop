@@ -107,10 +107,18 @@ testE :: TermE -> String
 testE t = showE (interpE t [])
 
 data E a = Success a | Error String
+
+unitE :: a -> E a
 unitE a = Success a
+
+errorE :: String -> E a
 errorE s = Error s
+
+bindE :: E a -> (a -> E b) -> E b
 (Success a) `bindE` k = k a
 (Error s)   `bindE` k = Error s
+
+showE :: E ValueE -> String
 showE (Success a) = "Success: " ++ showvalE a
 showE (Error s)   = "Error: " ++ s
 
@@ -118,3 +126,85 @@ term0E :: TermE
 term0E = AppE (LamE "x" (AddE (VarE "x") (VarE "x"))) (AddE (ConE 10) (ConE 11))
 term1E :: TermE -- Error: should be function: 1
 term1E = AppE (ConE 1) (ConE 2)
+
+
+{- | Variation 2: Error Message with Position -}
+data TermP = VarP Name
+           | ConP Int
+           | AddP TermP TermP
+           | LamP Name TermP
+           | AppP TermP TermP
+           | AtP  Position TermP
+
+data ValueP = WrongP
+            | NumP Int
+            | FunP (ValueP -> P ValueP)
+
+type EnvironmentP = [(Name, ValueP)]
+
+type Position = Int
+
+showpos :: Position -> String
+showpos p = show p
+
+pos0 :: Position
+pos0 = 0
+
+interpP :: TermP -> EnvironmentP -> P ValueP
+interpP (VarP x) e = lookupP x e
+interpP (ConP i) _ = unitP (NumP i)
+interpP (AddP u v) e = interpP u e `bindP` (\a ->
+                       interpP v e `bindP` (\b ->
+                       addP a b))
+interpP (LamP x v) e = unitP (FunP (\a -> interpP v ((x, a):e)))
+interpP (AppP t u) e = interpP t e `bindP` (\f ->
+                       interpP u e `bindP` (\a ->
+                       applyP f a))
+interpP (AtP p t) e = resetP p (interpP t e)
+
+lookupP :: Name -> EnvironmentP -> P ValueP
+lookupP x [] = errorP ("unbound variable: " ++ x)
+lookupP x ((y, b) : e)
+  | x == y    = unitP b
+  | otherwise = lookupP x e
+
+addP :: ValueP -> ValueP -> P ValueP
+addP (NumP i) (NumP j) = unitP (NumP (i + j))
+addP a        b        = errorP $ "should be numbers: " ++ showvalP a ++ ", " ++ showvalP b
+
+applyP :: ValueP -> ValueP -> P ValueP
+applyP (FunP k) a = k a
+applyP f        _ = errorP $ "should be function: " ++ showvalP f
+
+resetP :: Position -> P a -> P a
+resetP q m = \p -> m q
+
+showvalP :: ValueP -> String
+showvalP WrongP = "<wrong>"
+showvalP (NumP i) = show i
+showvalP (FunP _) = "<function>"
+
+testP :: TermP -> String
+testP t = showP (interpP t [] pos0)
+
+showP :: E ValueP -> String
+showP (Success a) = "Success: " ++ showvalP a
+showP (Error s)   = "Error: " ++ s
+
+type P a = Position -> E a
+
+unitP :: a -> P a
+unitP a = \p -> unitE a
+
+errorP :: String -> P a
+errorP s = \p -> errorE $ showpos p ++ ": " ++ s
+
+bindP :: P a -> (a -> P b) -> P b
+m `bindP` k = \p -> m p `bindE` (\x -> k x p)
+
+
+term0P :: TermP
+term0P = AppP (LamP "x" (AddP (VarP "x") (VarP "x"))) (AddP (ConP 10) (ConP 11))
+term1P :: TermP -- Error: should be function: 1
+term1P = AtP 0 (AppP (AtP 1 (LamP "x" (AtP 3 (AddP (AtP 4 (VarP "x")) (AtP 5 (VarP "x"))))))
+                 (AtP 2 (AppP (AtP 6 (ConP 10)) (AtP 7 (ConP 11)))))
