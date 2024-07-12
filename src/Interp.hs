@@ -1,4 +1,5 @@
 {-# LANGUAGE Haskell2010 #-}
+-- | ref.) https://jgbm.github.io/eecs762f19/papers/wadler-monads.pdf
 module Interp where
 
 import Data.List (intercalate)
