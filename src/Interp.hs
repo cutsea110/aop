@@ -642,3 +642,67 @@ testL' t = showL' (interpL' t [])
 
 term0L' :: TermL
 term0L' = AppL (LamL "x" (AddL (VarL "x") (VarL "x"))) (AmbL (ConL 1) (ConL 2))
+
+{- CPS Interpreter -}
+data TermK = VarK Name
+           | ConK Int
+           | AddK TermK TermK
+           | LamK Name TermK
+           | AppK TermK TermK
+           | CallccK Name TermK
+           
+data ValueK = WrongK
+            | NumK Int
+            | FunK (ValueK -> K ValueK)
+
+type Answer = ValueK
+type K a = (a -> Answer) -> Answer
+
+unitK :: a -> K a
+unitK a = \c -> c a
+
+bindK :: K a -> (a -> K b) -> K b
+m `bindK` k = \c -> m (\a -> k a c)
+
+type EnvironmentK = [(Name, ValueK)]
+
+interpK :: TermK -> EnvironmentK -> (ValueK -> Answer) -> Answer
+interpK (VarK x) e = \c -> lookupK x e c
+interpK (ConK i) _ = \c -> c (NumK i)
+interpK (AddK u v) e = \c -> interpK u e (\a ->
+                             interpK v e (\b ->
+                             addK a b c))
+interpK (LamK x v) e = \c -> c (FunK (\a -> interpK v ((x, a):e)))
+interpK (AppK t u) e = \c -> interpK t e (\f ->
+                             interpK u e (\a ->
+                             applyK f a c))
+interpK (CallccK x v) e = callccK (\k -> interpK v ((x, FunK k):e))
+
+lookupK :: Name -> EnvironmentK -> (ValueK -> Answer) -> Answer
+lookupK x [] = \c -> c WrongK
+lookupK x ((y, b) : e) = \c -> if x == y then c b else lookupK x e c
+
+addK :: ValueK -> ValueK -> K ValueK
+addK (NumK i) (NumK j) = \c -> c (NumK (i+j))
+addK a        b        = \c -> c WrongK
+
+applyK :: ValueK -> ValueK -> (ValueK -> Answer) -> Answer
+applyK (FunK k) a = \c -> k a c
+applyK f        _ = \c -> c WrongK
+
+callccK :: ((a -> K b) -> K a) -> K a
+callccK h = \c -> let k a = \d -> c a in h k c
+
+showK :: K ValueK -> String
+showK m = showvalK (m id)
+
+showvalK :: ValueK -> String
+showvalK WrongK = "<wrong>"
+showvalK (NumK i) = show i
+showvalK (FunK _) = "<function>"
+
+testK :: TermK -> String
+testK t = showK (interpK t [])
+
+term0K :: TermK
+term0K = AddK (ConK 1) (CallccK "k" (AddK (ConK 2) (AppK (VarK "k") (ConK 4))))
