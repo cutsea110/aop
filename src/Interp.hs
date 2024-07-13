@@ -705,4 +705,6 @@ testK :: TermK -> String
 testK t = showK (interpK t [])
 
 term0K :: TermK
-term0K = AddK (ConK 1) (CallccK "k" (AddK (ConK 2) (AppK (VarK "k") (ConK 4))))
+term0K = AppK (LamK "x" (AddK (VarK "x") (VarK "x"))) (AddK (ConK 10) (ConK 11))
+term1K :: TermK
+term1K = AddK (ConK 1) (CallccK "k" (AddK (ConK 2) (AppK (VarK "k") (ConK 4))))
