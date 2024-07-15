@@ -96,7 +96,7 @@ mapf f (Grows t fs) = Grows (mapt f t) (mapf f fs)
         h = grows . cross (id, id)
 
 
-parat (g, c, h) (Fork a fs) = g a (fs, (paraf (g, c, h) fs))
+parat (g, c, h) (Fork a fs) = g a (fs, paraf (g, c, h) fs)
 paraf (g, c, h) Null = c
 paraf (g, c, h) (Grows t fs) = h (t, parat (g, c, h) t) (fs, paraf (g, c, h) fs)
 
@@ -123,7 +123,7 @@ instance Applicative Tree where
   pure = etat
   Fork f fs <*> t@(Fork x xs) =
     let Fork x' xs' = fmap f t
-    in Fork x' (xs' <> (fmap ($ x) fs) <> (fs <*> xs))
+    in Fork x' (xs' <> fmap ($ x) fs <> (fs <*> xs))
 
 instance Applicative Forest where
   pure = etaf
