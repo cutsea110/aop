@@ -63,10 +63,16 @@ frames = futu psi where
   psi :: [Int] -> ListF Frame (Free (ListF Frame) [Int])
   psi xs = case project xs of
     Nil -> Nil
-    Cons 10 s -> Cons (Strike (take 2 s)) $ return s
+    Cons 10 s -> case project s of
+      Nil -> Cons (Strike []) $ return s
+      Cons x t -> case project t of
+        Nil -> Cons (Strike [x]) $ return s
+        Cons y u -> Cons (Strike [x,y]) $ return s
     Cons  x s -> case project s of
       Nil -> Cons (Open [x]) $ return s
-      Cons y t | x + y == 10 -> Cons (Spare [x,y] (take 1 t)) $ return t
+      Cons y t | x + y == 10 -> case project t of
+                  Nil -> Cons (Spare [x] []) $ return t
+                  Cons z u -> Cons (Spare [x,y] [z]) $ return t
                | otherwise   -> Cons (Open  [x,y]) $ return t
 
 test :: [Int]
