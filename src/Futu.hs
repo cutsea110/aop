@@ -56,7 +56,10 @@ movingAverage n = futu psi where
     Nil -> Nil
     Cons x s -> Cons (average $ take n (x:s)) $ return s
 
-data Frame = Strike [Int] | Spare [Int] [Int] | Open [Int] deriving (Show)
+data Frame = Strike [Int]
+           | Spare [Int] [Int]
+           | Open [Int]
+           deriving (Show)
 
 frames :: [Int] -> [Frame]
 frames = futu psi where
