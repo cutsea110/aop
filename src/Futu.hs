@@ -73,7 +73,7 @@ frames = futu psi where
       Cons y t | x + y == 10 -> case project t of
                   Nil -> Cons (Spare [x] []) $ return t
                   Cons z u -> Cons (Spare [x,y] [z]) $ return t
-               | otherwise   -> Cons (Open  [x,y]) $ return t
+               | otherwise -> Cons (Open  [x,y]) $ return t
 
 test :: [Int]
 test = [1, 4, 4, 5, 6, 4, 5, 5, 10, 0, 1, 7, 3, 6, 4, 10, 2, 8, 6]
