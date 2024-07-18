@@ -34,9 +34,9 @@ scores fs = unfoldr psi (0, fs)
     psi (_,   [])   = Nothing
     psi (ttl, f:fs) = Just (ttl', (ttl', fs)) where ttl' = ttl + point f
 
-data FrameState = Pending | Fixed deriving (Show)
+data State = Pending | Fixed deriving (Show)
 
-state :: Frame -> FrameState
+state :: Frame -> State
 state f | onGoing f = Pending
         | otherwise = Fixed
   where
@@ -45,13 +45,13 @@ state f | onGoing f = Pending
     onGoing (Spare _ bs) = null bs
     onGoing (Pair    ts) = length ts < 2
 
-states :: [Frame] -> [FrameState]
+states :: [Frame] -> [State]
 states = map state
 
 data Frame' = Frame' { getIdx   :: FrameIdx
                      , getFrame :: Frame
                      , getScore :: Score
-                     , getState :: FrameState
+                     , getState :: State
                      } deriving (Show)
 
 type Game = [Frame']
