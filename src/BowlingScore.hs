@@ -109,7 +109,11 @@ showFrame (Frame' i f s _) = case i of
               pad = replicate (3 - len) ' '
 
 gameOver :: Game -> Bool
-gameOver g = length g == 10 && all ((== Fixed) . getState) g
+gameOver g = let (n, b) = foldr phi (0, True) g
+             in n == 10 && b
+  where
+    phi :: Frame' -> (Int, Bool) -> (Int, Bool)
+    phi f (n, b) = (n + 1, b && getState f == Fixed)
 
 
 showGame :: Game -> [String]
