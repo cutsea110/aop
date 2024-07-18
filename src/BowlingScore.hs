@@ -109,11 +109,10 @@ showFrame (Frame' i f s _) = case i of
               pad = replicate (3 - len) ' '
 
 gameOver :: Game -> Bool
-gameOver g = let (n, b) = foldr phi (0, True) g
-             in n == 10 && b
-  where
-    phi :: Frame' -> (Int, Bool) -> (Int, Bool)
-    phi f (n, b) = (n + 1, b && getState f == Fixed)
+gameOver g =  n == 10 && b
+  where (n, b) = foldr phi (0, True) g
+        phi :: Frame' -> (Int, Bool) -> (Int, Bool)
+        phi f (n, b) = (n + 1, b && getState f == Fixed)
 
 
 showGame :: Game -> [String]
@@ -131,7 +130,9 @@ showGame = foldr phi close
             ]
 
 drawGame :: Game -> IO ()
-drawGame = putStr . unlines . showGame
+drawGame g = do
+  putStrLn $ "Game is " ++ if gameOver g then "over" else "on going"
+  putStr $ unlines $ showGame g
 
 -- | Test data
 
