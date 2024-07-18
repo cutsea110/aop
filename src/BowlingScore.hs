@@ -34,7 +34,7 @@ scores fs = unfoldr psi (0, fs)
     psi (_,   [])   = Nothing
     psi (ttl, f:fs) = Just (ttl', (ttl', fs)) where ttl' = ttl + point f
 
-data State = Pending | Fixed deriving (Show)
+data State = Pending | Fixed deriving (Show, Eq)
 
 state :: Frame -> State
 state f | onGoing f = Pending
@@ -107,6 +107,10 @@ showFrame (Frame' i f s _) = case i of
         where scoreStr = show s
               len = length scoreStr
               pad = replicate (3 - len) ' '
+
+gameOver :: Game -> Bool
+gameOver g = length g == 10 && all ((== Fixed) . getState) g
+
 
 showGame :: Game -> [String]
 showGame = foldr phi close
