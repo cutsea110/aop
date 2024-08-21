@@ -8,13 +8,13 @@ type Score = Int
 
 data Frame = Strike [Bonus]
            | Spare [Throw] [Bonus]
-           | Pair [Throw]
+           | Open [Throw]
            deriving (Show)
 
 point :: Frame -> Score
 point (Strike   bs) = 10 + sum bs
 point (Spare _  bs) = 10 + sum bs
-point (Pair  ts   ) = sum ts
+point (Open  ts   ) = sum ts
 
 frames :: [Throw] -> [Frame]
 frames ts = unfoldr psi ts
@@ -24,8 +24,8 @@ frames ts = unfoldr psi ts
     psi (10:ts) = Just (Strike (take 2 ts), ts)
     psi (x:y:ts)
       | x + y == 10 = Just (Spare [x, y] (take 1 ts), ts)
-      | otherwise   = Just (Pair [x, y], ts)
-    psi ts = Just (Pair t, d) where (t, d) = splitAt 2 ts
+      | otherwise   = Just (Open [x, y], ts)
+    psi ts = Just (Open t, d) where (t, d) = splitAt 2 ts
 
 scores :: [Frame] -> [Score]
 scores fs = unfoldr psi (0, fs)
@@ -43,7 +43,7 @@ state f | onGoing f = Pending
     onGoing :: Frame -> Bool
     onGoing (Strike  bs) = length bs < 2
     onGoing (Spare _ bs) = null bs
-    onGoing (Pair    ts) = length ts < 2
+    onGoing (Open    ts) = length ts < 2
 
 states :: [Frame] -> [State]
 states = map state
@@ -78,8 +78,8 @@ showFrame (Frame' i f s _) = case i of
              show' n  = show n
       drawPoint (Spare [x,_] [b])     = "|" ++ show x ++ "|/|" ++ show b
       drawPoint (Spare [x,_] [])      = "|" ++ show x ++ "|/| "
-      drawPoint (Pair  [x,y])         = "|" ++ show x ++ "|" ++ show y ++ "| "
-      drawPoint (Pair  [x])           = "|" ++ show x ++ "| | "
+      drawPoint (Open  [x,y])         = "|" ++ show x ++ "|" ++ show y ++ "| "
+      drawPoint (Open  [x])           = "|" ++ show x ++ "| | "
   
       drawScore :: Score -> String
       drawScore s = "|" ++ pad ++ scoreStr
@@ -99,8 +99,8 @@ showFrame (Frame' i f s _) = case i of
       drawPoint :: Frame -> String
       drawPoint (Strike      _) = "| |X"
       drawPoint (Spare [x,_] _) = "|" ++ show x ++ "|/"
-      drawPoint (Pair  [x,y])   = "|" ++ show x ++ "|" ++ show y
-      drawPoint (Pair  [x])     = "|" ++ show x ++ "| "
+      drawPoint (Open  [x,y])   = "|" ++ show x ++ "|" ++ show y
+      drawPoint (Open  [x])     = "|" ++ show x ++ "| "
 
       drawScore :: Score -> String
       drawScore s = "|" ++ pad ++ scoreStr
