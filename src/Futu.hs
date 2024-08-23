@@ -56,6 +56,7 @@ movingAverage n = futu psi where
     Nil -> Nil
     Cons x s -> Cons (average $ take n (x:s)) $ return s
 
+-- | Bowling Score
 data Frame = Strike [Int]
            | Spare [Int] [Int]
            | Open [Int]
