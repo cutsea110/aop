@@ -81,6 +81,7 @@ library
                      , Num8
                      , OpenSet
                      , Parser
+                     , Poker
                      , Prepro
                      , Pretty
                      , Prime
