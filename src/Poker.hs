@@ -1,9 +1,8 @@
 module Poker where
 
-type Outs = Int
+import Control.Arrow
 
-pair :: (a -> b) -> (a, a) -> (b, b)
-pair f (x, y) = (f x, f y)
+type Outs = Int
 
 -- | フロップ時点での outs 数から算出されるターン時の勝率
 turnRate :: Outs -> Float
@@ -17,7 +16,7 @@ riverRate outs = (1 - f 47 * f 46) * 100
 
 -- | アウツが 1 から 20 のときのターンとリバーまでの勝率
 turnsAndRivers :: [(Float, Float)]
-turnsAndRivers = map (\i -> pair round2 (turnRate i, riverRate i)) [1..20]
+turnsAndRivers = map ((round2 *** round2) . (turnRate &&& riverRate)) [1..20]
   where
     round2 :: Float -> Float
     round2 = (/ 100) . fromIntegral . round . (* 100)
