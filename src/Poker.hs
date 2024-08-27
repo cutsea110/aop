@@ -16,7 +16,7 @@ riverRate outs = (1 - f 47 * f 46) * 100
 
 -- | アウツが 1 から 20 のときのターンとリバーまでの勝率
 turnsAndRivers :: [(Float, Float)]
-turnsAndRivers = map ((round2 *** round2) . (turnRate &&& riverRate)) [1..20]
+turnsAndRivers = map (round2 . turnRate &&& round2 . riverRate) [1..20]
   where
     round2 :: Float -> Float
     round2 = (/ 100) . fromIntegral . round . (* 100)
