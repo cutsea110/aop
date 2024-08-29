@@ -69,14 +69,14 @@ calcOdds n k = (n - k) % k
 -- 数: 13
 -- ハンド毎のスーツの組み合わせ: 4C2 = 6
 -- 組み合わせ(合計): 13 * 6 = 78
--- 特定のポケットペア P = 6/1326 (オッズ: 1/221)
+-- 特定のポケットペア P = 6/1326 (オッズ: 1/220)
 specificPocketPair :: Hand
 specificPocketPair = Hand probability odds
   where probability = fromIntegral suitComb / fromIntegral allPossibleComb
         odds = calcOdds allPossibleComb suitComb
         suitComb = comb 4 2
 
--- 任意のポケットペア P = 78/1326 (オッズ: 1/17)
+-- 任意のポケットペア P = 78/1326 (オッズ: 1/16)
 anyPocketPair :: Hand
 anyPocketPair = Hand probability odds
   where probability = fromIntegral allPocketPairComb / fromIntegral allPossibleComb
@@ -96,10 +96,29 @@ specificSuitedHand = Hand probability odds
         odds = calcOdds allPossibleComb suitComb
         suitComb = comb 4 1
 
--- 任意のスーテッドハンド P = 312/1326 (オッズ: 1/4)
+-- 任意のスーテッドハンド P = 312/1326 (オッズ: 1/3.25)
 anySuitedHand :: Hand
 anySuitedHand = Hand probability odds
   where probability = fromIntegral allSuitedHandComb / fromIntegral allPossibleComb
         odds = calcOdds allPossibleComb allSuitedHandComb
         suitComb = comb 4 1
         allSuitedHandComb = numOfSuitedHand * suitComb
+
+-- d. オフスーツハンド
+-- 数: 78
+-- ハンド毎のスーツの組み合わせ: 4C1 * 3C1 = 12
+-- 組み合わせ(合計): 78 * 12 = 936
+-- 特定のオフスーツハンド P = 12/1326 (オッズ: 1/110)
+specificOffSuitedHand :: Hand
+specificOffSuitedHand = Hand probability odds
+  where probability = fromIntegral suitComb / fromIntegral allPossibleComb
+        odds = calcOdds allPossibleComb suitComb
+        suitComb = comb 4 1 * comb 3 1
+
+-- 任意のオフスーツハンド P = 936/1326 (オッズ: 1/0.417)
+anyOffSuitedHand :: Hand
+anyOffSuitedHand = Hand probability odds
+  where probability = fromIntegral allOffSuitedHandComb / fromIntegral allPossibleComb
+        odds = calcOdds allPossibleComb allOffSuitedHandComb
+        suitComb = comb 4 1 * comb 3 1
+        allOffSuitedHandComb = numOfOffSuitedHand * suitComb
