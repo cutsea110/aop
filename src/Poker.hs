@@ -46,8 +46,24 @@ data Hand = Hand { probability :: Float
 -- - スーテッドハンド: 78
 -- - オフスーツハンド(ポケットを除く): 78
 -- 起こり得る全ての組み合わせ: 52C2 = 1326
-allComb :: Integer
-allComb = comb 52 2
+--
+numOfStartingHands :: Integer
+numOfStartingHands = 169
+
+numOfPocketPair :: Integer
+numOfPocketPair = 13
+
+numOfSuitedHand :: Integer
+numOfSuitedHand = 78
+
+numOfOffSuitedHand :: Integer
+numOfOffSuitedHand = 78
+
+allPossibleComb :: Integer
+allPossibleComb = comb 52 2
+
+calcOdds :: Integer -> Integer -> Ratio Integer
+calcOdds n k = (n - k) % k
 
 -- b. ポケットペア
 -- 数: 13
@@ -56,15 +72,34 @@ allComb = comb 52 2
 -- 特定のポケットペア P = 6/1326 (オッズ: 1/221)
 specificPocketPair :: Hand
 specificPocketPair = Hand probability odds
-  where probability = fromIntegral suitComb / fromIntegral allComb
-        odds = allComb % suitComb
+  where probability = fromIntegral suitComb / fromIntegral allPossibleComb
+        odds = calcOdds allPossibleComb suitComb
         suitComb = comb 4 2
 
 -- 任意のポケットペア P = 78/1326 (オッズ: 1/17)
 anyPocketPair :: Hand
 anyPocketPair = Hand probability odds
-  where probability = fromIntegral allPocketPairComb / fromIntegral allComb
-        odds = allComb % allPocketPairComb
+  where probability = fromIntegral allPocketPairComb / fromIntegral allPossibleComb
+        odds = calcOdds allPossibleComb allPocketPairComb
         suitComb = comb 4 2
-        allPocketPairComb  = 13 * suitComb
+        allPocketPairComb  = numOfPocketPair * suitComb
         
+
+-- c. スーテッドハンド
+-- 数: 78
+-- ハンド毎のスーツの組み合わせ: 4C1 = 4
+-- 組み合わせ(合計): 78 * 4 = 312
+-- 特定のスーテッドハンド P = 4/1326 (オッズ: 1/331)
+specificSuitedHand :: Hand
+specificSuitedHand = Hand probability odds
+  where probability = fromIntegral suitComb / fromIntegral allPossibleComb
+        odds = calcOdds allPossibleComb suitComb
+        suitComb = comb 4 1
+
+-- 任意のスーテッドハンド P = 312/1326 (オッズ: 1/4)
+anySuitedHand :: Hand
+anySuitedHand = Hand probability odds
+  where probability = fromIntegral allSuitedHandComb / fromIntegral allPossibleComb
+        odds = calcOdds allPossibleComb allSuitedHandComb
+        suitComb = comb 4 1
+        allSuitedHandComb = numOfSuitedHand * suitComb
