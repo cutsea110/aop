@@ -1,6 +1,7 @@
 module Poker where
 
 import Control.Arrow
+import Data.Ratio
 
 type Outs = Int
 
@@ -31,3 +32,39 @@ perm n k = fact n `div` fact (n - k)
 
 comb :: Integer -> Integer -> Integer
 comb n k = perm n k `div` fact k
+
+data Hand = Hand { probability :: Float
+                 , odds :: Ratio Integer
+                 }
+            deriving (Show)
+
+-- | 1. 特定のスターティングハンドが配られる確率
+-- a. 予備考察
+-- スターティングハンドの数: 169
+-- 内訳
+-- - ポケットペア: 13
+-- - スーテッドハンド: 78
+-- - オフスーツハンド(ポケットを除く): 78
+-- 起こり得る全ての組み合わせ: 52C2 = 1326
+allComb :: Integer
+allComb = comb 52 2
+
+-- b. ポケットペア
+-- 数: 13
+-- ハンド毎のスーツの組み合わせ: 4C2 = 6
+-- 組み合わせ(合計): 13 * 6 = 78
+-- 特定のポケットペア P = 6/1326 (オッズ: 1/221)
+specificPocketPair :: Hand
+specificPocketPair = Hand probability odds
+  where probability = fromIntegral suitComb / fromIntegral allComb
+        odds = allComb % suitComb
+        suitComb = comb 4 2
+
+-- 任意のポケットペア P = 78/1326 (オッズ: 1/17)
+anyPocketPair :: Hand
+anyPocketPair = Hand probability odds
+  where probability = fromIntegral allPocketPairComb / fromIntegral allComb
+        odds = allComb % allPocketPairComb
+        suitComb = comb 4 2
+        allPocketPairComb  = 13 * suitComb
+        
