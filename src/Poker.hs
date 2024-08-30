@@ -122,3 +122,43 @@ anyOffSuitedHand = Hand probability odds
         odds = calcOdds allPossibleComb allOffSuitedHandComb
         suitComb = comb 4 1 * comb 3 1
         allOffSuitedHandComb = numOfOffSuitedHand * suitComb
+
+--
+-- TODO: e. 範囲
+--
+
+
+-- | 2. ポケットペアを持っているときにより大きいポケットペアに出会う確率
+-- a. 1人の対戦相手のペアがより大きい確率
+-- P = (14 - r) * 4/50 * 3/49 = (84 - 6r)/1225
+-- r: 自分のペアのランク (2=2,...J=11,Q=12,K=13,A=14)
+-- (14-r)*4 枚のより大きいカードがあります。対戦相手は残りの 50 枚のカードのどれでも持つことができます。
+-- (あなたは他の 2 枚を持っています)
+-- もし相手の最初のカードがあなたのポケットペアより大きい場合、残りの 49 毎のカードのうち 3 枚が相手により大きいペアを完成させます。
+type Rank = Integer
+
+opponentHasBiggerPair :: Rank -> Hand
+opponentHasBiggerPair rank = Hand probability odds -- TODO: check rank has to be 2 <= rank <= 14
+  where (a, b) = (84 - 6 * rank, 1225)
+        probability = fromIntegral a / fromIntegral b
+        odds = calcOdds b a
+
+-- b. 複数の対戦相手の 1 人がより大きいペアを持っている確率
+-- まず 1 人の対戦相手がより大きいペアを持っている確率をハンドに残っているプレイヤーの数で掛けます(n)。
+-- そして 1 人より多くの対戦相手がより大きいペアを持っている確率を引きます。(Pk)
+-- P = ((84 - 6r) / 1225) * n - Pk
+-- n: ハンドに残っているプレイヤー数
+-- Pk: 複数の対戦相手がポケットペアを持っている確率
+-- Pk = P2 + 2*P3 + 3*P4 + ... + (n-1)*Pn
+-- Pn = 丁度 n 人のプレイヤーがポケットペアを持っている確率(2 <= n <= 9)
+type PlayerNum = Integer
+
+-- | TODO: 確信がないので検証要
+opponentsHaveBiggerPairs :: Rank -> PlayerNum -> Hand
+opponentsHaveBiggerPairs rank n = Hand probability odds
+  where (a, b) = (84 - 6 * rank, 1225)
+        probability = p * fromInteger n - pk
+        odds = toRational $ recip probability
+        p = fromIntegral (comb n 1 * a) / fromIntegral b -- n 人中の誰か 1 人がより大きいペアを持っている確率
+        pn i = (fromIntegral a / fromIntegral b)^i -- 丁度 i 人のプレイヤーがより大きなポケットペアを持っている確率
+        pk = sum [ fromIntegral (i-1) * pn i | i <- [2..n]] -- 複数の対戦相手がポケットペアを持っている確率
