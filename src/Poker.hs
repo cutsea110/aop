@@ -171,3 +171,17 @@ probToOdds p = calcOdds b a
   where r = toRational p
         (a, b) = (numerator r, denominator r)
 
+
+-- | 3. 複数の大きいポケットペアに出会う確率
+-- 同じ原理で導ける。ただし Pk = P2 + P3 + .. + Pn(2 <= n <= 9)
+someManyBiggerPairs :: Rank -> PlayerNum -> Hand
+someManyBiggerPairs rank n = Hand probability odds
+  where (a, b) = (84 - 6 * rank, 1225)
+        probability = p * fromInteger n - pk
+        odds = probToOdds probability
+        -- n 人中の誰か 1 人がより大きいペアを持っている確率
+        p = fromIntegral (comb n 1 * a) / fromIntegral b
+        -- 丁度 i 人のプレイヤーがより大きなポケットペアを持っている確率
+        pn i = (fromIntegral a / fromIntegral b)^i
+        -- 複数の対戦相手がポケットペアを持っている確率
+        pk = sum [pn i | i <- [2..n]]
