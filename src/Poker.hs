@@ -67,22 +67,25 @@ allPossibleComb = comb 52 2
 calcOdds :: Integer -> Integer -> Odds
 calcOdds n k = (n - k) % k
 
+fromProbability :: Probability -> Hand
+fromProbability prob = Hand prob odds
+  where (n, d) = (numerator prob, denominator prob)
+        odds = calcOdds d n
+
 -- b. ポケットペア
 -- 数: 13
 -- ハンド毎のスーツの組み合わせ: 4C2 = 6
 -- 組み合わせ(合計): 13 * 6 = 78
 -- 特定のポケットペア P = 6/1326 (オッズ: 1/220)
 specificPocketPair :: Hand
-specificPocketPair = Hand probability odds
+specificPocketPair = fromProbability probability
   where probability = suitComb % allPossibleComb
-        odds = calcOdds allPossibleComb suitComb
         suitComb = comb 4 2
 
 -- 任意のポケットペア P = 78/1326 (オッズ: 1/16)
 anyPocketPair :: Hand
-anyPocketPair = Hand probability odds
+anyPocketPair = fromProbability probability
   where probability = allPocketPairComb % allPossibleComb
-        odds = calcOdds allPossibleComb allPocketPairComb
         suitComb = comb 4 2
         allPocketPairComb  = numOfPocketPair * suitComb
         
@@ -93,16 +96,14 @@ anyPocketPair = Hand probability odds
 -- 組み合わせ(合計): 78 * 4 = 312
 -- 特定のスーテッドハンド P = 4/1326 (オッズ: 1/331)
 specificSuitedHand :: Hand
-specificSuitedHand = Hand probability odds
+specificSuitedHand = fromProbability probability
   where probability = suitComb % allPossibleComb
-        odds = calcOdds allPossibleComb suitComb
         suitComb = comb 4 1
 
 -- 任意のスーテッドハンド P = 312/1326 (オッズ: 1/3.25)
 anySuitedHand :: Hand
-anySuitedHand = Hand probability odds
+anySuitedHand = fromProbability probability
   where probability = allSuitedHandComb % allPossibleComb
-        odds = calcOdds allPossibleComb allSuitedHandComb
         suitComb = comb 4 1
         allSuitedHandComb = numOfSuitedHand * suitComb
 
@@ -112,16 +113,14 @@ anySuitedHand = Hand probability odds
 -- 組み合わせ(合計): 78 * 12 = 936
 -- 特定のオフスーツハンド P = 12/1326 (オッズ: 1/110)
 specificOffSuitedHand :: Hand
-specificOffSuitedHand = Hand probability odds
+specificOffSuitedHand = fromProbability probability
   where probability = suitComb % allPossibleComb
-        odds = calcOdds allPossibleComb suitComb
         suitComb = comb 4 1 * comb 3 1
 
 -- 任意のオフスーツハンド P = 936/1326 (オッズ: 1/0.417)
 anyOffSuitedHand :: Hand
-anyOffSuitedHand = Hand probability odds
+anyOffSuitedHand = fromProbability probability
   where probability = allOffSuitedHandComb % allPossibleComb
-        odds = calcOdds allPossibleComb allOffSuitedHandComb
         suitComb = comb 4 1 * comb 3 1
         allOffSuitedHandComb = numOfOffSuitedHand * suitComb
 
@@ -140,10 +139,9 @@ anyOffSuitedHand = Hand probability odds
 type Rank = Integer
 
 opponentHasBiggerPair :: Rank -> Hand
-opponentHasBiggerPair rank = Hand probability odds -- TODO: check rank has to be 2 <= rank <= 14
+opponentHasBiggerPair rank = fromProbability probability -- TODO: check rank has to be 2 <= rank <= 14
   where (a, b) = (84 - 6 * rank, 1225)
         probability = a % b
-        odds = calcOdds b a
 
 -- b. 複数の対戦相手の 1 人がより大きいペアを持っている確率
 -- まず 1 人の対戦相手がより大きいペアを持っている確率をハンドに残っているプレイヤーの数で掛けます(n)。
@@ -157,10 +155,9 @@ type PlayerNum = Integer
 
 -- | TODO: 確信がないので検証要
 opponentsHaveBiggerPairs :: Rank -> PlayerNum -> Hand
-opponentsHaveBiggerPairs rank n = Hand probability odds
+opponentsHaveBiggerPairs rank n = fromProbability probability
   where (a, b) = (84 - 6 * rank, 1225)
         probability = p * fromIntegral n - pk
-        odds = probToOdds probability
         -- n 人中の誰か 1 人がより大きいペアを持っている確率
         p = (comb n 1 * a) % b
         -- 丁度 i 人のプレイヤーがより大きなポケットペアを持っている確率
@@ -168,18 +165,12 @@ opponentsHaveBiggerPairs rank n = Hand probability odds
         -- 複数の対戦相手がポケットペアを持っている確率
         pk = sum [ fromIntegral (i-1) * pn i | i <- [2..n]]
 
-probToOdds :: Probability -> Odds
-probToOdds p = calcOdds b a
-  where (a, b) = (numerator p, denominator p)
-
-
 -- | 3. 複数の大きいポケットペアに出会う確率
 -- 同じ原理で導ける。ただし Pk = P2 + P3 + .. + Pn(2 <= n <= 9)
 someManyBiggerPairs :: Rank -> PlayerNum -> Hand
-someManyBiggerPairs rank n = Hand probability odds
+someManyBiggerPairs rank n = fromProbability probability
   where (a, b) = (84 - 6 * rank, 1225)
         probability = p * fromIntegral n - pk
-        odds = probToOdds probability
         -- n 人中の誰か 1 人がより大きいペアを持っている確率
         p = (comb n 1 * a) % b
         -- 丁度 i 人のプレイヤーがより大きなポケットペアを持っている確率
@@ -193,6 +184,5 @@ someManyBiggerPairs rank n = Hand probability odds
 -- その中で 3 枚が A です。
 -- もし対戦相手の最初のカードが A なら、 49 枚残っているカードのうち 2 枚が彼に AA を与えることができます。
 myAxVsAA :: Hand
-myAxVsAA = Hand probability odds
+myAxVsAA = fromProbability probability
   where probability = 6 % 2450 -- 3 / 50 * 2 / 49
-        odds = calcOdds 2450 6
