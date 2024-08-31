@@ -35,8 +35,8 @@ perm n k = fact n `div` fact (n - k)
 comb :: Integer -> Integer -> Integer
 comb n k = perm n k `div` fact k
 
-data Hand = Hand { probability :: Probability
-                 , odds :: Odds
+data Hand = Hand { probability :: !Probability
+                 , odds :: !Odds
                  }
             deriving (Show)
 
@@ -50,7 +50,7 @@ data Hand = Hand { probability :: Probability
 -- 起こり得る全ての組み合わせ: 52C2 = 1326
 --
 numOfStartingHands :: Integer
-numOfStartingHands = 169
+numOfStartingHands = 169 -- 13 * 13 == 13 + 78 + 78
 
 numOfPocketPair :: Integer
 numOfPocketPair = 13
@@ -142,7 +142,7 @@ type Rank = Integer
 opponentHasBiggerPair :: Rank -> Hand
 opponentHasBiggerPair rank = Hand probability odds -- TODO: check rank has to be 2 <= rank <= 14
   where (a, b) = (84 - 6 * rank, 1225)
-        probability = fromIntegral a / fromIntegral b
+        probability = a % b
         odds = calcOdds b a
 
 -- b. 複数の対戦相手の 1 人がより大きいペアを持っている確率
