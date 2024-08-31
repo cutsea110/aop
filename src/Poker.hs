@@ -192,7 +192,7 @@ someManyBiggerPairs rank n = Hand probability odds
 -- 50 毎のカードが残っています(あなたが 2 枚持っていて、その 1 枚が A です)。
 -- その中で 3 枚が A です。
 -- もし対戦相手の最初のカードが A なら、 49 枚残っているカードのうち 2 枚が彼に AA を与えることができます。
-opponentHasAAmyHandAx :: Hand
-opponentHasAAmyHandAx = Hand probability odds
+myAxVsAA :: Hand
+myAxVsAA = Hand probability odds
   where probability = 6 % 2450 -- 3 / 50 * 2 / 49
         odds = calcOdds 2450 6
