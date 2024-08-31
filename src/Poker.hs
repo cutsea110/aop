@@ -185,4 +185,11 @@ someManyBiggerPairs rank n = fromProbability probability
 -- もし対戦相手の最初のカードが A なら、 49 枚残っているカードのうち 2 枚が彼に AA を与えることができます。
 myAxVsAA :: Hand
 myAxVsAA = fromProbability probability
-  where probability = 6 % 2450 -- 3 / 50 * 2 / 49
+  where probability = (3 % 50) * (2 % 49)
+
+-- b. あなたが Ax ハンドを持っているときに特定の対戦相手が AA を持つ確率
+-- P = (1-(1-(3/50*2/49)^n)) ~ 0.0218
+-- n: 対戦相手の数
+myAxVsAnyAA :: PlayerNum -> Hand
+myAxVsAnyAA n = fromProbability probability
+  where probability = 1 - (1 - ((3 % 50) * (2 % 49)) ^ n)
