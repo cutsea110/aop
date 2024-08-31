@@ -185,3 +185,13 @@ someManyBiggerPairs rank n = Hand probability odds
         pn i = (fromIntegral a / fromIntegral b)^i
         -- 複数の対戦相手がポケットペアを持っている確率
         pk = sum [pn i | i <- [2..n]]
+
+-- | より良い A に出会う確率
+-- a. あなたが Ax ハンドを持っているときに特定の対戦相手が AA を持つ確率
+-- 50 毎のカードが残っています(あなたが 2 枚持っていて、その 1 枚が A です)。
+-- その中で 3 枚が A です。
+-- もし対戦相手の最初のカードが A なら、 49 枚残っているカードのうち 2 枚が彼に AA を与えることができます。
+opponentHasAAmyHandAx :: Hand
+opponentHasAAmyHandAx = Hand probability odds
+  where probability = 6 / 2450 -- 3 / 50 * 2 / 49
+        odds = calcOdds 2450 6
