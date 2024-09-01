@@ -390,3 +390,10 @@ flopStraight = fromProbability probability
 flopFlush :: Hand
 flopFlush = fromProbability probability
   where probability = comb 4 1 * comb 13 3 % numOfSpecialFlop
+
+-- d. ペアがあるフロップが現れる確率
+-- 13 種類のカードのうち 1 種類を選び、その中から 2 枚を選ぶ。
+-- 残り 48 枚から 1 枚を選ぶ。(これがさらに同じ数となりスリーカードになる可能性は排除しない)
+flopPair :: Hand
+flopPair = fromProbability probability
+  where probability = (comb 13 1 * comb 4 2 * 48) % numOfSpecialFlop
