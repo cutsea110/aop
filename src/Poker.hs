@@ -242,3 +242,73 @@ noOverCardAtTurn r = fromProbability probability
 noOverCardAtRiver :: Rank -> Hand
 noOverCardAtRiver r = fromProbability probability
   where probability = comb (4 * r - 6) 5 % numOfAllOfRiver
+
+-- | 6. 特定のハンドが配られる確率
+numOfAllHands :: Integer
+numOfAllHands = comb 52 5
+
+-- a. ロイヤルフラッシュが配られる確率
+-- 起こり得るカードの組み合わせは 4C1
+royalFlush :: Hand
+royalFlush = fromProbability probability
+  where probability = comb 4 1 % numOfAllHands
+
+-- b. ストレートフラッシュが配られる確率
+-- 起こり得るカードの組み合わせは 10C1 * 4C1 - 4C1
+-- 4C1 はロイヤルフラッシュを除いています。
+straightFlush :: Hand
+straightFlush = fromProbability probability
+  where probability = (comb 10 1 * comb 4 1 - comb 4 1) % numOfAllHands
+
+-- c. フォーカードが配られる確率
+-- 起こり得るカードの組み合わせは 13C1 * 4C4 * 48C1
+fourOfAKind :: Hand
+fourOfAKind = fromProbability probability
+  where probability = (comb 13 1 * comb 4 4 * comb 48 1) % numOfAllHands
+
+-- d. フルハウスが配られる確率
+-- 起こり得るカードの組み合わせは 13C1 * 4C3 * 12C1 * 4C2
+fullHouse :: Hand
+fullHouse = fromProbability probability
+  where probability = (comb 13 1 * comb 4 3 * comb 12 1 * comb 4 2) % numOfAllHands
+
+-- e. フラッシュが配られる確率
+-- 起こり得るカードの組み合わせは 13C5 * 4C1 - 10C1 * 4C1
+-- 10C1 * 4C1 はストレートフラッシュとロイヤルストレートを除いています。
+flush :: Hand
+flush = fromProbability probability
+  where probability = (comb 13 5 * comb 4 1 - comb 10 1 * comb 4 1) % numOfAllHands
+  
+
+-- f. ストレートが配られる確率
+-- 起こり得るカードの組み合わせは 10C1 * 4C1^5 - 10C1 * 4C1
+-- 10C1 * 4C1 はストレートフラッシュとロイヤルストレートを除いています。
+straight :: Hand
+straight = fromProbability probability
+  where probability = (comb 10 1 * comb 4 1 ^ 5 - comb 10 1 * comb 4 1) % numOfAllHands
+
+-- g. スリーカードが配られる確率
+-- 起こり得るカードの組み合わせは 13C1 * 4C3 * 12C2 * 4C1^2
+threeOfAKind :: Hand
+threeOfAKind = fromProbability probability
+  where probability = (comb 13 1 * comb 4 3 * comb 12 2 * comb 4 1 ^ 2) % numOfAllHands
+
+-- h. ツーペアが配られる確率
+-- 起こり得るカードの組み合わせは 13C2 * 4C2^2 * 11C1 * 4C1
+twoPair :: Hand
+twoPair = fromProbability probability
+  where probability = (comb 13 2 * comb 4 2 ^ 2 * comb 11 1 * comb 4 1) % numOfAllHands
+
+-- i. ワンペアが配られる確率
+-- 起こり得るカードの組み合わせは 13C1 * 4C2 * 12C3 * 4C1^3
+onePair :: Hand
+onePair = fromProbability probability
+  where probability = (comb 13 1 * comb 4 2 * comb 12 3 * comb 4 1 ^ 3) % numOfAllHands
+
+-- j. ハイカードが配られる確率
+-- 起こり得るカードの組み合わせは (13C5 - 10) * (4C1^5 - 4C1)
+-- 数の組み合わせは13 種類のうち 5 種類を選ぶが、ストレートになる 10 通りは除く。
+-- スートは 4 種類 5 枚分の組み合わせからフラッシュになる 4 通りは除く。
+highCard :: Hand
+highCard = fromProbability probability
+  where probability = ((comb 13 5 - 10) * (comb 4 1 ^ 5 - comb 4 1)) % numOfAllHands
