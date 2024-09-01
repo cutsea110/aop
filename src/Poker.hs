@@ -397,3 +397,9 @@ flopFlush = fromProbability probability
 flopPair :: Hand
 flopPair = fromProbability probability
   where probability = (comb 13 1 * comb 4 2 * 48) % numOfSpecialFlop
+
+-- e. フロップでスーテッドカードがない確率
+-- 4 種類のスーツのうち 3 種類からなり、それぞれ 13 枚のカードから 1 枚ずつ選ぶ。
+flopWithoutSuited :: Hand
+flopWithoutSuited = fromProbability probability
+  where probability = comb 4 3 * 13 ^ 3 % numOfSpecialFlop
