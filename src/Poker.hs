@@ -308,7 +308,7 @@ onePair = fromProbability probability
 -- j. ハイカードが配られる確率
 -- 起こり得るカードの組み合わせは (13C5 - 10) * (4C1^5 - 4C1)
 -- 数の組み合わせは13 種類のうち 5 種類を選ぶが、ストレートになる 10 通りは除く。
--- スートは 4 種類 5 枚分の組み合わせからフラッシュになる 4 通りは除く。
+-- スーツは 4 種類 5 枚分の組み合わせからフラッシュになる 4 通りは除く。
 highCard :: Hand
 highCard = fromProbability probability
   where probability = ((comb 13 5 - 10) * (comb 4 1 ^ 5 - comb 4 1)) % numOfAllHands
@@ -327,7 +327,7 @@ highCard = fromProbability probability
 --
 -- 例4: 2 枚のスーテッドカードはフロップで完成したフラッシュに次の確率でなる。
 -- 11C3 * 39C0 / 50C3
--- アウツは同じスートの残りカード 11 枚で、その中から 3 枚を hit したいので 11C3
+-- アウツは同じスーツの残りカード 11 枚で、その中から 3 枚を hit したいので 11C3
 -- アウツを除くと残りは 50-11=39 枚で、その中から 0 枚を選ぶので 39C0 = 1
 --
 flopMakeHandBetter :: Outs -> Integer -> Hand
@@ -365,3 +365,28 @@ runnerRunnerMakeHandBetter outs = fromProbability probability
 runnerRunnerMakeHandBetter' :: Outs -> Outs -> Hand
 runnerRunnerMakeHandBetter' outs1 outs2 = fromProbability probability
   where probability = (outs1 % 47) * (outs2 % 46) * 2 -- x * y / 1081
+
+-- | 11. 特定のフロップが現れる確率
+-- この計算はあなたや相手のカードは考慮しない。
+-- デッキにある 52 枚のカードで特定のフロップが現れる確率を計算する。
+numOfSpecialFlop :: Integer
+numOfSpecialFlop = comb 52 3
+
+-- a. フロップでスリーカードが現れる確率
+-- 13 種類のカードのうち 1 種類を選び、その中から 3 枚を選ぶ。
+flopThreeOfAKind :: Hand
+flopThreeOfAKind = fromProbability probability
+  where probability = (comb 13 1 * comb 4 3) % numOfSpecialFlop
+
+-- b. フロップでストレートの 3 枚のカードが現れる確率 (ストレートフラッシュの可能性は含まない)
+-- ストレートフラッシュの一部でもある 48 の起こり得る組み合わせを引く。(12C1 * 4C1 = 48)
+-- なぜならフロップで通常のストレートの 3 枚のカードが現れる確率を知りたいだけだから。
+flopStraight :: Hand
+flopStraight = fromProbability probability
+  where probability = (comb 12 1 * comb 4 1 ^ 3 - 48) % numOfSpecialFlop
+
+-- c. フロップで同じスーツの 3 枚のカードが現れる確率
+-- 4 種類のスーツのうち 1 種類を選び、そのスーツ 13 枚の中から 3 枚を選ぶ。
+flopFlush :: Hand
+flopFlush = fromProbability probability
+  where probability = comb 4 1 * comb 13 3 % numOfSpecialFlop
