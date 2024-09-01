@@ -345,3 +345,8 @@ turnMakeHandBetter outs = fromProbability probability
 riverMakeHandBetter :: Outs -> Hand
 riverMakeHandBetter outs = fromProbability probability
   where probability = outs % 46
+
+-- | 10. フロップからリバーまでに良くなる確率
+flopToRiverMakeHandBetter :: Outs ->  Hand
+flopToRiverMakeHandBetter outs = fromProbability probability
+  where probability = ((47 - outs) % 47) * ((46 - outs) % 46)
