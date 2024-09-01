@@ -7,8 +7,8 @@ type Outs = Integer
 type Probability = Ratio Integer
 type Odds = Ratio Integer
 
-roundN :: Integer -> Probability -> Probability
-roundN n = (/ d) . fromIntegral . round . (* d) where d = 10 ^ n
+roundN :: Integer -> Ratio Integer -> Float
+roundN n = (/ d) . fromIntegral . round . (* d) . fromRational where d = 10 ^ n
 
 -- | フロップ時点での outs 数から算出されるターン時の勝率
 turnRate :: Outs -> Probability
@@ -20,7 +20,7 @@ riverRate outs = (1 - f 47 * f 46) * 100
   where f n = 1 - outs % n
 
 -- | アウツが 1 から 20 のときのターンとリバーまでの勝率
-turnsAndRivers :: [(Probability, Probability)]
+turnsAndRivers :: [(Float, Float)]
 turnsAndRivers = map (round2 . turnRate &&& round2 . riverRate) [1..20]
   where round2 = roundN 2
 
@@ -38,7 +38,11 @@ comb n k = perm n k `div` fact k
 data Hand = Hand { probability :: !Probability
                  , odds :: !Odds
                  }
-            deriving (Show)
+
+instance Show Hand where
+  show (Hand p o) = "Probability: " ++ show p' ++ ", Odds: " ++ show o'
+    where p' = fromRational p
+          o' = fromRational o
 
 -- | 1. 特定のスターティングハンドが配られる確率
 -- a. 予備考察
