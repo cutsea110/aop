@@ -349,4 +349,19 @@ riverMakeHandBetter outs = fromProbability probability
 -- | 10. フロップからリバーまでに良くなる確率
 flopToRiverMakeHandBetter :: Outs ->  Hand
 flopToRiverMakeHandBetter outs = fromProbability probability
-  where probability = ((47 - outs) % 47) * ((46 - outs) % 46)
+  where probability = 1 - ((47 - outs) % 47) * ((46 - outs) % 46)
+
+-- ランナーランナーアウツで良くなる確率
+-- 例えばバックドアフラッシュドローではフラッシュドローへ 10 枚のアウツがあり、
+-- その後に完成するのに 9 枚のアウツがある。
+-- 注意: これはストレート/ストレートフラッシュドローには使えない。
+-- なぜなら、アウツが互いに依存しているからです。
+runnerRunnerMakeHandBetter :: Outs -> Hand
+runnerRunnerMakeHandBetter outs = fromProbability probability
+  where probability = (outs % 47) * ((outs - 1) % 46)
+-- その場合は次の式を使う
+-- outs1: 最初のランナーのアウツの数
+-- outs2: 2 番目のアウツの数
+runnerRunnerMakeHandBetter' :: Outs -> Outs -> Hand
+runnerRunnerMakeHandBetter' outs1 outs2 = fromProbability probability
+  where probability = (outs1 % 47) * (outs2 % 46) * 2 -- x * y / 1081
