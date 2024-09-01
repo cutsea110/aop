@@ -312,3 +312,26 @@ onePair = fromProbability probability
 highCard :: Hand
 highCard = fromProbability probability
   where probability = ((comb 13 5 - 10) * (comb 4 1 ^ 5 - comb 4 1)) % numOfAllHands
+
+-- | 7. フロップで良くなる確率
+-- x: プリフロップでのあなたのハンドのアウツの数
+-- y: アウツのうちの何枚をヒットしたいか
+-- a: アウツではない残りのカード枚数
+-- b: a からヒットしたいカード枚数
+-- y + b がフロップの 3 枚となることに注意
+--
+-- 例3: ポケットペアはフロップで(ちょうど)スリーカードに次の確率でなる。
+-- 2C1 * 48C2 / 50C3
+-- アウツは 2 で、そのうちの 1 毎を hit したいので 2C1
+-- アウツを除くと残りは 48 枚で、その中から 2 枚を選ぶので 48C2
+--
+-- 例4: 2 枚のスーテッドカードはフロップで完成したフラッシュに次の確率でなる。
+-- 11C3 * 39C0 / 50C3
+-- アウツは同じスートの残りカード 11 枚で、その中から 3 枚を hit したいので 11C3
+-- アウツを除くと残りは 50-11=39 枚で、その中から 0 枚を選ぶので 39C0 = 1
+--
+flopMakeHandBetter :: Integer -> Integer -> Hand
+flopMakeHandBetter outs hit = fromProbability probability
+  where (x, y) = (outs, hit)
+        (a, b) = (52 - 2 - x, 3 - y)
+        probability = comb x y * comb a b % numOfAllOfFlop
