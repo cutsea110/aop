@@ -193,3 +193,52 @@ myAxVsAA = fromProbability probability
 myAxVsAnyAA :: PlayerNum -> Hand
 myAxVsAnyAA n = fromProbability probability
   where probability = 1 - (1 - ((3 % 50) * (2 % 49)) ^ n)
+
+-- c. あなたが Ax ハンドを持っているときに 1 人の対戦相手がより良い A を持つ確率
+-- P = (3/50 * 2/49) + (3/50 * ((13-r)*4)/49 * 2) = (159 - 12r)/1225
+-- r はあなたの 2 枚目(キッカー)のカード(2=2, ... J=11, Q=12, K=13) を表します。
+myAxVsBetterAx :: Rank -> Hand
+myAxVsBetterAx rank = fromProbability probability
+  where (a, b) = (159 - 12 * rank, 1225)
+        probability = a % b
+
+-- | 5. あなたがポケットペアを持っているときにオーバーカードが現れない確率
+-- a. 予備考察
+-- 任意のスターティングハンドによる起こり得るフロップ
+numOfAllOfFlop :: Integer
+numOfAllOfFlop = comb 50 3
+
+-- 任意のスターティングハンドによる起こり得るターン
+numOfAllOfTurn :: Integer
+numOfAllOfTurn = comb 50 4
+
+-- 任意のスターティングハンドによる起こり得るリバー
+numOfAllOfRiver :: Integer
+numOfAllOfRiver = comb 50 5
+
+-- b. フロップでオーバーカードが現れない確率
+-- r: あなたのポケットペアのランクを表しています(2=2, ... J=11, Q=12, K=13)
+-- r より小さいカードは 2..(r-1) の r-2 種類で 4 種類のスーツがあるので 4 * (r-2) 枚。
+-- r と同じカードがあなたのペア以外にあと 2 枚残っています。
+-- したがってオーバーカードでないカードは 4 * (r-2) + 2 = 4 * r - 6 枚です。
+noOverCardAtFlop :: Rank -> Hand
+noOverCardAtFlop r = fromProbability probability
+  where probability = comb (4 * r - 6) 3 % numOfAllOfFlop
+
+-- c. ターンでオーバーカードが現れない確率
+-- r: あなたのポケットペアのランクを表しています(2=2, ... J=11, Q=12, K=13)
+-- r より小さいカードは 2..(r-1) の r-2 種類で 4 種類のスーツがあるので 4 * (r-2) 枚。
+-- r と同じカードがあなたのペア以外にあと 2 枚残っています。
+-- したがってオーバーカードでないカードは 4 * (r-2) + 2 = 4 * r - 6 枚です。
+noOverCardAtTurn :: Rank -> Hand
+noOverCardAtTurn r = fromProbability probability
+  where probability = comb (4 * r - 6) 4 % numOfAllOfTurn
+
+-- d. リバーでオーバーカードが現れない確率
+-- r: あなたのポケットペアのランクを表しています(2=2, ... J=11, Q=12, K=13)
+-- r より小さいカードは 2..(r-1) の r-2 種類で 4 種類のスーツがあるので 4 * (r-2) 枚。
+-- r と同じカードがあなたのペア以外にあと 2 枚残っています。
+-- したがってオーバーカードでないカードは 4 * (r-2) + 2 = 4 * r - 6 枚です。
+noOverCardAtRiver :: Rank -> Hand
+noOverCardAtRiver r = fromProbability probability
+  where probability = comb (4 * r - 6) 5 % numOfAllOfRiver
