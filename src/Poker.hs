@@ -330,8 +330,18 @@ highCard = fromProbability probability
 -- アウツは同じスートの残りカード 11 枚で、その中から 3 枚を hit したいので 11C3
 -- アウツを除くと残りは 50-11=39 枚で、その中から 0 枚を選ぶので 39C0 = 1
 --
-flopMakeHandBetter :: Integer -> Integer -> Hand
+flopMakeHandBetter :: Outs -> Integer -> Hand
 flopMakeHandBetter outs hit = fromProbability probability
   where (x, y) = (outs, hit)
         (a, b) = (52 - 2 - x, 3 - y)
         probability = comb x y * comb a b % numOfAllOfFlop
+
+-- | 8. ターンで良くなる確率
+turnMakeHandBetter :: Outs -> Hand
+turnMakeHandBetter outs = fromProbability probability
+  where probability = outs % 47
+
+-- | 9. リバーで良くなる確率
+riverMakeHandBetter :: Outs -> Hand
+riverMakeHandBetter outs = fromProbability probability
+  where probability = outs % 46
