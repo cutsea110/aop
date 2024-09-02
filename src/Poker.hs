@@ -148,6 +148,8 @@ opponentHasBiggerPair rank = fromProbability probability -- TODO: check rank has
         probability = a % b
 
 -- b. 複数の対戦相手の 1 人がより大きいペアを持っている確率
+-- TODO: 以下の計算式だとサイトの表とは合致しないので考える必要がある
+
 -- まず 1 人の対戦相手がより大きいペアを持っている確率をハンドに残っているプレイヤーの数で掛けます(n)。
 -- そして 1 人より多くの対戦相手がより大きいペアを持っている確率を引きます。(Pk)
 -- P = ((84 - 6r) / 1225) * n - Pk
@@ -157,19 +159,26 @@ opponentHasBiggerPair rank = fromProbability probability -- TODO: check rank has
 -- Pn = 丁度 n 人のプレイヤーがポケットペアを持っている確率(2 <= n <= 9)
 type PlayerNum = Integer
 
--- | TODO: 確信がないので検証要
+-- | TODO: 複数のプレイヤーが自分のポケットペアより大きいペアを持つ確率を一律で (a % b)^i とすると誤差が出る
+-- 例: 自分のポケットペアの rank = 13 なら 残るペアは 14 で作る 2 ペアのみ
+-- 1 人目のプレイヤーが持つ確率は 4/50 * 3/49 = 6/1225
+-- 2 人目のプレイヤーが持つ確率は 2/48 * 1/47 = 1/1128
+-- プレイヤーのどちらが先でも良いので 2C1 を掛けたとして 1/115150 になる
+-- これは (48-6*13/1225)^2 = (6/1225)^2 = 36/1500625 とは異なる
 opponentsHaveBiggerPairs :: Rank -> PlayerNum -> Hand
 opponentsHaveBiggerPairs rank n = fromProbability probability
   where (a, b) = (84 - 6 * rank, 1225)
-        probability = p * fromIntegral n - pk
-        -- n 人中の誰か 1 人がより大きいペアを持っている確率
-        p = (comb n 1 * a) % b
+        probability = pn 1 - pk
         -- 丁度 i 人のプレイヤーがより大きなポケットペアを持っている確率
-        pn i = (a % b)^i
+        pn i = fromIntegral (comb n i) * (a % b)^i
         -- 複数の対戦相手がポケットペアを持っている確率
-        pk = sum [ fromIntegral (i-1) * pn i | i <- [2..n]]
+        pk = sum [ pn i | i <- [2..n']]
+        -- 自分のポケットペアのランクより上のペアは 2*(14-rank) までしか存在しない
+        n' = min n (2*(14-rank))
 
 -- | 3. 複数の大きいポケットペアに出会う確率
+-- TODO: 上のと同じ理由で再度見直す必要がある
+
 -- 同じ原理で導ける。ただし Pk = P2 + P3 + .. + Pn(2 <= n <= 9)
 someManyBiggerPairs :: Rank -> PlayerNum -> Hand
 someManyBiggerPairs rank n = fromProbability probability
