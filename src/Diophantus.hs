@@ -29,3 +29,11 @@ diophantus' (a, b, c) = do
       where
         d = gcd a b
         (a', b') = (a `div` d, b `div` d)
+
+diophantusSolution :: (Integral a) => (a, a, a) -> [(a, a)]
+diophantusSolution (a, b, c) = tail $ merge (inc (x, y)) (dec (x, y))
+  where
+    Just ((x, y), (dx, dy)) = diophantus' (a, b, c)
+    inc (x, y) = (x, y) : inc (x + dx, y + dy)
+    dec (x, y) = (x, y) : dec (x - dx, y - dy)
+    merge (x:xs) (y:ys) = x : y : merge xs ys
