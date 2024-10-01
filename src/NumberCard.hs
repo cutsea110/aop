@@ -1,6 +1,8 @@
 {-# LANGUAGE NPlusKPatterns #-}
 module NumberCard where
 
+import Data.List (mapAccumL)
+
 ------------------------------------------------------
 -- | 2024年度 豊島岡女子中学校 第一回入試問題 第4問
 ------------------------------------------------------
@@ -58,3 +60,13 @@ digitCount = fst . snd . foldn (c, f) . toNat
   where
     c = ((2, (1, 1, 0)), (1, (0, 0, 0)))
     f (pred@(t1, (p1, p2, p13)), (t2, _)) = ((t1+p1+p13+t2, (t1, p1+p13, t2)), pred)
+
+digitCount' :: Int -> (Integer, (Integer, Integer, Integer))
+digitCount' = (map d [0..] !!)
+  where
+    d 0 = (1, (0, 0, 0))
+    d 1 = (2, (1, 1, 0))
+    d n = (t1+p1+p13+t2, (t1, p1+p13, t2))
+      where
+        (t1, (p1, p2, p13)) = digitCount' (n-1)
+        (t2, _) = digitCount' (n-2)
