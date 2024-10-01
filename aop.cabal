@@ -79,6 +79,7 @@ library
                      , NonEmptyList
                      , NonEmptyListAsHist
                      , Num8
+                     , NumberCard
                      , OpenSet
                      , Parser
                      , Poker
