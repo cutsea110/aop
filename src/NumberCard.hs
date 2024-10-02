@@ -20,31 +20,30 @@ import Data.Monoid (Sum(..))
 
 
 gdigits :: Monoid a =>
-           (a, (a, a, a))
-        -> (a, (a, a, a))
+           (a, a, a)
+        -> (a, a, a)
         -> (a -> a)
         -> (a -> a)
         -> (a -> a)
-        -> Int -> (a, (a, a, a))
-gdigits q0 q1 f1 f2 f13 = u
+        -> Int -> (a, a, a)
+gdigits r0 r1 f1 f2 f13 = u
   where
     u = (map f [0..] !!)
-    f 0 = q0
-    f 1 = q1
-    f n = (p1'<>p2'<>p13', (p1', p2', p13'))
+    f 0 = r0
+    f 1 = r1
+    f n = (p1', p2', p13')
       where
-        (t1, (p1, _, p13)) = u (n-1)
-        (t2, _)            = u (n-2)
-        p1'  = f1  $! t1
+        (p1, p2, p13) = u (n-1)
+        (q1, q2, q13) = u (n-2)
+        p1'  = f1  $! p1<>p2<>p13
         p2'  = f2  $! p1<>p13
-        p13' = f13 $! t2
+        p13' = f13 $! q1<>q2<>q13
 
--- | 3要素のリスト
---  1. カード [1]  はじまりの digit 文字列
---  2. カード [2]  はじまりの digit 文字列
---  3. カード [13] はじまりの digit 文字列
-digits :: Int -> ([] String, ([] String, [] String, [] String))
-digits = gdigits ([""], ([], [], [])) (["1", "2"], (["1"], ["2"], [])) (map ("1"<>)) (map ("2"<>)) (map ("13"<>))
 
-digitCount :: Int -> (Sum Integer, (Sum Integer, Sum Integer, Sum Integer))
-digitCount = gdigits (Sum 1, (Sum 0, Sum 0, Sum 0)) (Sum 2, (Sum 1, Sum 1, Sum 0)) id id id
+-- | NOTE: 0番目の要素は p13 に [""] を入れたけどどこでも良い
+digits :: Int -> ([] String, [] String, [] String)
+digits = gdigits ([], [], [""]) (["1"], ["2"], []) (map ("1"<>)) (map ("2"<>)) (map ("13"<>))
+
+-- | NOTE: 0番目の要素は p13 に Sum 1 を入れたけどどこでも良い
+digitCount :: Int -> (Sum Integer, Sum Integer, Sum Integer)
+digitCount = gdigits (Sum 0, Sum 0, Sum 1) (Sum 1, Sum 1, Sum 0) id id id
