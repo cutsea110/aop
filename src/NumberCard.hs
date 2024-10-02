@@ -18,13 +18,12 @@ import Data.Monoid (Sum(..))
 --   (1) 4 桁の整数は何通り作ることができますか。
 --   (2) 6 桁の整数は何通り作ることができますか。
 
-
-gdigits :: Monoid a =>
-           (a, a, a)
-        -> (a, a, a)
-        -> (a -> a)
-        -> (a -> a)
-        -> (a -> a)
+gdigits :: Monoid a
+        => (a, a, a) -- 0th element
+        -> (a, a, a) -- 1st element
+        -> (a -> a)  -- next element starting with 1
+        -> (a -> a)  -- next element starting with 2
+        -> (a -> a)  -- next element starting with 13
         -> Int -> (a, a, a)
 gdigits r0 r1 f1 f2 f13 = u
   where
