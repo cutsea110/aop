@@ -19,32 +19,32 @@ import Data.Monoid (Sum(..))
 --   (2) 6 桁の整数は何通り作ることができますか。
 
 
+gdigits :: Monoid a =>
+           (a, (a, a, a))
+        -> (a, (a, a, a))
+        -> (a -> a)
+        -> (a -> a)
+        -> (a -> a)
+        -> Int -> (a, (a, a, a))
+gdigits q0 q1 f1 f2 f13 = u
+  where
+    u = (map f [0..] !!)
+    f 0 = q0
+    f 1 = q1
+    f n = (p1'<>p2'<>p13', (p1', p2', p13'))
+      where
+        (t1, (p1, _, p13)) = u (n-1)
+        (t2, _)            = u (n-2)
+        p1'  = f1  $! t1
+        p2'  = f2  $! p1<>p13
+        p13' = f13 $! t2
+
 -- | 3要素のリスト
 --  1. カード [1]  はじまりの digit 文字列
 --  2. カード [2]  はじまりの digit 文字列
 --  3. カード [13] はじまりの digit 文字列
 digits :: Int -> ([] String, ([] String, [] String, [] String))
-digits = (map f [0..] !!)
-  where
-    f 0 = ([""], ([], [], []))
-    f 1 = (["1", "2"], (["1"], ["2"], []))
-    f n = (p1'<>p2'<>p13', (p1', p2', p13'))
-      where
-        (t1, (p1, _, p13)) = digits (n-1)
-        (t2, _)            = digits (n-2)
-        p1'  = map ("1"<>) t1
-        p2'  = map ("2"<>) (p1<>p13)
-        p13' = map ("13"<>) t2
+digits = gdigits ([""], ([], [], [])) (["1", "2"], (["1"], ["2"], [])) (map ("1"<>)) (map ("2"<>)) (map ("13"<>))
 
 digitCount :: Int -> (Sum Integer, (Sum Integer, Sum Integer, Sum Integer))
-digitCount = (map d [0..] !!)
-  where
-    d 0 = (Sum 1, (Sum 0, Sum 0, Sum 0))
-    d 1 = (Sum 2, (Sum 1, Sum 1, Sum 0))
-    d n = (p1'<>p2'<>p13', (p1', p2', p13'))
-      where
-        (t1, (p1, _, p13)) = digitCount (n-1)
-        (t2, _)            = digitCount (n-2)
-        p1' = t1
-        p2' = p1<>p13
-        p13' = t2
+digitCount = gdigits (Sum 1, (Sum 0, Sum 0, Sum 0)) (Sum 2, (Sum 1, Sum 1, Sum 0)) id id id
