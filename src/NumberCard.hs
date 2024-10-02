@@ -46,3 +46,6 @@ digits = gdigits ([], [], [""]) (["1"], ["2"], []) (map ("1"<>)) (map ("2"<>)) (
 -- | NOTE: 0番目の要素は p13 に Sum 1 を入れたけどどこでも良い
 digitCount :: Int -> (Sum Integer, Sum Integer, Sum Integer)
 digitCount = gdigits (Sum 0, Sum 0, Sum 1) (Sum 1, Sum 1, Sum 0) id id id
+
+digitsR :: Int -> ([] String, [] String, [] String)
+digitsR = gdigits ([], [], [""]) (["1"], ["2"], []) (map (<>"1")) (map (<>"2")) (map (<>"13"))
