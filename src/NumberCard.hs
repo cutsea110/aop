@@ -19,11 +19,11 @@ import Data.Monoid (Sum(..))
 --   (2) 6 桁の整数は何通り作ることができますか。
 
 gdigits :: Monoid a
-        => (a, a, a) -- 0th element
-        -> (a, a, a) -- 1st element
-        -> (a -> a)  -- next element starting with 1
-        -> (a -> a)  -- next element starting with 2
-        -> (a -> a)  -- next element starting with 13
+        => (a, a, a) -- 0th sets
+        -> (a, a, a) -- 1st sets
+        -> (a -> a)  -- next sets each item is starting with 1
+        -> (a -> a)  -- next sets each item is starting with 2
+        -> (a -> a)  -- next sets each item is starting with 13
         -> Int -> (a, a, a)
 gdigits r0 r1 f1 f2 f13 = u
   where
