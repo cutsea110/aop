@@ -79,6 +79,24 @@ frames = futu psi where
                   Cons z u -> Cons (Spare [x,y] [z]) $ return t
                | otherwise -> Cons (Open  [x,y]) $ return t
 
+scores :: [Int] -> [Int]
+scores = futu psi where
+  psi :: [Int] -> ListF Int (Free (ListF Int) [Int])
+  psi xs = case project xs of
+    Nil -> Nil
+    Cons 10 s -> case project s of
+      Nil -> Cons 0 $ return s
+      Cons x t -> case project t of
+        Nil -> Cons 0 $ return s
+        Cons y u -> Cons (10+x+y) $ return s
+    Cons  x s -> case project s of
+      Nil -> Cons 0 $ return s
+      Cons y t | x + y == 10 -> case project t of
+                  Nil -> Cons 0 $ return t
+                  Cons z u -> Cons (x+y+z) $ return t
+               | otherwise -> Cons (x+y) $ return t
+
+
 test :: [Int]
 test = [1, 4, 4, 5, 6, 4, 5, 5, 10, 0, 1, 7, 3, 6, 4, 10, 2, 8, 6]
 
