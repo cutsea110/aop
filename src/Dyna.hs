@@ -99,3 +99,20 @@ fib' = dyna phi psi
 
     psi 0 = Nothing
     psi (n+1) = Just n
+
+
+histo' :: (c, NEL c -> c) -> Nat -> c
+histo' (c, f) = hd . u
+  where
+    u Z     = Unit c
+    u (S n) = let n' = u n in Cons (f n') n'
+
+fib'' = histo' (c, f) . unfoldn psi
+  where
+    c = 0
+    f (Unit _) = 1
+    f (Cons a (Unit b))   = a + b
+    f (Cons a (Cons b _)) = a + b
+
+    psi 0     = Nothing
+    psi (n+1) = Just n
