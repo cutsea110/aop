@@ -101,11 +101,12 @@ fib' = dyna phi psi
     psi (n+1) = Just n
 
 
-histo' :: (c, NEL c -> c) -> Nat -> c
+histo' :: Show c => (c, NEL c -> c) -> Nat -> c
 histo' (c, f) = hd . u
   where
-    u Z     = Unit c
-    u (S n) = let n' = u n in Cons (f n') n'
+    u Z     = Unit $? c
+    u (S n) = Cons (f $? n') n'
+      where n' = u n
 
 fib'' = histo' (c, f) . unfoldn psi
   where
