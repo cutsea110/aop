@@ -1,7 +1,7 @@
 {-# LANGUAGE NPlusKPatterns #-}
 module NumberCard where
 
-import Data.Monoid (Sum(..))
+import Data.Monoid ((<>))
 
 ------------------------------------------------------
 -- | 2024年度 豊島岡女子中学校 第一回入試問題 第4問
@@ -18,35 +18,62 @@ import Data.Monoid (Sum(..))
 --   (1) 4 桁の整数は何通り作ることができますか。
 --   (2) 6 桁の整数は何通り作ることができますか。
 
-gdigits :: Monoid a
-        => (a, a, a) -- 0th sets
-        -> (a, a, a) -- 1st sets
-        -> (a -> a)  -- next sets each item is starting with 1
-        -> (a -> a)  -- next sets each item is starting with 2
-        -> (a -> a)  -- next sets each item is starting with 13
-        -> Int -> (a, a, a)
-gdigits r0 r1 f1 f2 f13 = u
+data Nat = Z | S Nat deriving Show
+
+unfoldn :: (a -> Maybe a) -> a -> Nat
+unfoldn psi = v
   where
-    u = (map f [0..] !!)
-    f 0 = r0
-    f 1 = r1
-    f n = (p1', p2', p13')
-      where
-        (p1, p2, p13) = u (n-1)
-        (q1, q2, q13) = u (n-2)
-        p1'  = f1  $ p1<>p2<>p13
-        p2'  = f2  $ p1<>p13
-        p13' = f13 $ q1<>q2<>q13
+    v x = case psi x of
+      Nothing -> Z
+      Just y  -> S (v y)
 
+data NEL a = Unit a | Cons a (NEL a) deriving Show
+extract :: NEL a -> a
+extract (Unit x)   = x
+extract (Cons x _) = x
 
--- | NOTE: 0番目の要素は p13 に [""] を入れたけどどこでも良い
-digits :: Int -> ([] String, [] String, [] String)
-digits = gdigits ([], [], [""]) (["1"], ["2"], []) (map ("1"<>)) (map ("2"<>)) (map ("13"<>))
+histo :: (c, NEL c -> c) -> Nat -> c
+histo (c, f) = extract . u
+  where
+    u Z     = Unit c
+    u (S n) = let n' = u n in Cons (f n') n'
 
--- | 右に snoc するバージョン (作問者の列挙方針とは異なる)
-digitsR :: Int -> ([] String, [] String, [] String)
-digitsR = gdigits ([], [], [""]) (["1"], ["2"], []) (map (<>"1")) (map (<>"2")) (map (<>"13"))
+dyna :: (c, NEL c -> c) -> (a -> Maybe a) -> a -> c
+dyna phi psi = histo phi . unfoldn psi
 
--- | NOTE: 0番目の要素は p13 に Sum 1 を入れたけどどこでも良い
-digitCount :: Int -> (Sum Integer, Sum Integer, Sum Integer)
-digitCount = gdigits (Sum 0, Sum 0, Sum 1) (Sum 1, Sum 1, Sum 0) id id id
+-- by using dyna
+calc :: Int -> [String]
+calc = into . dyna (c, f) psi
+  where
+    c          = ([], [], [""])
+    f (Unit _) = (["1"], ["2"], [])
+    f (Cons (x1, y1, z1) (Unit (x2, y2, z2))) = (x', y', z')
+      where x' = map ("1"<>) (x1<>y1<>z1)
+            y' = map ("2"<>) (x1<>z1)
+            z' = map ("13"<>) (x2<>y2<>z2)
+    f (Cons (x1, y1, z1) (Cons (x2, y2, z2) _)) = (x', y', z')
+      where x' = map ("1"<>) (x1<>y1<>z1)
+            y' = map ("2"<>) (x1<>z1)
+            z' = map ("13"<>) (x2<>y2<>z2)
+
+    psi 0     = Nothing
+    psi (n+1) = Just n
+
+    into (x, y, z) = x<>y<>z
+
+-- | solution
+solve :: Int -> Int
+solve = length . calc
+
+-- efficient version
+solve' :: Int -> Int
+solve' = fst . dyna (c, f) psi
+  where
+    -- (すべての組み合わせの数, 2始まりを除外した組み合わせの数)
+    c          = (0, 0)
+    f (Unit _) = (2, 1)
+    f (Cons (t1, w1) (Unit (t2, _)))    = (t1+w1+ 1, t1+ 1)
+    f (Cons (t1, w1) (Cons (t2, w2) _)) = (t1+w1+t2, t1+t2)
+
+    psi 0     = Nothing
+    psi (n+1) = Just n
