@@ -73,8 +73,8 @@ add a  = foldn a S
 mult a = foldn Z (add a)
 exp a  = foldn (S Z) (mult a)
 
-divide b = fst . divMod b
-modulo b = snd . divMod b
+a `divide` b = fst $ a `divMod` b
+a `modulo` b = snd $ a `divMod` b
 
 even' :: Nat -> Bool
 even' = foldn True not
@@ -123,14 +123,14 @@ exp'' a b
   | b == 0    = 1
   | otherwise = op a (exp'' a (b `div` 2), b `mod` 2)
     where op a (n, d)
-            | d == 0    = n * n
-            | otherwise = a * (n * n)
+            | d == 0    = n ^ 2
+            | otherwise = a * (n ^ 2)
 
 modulo'' :: Int -> Int -> Int
-modulo'' b a
+modulo'' a b
   | a == 0 = 0
-  | even a = op b (modulo'' b (a `div` 2), 0)
-  | odd  a = op b (modulo'' b (a `div` 2), 1)
+  | even a = op b (modulo'' (a `div` 2) b, 0)
+  | odd  a = op b (modulo'' (a `div` 2) b, 1)
   where op b (r, d)
           | n >= b    = n - b
           | otherwise = n
