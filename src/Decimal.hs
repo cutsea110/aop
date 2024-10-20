@@ -61,9 +61,8 @@ sub :: Nat -> Nat -> Nat
 sub a = foldn a pred
 
 -- | return values is (div, mod)
---   [WARN] first argument is denominator, second is numerator
 divMod :: Nat -> Nat -> (Nat, Nat)
-divMod b = foldn (Z, Z) (succ b)
+n `divMod` d = foldn (Z, Z) (succ d) n
   where
     -- this is the essence of divMod
     succ b (q, r)
@@ -105,7 +104,7 @@ convert' :: Nat -> Bin
 convert' = unfoldbin psi
   where
     psi :: Nat -> Maybe (Nat, Bit)
-    psi n = case S (S Z) `divMod` n of
+    psi n = case n `divMod` S (S Z) of
       (Z,  Z)   -> Nothing
       (Z,  S Z) -> Just (Z, I)
       (n', Z)   -> Just (n', O)
