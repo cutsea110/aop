@@ -123,8 +123,8 @@ exp'' a b
   | b == 0    = 1
   | otherwise = op a (exp'' a (b `div` 2), b `mod` 2)
     where op a (n, d)
-            | d == 0    = n ^ 2
-            | otherwise = a * (n ^ 2)
+            | d == 0    = n * n
+            | otherwise = a * (n * n)
 
 modulo'' :: Int -> Int -> Int
 modulo'' a b
