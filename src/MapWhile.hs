@@ -23,3 +23,12 @@ apo psi = v
 mapWhile3 f = apo $ \case
   []   -> Nothing
   a:as -> fmap (,Right as) (f a)
+
+ana psi = v
+  where v x = case psi x of
+          Nothing      -> []
+          Just (b, x)  -> b:v x
+
+mapWhile4 f = ana $ \case
+  []   -> Nothing
+  a:as -> fmap (,as) (f a)
