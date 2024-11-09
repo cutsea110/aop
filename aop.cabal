@@ -69,6 +69,7 @@ library
                      , Lens
                      , List
                      , MapAccumR
+                     , MapWhile
                      , Median
                      , Milewski
                      , Monadic
