@@ -22,7 +22,8 @@ apo psi = v
 
 mapWhile3 f = apo $ \case
   []   -> Nothing
-  a:as -> fmap (,Right as) (f a)
+  a:as -> g (f a, Right as)
+  where g (b, bs) = fmap (,bs) b
 
 ana psi = v
   where v x = case psi x of
@@ -31,4 +32,5 @@ ana psi = v
 
 mapWhile4 f = ana $ \case
   []   -> Nothing
-  a:as -> fmap (,as) (f a)
+  a:as -> g (f a, as)
+  where g (b, bs) = fmap (,bs) b
