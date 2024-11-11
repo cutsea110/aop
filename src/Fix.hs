@@ -36,13 +36,13 @@ para :: Functor f => (f (Fix f, t) -> t) -> Fix f -> t
 para phi = phi . fmap (pair (id, para phi)) . out
 -- apomorphism
 apo :: Functor f => (t -> f (Either (Fix f) t)) -> t -> Fix f
-apo psi = In . fmap (uncurry either (id, apo psi)) . psi
+apo psi = In . fmap (either id (apo psi)) . psi
 -- histomorphism
 histo :: Functor f => (f (Cofree f t) -> t) -> Fix f -> t
 histo phi = extract . cata (Cf . pair (phi, id))
 -- futumorphism
 futu :: Functor f => (t -> f (Free f t)) -> t -> Fix f
-futu psi = ana (uncurry either (psi, id) . unFr) . inject
+futu psi = ana (either psi id . unFr) . inject
 -- chronomorphism
 chrono :: Functor f => (f (Cofree f b) -> b) -> (a -> f (Free f a)) -> a -> b
 chrono phi psi = histo phi . futu psi
@@ -54,7 +54,7 @@ zygo :: Functor f => (f a -> a) -> (f (a, b) -> b) -> Fix f -> b
 zygo f phi = snd . cata (pair (f . fmap fst, phi))
 -- cozygomorphism
 cozygo :: Functor f => (a -> f a) -> (b -> f (Either a b)) -> b -> Fix f
-cozygo f psi = ana (uncurry either (fmap Left . f, psi)) . Right
+cozygo f psi = ana (either (fmap Left . f) psi) . Right
 -- dynamorphism
 dyna :: Functor f => (f (Cofree f b) -> b) -> (a -> f a) -> a -> b
 dyna f g = chrono f (fmap inject . g)

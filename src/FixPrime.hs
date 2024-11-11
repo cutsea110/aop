@@ -177,7 +177,7 @@ synchro :: (b3 -> t5, b4)
      -> t5
 synchro d' f d g1 g2 d'' = h
   where
-    h = fst d' . f . second (second h) . g2 . pair (fst, (snd d'' . fst d'' . g1)) . first (snd d)
+    h = fst d' . f . second (second h) . g2 . pair (fst, snd d'' . fst d'' . g1) . first (snd d)
 
 -- zygomorphism
 zygo :: Functor f => (f a -> a) -> (f (a, b) -> b) -> Fix f -> b
@@ -240,10 +240,10 @@ comutu'' :: Functor f => (b -> f (Either a b)) -> (a -> f (Either a b)) -> b -> 
 comutu'' = v
   where
     u :: Functor f => (a -> f (Either a b)) -> (b -> f (Either a b)) -> a -> Fix f
-    u f g = In . (fmap (either (u f g, v g f))) . f
+    u f g = In . fmap (either (u f g, v g f)) . f
 
     v :: Functor f => (b -> f (Either a b)) -> (a -> f (Either a b)) -> b -> Fix f
-    v g f = In . (fmap (either (u f g, v g f))) . g
+    v g f = In . fmap (either (u f g, v g f)) . g
 
 
 
