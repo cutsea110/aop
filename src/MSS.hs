@@ -12,6 +12,8 @@ tails :: [a] -> [[a]]
 tails = foldr op [[]]
   where op x xss = (x : head xss) : xss
 
+-- Algebra of Programming: Exercise 7.40
+
 mss1 :: [Integer] -> Integer
 mss1 = maximum . map sum . segments
   where segments = concatMap inits . tails
@@ -25,3 +27,7 @@ mss3 :: [Integer] -> Integer
 mss3 = maximum . map f . tails
   where f = foldr oplus 0
           where oplus x y = max (x+y) 0
+
+mss4 :: [Integer] -> Integer
+mss4 = maximum . foldr op [0]
+  where op x y = max (x + head y) 0 : y
