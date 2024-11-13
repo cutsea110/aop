@@ -20,14 +20,17 @@ mss1 = maximum . map sum . segments
 
 mss2 :: [Integer] -> Integer
 mss2 = maximum . map (maximum . f) . tails
-  where f = foldr op [0]
-          where op x y = map (x+) y ++ [0]
+  where f = foldr op c
+          where c = [0]
+                op x y = map (x+) y ++ c
 
 mss3 :: [Integer] -> Integer
 mss3 = maximum . map f . tails
-  where f = foldr oplus 0
-          where oplus x y = max (x+y) 0
+  where f = foldr oplus zero
+          where zero = 0
+                oplus x y = max (x+y) zero
 
 mss4 :: [Integer] -> Integer
-mss4 = maximum . foldr op [0]
-  where op x y = max (x + head y) 0 : y
+mss4 = maximum . foldr op [zero]
+  where zero = 0
+        op x y = max (x + head y) zero : y
