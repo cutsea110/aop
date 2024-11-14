@@ -1,12 +1,22 @@
 module MSS where
 
+cpl (xs, y) = [(x, y) | x <- xs]
+cpr (x, ys) = [(x, y) | y <- ys]
+outl = fst
+outr = snd
+nil = []
+cons (x, xs) = x:xs
+tau x = [x]
+union = concat
+
 subseqs :: [a] -> [[a]]
 subseqs = foldr op [[]]
   where op x xss = xss ++ map (x:) xss
 
 inits :: [a] -> [[a]]
-inits = foldr op [[]]
-  where op x xss = [] : map (x:) xss
+inits = foldr op c
+  where c = [[]]
+        op x xs = c ++ map cons (cpr (x, xs))
 
 tails :: [a] -> [[a]]
 tails = foldr op [[]]
@@ -16,21 +26,21 @@ tails = foldr op [[]]
 
 mss1 :: [Integer] -> Integer
 mss1 = maximum . map sum . segments
-  where segments = concatMap inits . tails
+  where segments = union . map inits . tails
 
 mss2 :: [Integer] -> Integer
-mss2 = maximum . map (maximum . f) . tails
-  where f = foldr op c
+mss2 = maximum . map (maximum . g) . tails
+  where g = foldr f c
           where c = [0]
-                op x y = map (x+) y ++ c
+                f x y = map (x+) y ++ c
 
 mss3 :: [Integer] -> Integer
-mss3 = maximum . map f . tails
-  where f = foldr oplus zero
+mss3 = maximum . map g . tails
+  where g = foldr oplus zero
           where zero = 0
                 oplus x y = max (x+y) zero
 
 mss4 :: [Integer] -> Integer
-mss4 = maximum . foldr op [zero]
+mss4 = maximum . foldr f [zero]
   where zero = 0
-        op x y = max (x + head y) zero : y
+        f x y = max (x + head y) zero : y
