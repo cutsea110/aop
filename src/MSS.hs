@@ -16,12 +16,12 @@ subseqs = foldr op [[]]
 
 inits :: [a] -> [[a]]
 inits = foldr op c
-  where c = [[]]
+  where c = tau nil
         op x xs = c ++ map cons (cpr (x, xs))
 
 tails :: [a] -> [[a]]
-tails = foldr op [[]]
-  where op x xss = (x : head xss) : xss
+tails = foldr extend (tau nil)
+  where extend x yys@(y:ys) = (x:y):yys
 
 -- Algebra of Programming: Exercise 7.40
 
@@ -47,6 +47,5 @@ mss3 = maximum . map g . tails
                 oplus x y = maximum $ tau 0 ++ tau (plus (x, y))
 
 mss4 :: [Integer] -> Integer
-mss4 = maximum . foldr f [zero]
-  where zero = 0
-        f x y = max (x + head y) zero : y
+mss4 = maximum . foldr f [0]
+  where f x y = max (x + head y) 0 : y
