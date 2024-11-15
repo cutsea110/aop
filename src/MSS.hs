@@ -47,5 +47,5 @@ mss3 = maximum . map g . tails
                 oplus x y = maximum $ tau 0 ++ tau (plus (x, y))
 
 mss4 :: [Integer] -> Integer
-mss4 = maximum . foldr extend (tau 0)
-  where extend x yys@(y:ys) = max (x+y) 0 : yys
+mss4 = maximum . foldr h (tau 0)
+  where h x yys@(y:ys) = maximum (tau 0 ++ [x+y]) : yys
