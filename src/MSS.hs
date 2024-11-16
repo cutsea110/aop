@@ -49,3 +49,7 @@ mss3 = maximum . map g . tails
 mss4 :: [Integer] -> Integer
 mss4 = maximum . foldr h (tau 0)
   where h x yys@(y:ys) = maximum (tau 0 ++ [x+y]) : yys
+
+mss4' :: [Integer] -> Integer
+mss4' = maximum . foldr h (tau 0)
+  where h x yys@(y:ys) = max 0 (x+y) : yys
