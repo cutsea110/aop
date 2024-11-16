@@ -25,20 +25,21 @@ tails = foldr extend (tau nil)
 
 -- Algebra of Programming: Exercise 7.40
 
-mss1 :: [Integer] -> Integer
-mss1 = maximum . map sum . segments
+mss0 :: [Integer] -> Integer
+mss0 = maximum . map sum . segments
   where segments = union . map inits . tails
+
+mss1 :: [Integer] -> Integer
+mss1 = maximum . map sumOfPrefix . tails
+  where sumOfPrefix = foldr k c
+          where c = 0
+                k x y = max 0 (x+y)
 
 mss2 :: [Integer] -> Integer
 mss2 = maximum . map (maximum . g) . tails
   where g = foldr f c
           where c = [0]
                 f x y = map plus (cpr (x, y)) ++ c
-
-sumOfPrefix :: [Integer] -> Integer
-sumOfPrefix = foldr k c
-  where c = 0
-        k x y = max 0 (x+y)
 
 mss3 :: [Integer] -> Integer
 mss3 = maximum . map g . tails
