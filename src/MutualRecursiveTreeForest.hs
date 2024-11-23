@@ -7,9 +7,7 @@ pair (f, g) x = (f x, g x)
 cross (f, g) (x, y) = (f x, g y)
 
 data Tree a = Fork a (Forest a) deriving (Show, Eq)
-data Forest a = Null
-              | Grows (Tree a) (Forest a)
-              deriving (Show, Eq)
+data Forest a = Null | Grows (Tree a) (Forest a) deriving (Show, Eq)
 
 fork = uncurry Fork
 null = Null
@@ -23,36 +21,39 @@ grows = uncurry Grows
     v Null         = c
     v (Grows t fs) = h (u t, v fs)
 
--- これで手を打つ (g, c, h) を常に持ちまわるのが面倒だけど
+-}
+-- 同時に定義するならこう
 (foldt, foldf) = (u, v)
   where
-    u (g, c, h) (Fork x fs) = g (x, v (g, c, h) fs)
-    v (g, c, h) Null = c
-    v (g, c, h) (Grows t fs) = h (u (g, c, h) t, v (g, c, h) fs)
--}
-
-foldt (g, c, h) = u
-  where
-    v = foldf (g, c, h)
-    u (Fork x fs)  = g (x, v fs)
-foldf (g, c, h) = v
-  where
-    u = foldt (g, c, h)
-    v Null         = c
-    v (Grows t fs) = h (u t, v fs)
-
+    u phi@(g, c, h) (Fork x fs) = g (x, v phi fs)
+    v phi@(g, c, h) Null = c
+    v phi@(g, c, h) (Grows t fs) = h (u phi t, v phi fs)
 {-
+-- 同じなのでこれもアリだが図式的には上の方が対応がわかりやすい
 foldt (g, c, h) (Fork x fs) = g (x, foldf (g, c, h) fs)
 
 foldf (g, c, h) Null = c
 foldf (g, c, h) (Grows t fs) = h (foldt (g, c, h) t, foldf (g, c, h) fs)
 -}
+
+(unfoldt, unfoldf) = (u, v)
+  where
+    u b@(phi, psi) x = case phi x of
+      (a, f') -> Fork a (v b f')
+
+    v b@(phi, psi) x = case psi x of
+      Nothing -> Null
+      Just (t', f') -> Grows (u b t') (v b f')
+
+{-
+-- 同じなのでこれもアリだが図式的には上の方が対応がわかりやすい
 unfoldt b@(phi, psi) t = case phi t of
   (a, f') -> Fork a (unfoldf b f')
 
 unfoldf b@(phi, psi) f = case psi f of
   Nothing -> Null
   Just (t', f') -> Grows (unfoldt b t') (unfoldf b f')
+-}
 
 -- trivials
 
