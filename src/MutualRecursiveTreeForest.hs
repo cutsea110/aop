@@ -16,11 +16,19 @@ null = Null
 grows = uncurry Grows
 
 {-
+-- NOTE: これは書けないので...
 (foldt (g, c, h), foldf (g, c, h)) = (u, v)
   where
     u (Fork x fs)  = g (x, v fs)
     v Null         = c
     v (Grows t fs) = h (u t, v fs)
+
+-- これで手を打つ (g, c, h) を常に持ちまわるのが面倒だけど
+(foldt, foldf) = (u, v)
+  where
+    u (g, c, h) (Fork x fs) = g (x, v (g, c, h) fs)
+    v (g, c, h) Null = c
+    v (g, c, h) (Grows t fs) = h (u (g, c, h) t, v (g, c, h) fs)
 -}
 
 foldt (g, c, h) = u
