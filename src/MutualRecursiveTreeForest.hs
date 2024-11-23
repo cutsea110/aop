@@ -41,6 +41,7 @@ foldf (g, c, h) Null = c
 foldf (g, c, h) (Grows t fs) = h (foldt (g, c, h) t, foldf (g, c, h) fs)
 -}
 
+-- 同時に定義するならこう
 (unfoldt, unfoldf) = (u, v)
   where
     u b@(phi, psi) = u'
@@ -68,31 +69,31 @@ unfoldf b@(phi, psi) f = case psi f of
 idt = foldt (fork, null, grows)
 idf = foldf (fork, null, grows)
 
-(idt', idf') = (unfoldt (phi, psi), unfoldf (phi, psi))
+(idt', idf') = let alg = (phi, psi) in (unfoldt alg, unfoldf alg)
   where
     phi (Fork a f) = (a, f)
     psi Null = Nothing
     psi (Grows t f) = Just (t, f)
 
-(genT, genF) = (unfoldt (phi, psi), unfoldf (phi, psi))
+(genT, genF) = let coalg = (phi, psi) in (unfoldt coalg, unfoldf coalg)
   where
     phi n = (n, n-1)
     psi n = if n <= 0 then Nothing else Just (n, n-1)
 
 -- utility
-(lenT, lenF) = (foldt (g, c, h), foldf (g, c, h))
+(lenT, lenF) = let alg = (g, c, h) in (foldt alg, foldf alg)
   where
     g (_, f) = 1 + f
     c = 0
     h (l, r) = l + r
 
-(depthT, depthF) = (foldt (g, c, h), foldf (g, c, h))
+(depthT, depthF) = let alg = (g, c, h) in (foldt alg, foldf alg)
   where
     g (_, f) = 1 + f
     c = 0
     h (l, r) = max l r
 
-(sumT, sumF) = (foldt (g, c, h), foldf (g, c, h))
+(sumT, sumF) = let alg = (g, c, h) in (foldt alg, foldf alg)
   where
     g (a, f) = a + f
     c = 0
