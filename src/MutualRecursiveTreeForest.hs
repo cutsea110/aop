@@ -25,9 +25,14 @@ grows = uncurry Grows
 -- 同時に定義するならこう
 (foldt, foldf) = (u, v)
   where
-    u phi@(g, c, h) (Fork x fs) = g (x, v phi fs)
-    v phi@(g, c, h) Null = c
-    v phi@(g, c, h) (Grows t fs) = h (u phi t, v phi fs)
+    u phi@(g, c, h) = u'
+      where
+        u' (Fork x fs) = g (x, v phi fs)
+    v phi@(g, c, h) = v'
+      where
+        v' Null = c
+        v' (Grows t fs) = h (u phi t, v' fs)
+
 {-
 -- 同じなのでこれもアリだが図式的には上の方が対応がわかりやすい
 foldt (g, c, h) (Fork x fs) = g (x, foldf (g, c, h) fs)
@@ -38,12 +43,15 @@ foldf (g, c, h) (Grows t fs) = h (foldt (g, c, h) t, foldf (g, c, h) fs)
 
 (unfoldt, unfoldf) = (u, v)
   where
-    u b@(phi, psi) x = case phi x of
-      (a, f') -> Fork a (v b f')
-
-    v b@(phi, psi) x = case psi x of
-      Nothing -> Null
-      Just (t', f') -> Grows (u b t') (v b f')
+    u b@(phi, psi) = u'
+      where
+        u' x = case phi x of
+          (a, f') -> Fork a (v b f')
+    v b@(phi, psi) = v'
+      where
+        v' x = case psi x of
+          Nothing -> Null
+          Just (t', f') -> Grows (u b t') (v' f')
 
 {-
 -- 同じなのでこれもアリだが図式的には上の方が対応がわかりやすい
@@ -106,9 +114,15 @@ mapf f (Grows t fs) = Grows (mapt f t) (mapf f fs)
 
 (parat, paraf) = (u, v)
   where
-    u phi@(g, c, h) (Fork a fs) = g a (fs, v phi fs)
-    v phi@(g, c, h) Null = c
-    v phi@(g, c, h) (Grows t fs) = h (t, u phi t) (fs, v phi fs)
+    u phi@(g, c, h) = u'
+      where
+        u' (Fork a fs) = g a (fs, v phi fs)
+
+    v phi@(g, c, h) = v'
+      where
+        v' Null = c
+        v' (Grows t fs) = h (t, u phi t) (fs, v' fs)
+
 {-    
 parat (g, c, h) (Fork a fs) = g a (fs, paraf (g, c, h) fs)
 paraf (g, c, h) Null = c
