@@ -104,11 +104,16 @@ mapf f (Grows t fs) = Grows (mapt f t) (mapf f fs)
         c = null
         h = grows . cross (id, id)
 
-
+(parat, paraf) = (u, v)
+  where
+    u phi@(g, c, h) (Fork a fs) = g a (fs, v phi fs)
+    v phi@(g, c, h) Null = c
+    v phi@(g, c, h) (Grows t fs) = h (t, u phi t) (fs, v phi fs)
+{-    
 parat (g, c, h) (Fork a fs) = g a (fs, paraf (g, c, h) fs)
 paraf (g, c, h) Null = c
 paraf (g, c, h) (Grows t fs) = h (t, parat (g, c, h) t) (fs, paraf (g, c, h) fs)
-
+-}
 
 fixT (ｔ, f) = \case
   Fork x xs -> Fork x (f xs)
