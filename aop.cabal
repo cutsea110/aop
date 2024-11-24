@@ -44,6 +44,7 @@ library
                      , ENat
                      , ExtEuclid
                      , Fact
+                     , Factorization
                      , Fib
                      , Fiblike
                      , FibAsHisto
