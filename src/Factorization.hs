@@ -25,8 +25,8 @@ xxs@(x:xs) \\ yys@(y:ys) = case compare x y of
   EQ -> xs \\ ys
   GT -> xxs \\ ys
 
-f :: Integer -> [Integer]
-f = unfoldr facM
+badFactorize :: Integer -> [Integer]
+badFactorize = unfoldr facM
 
 facM :: Integer -> Maybe (Integer, Integer)
 facM n = fmap (\p -> (p, n `div` p)) d
