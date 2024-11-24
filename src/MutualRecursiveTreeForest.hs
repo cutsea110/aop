@@ -73,55 +73,64 @@ unfoldf b@(phi, psi) f = case psi f of
 
 
 -- trivials
-
+{-
+-- 直接的ではあるが積圏で同時に定義されている感がない
 idt = foldt (fork, null, grows)
 idf = foldf (fork, null, grows)
+-}
 
-(idt', idf') = let alg = (phi, psi) in (unfoldt alg, unfoldf alg)
+(idt, idf) = (k unfoldt, k unfoldf)
   where
+    k ana = ana (phi, psi)
     phi (Fork a f) = (a, f)
     psi Null = Nothing
     psi (Grows t f) = Just (t, f)
 
-(genT, genF) = let coalg = (phi, psi) in (unfoldt coalg, unfoldf coalg)
+(genT, genF) = (k unfoldt, k unfoldf)
   where
+    k ana = ana (phi, psi)
     phi n = (n, n-1)
     psi n = if n <= 0 then Nothing else Just (n, n-1)
 
 -- utility
-(lenT, lenF) = let alg = (g, c, h) in (foldt alg, foldf alg)
+(lenT, lenF) = (k foldt, k foldf)
   where
+    k cata = cata (g, c, h)
     g (_, f) = 1 + f
     c = 0
     h (l, r) = l + r
 
-(depthT, depthF) = let alg = (g, c, h) in (foldt alg, foldf alg)
+(depthT, depthF) = (k foldt, k foldf)
   where
+    k cata = cata (g, c, h)
     g (_, f) = 1 + f
     c = 0
     h (l, r) = max l r
 
-(sumT, sumF) = let alg = (g, c, h) in (foldt alg, foldf alg)
+(sumT, sumF) = (k foldt, k foldf)
   where
+    k cata = cata (g, c, h)
     g (a, f) = a + f
     c = 0
     h (l, r) = l + r
 
-(prodT, prodF) = let alg = (g, c, h) in (foldt alg, foldf alg)
+(prodT, prodF) = (k foldt, k foldf)
   where
+    k cata = cata (g, c, h)
     g (a, f) = a * f
     c = 1
     h (l, r) = l * r
 
-(flattenT, flattenF) = let alg = (g, c, h) in (foldt alg, foldf alg)
+(flattenT, flattenF) = (k foldt, k foldf)
   where
+    k cata = cata (g, c, h)
     g (a, f) = a:f
     c = []
     h (l, r) = l ++ r
 
-(zipT, zipF) = (foldt phi, foldf phi)
+(zipT, zipF) = (k foldt, k foldf)
   where
-    phi = (h, c, g)
+    k cata = cata (h, c, g)
     h (a, fs) = \(Fork a' fs') -> Fork (a, a') (fs fs')
     c = \_ -> Null
     g (t, fs) = \(Grows t' fs') -> Grows (t t') (fs fs')
@@ -130,13 +139,14 @@ unzipT = pair (mapt fst, mapt snd)
 unzipF = pair (mapf fst, mapf snd)
 
 -- type functor
-
+{-
+-- 直接的ではあるが積圏で同時に定義されている感がない
 mapt f (Fork a fs) = Fork (f a) (mapf f fs)
 mapf f Null = Null
 mapf f (Grows t fs) = Grows (mapt f t) (mapf f fs)
-
+-}
 -- 現状わりとうまく f を導入できている案
-(mapt', mapf') = (k foldt, k foldf)
+(mapt, mapf) = (k foldt, k foldf)
   where
     k cata f = cata (g, c, h)
       where
