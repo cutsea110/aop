@@ -111,6 +111,16 @@ idf = foldf (fork, null, grows)
     c = []
     h (l, r) = l ++ r
 
+(zipT, zipF) = (foldt phi, foldf phi)
+  where
+    phi = (h, c, g)
+    h (a, fs) = \(Fork a' fs') -> Fork (a, a') (fs fs')
+    c = \_ -> Null
+    g (t, fs) = \(Grows t' fs') -> Grows (t t') (fs fs')
+
+unzipT = pair (mapt fst, mapt snd)
+unzipF = pair (mapf fst, mapf snd)
+
 -- type functor
 
 mapt f (Fork a fs) = Fork (f a) (mapf f fs)
