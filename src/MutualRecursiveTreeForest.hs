@@ -21,8 +21,14 @@ grows = uncurry Grows
     v Null         = c
     v (Grows t fs) = h (u t, v fs)
 
+-- こう書くのが自然ではあるが図式的には上の方が対応がわかりやすい
+foldt (g, c, h) (Fork x fs) = g (x, foldf (g, c, h) fs)
+
+foldf (g, c, h) Null = c
+foldf (g, c, h) (Grows t fs) = h (foldt (g, c, h) t, foldf (g, c, h) fs)
 -}
--- 同時に定義するならこう
+
+-- 妥協案
 (foldt, foldf) = (u, v)
   where
     u phi@(g, c, h) = u'
@@ -34,14 +40,25 @@ grows = uncurry Grows
         v' (Grows t fs) = h (u phi t, v' fs)
 
 {-
--- 同じなのでこれもアリだが図式的には上の方が対応がわかりやすい
-foldt (g, c, h) (Fork x fs) = g (x, foldf (g, c, h) fs)
+-- NOTE: これもこうは書けないので...
+(unfoldt (phi, psi), unfoldf (phi, psi)) = (u, v)
+  where
+    u x = case phi x of
+      (a, f') -> Fork a (v f')
+    v f = case psi f of
+      Nothing -> Null
+      Just (t', f') -> Grows (u t') (v f')
 
-foldf (g, c, h) Null = c
-foldf (g, c, h) (Grows t fs) = h (foldt (g, c, h) t, foldf (g, c, h) fs)
+-- こう書くのが自然ではあるが図式的には上の方が対応がわかりやすい
+unfoldt b@(phi, psi) t = case phi t of
+  (a, f') -> Fork a (unfoldf b f')
+
+unfoldf b@(phi, psi) f = case psi f of
+  Nothing -> Null
+  Just (t', f') -> Grows (unfoldt b t') (unfoldf b f')
 -}
 
--- 同時に定義するならこう
+-- 妥協案
 (unfoldt, unfoldf) = (u, v)
   where
     u b@(phi, psi) = u'
@@ -54,15 +71,6 @@ foldf (g, c, h) (Grows t fs) = h (foldt (g, c, h) t, foldf (g, c, h) fs)
           Nothing -> Null
           Just (t', f') -> Grows (u b t') (v' f')
 
-{-
--- 同じなのでこれもアリだが図式的には上の方が対応がわかりやすい
-unfoldt b@(phi, psi) t = case phi t of
-  (a, f') -> Fork a (unfoldf b f')
-
-unfoldf b@(phi, psi) f = case psi f of
-  Nothing -> Null
-  Just (t', f') -> Grows (unfoldt b t') (unfoldf b f')
--}
 
 -- trivials
 
@@ -127,9 +135,10 @@ mapt f (Fork a fs) = Fork (f a) (mapf f fs)
 mapf f Null = Null
 mapf f (Grows t fs) = Grows (mapt f t) (mapf f fs)
 
-(mapt', mapf') = (genMap foldt, genMap foldf)
+-- 現状わりとうまく f を導入できている案
+(mapt', mapf') = (k foldt, k foldf)
   where
-    genMap cata f = cata (g, c, h)
+    k cata f = cata (g, c, h)
       where
         g = fork . cross (f, id)
         c = null
