@@ -99,6 +99,18 @@ idf = foldf (fork, null, grows)
     c = 0
     h (l, r) = l + r
 
+(prodT, prodF) = let alg = (g, c, h) in (foldt alg, foldf alg)
+  where
+    g (a, f) = a * f
+    c = 1
+    h (l, r) = l * r
+
+(flattenT, flattenF) = let alg = (g, c, h) in (foldt alg, foldf alg)
+  where
+    g (a, f) = a:f
+    c = []
+    h (l, r) = l ++ r
+
 -- type functor
 
 mapt f (Fork a fs) = Fork (f a) (mapf f fs)
