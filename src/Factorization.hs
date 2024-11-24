@@ -2,6 +2,13 @@ module Factorization where
 
 import Data.List (unfoldr, find)
 
+wrap :: a -> [a]
+wrap = (:[])
+pair :: (a -> b, a -> c) -> a -> (b, c)
+pair (f, g) x = (f x, g x)
+cross :: (a -> c, b -> d) -> (a, b) -> (c, d)
+cross (f, g) (x, y) = (f x, g y)
+
 merge :: Ord a => [a] -> [a] -> [a]
 merge xxs@(x:xs) yys@(y:ys) = case compare x y of
   LT -> x:merge xs yys
@@ -19,6 +26,7 @@ primes = 2 : ([3..] \\ composites)
   where
     composites = mergeAll [map (p*) [p..] | p <- primes]
 
+infixl 9 \\
 (\\) :: Ord a => [a] -> [a] -> [a]
 xxs@(x:xs) \\ yys@(y:ys) = case compare x y of
   LT -> x : (xs \\ yys)
@@ -36,14 +44,11 @@ facM n = fmap (\p -> (p, n `div` p)) d
     n' = floor $ sqrt $ fromIntegral n
 
 unfoldnel :: (a -> Either b (b, a)) -> a -> [b]
-unfoldnel f x = case f x of
-  Left y -> [y]
-  Right (y, z) -> y : unfoldnel f z
+unfoldnel f = u
+  where u = either wrap (uncurry (:) . cross (id, u)) . f
 
 factorize :: Integer -> [Integer]
 factorize = unfoldnel facE
 
 facE :: Integer -> Either Integer (Integer, Integer)
-facE n = case facM n of
-  Nothing -> Left n
-  Just (p, q) -> Right (p, q)
+facE n = maybe (Left n) Right $ facM n
