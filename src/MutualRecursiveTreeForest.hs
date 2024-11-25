@@ -15,45 +15,45 @@ grows = uncurry Grows
 
 {-
 -- NOTE: これは書けないので...
-(foldt (g, c, h), foldf (g, c, h)) = (u, v)
+(foldt (h, c, g), foldf (h, c, g)) = (u, v)
   where
-    u (Fork x fs)  = g (x, v fs)
+    u (Fork a fs)  = h (a, v fs)
     v Null         = c
-    v (Grows t fs) = h (u t, v fs)
+    v (Grows t fs) = g (u t, v fs)
 
 -- こう書くのが自然ではあるが図式的には上の方が対応がわかりやすい
-foldt (g, c, h) (Fork x fs) = g (x, foldf (g, c, h) fs)
+foldt phi@(h, c, g) (Fork a fs) = g (a, foldf phi fs)
 
-foldf (g, c, h) Null = c
-foldf (g, c, h) (Grows t fs) = h (foldt (g, c, h) t, foldf (g, c, h) fs)
+foldf phi@(h, c, g) Null = c
+foldf phi@(h, c, g) (Grows t fs) = h (foldt phi t, foldf phi fs)
 -}
 
 -- 妥協案
 (foldt, foldf) = (u, v)
   where
-    u phi@(g, c, h) = \case
-      (Fork x fs) -> g (x, v phi fs)
-    v phi@(g, c, h) = \case
+    u phi@(h, c, g) = \case
+      (Fork a fs) -> h (a, v phi fs)
+    v phi@(h, c, g) = \case
       Null -> c
-      (Grows t fs) -> h (u phi t, v phi fs)
+      (Grows t fs) -> g (u phi t, v phi fs)
 
 {-
 -- NOTE: これもこうは書けないので...
-(unfoldt (phi, psi), unfoldf (phi, psi)) = (u, v)
+(unfoldt (f, g), unfoldf (f, g)) = (u, v)
   where
-    u x = case phi x of
-      (a, f') -> Fork a (v f')
-    v f = case psi f of
+    u x = case f x of
+      (a, fs) -> Fork a (v fs)
+    v x = case g x of
       Nothing -> Null
-      Just (t', f') -> Grows (u t') (v f')
+      Just (t, fs) -> Grows (u t) (v fs)
 
 -- こう書くのが自然ではあるが図式的には上の方が対応がわかりやすい
-unfoldt b@(phi, psi) t = case phi t of
-  (a, f') -> Fork a (unfoldf b f')
+unfoldt psi@(f, g) x = case f x of
+  (a, fs) -> Fork a (unfoldf psi fs)
 
-unfoldf b@(phi, psi) f = case psi f of
+unfoldf psi@(f, g) x = case g x of
   Nothing -> Null
-  Just (t', f') -> Grows (unfoldt b t') (unfoldf b f')
+  Just (t, fs) -> Grows (unfoldt psi t) (unfoldf psi fs)
 -}
 
 -- 妥協案
@@ -89,39 +89,38 @@ idf = foldf (fork, null, grows)
 -- utility
 (lenT, lenF) = (k foldt, k foldf)
   where
-    k cata = cata (g, c, h)
-    g (_, fs) = 1 + fs
+    k cata = cata (h, c, g)
+    h (_, fs) = 1 + fs
     c = 0
-    h (t, fs) = t + fs
+    g (t, fs) = t + fs
 
 (depthT, depthF) = (k foldt, k foldf)
   where
-    k cata = cata (g, c, h)
-    g (_, fs) = 1 + fs
+    k cata = cata (h, c, g)
+    h (_, fs) = 1 + fs
     c = 0
-    h (t, fs) = max t fs
+    g (t, fs) = max t fs
 
 (sumT, sumF) = (k foldt, k foldf)
   where
-    k cata = cata (g, c, h)
-    g (a, fs) = a + fs
+    k cata = cata (h, c, g)
+    h (a, fs) = a + fs
     c = 0
-    h (t, fs) = t + fs
+    g (t, fs) = t + fs
 
 (prodT, prodF) = (k foldt, k foldf)
   where
-    k cata = cata (g, c, h)
-    g (a, fs) = a * fs
+    k cata = cata (h, c, g)
+    h (a, fs) = a * fs
     c = 1
-    h (t, fs) = t * fs
+    g (t, fs) = t * fs
 
 (flattenT, flattenF) = (k foldt, k foldf)
   where
-    k cata = cata (g, c, h)
-    g (a, fs) = a:fs
+    k cata = cata (h, c, g)
+    h (a, fs) = [a]:fs
     c = []
-    h (t, fs) = t ++ fs
-
+    g (t, fs) = t ++ fs
 
 -- on exponential
 (zipT, zipF) = (k foldt, k foldf)
@@ -145,24 +144,24 @@ mapf f (Grows t fs) = Grows (mapt f t) (mapf f fs)
 -- 現状わりとうまく f を導入できている案
 (mapt, mapf) = (k foldt, k foldf)
   where
-    k cata f = cata (g, c, h)
+    k cata f = cata (h, c, g)
       where
-        g = fork . cross (f, id)
+        h = fork . cross (f, id)
         c = null
-        h = grows . cross (id, id)
+        g = grows . cross (id, id)
 
 (parat, paraf) = (u, v)
   where
-    u phi@(g, c, h) = \case
-      (Fork a fs) -> g a (fs, v phi fs)
-    v phi@(g, c, h) = \case
+    u phi@(h, c, g) = \case
+      (Fork a fs) -> h a (fs, v phi fs)
+    v phi@(h, c, g) = \case
       Null -> c
-      (Grows t fs) -> h (t, u phi t) (fs, v phi fs)
+      (Grows t fs) -> g (t, u phi t) (fs, v phi fs)
 
 {-    
-parat (g, c, h) (Fork a fs) = g a (fs, paraf (g, c, h) fs)
-paraf (g, c, h) Null = c
-paraf (g, c, h) (Grows t fs) = h (t, parat (g, c, h) t) (fs, paraf (g, c, h) fs)
+parat phi@(h, c, g) (Fork a fs) = h a (fs, paraf phi fs)
+paraf phi@(h, c, g) Null = c
+paraf phi@(h, c, g) (Grows t fs) = g (t, parat phi t) (fs, paraf phi fs)
 -}
 
 fixT (f, g) = \case
@@ -202,12 +201,13 @@ instance Monad Forest where
   return = pure
   m >>= f = muf (fmap f m)
 
+infixl 9 <>
 (<>) :: Forest a -> Forest a -> Forest a
-xs <> ys = paraf (g, c, h) xs
+xs <> ys = paraf (h, c, g) xs
   where
-    g t (fs, _) = fork (t, fs)
+    h t (fs, _) = fork (t, fs)
     c = ys
-    h (_, t') (_, fs') = grows (t', fs')
+    g (_, t') (_, fs') = grows (t', fs')
 
 etat :: a -> Tree a
 etat = fork . pair (id, etaf)
