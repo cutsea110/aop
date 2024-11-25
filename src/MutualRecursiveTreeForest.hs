@@ -131,8 +131,9 @@ idf = foldf (fork, null, grows)
     c = \_ -> Null
     g (t, fs) = \(Grows t' fs') -> Grows (t t') (fs fs')
 
-unzipT = pair (mapt fst, mapt snd)
-unzipF = pair (mapf fst, mapf snd)
+
+
+(unzipT, unzipF) = (pair (mapt fst, mapt snd), pair (mapf fst, mapf snd))
 
 -- type functor
 {-
