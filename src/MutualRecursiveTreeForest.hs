@@ -31,13 +31,11 @@ foldf (g, c, h) (Grows t fs) = h (foldt (g, c, h) t, foldf (g, c, h) fs)
 -- 妥協案
 (foldt, foldf) = (u, v)
   where
-    u phi@(g, c, h) = u'
-      where
-        u' (Fork x fs) = g (x, v phi fs)
-    v phi@(g, c, h) = v'
-      where
-        v' Null = c
-        v' (Grows t fs) = h (u phi t, v' fs)
+    u phi@(g, c, h) = \case
+      (Fork x fs) -> g (x, v phi fs)
+    v phi@(g, c, h) = \case
+      Null -> c
+      (Grows t fs) -> h (u phi t, v phi fs)
 
 {-
 -- NOTE: これもこうは書けないので...
@@ -61,15 +59,11 @@ unfoldf b@(phi, psi) f = case psi f of
 -- 妥協案
 (unfoldt, unfoldf) = (u, v)
   where
-    u b@(phi, psi) = u'
-      where
-        u' x = case phi x of
-          (a, f') -> Fork a (v b f')
-    v b@(phi, psi) = v'
-      where
-        v' x = case psi x of
-          Nothing -> Null
-          Just (t', f') -> Grows (u b t') (v' f')
+    u psi@(f, g) x = case f x of
+      (a, fs) -> Fork a (v psi fs)
+    v psi@(f, g) x = case g x of
+      Nothing -> Null
+      Just (t, fs) -> Grows (u psi t) (v psi fs)
 
 
 -- trivials
@@ -81,53 +75,55 @@ idf = foldf (fork, null, grows)
 
 (idt, idf) = (k unfoldt, k unfoldf)
   where
-    k ana = ana (phi, psi)
-    phi (Fork a f) = (a, f)
-    psi Null = Nothing
-    psi (Grows t f) = Just (t, f)
+    k ana = ana (f, g)
+    f (Fork a fs) = (a, fs)
+    g Null = Nothing
+    g (Grows t fs) = Just (t, fs)
 
 (genT, genF) = (k unfoldt, k unfoldf)
   where
-    k ana = ana (phi, psi)
-    phi n = (n, n-1)
-    psi n = if n <= 0 then Nothing else Just (n, n-1)
+    k ana = ana (f, g)
+    f n = (n, n-1)
+    g n = if n <= 0 then Nothing else Just (n, n-1)
 
 -- utility
 (lenT, lenF) = (k foldt, k foldf)
   where
     k cata = cata (g, c, h)
-    g (_, f) = 1 + f
+    g (_, fs) = 1 + fs
     c = 0
-    h (l, r) = l + r
+    h (t, fs) = t + fs
 
 (depthT, depthF) = (k foldt, k foldf)
   where
     k cata = cata (g, c, h)
-    g (_, f) = 1 + f
+    g (_, fs) = 1 + fs
     c = 0
-    h (l, r) = max l r
+    h (t, fs) = max t fs
 
 (sumT, sumF) = (k foldt, k foldf)
   where
     k cata = cata (g, c, h)
-    g (a, f) = a + f
+    g (a, fs) = a + fs
     c = 0
-    h (l, r) = l + r
+    h (t, fs) = t + fs
 
 (prodT, prodF) = (k foldt, k foldf)
   where
     k cata = cata (g, c, h)
-    g (a, f) = a * f
+    g (a, fs) = a * fs
     c = 1
-    h (l, r) = l * r
+    h (t, fs) = t * fs
 
 (flattenT, flattenF) = (k foldt, k foldf)
   where
     k cata = cata (g, c, h)
-    g (a, f) = a:f
+    g (a, fs) = a:fs
     c = []
-    h (l, r) = l ++ r
+    h (t, fs) = t ++ fs
 
+
+-- on exponential
 (zipT, zipF) = (k foldt, k foldf)
   where
     k cata = cata (h, c, g)
@@ -156,14 +152,11 @@ mapf f (Grows t fs) = Grows (mapt f t) (mapf f fs)
 
 (parat, paraf) = (u, v)
   where
-    u phi@(g, c, h) = u'
-      where
-        u' (Fork a fs) = g a (fs, v phi fs)
-
-    v phi@(g, c, h) = v'
-      where
-        v' Null = c
-        v' (Grows t fs) = h (t, u phi t) (fs, v' fs)
+    u phi@(g, c, h) = \case
+      (Fork a fs) -> g a (fs, v phi fs)
+    v phi@(g, c, h) = \case
+      Null -> c
+      (Grows t fs) -> h (t, u phi t) (fs, v phi fs)
 
 {-    
 parat (g, c, h) (Fork a fs) = g a (fs, paraf (g, c, h) fs)
@@ -171,12 +164,12 @@ paraf (g, c, h) Null = c
 paraf (g, c, h) (Grows t fs) = h (t, parat (g, c, h) t) (fs, paraf (g, c, h) fs)
 -}
 
-fixT (ｔ, f) = \case
-  Fork x xs -> Fork x (f xs)
+fixT (f, g) = \case
+  Fork a fs -> Fork a (g fs)
 
-fixF (t, f) = \case
+fixF (f, g) = \case
   Null -> Null
-  Grows xs ys -> Grows (t xs) (f ys)
+  Grows t fs -> Grows (f t) (g fs)
 
 (idT, idF) = (fixT (idT, idF), fixF (idT, idF))
 
