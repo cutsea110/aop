@@ -76,59 +76,67 @@ idf = foldf (fork, null, grows)
 (idt, idf) = (k unfoldt, k unfoldf)
   where
     k ana = ana (f, g)
-    f (Fork a fs) = (a, fs)
-    g Null = Nothing
-    g (Grows t fs) = Just (t, fs)
+      where
+        f (Fork a fs) = (a, fs)
+        g Null = Nothing
+        g (Grows t fs) = Just (t, fs)
 
 (genT, genF) = (k unfoldt, k unfoldf)
   where
     k ana = ana (f, g)
-    f n = (n, n-1)
-    g n = if n <= 0 then Nothing else Just (n, n-1)
+      where
+        f n = (n, n-1)
+        g n = if n <= 0 then Nothing else Just (n, n-1)
 
 -- utility
 (lenT, lenF) = (k foldt, k foldf)
   where
     k cata = cata (h, c, g)
-    h (_, fs) = 1 + fs
-    c = 0
-    g (t, fs) = t + fs
+      where
+        h (_, fs) = 1 + fs
+        c = 0
+        g (t, fs) = t + fs
 
 (depthT, depthF) = (k foldt, k foldf)
   where
     k cata = cata (h, c, g)
-    h (_, fs) = 1 + fs
-    c = 0
-    g (t, fs) = max t fs
+      where
+        h (_, fs) = 1 + fs
+        c = 0
+        g (t, fs) = max t fs
 
 (sumT, sumF) = (k foldt, k foldf)
   where
     k cata = cata (h, c, g)
-    h (a, fs) = a + fs
-    c = 0
-    g (t, fs) = t + fs
+      where
+        h (a, fs) = a + fs
+        c = 0
+        g (t, fs) = t + fs
 
 (prodT, prodF) = (k foldt, k foldf)
   where
     k cata = cata (h, c, g)
-    h (a, fs) = a * fs
-    c = 1
-    g (t, fs) = t * fs
+      where
+        h (a, fs) = a * fs
+        c = 1
+        g (t, fs) = t * fs
 
 (flattenT, flattenF) = (k foldt, k foldf)
   where
     k cata = cata (h, c, g)
-    h (a, fs) = [a]:fs
-    c = []
-    g (t, fs) = t ++ fs
+      where
+        h (a, fs) = [a]:fs
+        c = []
+        g (t, fs) = t ++ fs
 
 -- on exponential
 (zipT, zipF) = (k foldt, k foldf)
   where
     k cata = cata (h, c, g)
-    h (a, fs) = \(Fork a' fs') -> Fork (a, a') (fs fs')
-    c = \_ -> Null
-    g (t, fs) = \(Grows t' fs') -> Grows (t t') (fs fs')
+      where
+        h (a, fs) = \(Fork a' fs') -> Fork (a, a') (fs fs')
+        c = \_ -> Null
+        g (t, fs) = \(Grows t' fs') -> Grows (t t') (fs fs')
 
 
 
