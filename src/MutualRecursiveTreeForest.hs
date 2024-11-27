@@ -129,6 +129,26 @@ idf = foldf (fork, null, grows)
         c = []
         g (t, fs) = t ++ fs
 
+drawT :: Show a => Tree a -> [String]
+drawT = foldt (h, c, g)
+  where
+    h :: Show a => (a, [String]) -> [String]
+    h (a, fs) = ("+-- " ++ show a ++ "\n") : map ("  "++) fs
+    c :: [String]
+    c = ["+- *\n"]
+    g :: ([String], [String]) -> [String]
+    g (t, fs) = t ++ fs
+
+drawF :: Show a => Forest a -> [String]
+drawF = foldf (h, c, g)
+  where
+    h :: Show a => (a, [String]) -> [String]
+    h (a, fs) = ("+-- " ++ show a ++ "\n") : map ("  "++) fs
+    c :: [String]
+    c = ["+- *\n"]
+    g :: ([String], [String]) -> [String]
+    g (t, fs) = t ++ fs
+
 -- on exponential
 (zipT, zipF) = (k foldt, k foldf)
   where
