@@ -133,7 +133,9 @@ drawT :: Show a => Tree a -> [String]
 drawT = foldt (h, c, g)
   where
     h :: Show a => (a, [String]) -> [String]
-    h (a, fs) = ("+-- " ++ show a ++ "\n") : map ("  "++) fs
+    h (a, fs) = ("+-- " ++ show a ++ "\n") : map ("  " `joint`) fs
+      where cs `joint` ds@('+':_) = cs ++ ds
+            cs `joint` (' ':ds) = cs ++ '|':ds
     c :: [String]
     c = ["+- *\n"]
     g :: ([String], [String]) -> [String]
@@ -143,7 +145,9 @@ drawF :: Show a => Forest a -> [String]
 drawF = foldf (h, c, g)
   where
     h :: Show a => (a, [String]) -> [String]
-    h (a, fs) = ("+-- " ++ show a ++ "\n") : map ("  "++) fs
+    h (a, fs) = ("+-- " ++ show a ++ "\n") : map ("  " `joint`) fs
+      where cs `joint` ds@('+':_) = cs ++ ds
+            cs `joint` (' ':ds) = cs ++ '|':ds
     c :: [String]
     c = ["+- *\n"]
     g :: ([String], [String]) -> [String]
