@@ -129,8 +129,8 @@ idf = foldf (fork, null, grows)
         c = []
         g (t, fs) = t ++ fs
 
-drawT :: Show a => Tree a -> [String]
-drawT = foldt (h, c, g)
+drawT :: Show a => Tree a -> String
+drawT = concat . foldt (h, c, g)
   where
     h :: Show a => (a, [String]) -> [String]
     h (a, fs) = ("+-- " ++ show a ++ "\n") : map ("  " `joint`) fs
@@ -141,8 +141,8 @@ drawT = foldt (h, c, g)
     g :: ([String], [String]) -> [String]
     g (t, fs) = t ++ fs
 
-drawF :: Show a => Forest a -> [String]
-drawF = foldf (h, c, g)
+drawF :: Show a => Forest a -> String
+drawF = concat . foldf (h, c, g)
   where
     h :: Show a => (a, [String]) -> [String]
     h (a, fs) = ("+-- " ++ show a ++ "\n") : map ("  " `joint`) fs
