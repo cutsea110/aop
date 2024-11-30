@@ -101,8 +101,8 @@ scores1 :: [Int] -> [(Int, Int)]
 scores1 = zip [1..10] . scanl1 (+) . scores
 
 -- codyna = cata . futu
-scores2 :: [Int] -> [Int]
-scores2 = foldr (\x xs -> x:map (x+) xs) [] . scores
+scores2 :: [Int] -> Int
+scores2 = foldr (+) 0 . scores
 
 test :: [Int]
 test = [1, 4, 4, 5, 6, 4, 5, 5, 10, 0, 1, 7, 3, 6, 4, 10, 2, 8, 6]
