@@ -97,8 +97,12 @@ scores = futu psi where
                | otherwise -> Cons (x+y) $ return t
 
 
-scores' :: [Int] -> [(Int, Int)]
-scores' = zip [1..10] . scanl1 (+) . scores
+scores1 :: [Int] -> [(Int, Int)]
+scores1 = zip [1..10] . scanl1 (+) . scores
+
+-- codyna = cata . futu
+scores2 :: [Int] -> [Int]
+scores2 = foldr (\x xs -> x:map (x+) xs) [] . scores
 
 test :: [Int]
 test = [1, 4, 4, 5, 6, 4, 5, 5, 10, 0, 1, 7, 3, 6, 4, 10, 2, 8, 6]
