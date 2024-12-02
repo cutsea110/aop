@@ -1,4 +1,4 @@
-{- LANGUAGE NoImplicitPrelude -}
+{-# LANGUAGE NoImplicitPrelude #-}
 module ZipUnzip where
 
 -- 逆により仕様
