@@ -88,6 +88,14 @@ idf = foldf (fork, null, grows)
         f n = (n, n-1)
         g n = if n <= 0 then Nothing else Just (n, n-1)
 
+(genT', genF') = (k unfoldt, k unfoldf)
+  where
+    k ana = ana (f, g)
+      where
+        f n = (n, n+1)
+        g n = if n >= 7 then Nothing else Just (n, n+1)
+
+
 -- utility
 (lenT, lenF) = (k foldt, k foldf)
   where
