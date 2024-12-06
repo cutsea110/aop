@@ -93,8 +93,7 @@ idf = foldf (fork, null, grows)
     k ana = ana (f, g)
       where
         f n = (n, n+1)
-        g n = if n >= 7 then Nothing else Just (n, n+1)
-
+        g n = Just (n, n+1)
 
 -- utility
 (lenT, lenF) = (k foldt, k foldf)
@@ -136,6 +135,23 @@ idf = foldf (fork, null, grows)
         h (a, fs) = [a]:fs
         c = []
         g (t, fs) = t ++ fs
+
+
+takeWhileT p = foldt (h, c, g)
+  where
+    h (a, fs) | p a       = Fork a fs
+              | otherwise = Fork a Null
+    c = Null
+    g (t@(Fork a _), fs) | p a       = Grows t fs
+                         | otherwise = Null
+
+takeWhileF p = foldf (h, c, g)
+  where
+    h (a, fs) | p a       = Fork a fs
+              | otherwise = Fork a Null
+    c = Null
+    g (t@(Fork a _), fs) | p a       = Grows t fs
+                         | otherwise = Null
 
 drawT :: Show a => Tree a -> String
 drawT = concat . foldt (h, c, g)
