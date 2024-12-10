@@ -180,13 +180,24 @@ showF = putStr . drawF
 
 
 -- on exponential
+-- zip の場合は二つの引数でサイズが違うときは小さい方に詰められる
+-- 個人的には自由定理によって選択の余地がないことから一意に決まると考えたい派閥ではあり、
+-- その観点だとサイズが同じと制約を入れる方が楽ではある(選択の余地が出てくると意味を考えて実装する必要がある)
+-- 一方、使いやすさの観点だとサイズ違いの場合をドメインとして受け付けたい
+-- zip に関しては仮に選択の余地があるとしても短い方につぶすしかないので対応してもさほど問題はないので許容範囲ではある
+-- この実装はサイズが異なる場合にも対応しているが、選択の余地はほぼなくて自由定理から一意に定まる範囲ではないかとは思う
 (zipT, zipF) = (k foldt, k foldf)
   where
     k cata = cata (h, c, g)
       where
-        h (a, fs) = \(Fork a' fs') -> Fork (a, a') (fs fs')
-        c = \_ -> Null
-        g (t, fs) = \(Grows t' fs') -> Grows (t t') (fs fs')
+        h (a, fs) = \case
+          (Fork b fb) -> Fork (a, b) (fs fb)
+        c = \case
+          Null -> Null
+          Grows _ _ -> Null
+        g (t, fs) = \case
+          (Grows tb fb) -> Grows (t tb) (fs fb)
+          Null -> Null
 
 
 
