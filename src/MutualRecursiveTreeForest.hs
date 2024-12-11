@@ -216,6 +216,21 @@ zipf (Grows at afs) Null = Grows (mapt Fst at) (zipf afs Null)
 zipf Null (Grows bt bfs) = Grows (mapt Snd bt) (zipf Null bfs)
 zipf Null Null = Null
 
+-- | この実装は成立しない
+(zipt', zipf') = (foldt (h, c, g), foldf (h, c, g))
+  where
+    h :: (a, Forest b -> Forest (Tuple a b)) -> Tree b -> Tree (Tuple a b)
+    h (a, fs) = \(Fork b bfs) -> Fork (Tuple a b) (fs bfs)
+    c :: Forest b -> Forest (Tuple a b)
+    c = \case
+      Null -> Null
+      Grows bt bfs -> Grows (mapt Snd bt) (mapf Snd bfs)
+    g :: (Tree b -> Tree (Tuple a b), Forest b -> Forest (Tuple a b)) -> Forest b -> Forest (Tuple a b)
+    g (t, fs) = \case
+      Null -> Null -- ここが成立しない
+      Grows bt bfs -> Grows (t bt) (fs bfs)
+
+
 -- type functor
 {-
 -- 直接的ではあるが積圏で同時に定義されている感がない
