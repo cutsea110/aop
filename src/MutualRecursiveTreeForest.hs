@@ -199,9 +199,22 @@ showF = putStr . drawF
           (Grows tb fb) -> Grows (t tb) (fs fb)
           Null -> Null
 
-
-
 (unzipT, unzipF) = (pair (mapt fst, mapt snd), pair (mapf fst, mapf snd))
+
+
+
+data Tuple a b = Fst a | Snd b | Tuple a b deriving Show
+tuple f s t = \case
+  Fst a     -> f a
+  Snd b     -> s b
+  Tuple a b -> t a b
+
+zipt (Fork a afs) (Fork b bfs) = Fork (Tuple a b) (zipf afs bfs)
+
+zipf (Grows at afs) (Grows bt bfs) = Grows (zipt at bt) (zipf afs bfs)
+zipf (Grows at afs) Null = Grows (mapt Fst at) (zipf afs Null)
+zipf Null (Grows bt bfs) = Grows (mapt Snd bt) (zipf Null bfs)
+zipf Null Null = Null
 
 -- type functor
 {-
