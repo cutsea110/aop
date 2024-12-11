@@ -209,6 +209,7 @@ tuple f s t = \case
   Snd b     -> s b
   Tuple a b -> t a b
 
+-- zipt, zipf のシンプルな実装
 zipt (Fork a afs) (Fork b bfs) = Fork (Tuple a b) (zipf afs bfs)
 
 zipf (Grows at afs) (Grows bt bfs) = Grows (zipt at bt) (zipf afs bfs)
@@ -216,7 +217,8 @@ zipf (Grows at afs) Null = Grows (mapt Fst at) (zipf afs Null)
 zipf Null (Grows bt bfs) = Grows (mapt Snd bt) (zipf Null bfs)
 zipf Null Null = Null
 
--- | この実装は成立しない
+-- | cata では残念ながら実装できない
+{--
 (zipt', zipf') = (foldt (h, c, g), foldf (h, c, g))
   where
     h :: (a, Forest b -> Forest (Tuple a b)) -> Tree b -> Tree (Tuple a b)
@@ -229,7 +231,22 @@ zipf Null Null = Null
     g (t, fs) = \case
       Null -> Null -- ここが成立しない
       Grows bt bfs -> Grows (t bt) (fs bfs)
+--}
 
+-- para を使えば実装可能
+(zipt', zipf') = (parat (h, c, g), paraf (h, c, g))
+  where
+    h :: (a, (Forest a, Forest b -> Forest (Tuple a b))) -> (Tree b -> Tree (Tuple a b))
+    h (a, (_, fs)) = \case
+      Fork b bfs -> Fork (Tuple a b) (fs bfs)
+    c :: Forest b -> Forest (Tuple a b)
+    c = \case
+      Null -> Null
+      Grows bt bfs -> Grows (mapt Snd bt) (mapf Snd bfs)
+    g :: ((Tree a, Tree b -> Tree (Tuple a b)), (Forest a, Forest b -> Forest (Tuple a b))) -> Forest b -> Forest (Tuple a b)
+    g ((ta, t), (fa, fs)) = \case
+      Null -> Grows (mapt Fst ta) (mapf Fst fa)
+      Grows bt bfs -> Grows (t bt) (fs bfs)
 
 -- type functor
 {-
@@ -247,13 +264,21 @@ mapf f (Grows t fs) = Grows (mapt f t) (mapf f fs)
         c = null
         g = grows . cross (id, id)
 
+parat' :: ((a, (Forest a, y)) -> x, y, ((Tree a, x), (Forest a, y)) -> y) -> Tree a -> x
+parat' phi@(h, c, g) (Fork a fs) = h (a, (fs, paraf' phi fs))
+paraf' :: ((a, (Forest a, y)) -> x, y, ((Tree a, x), (Forest a, y)) -> y) -> Forest a -> y
+paraf' phi@(h, c, g) Null = c
+paraf' phi@(h, c, g) (Grows t fs) = g ((t, parat' phi t), (fs, paraf' phi fs))
+
+parat :: ((a, (Forest a, y)) -> x, y, ((Tree a, x), (Forest a, y)) -> y) -> Tree a -> x
+paraf :: ((a, (Forest a, y)) -> x, y, ((Tree a, x), (Forest a, y)) -> y) -> Forest a -> y
 (parat, paraf) = (u, v)
   where
     u phi@(h, c, g) = \case
-      (Fork a fs) -> h a (fs, v phi fs)
+      (Fork a fs) -> h (a, (fs, v phi fs))
     v phi@(h, c, g) = \case
       Null -> c
-      (Grows t fs) -> g (t, u phi t) (fs, v phi fs)
+      (Grows t fs) -> g ((t, u phi t), (fs, v phi fs))
 
 {-    
 parat phi@(h, c, g) (Fork a fs) = h a (fs, paraf phi fs)
@@ -302,9 +327,9 @@ infixl 9 <>
 (<>) :: Forest a -> Forest a -> Forest a
 xs <> ys = paraf (h, c, g) xs
   where
-    h t (fs, _) = fork (t, fs)
+    h (t, (fs, _)) = fork (t, fs)
     c = ys
-    g (_, t') (_, fs') = grows (t', fs')
+    g ((_, t'), (_, fs')) = grows (t', fs')
 
 etat :: a -> Tree a
 etat = fork . pair (id, etaf)
