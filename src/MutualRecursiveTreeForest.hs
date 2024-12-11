@@ -264,8 +264,8 @@ unzipt' t = case (upt $ mapt pi1 t, upt $ mapt pi2 t) of
   (Just a, Nothing) -> Fst a
   (Nothing, Just b) -> Snd b
   (Nothing, Nothing) -> error "no tuple"
-unzipf' :: Forest (Tuple a b) -> (Forest a, Forest b)
-unzipf' f = (upf $ mapf pi1 f, upf $ mapf pi2 f)
+unzipf' :: Forest (Tuple a b) -> Tuple (Forest a) (Forest b)
+unzipf' f = Tuple (upf $ mapf pi1 f) (upf $ mapf pi2 f)
 
 upt :: Tree (Maybe a) -> Maybe (Tree a)
 upt (Fork Nothing _) = Nothing
