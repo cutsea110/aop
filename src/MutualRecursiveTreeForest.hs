@@ -210,7 +210,7 @@ tuple f s t = \case
   Snd b     -> s b
   Tuple a b -> t a b
 
--- zipt, zipf のシンプルな実装
+-- zip unzip identity law を満足する zipt, zipf のシンプルな実装
 zipt (Fork a afs) (Fork b bfs) = Fork (Tuple a b) (zipf afs bfs)
 
 zipf (Grows at afs) (Grows bt bfs) = Grows (zipt at bt) (zipf afs bfs)
@@ -234,7 +234,7 @@ zipf Null Null = Null
       Grows bt bfs -> Grows (t bt) (fs bfs)
 --}
 
--- para を使えば実装可能
+-- zip unzip idenitity law を満足する zip は para を使えば実装可能
 (zipt', zipf') = (parat (h, c, g), paraf (h, c, g))
   where
     h :: (a, (Forest a, Forest b -> Forest (Tuple a b))) -> (Tree b -> Tree (Tuple a b))
