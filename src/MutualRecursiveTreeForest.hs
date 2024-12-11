@@ -248,6 +248,20 @@ zipf Null Null = Null
       Null -> Grows (mapt Fst ta) (mapf Fst fa)
       Grows bt bfs -> Grows (t bt) (fs bfs)
 
+pi1 :: Tuple a b -> Maybe a
+pi1 (Fst a) = Just a
+pi1 (Tuple a _) = Just a
+pi1 _ = Nothing
+pi2 :: Tuple a b -> Maybe b
+pi2 (Fst _) = Nothing
+pi2 (Tuple _ b) = Just b
+pi2 (Snd b) = Just b
+
+unzipt' :: Tree (Tuple a b) -> (Tree (Maybe a), Tree (Maybe b))
+unzipt' t = (mapt pi1 t, mapt pi2 t)
+unzipf' :: Forest (Tuple a b) -> (Forest (Maybe a), Forest (Maybe b))
+unzipf' f = (mapf pi1 f, mapf pi2 f)
+
 -- type functor
 {-
 -- 直接的ではあるが積圏で同時に定義されている感がない
