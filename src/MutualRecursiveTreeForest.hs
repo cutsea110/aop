@@ -258,8 +258,12 @@ pi2 (Fst _) = Nothing
 pi2 (Tuple _ b) = Just b
 pi2 (Snd b) = Just b
 
-unzipt' :: Tree (Tuple a b) -> (Tree a, Tree b)
-unzipt' t = (fromJust $ upt $ mapt pi1 t, fromJust $ upt $ mapt pi2 t)
+unzipt' :: Tree (Tuple a b) -> Tuple (Tree a) (Tree b)
+unzipt' t = case (upt $ mapt pi1 t, upt $ mapt pi2 t) of
+  (Just a, Just b) -> Tuple a b
+  (Just a, Nothing) -> Fst a
+  (Nothing, Just b) -> Snd b
+  (Nothing, Nothing) -> error "no tuple"
 unzipf' :: Forest (Tuple a b) -> (Forest a, Forest b)
 unzipf' f = (upf $ mapf pi1 f, upf $ mapf pi2 f)
 
