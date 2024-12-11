@@ -2,6 +2,7 @@
 module MutualRecursiveTreeForest where
 
 import Prelude hiding (null,(<>))
+import Data.Maybe (fromJust)
 
 pair (f, g) x = (f x, g x)
 cross (f, g) (x, y) = (f x, g y)
@@ -257,10 +258,19 @@ pi2 (Fst _) = Nothing
 pi2 (Tuple _ b) = Just b
 pi2 (Snd b) = Just b
 
-unzipt' :: Tree (Tuple a b) -> (Tree (Maybe a), Tree (Maybe b))
-unzipt' t = (mapt pi1 t, mapt pi2 t)
-unzipf' :: Forest (Tuple a b) -> (Forest (Maybe a), Forest (Maybe b))
-unzipf' f = (mapf pi1 f, mapf pi2 f)
+unzipt' :: Tree (Tuple a b) -> (Tree a, Tree b)
+unzipt' t = (fromJust $ upt $ mapt pi1 t, fromJust $ upt $ mapt pi2 t)
+unzipf' :: Forest (Tuple a b) -> (Forest a, Forest b)
+unzipf' f = (upf $ mapf pi1 f, upf $ mapf pi2 f)
+
+upt :: Tree (Maybe a) -> Maybe (Tree a)
+upt (Fork Nothing _) = Nothing
+upt (Fork (Just a) fs) = Just (Fork a (upf fs))
+upf :: Forest (Maybe a) -> Forest a
+upf Null = Null
+upf (Grows t fs) = case upt t of
+  Nothing -> upf fs
+  Just t' -> Grows t' (upf fs)
 
 -- type functor
 {-
