@@ -204,7 +204,7 @@ showF = putStr . drawF
 
 
 
-data Tuple a b = Fst a | Snd b | Tuple a b deriving Show
+data Tuple a b = Fst a | Snd b | Tuple a b deriving (Show, Eq)
 tuple f s t = \case
   Fst a     -> f a
   Snd b     -> s b
@@ -258,12 +258,8 @@ pi2 (Fst _) = Nothing
 pi2 (Tuple _ b) = Just b
 pi2 (Snd b) = Just b
 
-unzipt' :: Tree (Tuple a b) -> Tuple (Tree a) (Tree b)
-unzipt' t = case (upt $ mapt pi1 t, upt $ mapt pi2 t) of
-  (Just a, Just b) -> Tuple a b
-  (Just a, Nothing) -> Fst a
-  (Nothing, Just b) -> Snd b
-  (Nothing, Nothing) -> error "no tuple"
+unzipt' :: Tree (Tuple a b) -> (Tree a, Tree b)
+unzipt' t = (fromJust . upt $ mapt pi1 t, fromJust . upt $ mapt pi2 t)
 unzipf' :: Forest (Tuple a b) -> Tuple (Forest a) (Forest b)
 unzipf' f = Tuple (upf $ mapf pi1 f) (upf $ mapf pi2 f)
 
