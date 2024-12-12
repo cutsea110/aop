@@ -97,7 +97,7 @@ idf = foldf (fork, null, grows)
         g n = Just (n, n+1)
 
 -- utility
-(lenT, lenF) = (k foldt, k foldf)
+(sizeT, sizeF) = (k foldt, k foldf)
   where
     k cata = cata (h, c, g)
       where
