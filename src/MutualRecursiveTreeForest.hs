@@ -288,12 +288,6 @@ mapf f (Grows t fs) = Grows (mapt f t) (mapf f fs)
         c = null
         g = grows . cross (id, id)
 
-parat' :: ((a, (Forest a, y)) -> x, y, ((Tree a, x), (Forest a, y)) -> y) -> Tree a -> x
-parat' phi@(h, c, g) (Fork a fs) = h (a, (fs, paraf' phi fs))
-paraf' :: ((a, (Forest a, y)) -> x, y, ((Tree a, x), (Forest a, y)) -> y) -> Forest a -> y
-paraf' phi@(h, c, g) Null = c
-paraf' phi@(h, c, g) (Grows t fs) = g ((t, parat' phi t), (fs, paraf' phi fs))
-
 parat :: ((a, (Forest a, y)) -> x, y, ((Tree a, x), (Forest a, y)) -> y) -> Tree a -> x
 paraf :: ((a, (Forest a, y)) -> x, y, ((Tree a, x), (Forest a, y)) -> y) -> Forest a -> y
 (parat, paraf) = (u, v)
