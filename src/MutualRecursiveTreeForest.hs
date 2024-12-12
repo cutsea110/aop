@@ -259,18 +259,18 @@ pi2 (Tuple _ b) = Just b
 pi2 (Snd b) = Just b
 
 unzipt' :: Tree (Tuple a b) -> (Tree a, Tree b)
-unzipt' t = (fromJust . upt $ mapt pi1 t, fromJust . upt $ mapt pi2 t)
+unzipt' t = (fromJust . sequencet $ mapt pi1 t, fromJust . sequencet $ mapt pi2 t)
 unzipf' :: Forest (Tuple a b) -> Tuple (Forest a) (Forest b)
-unzipf' f = Tuple (upf $ mapf pi1 f) (upf $ mapf pi2 f)
+unzipf' f = Tuple (sequencef $ mapf pi1 f) (sequencef $ mapf pi2 f)
 
-upt :: Tree (Maybe a) -> Maybe (Tree a)
-upt (Fork Nothing _) = Nothing
-upt (Fork (Just a) fs) = Just (Fork a (upf fs))
-upf :: Forest (Maybe a) -> Forest a
-upf Null = Null
-upf (Grows t fs) = case upt t of
-  Nothing -> upf fs
-  Just t' -> Grows t' (upf fs)
+sequencet :: Tree (Maybe a) -> Maybe (Tree a)
+sequencet (Fork Nothing _) = Nothing
+sequencet (Fork (Just a) fs) = Just (Fork a (sequencef fs))
+sequencef :: Forest (Maybe a) -> Forest a
+sequencef Null = Null
+sequencef (Grows t fs) = case sequencet t of
+  Nothing -> sequencef fs
+  Just t' -> Grows t' (sequencef fs)
 
 -- type functor
 {-
