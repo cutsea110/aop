@@ -205,10 +205,10 @@ showF = putStr . drawF
 
 
 data Tuple a b = Fst a | Snd b | Tuple a b deriving (Show, Eq)
-tuple f s t = \case
-  Fst a     -> f a
-  Snd b     -> s b
-  Tuple a b -> t a b
+tuple f s t (Fst a)     = f a
+tuple f s t (Snd b)     = s b
+tuple f s t (Tuple a b) = t a b
+
 
 -- zip unzip identity law を満足する zipt, zipf のシンプルな実装
 zipt (Fork a afs) (Fork b bfs) = Fork (Tuple a b) (zipf afs bfs)
