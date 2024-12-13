@@ -250,13 +250,13 @@ zipf Null Null = Null
       Grows bt bfs -> Grows (t bt) (fs bfs)
 
 pi1 :: Tuple a b -> Maybe a
-pi1 (Fst a) = Just a
+pi1 (Fst a)     = Just a
 pi1 (Tuple a _) = Just a
-pi1 _ = Nothing
+pi1 _           = Nothing
 pi2 :: Tuple a b -> Maybe b
-pi2 (Fst _) = Nothing
+pi2 (Fst _)     = Nothing
 pi2 (Tuple _ b) = Just b
-pi2 (Snd b) = Just b
+pi2 (Snd b)     = Just b
 
 unzipt' :: Tree (Tuple a b) -> (Tree a, Tree b)
 unzipt' t = (fromJust . sequencet $ mapt pi1 t, fromJust . sequencet $ mapt pi2 t)
@@ -264,10 +264,11 @@ unzipf' :: Forest (Tuple a b) -> Tuple (Forest a) (Forest b)
 unzipf' f = Tuple (sequencef $ mapf pi1 f) (sequencef $ mapf pi2 f)
 
 sequencet :: Tree (Maybe a) -> Maybe (Tree a)
-sequencet (Fork Nothing _) = Nothing
+sequencet (Fork Nothing _)   = Nothing
 sequencet (Fork (Just a) fs) = Just (Fork a (sequencef fs))
+
 sequencef :: Forest (Maybe a) -> Forest a
-sequencef Null = Null
+sequencef Null         = Null
 sequencef (Grows t fs) = case sequencet t of
   Nothing -> sequencef fs
   Just t' -> Grows t' (sequencef fs)
