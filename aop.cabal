@@ -34,7 +34,6 @@ library
                      , Cpp
                      , Curry
                      , Cycle
-                     , Demo
                      , Decimal
                      , Defunctionalization
                      , Dijkstra
