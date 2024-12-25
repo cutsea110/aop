@@ -14,7 +14,7 @@ euclid (a, b) = go (a, 1, 0) (b, 0, 1)
 
 diophantus :: (Integral a) => (a, a, a) -> Maybe (a, a)
 diophantus (a, b, c)
-  | m' == 0   = Just (x' * c', y' * c')
+  | m' == 0   = Just ((x' * c') `mod` b, (y' * c') `mod` a)
   | otherwise = Nothing
   where
     (d, x', y') = euclid (a, b)
@@ -23,9 +23,8 @@ diophantus (a, b, c)
 diophantus' :: (Integral a) => (a, a, a) -> Maybe ((a, a), (a, a))
 diophantus' (a, b, c) = do
   xy <- diophantus (a, b, c)
-  return (optimize xy, step (a, b))
+  return (xy, step (a, b))
   where
-    optimize (x, y) = (x `mod` b, y `mod` a)
     step (a, b) = (b', -a')
       where
         d = gcd a b
