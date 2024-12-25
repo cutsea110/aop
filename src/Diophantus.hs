@@ -23,8 +23,9 @@ diophantus (a, b, c)
 diophantus' :: (Integral a) => (a, a, a) -> Maybe ((a, a), (a, a))
 diophantus' (a, b, c) = do
   xy <- diophantus (a, b, c)
-  return (xy, step (a, b))
+  return (optimize xy, step (a, b))
   where
+    optimize (x, y) = (x `mod` b, y `mod` a)
     step (a, b) = (b', -a')
       where
         d = gcd a b
