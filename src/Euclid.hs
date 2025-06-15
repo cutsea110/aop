@@ -37,10 +37,8 @@ unfoldNEL psi = v
       Right (x, y) -> Cons x (v y)
 
 euclid' :: Integral a => (a, a) -> a
-euclid' = foldNEL (id, snd) . gcd'
-
-gcd' :: Integral a => (a, a) -> NEL a
-gcd' = unfoldNEL psi
-        where
-          psi (x, 0) = Left x
-          psi (x, y) = Right (x, (y, x `mod` y))
+euclid' = foldNEL phi . unfoldNEL psi
+  where
+    phi = (id, snd)
+    psi (x, 0) = Left x
+    psi (x, y) = Right (x, (y, x `mod` y))
