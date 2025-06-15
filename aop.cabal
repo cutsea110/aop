@@ -42,6 +42,7 @@ library
                      , DualityOfSorts
                      , Dyna
                      , ENat
+                     , Euclid
                      , ExtEuclid
                      , Fact
                      , Factorization
