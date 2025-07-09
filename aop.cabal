@@ -94,6 +94,7 @@ library
                      , Puzzle8
                      , PHOAS
                      , PhoasRyan
+                     , RLE
                      , Rose
                      , Search
                      , ShortestPathSearch
