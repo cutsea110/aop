@@ -8,12 +8,12 @@ para c f = u
         u (x:xs) = f x (xs, u xs)
 
 toRLE :: Eq a => [a] -> [(a, Int)]
-toRLE = unfoldr psi
+toRLE = unfoldr coalg
   where
-    psi :: Eq a => [a] -> Maybe ((a, Int), [a])
-    psi = para Nothing f
+    coalg :: Eq a => [a] -> Maybe ((a, Int), [a])
+    coalg = para Nothing alg
       where
-        f x (xs, Nothing) = Just ((x, 1), xs)
-        f x (xs, Just ((y, n), zs))
+        alg x (xs, Nothing) = Just ((x, 1), xs)
+        alg x (xs, Just ((y, n), zs))
           | x == y    = Just ((y, succ n), zs)
           | otherwise = Just ((x, 1), xs)
