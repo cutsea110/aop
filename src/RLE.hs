@@ -17,5 +17,5 @@ toRLE = unfoldr psi
       where
         f x (xs, Nothing) = Just ((x, 1), xs)
         f x (xs, Just ((y, n), zs))
-          | x == y   = Just ((y, succ n), zs)
+          | x == y    = Just ((y, succ n), zs)
           | otherwise = Just ((x, 1), xs)
