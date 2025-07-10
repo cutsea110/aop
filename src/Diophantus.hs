@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -Wno-x-partial #-}
 module Diophantus where
 
 euclid :: (Integral a) => (a, a) -> (a, a, a)

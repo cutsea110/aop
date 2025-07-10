@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -Wno-x-partial #-}
 module Prime where
 
 import Prelude hiding (elem)

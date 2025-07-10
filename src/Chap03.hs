@@ -1,4 +1,5 @@
 {-# LANGUAGE NPlusKPatterns, TypeOperators #-}
+{-# OPTIONS_GHC -Wno-x-partial #-}
 module Chap03 where
 
 import Prelude hiding (foldr, sum, product, length, round, reverse)
