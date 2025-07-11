@@ -17,3 +17,6 @@ toRLE = unfoldr coalg
         alg x (xs, Just ((y, n), zs))
           | x == y    = Just ((y, succ n), zs)
           | otherwise = Just ((x, 1), xs)
+
+fromRLE :: [(a, Int)] -> [a]
+fromRLE = concatMap (\(x, n) -> replicate n x)
