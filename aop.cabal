@@ -36,6 +36,7 @@ library
                      , Curry
                      , Cycle
                      , Decimal
+                     , Decimal2026
                      , Defunctionalization
                      , Dijkstra
                      , Diophantus
@@ -117,7 +118,6 @@ library
                      , TutorialZygo
                      , TuplingAsHist
                      , TypeFunctor
-                     , YearFloat
                      , ZipUnzip
 
                      , Chap01

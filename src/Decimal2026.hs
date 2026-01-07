@@ -1,4 +1,4 @@
-module YearFloat where
+module Decimal2026 where
 
 import Data.Ratio
 
