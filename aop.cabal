@@ -117,6 +117,7 @@ library
                      , TutorialZygo
                      , TuplingAsHist
                      , TypeFunctor
+                     , YearFloat
                      , ZipUnzip
 
                      , Chap01
