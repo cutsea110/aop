@@ -1,5 +1,6 @@
 module Decimal2026 where
 
+import Data.Char (chr, ord)
 import Data.Ratio
 
 y2026 :: Rational
@@ -12,10 +13,10 @@ decimalDigits r = go (numerator r `mod` denominator r)
           where (q, rem') = (rem * 10) `divMod` d
 
 
-showDecimal :: Int -> Rational -> String
-showDecimal n r = show i ++ "." ++ concatMap show (take n ds)
-  where i = numerator r `div` denominator r
+showDecimal :: Rational -> String
+showDecimal r = "0." ++ map str ds
+  where str = chr . (+ ord '0')
         ds = decimalDigits r
 
 main :: IO ()
-main = putStrLn $ showDecimal 1000 y2026
+main = putStrLn $ take (2+4*7972) $ showDecimal y2026 -- 7973 is enough to show the pattern
