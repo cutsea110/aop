@@ -12,11 +12,11 @@ decimalDigits r = go (numerator r `mod` denominator r)
         go rem = fromIntegral q : go rem'
           where (q, rem') = (rem * 10) `divMod` d
 
-
 showDecimal :: Rational -> String
-showDecimal r = "0." ++ map str ds
-  where str = chr . (+ ord '0')
-        ds = decimalDigits r
+showDecimal r = show i ++ "." ++ map str ds
+  where i   = numerator r `div` denominator r
+        str = chr . (+ ord '0')
+        ds  = decimalDigits r
 
 main :: IO ()
 main = putStrLn $ take (2+4*7972) $ showDecimal y2026 -- 7973 is enough to show the pattern
