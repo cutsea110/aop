@@ -69,6 +69,7 @@ library
                      , Interp
                      , Kaprekar
                      , KnapSack
+                     , LazyStrategy
                      , Leafy
                      , Lens
                      , List
