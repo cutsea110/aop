@@ -60,6 +60,29 @@ _bs = [1,2,3,4,5,6,7]
 _bs :: [Int]
 _bs = [1+0,2+0,3+0,4+0,5+0,6+0,7+0]
 
+{- |
+ghci> :sprint _bs'
+_bs' = _
+ghci> _null _bs'
+"not empty"
+ghci> :sprint _bs'
+_bs' = [1,_,3,_,5,_,7]
+ghci> let b3 = _bs' !! 3
+ghci> :sprint b3
+b3 = _
+ghci> b3
+4
+ghci> :sprint _bs'
+_bs' = [1,_,3,4,5,_,7]
+ghci> length _bs'
+7
+ghci> :sprint _bs'
+_bs' = [1,_,3,4,5,_,7]
+ghci> sum _bs'
+28
+ghci> :sprint _bs'
+_bs' = [1,2,3,4,5,6,7]
+-}
 _bs' :: [Int]
 _bs' = [1, 2+0, 3, 4+0, 5, 6+0, 7]
 
