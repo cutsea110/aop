@@ -58,7 +58,7 @@ ghci> :sprint _bs
 _bs = [1,2,3,4,5,6,7]
 -}
 _bs :: [Int]
-_bs = let xs = [7,6..1] in [xs!!6, xs!!5, xs!!4, xs!!3, xs!!2, xs!!1, xs!!0]
+_bs = [1+0,2+0,3+0,4+0,5+0,6+0,7+0]
 
 {- |
 ghci> :sprint _cs
