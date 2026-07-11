@@ -137,3 +137,34 @@ _ds = _
 -}
 _ds :: (Enum a, Num a) => [a]
 _ds = [1..7]
+
+{- |
+ghci> :sprint _es
+_es = _
+ghci> _null _es
+"not empty"
+ghci> :sprint _es
+_es = _ : _
+ghci> _es !! 1
+2
+ghci> :sprint _es
+_es = _ : 2 : _
+ghci> _es !! 2
+3
+ghci> :sprint _es
+_es = _ : 2 : 3 : _
+ghci> _es !! 3
+4
+ghci> :sprint _es
+_es = [_,2,3,4,_,_,_]
+ghci> length _es
+7
+ghci> :sprint _es
+_es = [_,2,3,4,_,_,_]
+ghci> sum _es
+28
+ghci> :sprint _es
+_es = [1,2,3,4,5,6,7]
+-}
+_es :: [Int]
+_es = let xs = [4+0,5+0,6+0,7+0] in (1+0):(2+0):(3+0):xs
